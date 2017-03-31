@@ -4,14 +4,14 @@ layout: default
 
 <header class="header">
   <div class="header-title">
-    <a href="{{ site.url }}{{ site.baseurl }}">{{ site.name }}</a>
+    <a href="{{ site.url }}{{ site.baseurl }}">{{ site.name }}  <span style="color:#329af0">{{ site.name2 }}</span></a>
   </div>
   <nav class="header-nav">
     {% for nav in site.nav %}
     {% if nav.url contains 'http://' or nav.url contains 'https://' %}
-    <a href="{{ nav.url }}">{{ nav.name }} <span style="color:#329af0">{{ nav.name2 }}</span></a>
+    <a href="{{ nav.url }}">{{ nav.name }}</a>
     {% else %}
-    <a href="{{ nav.url | prepend: site.baseurl }}">{{ nav.name }} <span style="color:#329af0">{{ nav.name2 }}</span></a>
+    <a href="{{ nav.url | prepend: site.baseurl }}">{{ nav.name }}</a>
     {% endif %}
     {% endfor %}
   </nav>

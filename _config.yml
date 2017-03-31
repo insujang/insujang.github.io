@@ -63,7 +63,7 @@ nav:
   - name:           "Tags"
     url:            "/tags"
   - name:           "Github"
-    url:            "https://insujang.github.io"
+    url:            "https://github.com/insujang"
 
 # Sass
 sass:
