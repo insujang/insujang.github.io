@@ -6,20 +6,20 @@
 name:               "Better Tomorrow with Computer Science"
 
 author:
-  facebook:         your-id
-  youtubeUser:      your-id
-  youtubeChannel:   your-id
-  twitter:          your-id
+#  facebook:         your-id
+#  youtubeUser:      your-id
+#  youtubeChannel:   your-id
+#  twitter:          your-id
   github:           insujang
-  stackoverflow:    your-id
-  quora:            your-id
+#  stackoverflow:    your-id
+#  quora:            your-id
   linkedin:         insujang
-  pinterest:        your-id
-  googlePlus:       your-id
-  instagram:        your-id
-  reddit:           your-id
-  medium:           your-id
-  tumblr:           your-id
+#  pinterest:        your-id
+#  googlePlus:       your-id
+#  instagram:        your-id
+#  reddit:           your-id
+#  medium:           your-id
+#  tumblr:           your-id
   email:            insujang.kaist@gmail.com
 
 copyright:
@@ -37,7 +37,7 @@ disqus:
 # URL
 url:                "https://insujang.github.io" # the base hostname & protocol for your site
 # url:                "http://localhost:4000" # use this url when you develop
-baseurl:            "/" # the subpath of your site, e.g. /blog
+baseurl:            "master" # the subpath of your site, e.g. /blog
 
 
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
