@@ -9,7 +9,7 @@ layout: default
   <nav class="header-nav">
     {% for nav in site.nav %}
     {% if nav.url contains 'http://' or nav.url contains 'https://' %}
-    <a href="{{ nav.url }}">{{ nav.name }}</a>
+    <a href="{{ nav.url }}">{{ nav.name }} <span style="color:#329af0">{{ nav.name2 }}</span></a>
     {% else %}
     <a href="{{ nav.url | prepend: site.baseurl }}">{{ nav.name }} <span style="color:#329af0">{{ nav.name2 }}</span></a>
     {% endif %}
