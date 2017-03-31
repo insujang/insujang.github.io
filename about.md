@@ -4,18 +4,20 @@ permalink: /about/
 ---
 
 
-
 ## Insu Jang
-M.S. Student at [KAIST](http://www.kaist.edu/html/en/index.html)
 
-[Computer Architecture Laboratory](calab.kaist.ac.kr)
+![profile](/assets/images/profile.png)
 
+M.S. Student  
+[School of Computing](cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)
+
+Research Group: [Computer Architecture Laboratory](calab.kaist.ac.kr)  
 Advisor: [Jaehyuk Huh](calab.kaist.ac.kr:8080/~jhuh)
 
-#### Education
-- M.S. Computer Science, [Korea Advanced Institute of Science and Technology](http://www.kaist.edu/html/en/index.html), Mar 2016 - Feb 2018
-- B.S. Computer Engineering, [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), Mar 2011 - Feb 2016
 
+#### Education
+- [KAIST](http://www.kaist.edu/html/en/index.html), M.S., Computer Science, Mar 2016 - Current (4.06 / 4.3)
+- [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), B.S., Computer Engineering, Mar 2011 - Feb 2016 (4.24 / 4.5)
 
 #### Research Interests
 - Computer Architecture
@@ -30,6 +32,7 @@ Advisor: [Jaehyuk Huh](calab.kaist.ac.kr:8080/~jhuh)
 - Research Intern, [Electronics and Telecommunications Research Institute (ETRI)](https://etri.re.kr/eng/main/main.etri), Jan 2016 - Feb 2016
 - Research Intern, [Advanced Institutes of Convergence Technology (AICT)](http://aict.snu.ac.kr/eng/), Jul 2015 - Aug 2015
 - Purdue/NIPA Capstone Project, [Purdue University](http://www.purdue.edu/), Jul 2014 - Aug 2014
+- Student Government Member, [Sungkyunkwan Univeristy](http://www.skku.edu/eng_home/index.jsp), Apr 2011 - Feb 2012
 
 
 #### Honors and Awards
@@ -40,6 +43,8 @@ Advisor: [Jaehyuk Huh](calab.kaist.ac.kr:8080/~jhuh)
 - Grand Prize, 2013 Samrt TV App and Peripherals Contest, Nov 2013
 - Grand Prize, 2013 Mobile E-learning App Idea Contest, Sep 2013
 
+#### Skills
+- Java, C++, C, CUDA, HLS, Python
 
 ## Blog
 This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme, which is inspired by [Kiko](http://github.com/gfjaru/Kiko) theme.
