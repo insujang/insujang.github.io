@@ -3,8 +3,7 @@
 # # # # # # # # # # # # #
 
 # Basic
-name:               "Better Tomorrow"
-name2:              "with Computer Science"
+name:               "Better Tomorrow with Computer Science"
 
 author:
 #  facebook:         your-id
@@ -21,7 +20,7 @@ author:
 #  reddit:           your-id
 #  medium:           your-id
 #  tumblr:           your-id
-  email:            insujang.kaist@gmail.com
+  email:            insujang@calab.kaist.ac.kr
 
 copyright:
   year:             2017
