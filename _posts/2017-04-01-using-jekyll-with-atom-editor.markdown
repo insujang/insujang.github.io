@@ -15,6 +15,10 @@ It is as modern as Sublime Text, and plugins are much much more powerful, I thin
 
 I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll package on Atom. Here are some default shortcuts that I want to remember.
 
+\*\* Note: I have to look what is provided by [kramdown syntax](https://kramdown.gettalong.org/syntax.html), because Github Pages only supports kramdown and makrdown engines are slightly different from each other.
+
+
+
 #### [Markdown Preview Enhanced](https://atom.io/packages/markdown-preview-enhanced)
 It shows Markdown result in real time. Not perfectly suitable to Jekyll, but still good to see it roughly.
 - Toggle Preview: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>M</kbd>, or <kbd>&#8679;</kbd> + <kbd>&#8984;</kbd> + <kbd>M</kbd>
