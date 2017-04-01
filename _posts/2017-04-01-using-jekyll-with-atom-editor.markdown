@@ -15,7 +15,7 @@ It is as modern as Sublime Text, and plugins are much much more powerful, I thin
 
 I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll package on Atom. Here are some default shortcuts that I want to remember.
 
-\*\* Note: I have to look what is provided by [kramdown syntax](https://kramdown.gettalong.org/syntax.html), because Github Pages only supports kramdown and makrdown engines are slightly different from each other.
+\*\* Note: I have to look at what is provided by [kramdown syntax](https://kramdown.gettalong.org/syntax.html), because Github Pages only supports kramdown and markdown engines are slightly different from each other.
 
 
 

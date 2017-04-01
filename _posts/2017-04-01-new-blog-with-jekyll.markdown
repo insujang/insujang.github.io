@@ -2,7 +2,7 @@
 layout: post
 title: "New blog with Jekyll"
 date: "2017-04-01 01:56:49 +0900"
-tags: [Jekyll]
+tags: [jekyll]
 ---
 
 After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.  
