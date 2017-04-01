@@ -2,6 +2,7 @@
 layout: post
 title: "Using Jekyll with Atom Editor"
 date: "2017-04-01 09:55:05 +0900"
+author: "Insu Jang"
 tags: [jekyll]
 ---
 

@@ -13,12 +13,12 @@ title: Archive
       <a href="{{ post.link }}">
       {% else %}
       <a href="{{ post.url | prepend: site.baseurl }}">
-      {% endif %}  
+      {% endif %}
         <span class="archive-list-post-title">
           {{ post.title }}
         </span>
         <span class="archive-list-post-date">
-          <time>| {{ post.date | date_to_string }}</time>
+          <time>| {{ post.author}} | {{ post.date | date_to_string }}</time>
         </span>
       </a>
     </div>

@@ -2,6 +2,7 @@
 layout: post
 title: "New blog with Jekyll"
 date: "2017-04-01 01:56:49 +0900"
+author: "Insu Jang"
 tags: [jekyll]
 ---
 
