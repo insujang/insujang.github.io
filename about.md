@@ -16,8 +16,8 @@ Advisor: [Jaehyuk Huh](calab.kaist.ac.kr:8080/~jhuh)
 
 
 #### Education
-- [KAIST](http://www.kaist.edu/html/en/index.html), M.S., Computer Science, Mar 2016 - Current (4.06 / 4.3)
-- [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), B.S., Computer Engineering, Mar 2011 - Feb 2016 (4.24 / 4.5)
+- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (4.06 / 4.3)
+- B.S., Computer Engineering, [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), Mar 2011 - Feb 2016 (4.24 / 4.5)
 
 #### Research Interests
 - Computer Architecture
