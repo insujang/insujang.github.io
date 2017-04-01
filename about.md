@@ -9,10 +9,10 @@ permalink: /about/
 ![profile](/assets/images/profile.png)
 
 M.S. Student  
-[School of Computing](cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)
+[School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)
 
-Research Group: [Computer Architecture Laboratory](calab.kaist.ac.kr)  
-Advisor: [Jaehyuk Huh](calab.kaist.ac.kr:8080/~jhuh)
+Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)  
+Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
 
 
 #### Education
@@ -28,7 +28,7 @@ Advisor: [Jaehyuk Huh](calab.kaist.ac.kr:8080/~jhuh)
 
 
 #### Extracurricular Activities
-- Vice-class Representative, [School of Computing, KAIST](cs.kaist.ac.kr), Mar 2016 - Jul 2016
+- Vice-class Representative, [School of Computing, KAIST](https://cs.kaist.ac.kr), Mar 2016 - Jul 2016
 - Research Intern, [Electronics and Telecommunications Research Institute (ETRI)](https://etri.re.kr/eng/main/main.etri), Jan 2016 - Feb 2016
 - Research Intern, [Advanced Institutes of Convergence Technology (AICT)](http://aict.snu.ac.kr/eng/), Jul 2015 - Aug 2015
 - Purdue/NIPA Capstone Project, [Purdue University](http://www.purdue.edu/), Jul 2014 - Aug 2014
