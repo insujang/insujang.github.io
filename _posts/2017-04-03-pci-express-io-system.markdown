@@ -61,7 +61,7 @@ The most significant area is the BAR0 presenting MMIO registers.
 This is the main control space of the GPU, through which **all hardware engines are controlled**.
 
 Here is the GPU information provided by `lspci` command that I am using.
-![gpu_lspci](/assets/images/gpu_lspci.png)
+![gpu_lspci](/assets/images/170403/gpu_lspci.png)
 
 BAR0: `0xde000000` (MMIO registers)  
 BAR1 and BAR2: `0xd0000000` (device memory windows? 64-bit memory-map uses two adjacent BARs)  

@@ -25,7 +25,7 @@ It shows Markdown result in real time. Not perfectly suitable to Jekyll, but sti
 - Toggle Preview: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>M</kbd>, or <kbd>&#8679;</kbd> + <kbd>&#8984;</kbd> + <kbd>M</kbd>
 - Insert Image (Image Helper): <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>I</kbd>, or <kbd>&#8679;</kbd> + <kbd>&#8984;</kbd> + <kbd>I</kbd>  
 This is an awesome feature, because it was hard to organize images in Markdown (except those in the web). However, Image Helper automatically copies the image to specified location (In my case, set `/assets/images`)
-![atom_markdown_image_helper](/assets/images/atom_markdown_image_helper.png){: width="601px"}
+![atom_markdown_image_helper](/assets/images/170401/atom_markdown_image_helper.png){: width="601px"}
 
 ### [Latex](https://atom.io/packages/latex)
 With pdfview plugin, I can see a compiled result right after clicking the build shortcut.
@@ -44,7 +44,7 @@ At the first time, I committed and pushed to see a change, which was really burd
 It creates a default template (Jekyll format).
 - Toggle Server: <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>T</kbd>  
 It starts or stops the local server. Whenever I hit the save shortcut (<kbd>&#8984;</kbd> + <kbd>S</kbd>), it automatically re-build my blog and I can see it in a web browser (`localhost:3000`).
-![jekyll_plugin](/assets/images/jekyll_plugin.png){: height="100px"}
+![jekyll_plugin](/assets/images/170401/jekyll_plugin.png){: height="100px"}
 
 #### Reference
 - Atom: [https://atom.io/](https://atom.io/)
