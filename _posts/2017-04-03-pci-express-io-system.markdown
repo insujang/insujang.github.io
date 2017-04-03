@@ -3,7 +3,7 @@ layout: post
 title: "PCI Express I/O System"
 date: "2017-04-03 12:12:58 +0900"
 author: "Insu Jang"
-tags: [pcie,cuda]
+tags: [research,pcie,cuda]
 ---
 
 # I/O Hardware Overview
