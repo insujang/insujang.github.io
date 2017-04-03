@@ -52,7 +52,10 @@ BAR6
 * I think PCI ROM address is not saved in the base address registers. Will be explained later.
 
 BARs are standard registers and specified in PCI express configuration space header (type 0) as follows. Each BAR is 32-bit wide registers (BAR0: `10h~14h`, BAR1: `14h~18h`, etc).
-![PCIe configuration space header](https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Pci-config-space.svg/1280px-Pci-config-space.svg.png){: width="400px"}
+
+![PCIe configuration space header](https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Pci-config-space.svg/1280px-Pci-config-space.svg.png){: width="400px" .center-image}
+*Figure: PCIe configuration space header for type 0*
+{: .center}
 
 The most significant area is the BAR0 presenting MMIO registers.
 This is the main control space of the GPU, through which **all hardware engines are controlled**.
