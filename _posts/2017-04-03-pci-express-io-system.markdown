@@ -54,11 +54,11 @@ This is the main control space of the GPU, through which **all hardware engines 
 Here is the GPU information provided by `lspci` command that I am using.
 ![gpu_lspci](/assets/images/gpu_lspci.png)
 
-BAR0: `0xde000000` (MMIO registers)
-BAR1 and BAR2: `0xd0000000` (64-bit memory-map uses two adjacent BARs)
-BAR3 and BAR4: `0xd8000000` (64-bit memory map)
-BAR5: `0xe000` (I/O ports)
-BAR6: `0xdf000000` (PCI Expansion ROM)
+BAR0: `0xde000000` (MMIO registers)  
+BAR1 and BAR2: `0xd0000000` (64-bit memory-map uses two adjacent BARs)  
+BAR3 and BAR4: `0xd8000000` (64-bit memory map)  
+BAR5: `0xe000` (I/O ports)  
+BAR6: `0xdf000000` (PCI Expansion ROM)  
 
 ### References
 - Silberschatz A, Galbin P.B, Gagne G, Operating System Concepts, Wiley, 2012, ISBN:9781118063330
