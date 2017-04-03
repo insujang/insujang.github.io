@@ -16,8 +16,8 @@ operating system is structured to use device-driver modules.
 
 A device communicates with a computer system by sending signals over a cable or through the air.
 - The device communicates with the machine via a connection point, or **port**.
-- If devices share a common set of wires, the connection is called a bus. (e.g. PCI bus)
-- A controller is a collection of electronics that can operate a port, a bus, or a device.
+- If devices share a common set of wires, the connection is called a **bus**. (e.g. PCI bus)
+- **A controller** is a collection of electronics that can operate a port, a bus, or a device.
 
 
 How can the processor give commands and data to a controller to accomplish an I/O transfer?
@@ -63,4 +63,4 @@ BAR6: `0xdf000000` (PCI Expansion ROM)
 ### References
 - Silberschatz A, Galbin P.B, Gagne G, Operating System Concepts, Wiley, 2012, ISBN:9781118063330
 - Root Complex, Wikipedia [Online] https://en.wikipedia.org/wiki/Root_complex
-- Kato S, Implementing open-source CUDA runtime, In Proceddings of the 54-th Programming Symposium, 2013
+- Kato S, Implementing open-source CUDA runtime, In Procedings of the 54-th Programming Symposium, 2013
