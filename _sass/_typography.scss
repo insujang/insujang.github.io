@@ -57,22 +57,22 @@ h2 {
   border-bottom: 1px solid #eee;
 }
 
-h3 { 
-  font-size: 1.5em; 
+h3 {
+  font-size: 1.5em;
   line-height: 1.43em;
 }
 
-h4 { 
+h4 {
   font-size: 1.25em;
 }
 
-h5 { 
-  font-size: 1em; 
+h5 {
+  font-size: 1em;
 }
 
-h6 { 
+h6 {
   font-size: 1em;
-  color: $oc-gray-6; 
+  color: $oc-gray-6;
 }
 
 /*--------------
@@ -90,7 +90,7 @@ p {
   -------------- */
 
 //  Reset list
-ol, 
+ol,
 ul,
 dl {
   margin: 0 0 1em;
@@ -100,7 +100,7 @@ dl {
 }
 
 //  Positioning Bullets
-ol, 
+ol,
 ul {
   > li {
     &:before {
@@ -140,12 +140,12 @@ ol {
 }
 
 //  Refine Spacing
-ol, 
+ol,
 ul {
   > li {
     margin: 0 auto $li-bottom-space $li-bullets-width;
     line-height: $li-line-height;
-    
+
     > ol,
     > ul {
       margin-top: $li-bottom-space;
@@ -188,7 +188,7 @@ dd {
 }
 
 /*--------------
-  
+
   -------------- */
 
 hr {
@@ -278,7 +278,7 @@ pre {
   margin-top: 0;
   margin-bottom: 1rem;
   padding: .5rem;
-  font-size: .8rem;
+  // font-size: .8rem;
   line-height: 1.4;
   white-space: pre;
   white-space: pre-wrap;
