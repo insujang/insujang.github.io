@@ -12,8 +12,6 @@ tags: [research,sgx]
 
 An enclave is born when the system software issues the `ECREATE` instruction, which turns a free EPC page into the SECS for the new enclave.
 
-> I could not find how SGX finds one free EPC page among several free pages in detail.
-
 `ECREATE` copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.  
 Software sets the following fields in the source structure: `SECS:BASEADDR`, `SECS:SIZE`, and `ATTRIBUTES`.
 
@@ -119,6 +117,164 @@ uintptr_t _EADD(page_info_t* pi, void* epc_lin_addr)
 }
 ```
 
+`EADD` simulation code uses `pi->lin_addr` to get a simulated enclave, `ce`.  
+According to the paper *'Intel SGX Explained'*, it is the virtual address of the EPC page. Meanwhile, according to the *'Intel SGX Programming Reference'*, it seems that virtual address of the EPC page is passed as a parameter of `EADD` function, `epc_lin_addr`.
+
+Are `pi->lin_addr` and `epc_lin_addr` different? They are almost same, but different, according to the driver API function, `add_enclave_page()`.
+
+```c++
+linux-sgx/sdk/simulation/driver_api/driver_api.cpp
+
+int add_enclave_page(sgx_enclave_id_t enclave_id,
+                     void*            source,
+                     size_t           offset,
+                     const sec_info_t &secinfo,
+                     uint32_t         attr)
+{
+    sec_info_t    sinfo;
+    page_info_t   pinfo;
+    CEnclaveMngr* mngr;
+    CEnclaveSim*  ce;
+
+    ...
+
+    memset(&pinfo, 0, sizeof(pinfo));
+    pinfo.secs     = ce->get_secs();
+    pinfo.lin_addr = (char*)ce->get_secs()->base + offset;
+    pinfo.src_page = source;
+    pinfo.sec_info = &sinfo;
+
+    // Passing NULL here when there is no EPC mgmt.
+    return (int)DoEADD_SW(&pinfo, GET_PTR(void, ce->get_secs()->base, offset));
+}
+```
+`_EADD` instruction is called during `DoEADD_SW` function is handled.
+
+`pinfo.lin_addr` is initialized as `(char*)ce->get_secs()->base + offset`,  
+and `epc_lin_addr` is set as `GET_PTR(void, ce->get_secs()->base, offset)`.
+
+`GET_PTR` is defined as  
+`#define GET_PTR(t, p, offset) reinterpret_case<t*>( reinterpret_case<size_t>(p) + static_cast<size_t>(offset) )`  
+in `linux-sgx/common/inc/internal/util.h`.
+
+While `epc_lin_addr` saves the address `ce->get_secs()->base + sizeof(size_t) * offset`, `pinfo.lin_addr` saves the address `ce->get_secs()->base + offset`.
+
+Of course, there will be no problem on calling `get_enclave()`, as it is defined as follows.
+
+```c++
+linux-sgx/sdk/simulation/uinst/enclave_mngr.cpp
+
+CEnclaveSim* CEnclaveMngr::get_enclave(const void* base_addr)
+{
+    CEnclaveSim* ce = NULL;
+    ...
+    std::list<CEnclaveSim*>::iterator it = m_enclave_list.begin();
+    for (; it != m_enclave_list.end(); ++it)
+    {   
+        secs_t* secs = (* it)->get_secs();
+        if (base_addr >= secs->base &&
+            PTR_DIFF(base_addr, secs->base) < secs->size)
+        {   
+            ce = * it;
+            break;
+        }   
+    }   
+    ...
+}
+```
+It just checks which enclave `base_addr` is in its ELRANGE (`BASEADDR` ~ `BASEADDR+SIZE`).
+
+
+And, which EPC page is actually allocated?
+
+Simulation implementation might be different from hardware implementation. In simulation mode, `ECREATE` allocates all EPC pages via `mmap()`.
+
+```c++
+linux-sgx/sdk/simulation/uinst/u_instructions.cpp
+
+uintptr_t _ECREATE(page_info_t* pi)
+{
+    secs_t* secs = reinterpret_cast<secs_t*>(pi->src_page);
+    ...
+    CEnclaveSim* ce = new CEnclaveSim(secs);
+    void*   addr;
+    addr = se_virtual_alloc(NULL, (size_t)secs->size, MEM_COMMIT);
+    ...
+}
+```
+```c++
+linux-sgx/common/src/se_memory.c
+
+void* se_virtual_alloc(void* address, size_t size, uint32_t type)
+{
+    UNUSED(type);
+    void* pRet = mmap(address, size, PROT_READ | PROT_WRITE, MAP_PRIVATE |  MAP_ANONYMOUS, -1, 0);
+    if(MAP_FAILED == pRet)
+        return NULL;
+    return pRet;
+}
+```
+
+I could not found any hardware implementation of EPC page allocation yet.
+
+<!--
+In the simulation code, `pi->lin_addr` parameter is passed to `mngr->get_enclave()` function to get a simulated enclave (type `CEnclaveSim`). The parameter type is `sgx_enclave_id_t`, hence it seems that `pi->lin_addr` seems to be used as an enclave ID in the SGX simulation mode.
+```c++
+linux-sgx/sdk/simulation/uinst/enclave_mngr.cpp
+
+CEnclaveSim* CEnclaveMngr::get_enclave(const sgx_enclave_id_t id)
+{
+  ...
+}
+```
+This conflicts with the statement from *Intel SGX Explained*.  
+Referring *Intel SGX Programming Guide*, it is more reasonable to say that address of the destination EPC page is given as a function's input, `epc_lin_addr`. Hence, it seems LINADDR is not used in `EADD` function.
+
+To make it clear, let me show you how `pi->lin_addr` is initialized.
+
+```c++
+linux-sgx/sdk/simulation/driver_api/driver_api.cpp
+
+int add_enclave_page(sgx_enclave_id_t enclave_id,
+                     void*            source,
+                     size_t           offset,
+                     const sec_info_t &secinfo,
+                     uint32_t         attr)
+{
+    sec_info_t    sinfo;
+    page_info_t   pinfo;
+    CEnclaveMngr* mngr;
+    CEnclaveSim*  ce;
+
+    UNUSED(attr);
+
+    mngr = CEnclaveMngr::get_instance();
+    ce = mngr->get_enclave(enclave_id);
+    if (ce == NULL) {
+        SE_TRACE(SE_TRACE_DEBUG,
+                 "enclave (id = %llu) not found.\n",
+                 enclave_id);
+        return SGX_ERROR_INVALID_ENCLAVE_ID;
+    }   
+    memset(&sinfo, 0, sizeof(sec_info_t));
+    sinfo.flags = secinfo.flags;
+    if(memcmp(&sinfo, &secinfo, sizeof(sec_info_t)))
+        return SGX_ERROR_UNEXPECTED;
+
+    memset(&pinfo, 0, sizeof(pinfo));
+    pinfo.secs     = ce->get_secs();
+    pinfo.lin_addr = (char*)ce->get_secs()->base + offset;
+    pinfo.src_page = source;
+    pinfo.sec_info = &sinfo;
+
+    // Passing NULL here when there is no EPC mgmt.
+    return (int)DoEADD_SW(&pinfo, GET_PTR(void, ce->get_secs()->base, offset));
+}
+```
+
+`_EADD` instruction is called when `DoEADD_SW()` function is called. Hence, `pi->lin_addr` is initialized as `ce->get_secs()->base + offset`, which is same as what the paper *Intel SGX Explained* explained.
+-->
+
 ### 3. EEXTEND
 - [Intel SGX Explained p64] Section 5.3.2. Loading
 - [Programming References p31] Section 5.3. EEXTEND
@@ -127,6 +283,11 @@ While loading an enclave, the system software will also use the `EEXTEND` instru
 It updates the MRENCLAVE measurement register of an SECS with the measurement of an EXTEND string compromising of "EEXTEND" || ENCLAVEOFFSET || PADDING || 256 bytes of the enclave page.
 
 RCX register contains the effective address of the 256 byte region of an EPC page to be measured.
+
+> From Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 3D, Part 4:
+> Section 39.1.2. EADD and EEXTEND Interaction
+>
+> Software can measure a 256 byte region as determined by the by the developer by invoking EEXTEND. Thus to measure an entire 4KB page, system software must execute EEXTEND 16 times. Each invocation of EEXTEND adds to the cryptographic log information about which region is being measured and the measurement of the section.
 
 ```
 No simulation code
