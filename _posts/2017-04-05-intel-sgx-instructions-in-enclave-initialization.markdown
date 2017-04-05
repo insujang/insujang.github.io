@@ -35,7 +35,7 @@ uintptr_t _ECREATE(page_info_t* pi)
     CEnclaveSim* ce = new CEnclaveSim(secs);
     void*   addr;
 
-    // `ce' is not checked against NULL, since it is not
+    // 'ce' is not checked against NULL, since it is not
     // allocated with new(std::no_throw).
     addr = se_virtual_alloc(NULL, (size_t)secs->size, MEM_COMMIT);
     if (addr == NULL) {
@@ -79,6 +79,15 @@ typedef struct _page_info_t
     PADDED_POINTER(void,        secs);          // Linear address of EPC slot that contains SECS for this enclave
 } page_info_t;
 ```
+
+![pageinfo](/assets/images/170405/pageinfo.png){: .center-image}
+
+`EADD` validates its inputs, and modifies the newly allocated EPC page and its EPCM entry.
+
+`EADD` ensures
+- The EPC page is not allocated to another enclave.
+- The page's virtual address falls within the enclave's ELRANGE.
+- All the reserved fields in SECINFO are set to zero.
 
 ```c++
 linux-sgx/sdk/simulation/uinst/u_instructions.cpp
@@ -129,7 +138,7 @@ No simulation code
 
 This function is the final instruction executed in the enclave build process. After EINIT, the MRENCLAVE measurement is cimplete, and the enclave is ready to start user code execution using EENTER instruction.
 
-When `EINIT` completes successfullyy, it sets the enclave's INIT attribute to true. This opens the way for ring 3 application software to execute the enclave's code, using the SGX instructions.
+When `EINIT` completes successfully, it sets the enclave's INIT attribute to true. This opens the way for ring 3 application software to execute the enclave's code, using the SGX instructions.
 
 On the other hand, once INIT is set to true, `EADD` **cannot be invoked on that enclave anymore**, so the system software must load all the pages that make up the enclave's initial state before executing the `EINIT` instruction.
 
@@ -196,7 +205,7 @@ uintptr_t _EINIT(secs_t* secs, enclave_css_t* css, token_t* launch)
 - Intel SGX SDK Github Repository. [\[link\]](https://github.com/01org/linux-sgx)
 
 ### License
-All source codes are from Intel SGX SDK Github repository with some comments, under BSD License 2.0.
+All source codes are from Intel SGX SDK Github repository, under BSD License 2.0.
 
 Copyright (C) 2011-2017 Intel Corporation. All rights reserved.  
 Redistribution and use in source and binary forms, with or without
