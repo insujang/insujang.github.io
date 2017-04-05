@@ -31,6 +31,10 @@ From a systems perspective, address translation is a layer of indirection betwee
 The mapping between virtual and physical addresses is defined by *page tables*, which are managed by the system software.
 The translation process is carried out by dedicated hardware in the CPU, which is referred to as the **address translation unit** or **memory management unit (MMU)**.
 
+![address_translation_concept](/assets/images/170403/address_translation_concept.png){: width="700px" .center-image}
+*Figure 10. Address translation concept*
+{: .center}
+
 ## Address Translation Cache
 > Section 2.11.5 Caches and Address Translation
 
@@ -39,10 +43,6 @@ Address translation requires up to 20 memory accesses, so it is impractical to p
 When a virtual address is not contained in a core's TLB, the Page Miss Handler (PMH) performs a *page walk* to translate the virtual address, and the result is stored in the TLB.
 
 In the Intel architecture, the PMH is implemented in hardware, so the TLB is nevery directly exposed to software.
-
-![address_translation_concept](/assets/images/170403/address_translation_concept.png){: width="700px" .center-image}
-*Figure 10. Address translation concept*
-{: .center}
 
 > Section 2.14.3. Microcode and Address Translation
 >
@@ -116,9 +116,9 @@ As all EPC pages are allocated statically, the expected virtual addresses for EP
 
 The virtual address of the newly created page is measured ***relatively*** to the start of the enclave's ELRANGE.
 
-For example, if ELRANGE is set `0x80000000`, the second EPC page to be allocated to this enclave must have the virtual address `0x80001000`. (ELRANGE + 4K * ENCLAVEOFFSET).
+For example, if ELRANGE is set `{BASEADDR: 0x80000000, SIZE:0x200000}`, the second EPC page to be allocated to this enclave must have the virtual address `0x80001000`. (BASEADDR) + 4K * ENCLAVEOFFSET).
 
-Then, how ELRANGE is set?
+Then, how `BASEADDR` in ELRANGE is set?
 
 > Section 5.6.1 Measuring ECREATE
 
