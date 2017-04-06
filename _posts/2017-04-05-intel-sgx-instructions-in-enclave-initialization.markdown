@@ -353,7 +353,7 @@ void isgx_insert_pte(struct isgx_enclave * enclave,
 }
 ```
 
-***After system software inserts page table entry, Intel SGX checks whether page mapping is done as expected by hardware when this page is actually accessed.***
+***To be concluded, when a SGX platform is initialized, several EPC page instances (`struct isgx_epc_page`) are allocated to represent all EPC pages. System software manages them as a linked list, called `isgx_free_list`. When `EADD` is called, system software picks a free EPC page instance from the list, and create a page table entry, pointing the physical address that is saved in `epc_page->pa`, with the expected virtual address, within user enclave's ELRANGE.***
 
 ### 3. EEXTEND
 - [Intel SGX Explained p64] Section 5.3.2. Loading
