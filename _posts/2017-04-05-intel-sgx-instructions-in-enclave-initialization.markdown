@@ -185,9 +185,7 @@ CEnclaveSim* CEnclaveMngr::get_enclave(const void* base_addr)
 It just checks which enclave `base_addr` is in its ELRANGE (`BASEADDR` ~ `BASEADDR+SIZE`).
 -->
 
-#### 2-1. How a free EPC page is selected?
-
-Which EPC page is actually allocated?
+#### 2-1. How a free EPC page is selected in SGX simulation mode?
 
 Simulation implementation might be different from hardware implementation. In simulation mode, `ECREATE` allocates all EPC pages via `mmap()`.
 
@@ -217,6 +215,12 @@ void* se_virtual_alloc(void* address, size_t size, uint32_t type)
 }
 ```
 
+As SGX simulation simulates SGX behavior by software, it copies EPC page data with **virtual address**. Hence `_EADD()` does not have detailed information about picking a physical EPC page.
+
+#### 2.2. How system software selects a EPC page in SGX hardware mode?
+
+SGX simulation code can't tell EPC page allocation in detail, as it is also a software, so it cannot use the physical address.
+
 To understand actual implementation, I first tried to understand *Intel SGX Programming Reference* deeply. There is a table explaining inputs for the instruction.
 
 *Table. Instruction Operand Encoding*
@@ -230,10 +234,10 @@ As you see the above table, addresses of PAGEINFO and target EPC page should be 
 
 ![eadd_selecting_free_epc_page](/assets/images/170405/eadd_selecting_free_epc_page.png){: .center-image width="600px"}
 
-#### 2.2. How system software selects a EPC page with the physical address?
+Then this means I need to search a code that calls `EADD` instruction.
 
-Simulation function that calls `EADD` instruction is `add_enclave_page()` in `sdk/simulation/driver_api/driver_api.cpp`. And simulation code actually is not same with the explanation: it just `mmap()` to allocate all EPC pages, whose physical address is not inside PRM.   
-Then maybe there is a function with the same name for hardware?
+Simulation function which calls `EADD` instruction is `add_enclave_page()` in `sdk/simulation/driver_api/driver_api.cpp`. This is a simulation code because it is in `simulation` directory.  
+Then there should be a function with the same name for hardware?
 
 And yes. There is.
 
@@ -318,6 +322,7 @@ linux-sgx-driver/isgx_main.c
 ret = isgx_page_cache_init(isgx_epc_base, isgx_epc_size);
 ```
 
+As shown above, `start` is the value of `isgx_epc_base` variable.  
 `isgx_epc_base` is initialized by the function `isgx_init_platform()` at `linux-sgx-driver/isgx_main.c:133`.
 
 ```c
@@ -332,9 +337,26 @@ static int isgx_init_platform(void)
 }
 ```
 
-Hence, all EPC page instance has a `pa` variable, which contains the physical address of the EPC page, and is initialized as EPC base address + offset.
+You can see what `isgx_epc_base` value is in your machine, as SGX driver prints it in kernel message buffer by default.
 
-And, managing page mapping table is also a responsibility of system software. Linux SGX driver insert PTE via calling `vm_insert_pfn()` at `linux-sgx-driver/isgx_util.c:67` by using `epc_page->pa` and expected virtual address `enclave_page->addr` in the below.
+```c
+static int __ init isgx_init(void)
+{
+  ...
+  ret = isgx_init_platform();
+  pr_info("isgx: EPC memory range 0x%Lx-0x%Lx\n", isgx_epc_base,
+      isgx_epc_base + isgx_epc_size);
+  ...
+}
+```
+
+![sgx_epc_memory_range_ubuntu](/assets/images/170405/sgx_epc_memory_range_ubuntu.png){: .center-image}
+
+My machine tells that 32MiB of EPC is allocated with the physical base memory address `0x80000000`.
+
+All EPC page instance `struct isgx_epc_page` has a `pa` variable, which contains the physical address of the EPC page, and is initialized as EPC base address + offset.
+
+And, managing page mapping table is also a responsibility of system software. Linux SGX driver insert PTE via calling `vm_insert_pfn()` at `linux-sgx-driver/isgx_util.c:67` by using `epc_page->pa` and expected virtual address `enclave_page->addr` as follows.
 
 ```c
 linux-sgx-driver/isgx_util.c
@@ -353,7 +375,7 @@ void isgx_insert_pte(struct isgx_enclave * enclave,
 }
 ```
 
-***To be concluded, when a SGX platform is initialized, several EPC page instances (`struct isgx_epc_page`) are allocated to represent all EPC pages. System software manages them as a linked list, called `isgx_free_list`. When `EADD` is called, system software picks a free EPC page instance from the list, and create a page table entry, pointing the physical address that is saved in `epc_page->pa`, with the expected virtual address, within user enclave's ELRANGE.***
+***To be concluded, when a SGX platform is initialized, several EPC page instances (`struct isgx_epc_page`) are allocated to represent all EPC pages. System software manages them as a linked list, called `isgx_free_list`. When `EADD` is called, system software picks a free EPC page instance from the list, and create a page table entry, pointing the physical address that is saved in `epc_page->pa`, with the expected virtual address `enclave_page->addr`, a part of user enclave's ELRANGE.***
 
 ### 3. EEXTEND
 - [Intel SGX Explained p64] Section 5.3.2. Loading
@@ -446,7 +468,7 @@ uintptr_t _EINIT(secs_t* secs, enclave_css_t* css, token_t* launch)
 - Intel SGX Tutorial Slide presented in ISCA 2015.
 [\[link\]](https://software.intel.com/sites/default/files/332680-002.pdf)
 - Intel SGX SDK Github Repository. [\[link\]](https://github.com/01org/linux-sgx)
-- Intel SGX Linux Driver Githuv Repository.
+- Intel SGX Linux Driver Github Repository.
 [\[link\]](https://github.com/01org/linux-sgx-driver)
 
 ### License
