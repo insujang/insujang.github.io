@@ -214,65 +214,8 @@ void* se_virtual_alloc(void* address, size_t size, uint32_t type)
     return pRet;
 }
 ```
-
-I could not found any hardware implementation of EPC page allocation yet.
-
 <!--
-In the simulation code, `pi->lin_addr` parameter is passed to `mngr->get_enclave()` function to get a simulated enclave (type `CEnclaveSim`). The parameter type is `sgx_enclave_id_t`, hence it seems that `pi->lin_addr` seems to be used as an enclave ID in the SGX simulation mode.
-```c++
-linux-sgx/sdk/simulation/uinst/enclave_mngr.cpp
-
-CEnclaveSim* CEnclaveMngr::get_enclave(const sgx_enclave_id_t id)
-{
-  ...
-}
-```
-This conflicts with the statement from *Intel SGX Explained*.  
-Referring *Intel SGX Programming Guide*, it is more reasonable to say that address of the destination EPC page is given as a function's input, `epc_lin_addr`. Hence, it seems LINADDR is not used in `EADD` function.
-
-To make it clear, let me show you how `pi->lin_addr` is initialized.
-
-```c++
-linux-sgx/sdk/simulation/driver_api/driver_api.cpp
-
-int add_enclave_page(sgx_enclave_id_t enclave_id,
-                     void*            source,
-                     size_t           offset,
-                     const sec_info_t &secinfo,
-                     uint32_t         attr)
-{
-    sec_info_t    sinfo;
-    page_info_t   pinfo;
-    CEnclaveMngr* mngr;
-    CEnclaveSim*  ce;
-
-    UNUSED(attr);
-
-    mngr = CEnclaveMngr::get_instance();
-    ce = mngr->get_enclave(enclave_id);
-    if (ce == NULL) {
-        SE_TRACE(SE_TRACE_DEBUG,
-                 "enclave (id = %llu) not found.\n",
-                 enclave_id);
-        return SGX_ERROR_INVALID_ENCLAVE_ID;
-    }   
-    memset(&sinfo, 0, sizeof(sec_info_t));
-    sinfo.flags = secinfo.flags;
-    if(memcmp(&sinfo, &secinfo, sizeof(sec_info_t)))
-        return SGX_ERROR_UNEXPECTED;
-
-    memset(&pinfo, 0, sizeof(pinfo));
-    pinfo.secs     = ce->get_secs();
-    pinfo.lin_addr = (char*)ce->get_secs()->base + offset;
-    pinfo.src_page = source;
-    pinfo.sec_info = &sinfo;
-
-    // Passing NULL here when there is no EPC mgmt.
-    return (int)DoEADD_SW(&pinfo, GET_PTR(void, ce->get_secs()->base, offset));
-}
-```
-
-`_EADD` instruction is called when `DoEADD_SW()` function is called. Hence, `pi->lin_addr` is initialized as `ce->get_secs()->base + offset`, which is same as what the paper *Intel SGX Explained* explained.
+I could not found any hardware implementation of EPC page allocation yet.
 -->
 
 #### 2-1. How a free EPC page is selected?
@@ -290,7 +233,9 @@ As you see the above table, addresses of PAGEINFO and target EPC page should be 
 
 ![eadd_selecting_free_epc_page](/assets/images/170405/eadd_selecting_free_epc_page.png){: .center-image width="600px"}
 
-Simulation function that calls `EADD` instruction is `add_enclave_page()` in `sdk/simulation/driver_api/driver_api.cpp`.  
+#### 2.2. How system software selects a EPC page with the physical address?
+
+Simulation function that calls `EADD` instruction is `add_enclave_page()` in `sdk/simulation/driver_api/driver_api.cpp`. And simulation code actually is not same with the explanation: it just `mmap()` to allocate all EPC pages, whose physical address is not inside PRM.   
 Then maybe there is a function with the same name for hardware?
 
 And yes. There is.
@@ -300,15 +245,7 @@ linux-sgx/psw/urts/linux/enclave_creator_hw.cpp
 
 int EnclaveCreatorHW::add_enclave_page(sgx_enclave_id_t enclave_id, void* src, uint64_t rva, const sec_info_t &sinfo, uint32_t attr)
 {
-    assert((rva & ((1<<SE_PAGE_SHIFT)-1)) == 0);
-    void* source = src;
-    uint8_t color_page[SE_PAGE_SIZE] = { 0 };
-    if(NULL == source)
-    {   
-        memset(color_page, 0, SE_PAGE_SIZE);
-        source = reinterpret_cast<void*>(&color_page);
-    }   
-
+    ...
     int ret = 0;
     struct sgx_enclave_add_page addp = { 0, 0, 0, 0 };
 
@@ -328,7 +265,98 @@ int EnclaveCreatorHW::add_enclave_page(sgx_enclave_id_t enclave_id, void* src, u
 }
 ```
 
-Note that PSW (Platform SoftWare) is for actual hardware. It
+Note that PSW (Platform SoftWare) is for actual hardware. It calls `ioctl()`, which calls `sgx_ioctl_enclave_add_page()` in linux-sgx-driver. linux-sgx-driver is separately provided in [\[here\]](https://github.com.01org/linux-sgx-driver).
+
+In `linux-sgx-driver/isgx_ioctl.c`,
+
+`ioctl()` from `enclave_creator_hw.cpp`
+- calls `isgx_ioctl_enclave_add_page()` at `linux-sgx-driver/isgx_ioctl.c:548`
+- calls `__enclave_add_page()` at `linux-sgx-driver/isgx_ioctl.c:440`
+- calls `construct_enclave_page` at `linux-sgx-driver/isgx_ioctl.c:122`
+- calls `isgx_alloc_epc_page()` at `linux-sgx-driver/isgx_page_cache.c:429`
+- calls `isgx_alloc_epc_page_fast()` at `linux-sgx-driver/isgx_page_cache.c:411`  
+which picks the first entry from driver's EPC page list.
+
+isgx Linux SGX driver manages EPC page instances by using the linked list(`static LIST_HEAD(isgx_free_list) at isgx_page_cache.c:25`) and the number of free EPC pages(`unsigned int isgx_nr_free_epc_pages at isgx_page_cache.c:31`).
+
+The type of EPC pages is `struct isgx_epc_page`, defined as follows.
+
+```c
+linux-sgx-driver/isgx.h
+
+struct isgx_epc_page {
+	resource_size_t		pa;
+	struct list_head	free_list;
+};
+```
+
+Here, `pa` is the physical address for the EPC page. How `pa` is determined?
+
+Each EPC page that is put into free list is allocated in the function `isgx_page_cache_init()` at `linux-sgx-driver/isgx_page_cache.c:360`.
+
+```c
+linux-sgx-driver/isgx_page_cache.c
+
+int isgx_page_cache_init(resource_size_t start, unsigned long size)
+{
+    unsigned long i;
+    struct isgx_epc_page * new_epc_page, * entry;
+    struct list_head * parser, * temp;
+
+    for (i = 0; i < size; i += PAGE_SIZE) {
+        new_epc_page = kzalloc(sizeof(struct isgx_epc_page), GFP_KERNEL);
+        if (!new_epc_page)
+            goto err_freelist;
+        new_epc_page->pa = start + i;
+        ...
+```
+
+Each EPC page has the physical address as `start + i`. `start` is the first parameter of the function.
+
+The function `isgx_page_cache_init()` is called in `isgx_init()` at `linux-sgx-driver/isgx_main.c:190`.
+
+```c
+linux-sgx-driver/isgx_main.c
+
+ret = isgx_page_cache_init(isgx_epc_base, isgx_epc_size);
+```
+
+`isgx_epc_base` is initialized by the function `isgx_init_platform()` at `linux-sgx-driver/isgx_main.c:133`.
+
+```c
+linux-sgx-driver/isgx_main.c
+
+static int isgx_init_platform(void)
+{
+  isgx_epc_base = (((u64) (ebx & 0xfffff)) << 32) +
+      (u64) (eax & 0xfffff000);
+  isgx_epc_size = (((u64) (edx & 0xfffff)) << 32) +
+      (u64) (ecx & 0xfffff000);
+}
+```
+
+Hence, all EPC page instance has a `pa` variable, which contains the physical address of the EPC page, and is initialized as EPC base address + offset.
+
+And, managing page mapping table is also a responsibility of system software. Linux SGX driver insert PTE via calling `vm_insert_pfn()` at `linux-sgx-driver/isgx_util.c:67` by using `epc_page->pa` and expected virtual address `enclave_page->addr` in the below.
+
+```c
+linux-sgx-driver/isgx_util.c
+
+void isgx_insert_pte(struct isgx_enclave * enclave,
+             struct isgx_enclave_page * enclave_page,
+             struct isgx_epc_page * epc_page,
+             struct vm_area_struct * vma)
+{
+    int ret;
+    ret = vm_insert_pfn(vma, enclave_page->addr, PFN_DOWN(epc_page->pa));
+    if (ret) {
+        isgx_err(enclave, "vm_insert_pfn() returned %d\n", ret);
+        BUG();
+    }   
+}
+```
+
+***After system software inserts page table entry, Intel SGX checks whether page mapping is done as expected by hardware when this page is actually accessed.***
 
 ### 3. EEXTEND
 - [Intel SGX Explained p64] Section 5.3.2. Loading
@@ -421,8 +449,9 @@ uintptr_t _EINIT(secs_t* secs, enclave_css_t* css, token_t* launch)
 - Intel SGX SDK Github Repository. [\[link\]](https://github.com/01org/linux-sgx)
 
 ### License
-All source codes are from Intel SGX SDK Github repository, under BSD License 2.0.
+All source codes are from Intel SGX SDK Github repository and Intel SGX Linux driver Github repository, under BSD License 2.0 and GNU General Public License 2.0, respectively.
 
+#### Intel SGX SDK
 Copyright (C) 2011-2017 Intel Corporation. All rights reserved.  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -445,3 +474,16 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+<br/><br/>
+
+### Intel SGX Linux driver
+(C) Copyright 2015 Intel Corporation
+
+Authors:
+* Jarkko Sakkinen <jarkko.sakkinen@intel.com>
+* Suresh Siddha <suresh.b.siddha@intel.com>
+* Serge Ayoun <serge.ayoun@intel.com>
+* Shay Katz-zamir <shay.katz-zamir@intel.com>
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
