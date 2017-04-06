@@ -116,7 +116,7 @@ uintptr_t _EADD(page_info_t* pi, void* epc_lin_addr)
     return SGX_SUCCESS;
 }
 ```
-
+<!--
 `EADD` simulation code uses `pi->lin_addr` to get a simulated enclave, `ce`.  
 According to the paper *'Intel SGX Explained'*, it is the virtual address of the EPC page. Meanwhile, according to the *'Intel SGX Programming Reference'*, it seems that virtual address of the EPC page is passed as a parameter of `EADD` function, `epc_lin_addr`.
 
@@ -183,9 +183,11 @@ CEnclaveSim* CEnclaveMngr::get_enclave(const void* base_addr)
 }
 ```
 It just checks which enclave `base_addr` is in its ELRANGE (`BASEADDR` ~ `BASEADDR+SIZE`).
+-->
 
+#### 2-1. How a free EPC page is selected?
 
-And, which EPC page is actually allocated?
+Which EPC page is actually allocated?
 
 Simulation implementation might be different from hardware implementation. In simulation mode, `ECREATE` allocates all EPC pages via `mmap()`.
 
@@ -214,13 +216,8 @@ void* se_virtual_alloc(void* address, size_t size, uint32_t type)
     return pRet;
 }
 ```
-<!--
-I could not found any hardware implementation of EPC page allocation yet.
--->
 
-#### 2-1. How a free EPC page is selected?
-
-To understand this, I tried to understand *Intel SGX Programming Reference* deeply. There is a table explaining inputs for the instruction.
+To understand actual implementation, I first tried to understand *Intel SGX Programming Reference* deeply. There is a table explaining inputs for the instruction.
 
 *Table. Instruction Operand Encoding*
 {: .center}
@@ -479,9 +476,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<br/><br/>
-
-### Intel SGX Linux driver
+#### Intel SGX Linux driver
 (C) Copyright 2015 Intel Corporation
 
 Authors:
