@@ -220,7 +220,7 @@ I could not found any hardware implementation of EPC page allocation yet.
 
 #### 2-1. How a free EPC page is selected?
 
-To understand this, I tried to understand *Intel SGX Programming Reference deeply*. There is a detailed pseudocode for each operation, not for simulation mode, but for actual hardware.
+To understand this, I tried to understand *Intel SGX Programming Reference* deeply. There is a table explaining inputs for the instruction.
 
 *Table. Instruction Operand Encoding*
 {: .center}
