@@ -275,6 +275,61 @@ int add_enclave_page(sgx_enclave_id_t enclave_id,
 `_EADD` instruction is called when `DoEADD_SW()` function is called. Hence, `pi->lin_addr` is initialized as `ce->get_secs()->base + offset`, which is same as what the paper *Intel SGX Explained* explained.
 -->
 
+#### 2-1. How a free EPC page is selected?
+
+To understand this, I tried to understand *Intel SGX Programming Reference deeply*. There is a detailed pseudocode for each operation, not for simulation mode, but for actual hardware.
+
+*Table. Instruction Operand Encoding*
+{: .center}
+
+| Op/En |    EAX    | RBX                      | RCX                                      |
+|:-----:|:---------:|:------------------------:|:----------------------------------------:|
+| IR    | EADD (in) | Address of PAGEINFO (in) | Address of the destination EPC page (in) |
+
+As you see the above table, addresses of PAGEINFO and target EPC page should be saved in the register `RBX` and `RCX`, respectively. The target EPC page is already determined, which means system software is responsible for selecting one. This is also explained in ISCA '15 tutorial slide. [\[link\]](https://software.intel.com/sites/default/files/332680-002.pdf)
+
+![eadd_selecting_free_epc_page](/assets/images/170405/eadd_selecting_free_epc_page.png){: .center-image width="600px"}
+
+Simulation function that calls `EADD` instruction is `add_enclave_page()` in `sdk/simulation/driver_api/driver_api.cpp`.  
+Then maybe there is a function with the same name for hardware?
+
+And yes. There is.
+
+```c++
+linux-sgx/psw/urts/linux/enclave_creator_hw.cpp
+
+int EnclaveCreatorHW::add_enclave_page(sgx_enclave_id_t enclave_id, void* src, uint64_t rva, const sec_info_t &sinfo, uint32_t attr)
+{
+    assert((rva & ((1<<SE_PAGE_SHIFT)-1)) == 0);
+    void* source = src;
+    uint8_t color_page[SE_PAGE_SIZE] = { 0 };
+    if(NULL == source)
+    {   
+        memset(color_page, 0, SE_PAGE_SIZE);
+        source = reinterpret_cast<void*>(&color_page);
+    }   
+
+    int ret = 0;
+    struct sgx_enclave_add_page addp = { 0, 0, 0, 0 };
+
+    addp.addr = (__ u64)enclave_id + (__ u64)rva;
+    addp.src = reinterpret_cast<uintptr_t>(source);
+    addp.secinfo = reinterpret_cast<uintptr_t>(const_cast<sec_info_t* >(&sinfo));
+    if(((1<<DoEEXTEND) & attr))
+        addp.mrmask |= 0xFFFF;
+
+    ret = ioctl(m_hdevice, SGX_IOC_ENCLAVE_ADD_PAGE, &addp);
+    if(ret) {
+        SE_TRACE(SE_TRACE_WARNING, "\nAdd Page - %p to %p... FAIL\n", source, rva);
+        return error_driver2urts(ret);
+    }
+
+    return SGX_SUCCESS;
+}
+```
+
+Note that PSW (Platform SoftWare) is for actual hardware. It
+
 ### 3. EEXTEND
 - [Intel SGX Explained p64] Section 5.3.2. Loading
 - [Programming References p31] Section 5.3. EEXTEND
