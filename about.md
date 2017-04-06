@@ -4,9 +4,11 @@ permalink: /about/
 ---
 
 
-## Insu Jang
+## Author
 
 ![profile](/assets/images/profile.png)
+
+#### Insu Jang
 
 M.S. Student  
 [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)
@@ -16,8 +18,8 @@ Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
 
 
 #### Education
-- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (4.06 / 4.3)
-- B.S., Computer Engineering, [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), Mar 2011 - Feb 2016 (4.24 / 4.5)
+- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (GPA: 4.06 / 4.3)
+- B.S., Computer Engineering, [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
 
 #### Research Interests
 - Computer Architecture
@@ -49,6 +51,13 @@ Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
 - Java, C++, C, CUDA, HLS, Python
 
 ## Blog
-This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme.
-
+This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme.  
 This theme is released under MIT License.
+
+Copyright (c) 2016 AWEEKJ(Hanju Jamie Jo)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
