@@ -14,41 +14,83 @@ comments: false
 # 해답 정리
 ### 1. 특정 IO device 컨트롤은 특정 MMIO에 접근하는 방법 외에 컨트롤할 수 있는 방법이 있는지?
 Sources
-- *'Implementing Open-Source CUDA runtime by Shinpei Kato'*
-- *'GPUvm: GPU Virtualization at the Hypervisor by Yusuke Suzuki'*
-- *'Operating System Concepts Ninth Edition, Chapter 13'*
-- *'Port-mapped I/O, Wikipedia'* [\[link\]](https://en.wikipedia.org/wiki/Memory-mapped_I/O)
+- Port-mapped I/O. *Wikipedia* [\[Online\]](https://en.wikipedia.org/wiki/Memory-mapped_I/O)
+- Silberschatz, Abraham, et al. "Operating System Concepts." Hoboken, NJ, Wiley, 2013.
+- Kato, Shinpei. "Implementing open-source CUDA runtime." *Proc. of the 54the Programming Symposium.* 2013.
+- Suzuki, Yusuke, et al. "Gpuvm: Gpu virtualization at the hypervisor." *IEEE Transactions on Computers* 65.9 (2016): 2752-2766.
+- Fujii, Yusuke, et al. "Data transfer matters for GPU computing." *Parallel and Distributed Systems (ICPADS), 2013 International Conference on*. IEEE, 2013.
+- Zhou, Husheng, Guangmo Tong, and Cong Liu. "Gpes: a preemptive execution system for gpgpu computing." *Real-Time and Embedded Technology and Applications Symposium (RTAS), 2015 IEEE.* IEEE, 2015.
 
 <br/>
 I/O device에 접근하는 방법은 두 가지가 있음.
 1. Memory-mapped I/O (MMIO)
 2. Port-mapped I/O (PMIO)
 
-PMIO는 memory address space가 아닌 별도 I/O address space를 통해 데이터를 주고 받으며, 이를 위한 전용 x86-64 CPU instruction인 `in, out`을 사용한다. 이 instruction들은 별도로 CPU의 physical interface로 장착된 I/O pin을 통해 통신한다.
+PMIO는 memory address space가 아닌 별도 I/O address space를 통해 데이터를 주고 받으며, 이를 위한 전용 x86-64 CPU instruction인 `in, out`을 사용한다. 이 instruction들은 CPU의 physical interface로 장착된 I/O pin을 통해 통신한다.
 
-구체적으로 GPU에 대한 언급은 다음 두 가지 정보를 찾았음.
+GPU의 PMIO에 대해서는 다음 두 가지 정보를 찾았다.
+1. 오픈 소스 드라이버인 Nouveau와 Gdev에서는 GPGPU 엔진에 접근하기 위해 PMIO를 사용하는 코드를 발견하지 못하였음.
 
-1. 오픈 소스 드라이버인 Nouveau와 Gdev에서는 GPGPU 엔진에 접근하기 위해 PMIO를 사용하는 코드를 발견하지 못하였음.  
-그러나, 오픈 소스 문서 중에서 GPU에 접근하는 방법을 정리한 문서가 있다. [\[여기\]](http://envytools.readthedocs.io/en/latest/hw/bus/bars.html)
-
-2. Paper *Implementing Open-Source CUDA runtime* 에 따르면, GPU 하드웨어 엔진은 MMIO를 통해서만 컨트롤할 수 있다고 한다.  
->The NVIDIA GPU exposes the following base address registers (BARs) to the system through PCI in addition to the PCI configuration space and VGA-compatible I/O ports.
->
->BAR0: Memory-mapped I/O (MMIO) registers  
-BAR1: Device memory windows  
-...
->
->The most significant area is the BAR0 presenting MMIO registers.  
-**<span style="color:red">This is the main control space of the GPU, through which all hardware engines are controlled.</span>**
-
-3. Paper *GPUvm* 은 Gdev 저자 Shinpei Kato도 참여한 논문으로, Gdev를 기반으로 하고 있다. GPU 모델을 설명하며 MMIO에 대해 다음과 같이 언급한다.
+2. *GPUvm* 에서 MMIO에 대해 다음과 같이 언급하고 있음. 이는 1번을 뒷받침함.
 > The CPU communicates with the GPU via MMIO.
-> ... We must note that the I/O ports are used to indirectly access the above MMIO regions. **The I/O port is rarely used since it is inteded to be used in the real mode, which cannot map a high memory address.** In fact, Nouveau, which is an open-source device driver, never accesses it.
+> ... We must note that the I/O ports are used to indirectly access the above MMIO regions. **The I/O port is rarely used since it is inteded to be used in the real mode, which cannot map a high memory address. In fact, <mark>Nouveau, which is an open-source device driver, never accesses it.</mark>**
+
+GPU의 MMIO에 대한 정보는 여러 논문에서 언급된다.  
+
+*Implementing Open-Source CUDA Runtime* 논문에서는 모든 하드웨어 엔진이 BAR0에 매핑되어 있는 MMIO 레지스터를 통해 컨트롤된다고 한다.
+> The NVIDIA GPU exposes the following base address registers (BARs) to the system through PCI in addition to the PCI configuration space and VGA-compatible I/O ports.
+>
+> BAR0: Memory-mapped I/O (MMIO) registers  
+BAR1: Device memory windows  
+…
+>
+> The most significant area is **<mark>the BAR0</mark> presenting MMIO registers.  
+This is the main control space of the GPU, through which <mark>all hardware engines are controlled.</mark>**
+
+특히, *Data Transfer Matters for GPU Computing* 논문에서는 데이터 전송에 대한 4가지 방법을 다룬다.
+
+1. Standard DMA (*DMA*)
+2. Microcontroller-based Data Transfer (*HUB, GPC, GPC4*)
+3. Memory-mapped Read and Write (*IORW*)
+4. Memory-window Read and Write (*MEMWND*)
+
+![data_transfer_method](/assets/images/protected/170403/data_transfer_method.png){: width="1000px" .center-image}
+
+1. Standard DMA  
+> To perform this DMA, **we write <mark>GPU commands</mark>** to an onboard DMA engine.
+
+2. Microcontroller-based Data Transfer  
+> The GPU provides on-board microcontrollers to control GPU functional units.
+>
+> The microcontroller executes firmware loaded by the device driver. We modify this firmware code to employ an interface for the data communications. **The firmware task invokes only when the device driver <mark>sends a corresponding command</mark>** from the CPU through the PCIe bus.
+
+3. Memory-mapped Read and Write (IORW)
+> We **create virtual address space for <mark>the BAR1 region</mark>** and set its leading address to a specific control register. Thus the BAR1 region can be directly accessed by the GPU using the unified memory addressing (UMA) mode.
+
+4. Memory-window Read and Write (MEMWND)
+> The BAR0 region is often called memory-mapped I/O (MMIO) space. This is the main control space of the GPU, through which all hardware engines are controlled.
+>
+> The MMIO space contains a special subarea for indirect device and host memory accesses, separated from the control registers. This plays a role of windows that make the device memory visible to the CPU in a different way than the BAR1 region.
+>
+> **We can read and write this <mark>BAR0 region</mark> to access data on the device memory.**
+
+<br/>
+참고사항: GPU 커맨드는 어디에 쓰여져야 GPU가 커맨드를 읽는지?
+
+From *GPUvm*
+> *GPU channel.* Any operation on the GPU is driven by commands issued from the CPU. **The command stream is submitted to a hardware unit called a GPU channel**. For each GPU channel, **a dedicated command buffer is allocated in the GPU memory that is visible to the CPU <mark>through MMIO.</mark>**
+
+From *GPES*
+> *Channel*. Each GPU context is associated with a GPU hardware channel. Internally, a channel is **managed by channel engine which is a <mark>subarea of the MMIO region</mark>.** The channel engine maintains the status of GPU contexts **including <mark>FIFO queues of GPU commands</mark>.**
+
+따라서 위에서 설명된 4가지 방법은 모두 MMIO를 사용한다.
+- 1, 2번: MMIO 영역에 있는 Channel Engine의 FIFO 큐에 GPU 커맨드를 쓴다.
+- 3번: BAR1 MMIO 영역에 virtual address를 매핑하고 데이터를 직접 쓴다.
+- 4번: BAR0 MMIO의 일부 영역에 virtual address를 매핑하고 데이터를 직접 쓴다.
 
 #### 결론
-- MMIO 외에 PMIO로도 I/O 디바이스에 접근할 수 있음.
-- PMIO는 거의 사용되지 않음,
-- PMIO를 MMIO 우회에 사용할 수 있지만 I/O port는 CPU의 physical interface이므로, 하드웨어 레벨에서 커널의 접근을 차단할 수 있음.
+- MMIO 외에 PMIO로도 I/O 디바이스에 접근할 수 있음. 그러나 GPU에 PMIO를 사용해 접근하는 방법은 공개되어 있지 않으며, 현재 디바이스 드라이버에서도 사용되지 않고 있음.
+- PMIO를 악용할 가능성이 있지만, I/O port는 CPU의 physical interface이므로, GPU로의 PMIO를 통한 악의적인 접근을 하드웨어 레벨에서 차단할 수 있음.
 
 ### 2. GPU enclave 생성 후 MMIO 영역에 OS 및 시스템 소프트웨어가 접근하지 못하게 막는 방법?
 Source: *'Intel SGX Explained, Victor Costan and Srinivas Devadas'*
