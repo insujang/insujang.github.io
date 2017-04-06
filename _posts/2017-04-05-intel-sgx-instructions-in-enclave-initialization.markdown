@@ -277,7 +277,7 @@ In `linux-sgx-driver/isgx_ioctl.c`,
 - calls `isgx_alloc_epc_page_fast()` at `linux-sgx-driver/isgx_page_cache.c:411`  
 which picks the first entry from driver's EPC page list.
 
-isgx Linux SGX driver manages EPC page instances by using the linked list(`static LIST_HEAD(isgx_free_list) at isgx_page_cache.c:25`) and the number of free EPC pages(`unsigned int isgx_nr_free_epc_pages at isgx_page_cache.c:31`).
+isgx Linux SGX driver manages EPC page instances by using the linked list(`static LIST_HEAD(isgx_free_list)` at `isgx_page_cache.c:25`) and the number of free EPC pages(`unsigned int isgx_nr_free_epc_pages` at `isgx_page_cache.c:31`).
 
 The type of EPC pages is `struct isgx_epc_page`, defined as follows.
 
@@ -446,10 +446,14 @@ uintptr_t _EINIT(secs_t* secs, enclave_css_t* css, token_t* launch)
 ### References
 - Intel Software Guard Extensions Programming Reference. [\[link\]](https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf)
 - Intel SGX Explained. [\[link\]](https://eprint.iacr.org/2016/086.pdf)
+- Intel SGX Tutorial Slide presented in ISCA 2015.
+[\[link\]](https://software.intel.com/sites/default/files/332680-002.pdf)
 - Intel SGX SDK Github Repository. [\[link\]](https://github.com/01org/linux-sgx)
+- Intel SGX Linux Driver Githuv Repository.
+[\[link\]](https://github.com/01org/linux-sgx-driver)
 
 ### License
-All source codes are from Intel SGX SDK Github repository and Intel SGX Linux driver Github repository, under BSD License 2.0 and GNU General Public License 2.0, respectively.
+All source codes are from Intel SGX SDK Github repository and Intel SGX Linux driver Github repository, released under BSD License 2.0 and GNU General Public License 2.0, respectively.
 
 #### Intel SGX SDK
 Copyright (C) 2011-2017 Intel Corporation. All rights reserved.  
