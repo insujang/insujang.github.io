@@ -179,7 +179,9 @@ Bill Farrow가 [Github에 업로드한 코드](https://github.com/billfarrow/pci
 
 ![mmio_test](/assets/images/protected/170403/mmio_test.png){: .center-image}
 
-***<mark>단 실제 구현 부분에서는 파일을 열어 file descriptor를 사용하는 것이 아니라 PCI BAR에 저장된 physical address에 대해 virtual address 매핑을 커널에게 요청할 것임. 이를 위해 현재 SGX가 특정 EPC page에 대해 virtual address를 어떻게 받아오는 지 확인 중.</mark>***
+***단 실제 구현 부분에서는 파일을 열어 file descriptor를 사용하는 것이 아니라 PCI BAR에 저장된 physical address에 대해 virtual address 매핑을 커널에게 요청할 것임. 이를 위해 현재 SGX가 특정 EPC page에 대해 virtual address를 어떻게 받아오는 지 확인 중.***
+
+***<mark> 4월 7일 업데이트: SGX는 SGX Linux 디바이스 드라이버에서</mark> `vm_insert_pfn()` <mark>함수를 사용해 특정 physical address를 원하는 virtual address에 매핑하는 page table entry를 page mapping table에 삽입한다.</mark>***
 
 ### 3-1. 그러면 GPU Enclave가 자신의 EPC 페이지와 MMIO에"만" 접근하도록 강제하는 방법은?
 Intel SGX에서는 enclave가 EPC 페이지(trusted)와 외부 DRAM (untrusted) 영역에 정상적으로 접근할 수 있는 (=Address Translation Attack을 방어할 수 있는) 매커니즘을 MMU에 구현하였다. [\[링크\]](https://insujang.github.io/2017-04-03/intel-sgx-protection-mechanism#sgx-address-translation-attack-protection-details)
