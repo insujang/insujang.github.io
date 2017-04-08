@@ -4,11 +4,8 @@ title: "[CS570] Paper Review"
 date: "2017-04-08 15:27:28 +0900"
 author: "Insu Jang"
 tag: [cs570, deep learning, super resolution]
+math: true
 ---
-
-<script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
 
 ### Paper Title
 Accurate Image Super-Resolution Using Very Deep Convolutional Networks (VDSR)  
