@@ -3,16 +3,25 @@ layout: post
 title: "Summary of CS500"
 date: "2017-04-09 16:11:25 +0900"
 author: "Insu Jang"
-tags: [study,algorithm]
+tags: [study,algorithm,cs500]
 math: true
 ---
 
 ## Binomial Trees
 The binomial tree $$ B_k $$ is an ordered tree defined recursively.
-- Binomial tree $$ B_0 $$ consists of a single node.
+- Binomial tree or order 0 $$ B_0 $$ consists of a single node.
 - The binomial tree $$ B_k $$ consists of two binomial trees $$B_{k-1} $$ that are linked together: the root of one is the leftmost child of the root of the other.
+- A binomial tree of order $$ k $$ has a root node whose children are roots of binomial trees of orders $$ k-1, k-2, ..., 2, 1, 0 $$ (in this order).
 
 ![binomial_tree](</assets/images/170409/binomial_tree.png>){: .center-image width="800px"}
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Binomial_Trees.svg/1000px-Binomial_Trees.svg.png){: .center-image width="800px"}
+* Binomial trees of order 0 to 3.
+{: .center}
+
+order
+: The order of a binomial tree $$ B_k $$ is $$ k $$.  
+A binomial tree of order $$ k$$ has $$ 2^k $$ nodes, and height $$ k $$.
 
 #### Some properties of binomial tree
 For the binomial tree $$ B_k $$,
@@ -22,10 +31,6 @@ For the binomial tree $$ B_k $$,
 3. There are exactly $$ \binom{N}{k} $$ nodes at depth $$ i $$ for $$ i = 0, 1, ..., k $$
 4. The root has degree $$ k $$, where $$ k > $$ the degree of any other node.
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Binomial_Trees.svg/1000px-Binomial_Trees.svg.png){: .center-image width="800px"}
-* Binomial trees of order 0 to 3.
-{: .center}
-
 ## Binomial Heaps
 A binomial heap $$ H $$ is a forest of binomial trees that satisfies the following ***binomial-heap properties.***
 
@@ -34,17 +39,52 @@ A binomial heap $$ H $$ is a forest of binomial trees that satisfies the followi
 Each such tree is called *min-heap ordered*.
 2. For any k $$ (k >= 0) $$, there is at most one binomial tree whose root has degree $$k$$.
 
-Binomial tress in the binomial heap is ***sorted by ascending number of children***.
+Binomial tress in the binomial heap are ***sorted by ascending number of children***.
 
 ![binomial_heap](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/404_a.gif){: .center-image width="800px"}
 * An example of binomial heap with $$ n = 13 $$ nodes.
 {: .center}
 
 #### Operations of binomial Heaps
+1. Creating a new binomial heap ($$ \Theta(1) $$)
+2. Finding the minimum node ($$ \Theta(lg_{}n) $$)
+3. Merging two binomial heaps ($$ O(lg_{}n) $$)
+4. Inserting a node ($$ \Theta(1) $$)
+5. Extracting the minimum node ($$ \Theta(lg_{}n) $$)
 
 ## Relaxed Binomial Tree
+Remember that the definition of a binomial tree is
+
+> A binomial tree of order $$ k $$ has a root node whose children are roots of binomial trees of orders $$ k-1, k-2, ..., 2, 1, 0 $$ (in this order).
+
 A relaxed binomial tree $$ U_k $$ of order $$k$$ consists of a root with $$k$$ children, $$j$$-th $$(j=1...k)$$ of which is a relaxed binomial tree of order $$k' \ge j-2$$.
 
-![relaxed_binomial_tree](/assets/images/relaxed_binomial_tree.png){: .center-image width="800px"}
+![relaxed_binomial_tree](/assets/images/170409/relaxed_binomial_tree.png){: .center-image width="800px"}
 * Comparison between a binomial tree $$ B_k $$ and a relaxed binomial tree $$ U_k $$.
 {: .center}
+
+## Unordered Binomial Trees
+The textbook does not use the definition of relaxed binomial tree, but explains an *unordered binomial tree*.
+
+An unordered binomial tree is like a binomial tree, and it is defined recursively, too.  
+
+- The unordered binomial tree $$ U_0 $$ consists of a single node.
+- An unorrdered binomial tree $$ U_k $$ consists of two unordered binomial trees $$ U_{k-1} $$ for which the root of one is made into *any* child of the root of the other.
+
+## Fibonacci Heaps
+There are two definitions, one from the course slide, and the other from the textbook.
+- A Fibonacci heap $$ H $$ is a list of $$ t $$ heap-ordered relaxed binomial trees with a pointer to the root whose key is the minimum. (slide)
+- A Fibonacci heap $$ H $$ is a collection of min-heap-ordered trees. The trees in a Fibonacci heap are not constrained to be binomial trees, however. (textbook)
+
+> Both are same, because consolidating trees actually makes a relaxed binomial tree.
+
+![fibonacci_heap](/assets/images/170409/fibonacci_heap.png){: .center-image width="800px"}
+* An example of Fibonacci heap
+{: .center}
+
+#### Operations of Fibonacci heaps
+1. Creating a new Fibonacci heap ($$ \Theta(1) $$)
+2. Inserting a node ($$ \Theta(1) $$ )
+3. Finding the minimum node ($$ \Theta(1) $$)
+4. Merging two Fibonacci heaps ($$ \Theta(1) $$)
+5. Extracting the minimum node ($$ O(lg_{}n) $$))
