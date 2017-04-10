@@ -127,3 +127,4 @@ Number of multiplications $$T(n) \le T(\frac{n}{2}) + 2$$.
 ## References
 - http://stackoverflow.com/questions/2334225/what-is-the-difference-between-a-heuristic-and-an-algorithm
 - http://www.cc.gatech.edu/~bleahy/cs1311/
+- https://en.wikipedia.org/wiki/Strassen_algorithm
