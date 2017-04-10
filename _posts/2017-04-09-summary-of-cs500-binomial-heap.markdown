@@ -138,3 +138,7 @@ Deleting a key consists of two phases:
 2. `BinomialHeapExtractMin(H)` ($$O(log_{}n)$$)
 
 Hence, the running time for `BinomialHeapDelete(H, x)` is also $$O(log_{}n)$$.
+
+## Reference
+- Thomas H. Cormen, Charles Eric. Leiserson, Ronald L. Rivest, and Clifford Stein. 2001. Introduction to algorithms, Cambridge, MA: MIT Press.
+- Binomial heap. Wikipedia (January 2017). Retrieved April 10, 2017 from https://en.wikipedia.org/wiki/Binomial_heap

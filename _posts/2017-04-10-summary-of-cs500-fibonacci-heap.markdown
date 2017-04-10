@@ -201,3 +201,7 @@ Once all the cascading cuts have occurred, `FibHeapDecrKey()` updates `H.min`.  
     $$
     O(C)+4-c = O(1).
     $$
+
+## Reference
+- Thomas H. Cormen, Charles Eric. Leiserson, Ronald L. Rivest, and Clifford Stein. 2001. Introduction to algorithms, Cambridge, MA: MIT Press.
+- Fibonacci heap. Wikipedia (March 2017). Retrieved April 10, 2017 from https://en.wikipedia.org/wiki/Fibonacci_heap
