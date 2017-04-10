@@ -166,7 +166,7 @@ li {
 dt {
   float: left;
   width: $dt-width;
-  overflow: auto;
+  overflow: inherit;
   clear: left;
   text-align: right;
   white-space: nowrap;
