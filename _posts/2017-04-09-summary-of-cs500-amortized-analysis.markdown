@@ -175,7 +175,7 @@ If the $$i$$th operation on a stack containing $$s$$ objects is a `pop(S)` opera
     $$
     \begin{align}
     \hat{c_i} & = c_i + \Phi_i - \Phi_{i-1} \\
-    & = 1 - 1
+    & = 1 - 1 \\
     & = 0
     \end{align}
     $$
