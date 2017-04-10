@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Summary of CS500"
+title: "Summary of CS500: Binomial Heap"
 date: "2017-04-09 16:11:25 +0900"
 author: "Insu Jang"
 tags: [study,algorithm,cs500]
@@ -51,40 +51,3 @@ Binomial tress in the binomial heap are ***sorted by ascending number of childre
 3. Merging two binomial heaps ($$ O(lg_{}n) $$)
 4. Inserting a node ($$ \Theta(1) $$)
 5. Extracting the minimum node ($$ \Theta(lg_{}n) $$)
-
-## Relaxed Binomial Tree
-Remember that the definition of a binomial tree is
-
-> A binomial tree of order $$ k $$ has a root node whose children are roots of binomial trees of orders $$ k-1, k-2, ..., 2, 1, 0 $$ (in this order).
-
-A relaxed binomial tree $$ U_k $$ of order $$k$$ consists of a root with $$k$$ children, $$j$$-th $$(j=1...k)$$ of which is a relaxed binomial tree of order $$k' \ge j-2$$.
-
-![relaxed_binomial_tree](/assets/images/170409/relaxed_binomial_tree.png){: .center-image width="800px"}
-* Comparison between a binomial tree $$ B_k $$ and a relaxed binomial tree $$ U_k $$.
-{: .center}
-
-## Unordered Binomial Trees
-The textbook does not use the definition of relaxed binomial tree, but explains an *unordered binomial tree*.
-
-An unordered binomial tree is like a binomial tree, and it is defined recursively, too.  
-
-- The unordered binomial tree $$ U_0 $$ consists of a single node.
-- An unorrdered binomial tree $$ U_k $$ consists of two unordered binomial trees $$ U_{k-1} $$ for which the root of one is made into *any* child of the root of the other.
-
-## Fibonacci Heaps
-There are two definitions, one from the course slide, and the other from the textbook.
-- A Fibonacci heap $$ H $$ is a list of $$ t $$ heap-ordered relaxed binomial trees with a pointer to the root whose key is the minimum. (slide)
-- A Fibonacci heap $$ H $$ is a collection of min-heap-ordered trees. The trees in a Fibonacci heap are not constrained to be binomial trees, however. (textbook)
-
-> Both are same, because consolidating trees actually makes a relaxed binomial tree.
-
-![fibonacci_heap](/assets/images/170409/fibonacci_heap.png){: .center-image width="800px"}
-* An example of Fibonacci heap
-{: .center}
-
-#### Operations of Fibonacci heaps
-1. Creating a new Fibonacci heap ($$ \Theta(1) $$)
-2. Inserting a node ($$ \Theta(1) $$ )
-3. Finding the minimum node ($$ \Theta(1) $$)
-4. Merging two Fibonacci heaps ($$ \Theta(1) $$)
-5. Extracting the minimum node ($$ O(lg_{}n) $$))
