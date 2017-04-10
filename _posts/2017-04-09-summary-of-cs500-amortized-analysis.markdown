@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Summary of CS500: Amortized Analysis"
-date: "2017-04-09 10:16:40 +0900"
+date: "2017-04-09 17:16:40 +0900"
 author: "Insu Jang"
 tags: [study, cs500]
 math: true

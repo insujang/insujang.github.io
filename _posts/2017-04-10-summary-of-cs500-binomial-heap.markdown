@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Summary of CS500: Binomial Heap"
-date: "2017-04-09 16:11:25 +0900"
+date: "2017-04-10 10:11:25 +0900"
 author: "Insu Jang"
 tags: [study,cs500]
 math: true
