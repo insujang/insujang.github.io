@@ -113,7 +113,7 @@ $$
 > 이 조건이 굉장히 중요하기 때문에 한국어로 재설명. 부등식 $$ \Phi_n \ge \Phi_0 $$ 이 성립해야 amortized cost가 upper bound 역할을 할 수 있다.
 
 ### Example. Incrementing a binary counter
-We define the potential of the binary counter as **the number of 1s in the counter after the $$i$$th operation.**
+We define **the potential $$\Phi_i$$** of the binary counter as **the number of 1s in the counter after the $$i$$th operation.**
 
 Suppose that the $$i$$th operation resets $$t_i$$ bits.
 - The acutal cost of the operation is at most $$t_i+1$$, since in addition to resetting $$t_i$$ bits, it sets at most one bit to 1.
@@ -134,6 +134,80 @@ $$
 - If the counter starts at zero, then $$\Phi_0 = 0 $$.  
 Since $$\Phi_i \ge 0 $$ for all $$i$$, **the toal amortized cost of a sequence of $$n$$ `increment()` operations is <mark>an upper bound</mark> on the total actual cost.**  
 Hence, the worse-cast cost of $$n$$ `increment()` operations is $$O(n)$$.
+
+### Example. Stack operations
+The example for describing amortized analysis for multiple operations: `push(), pop(), multipop()`.  
+We define **the potential $$\Phi_i$$** on a stack to be **the number of objects in the stack.**
+
+- For the empty stack, $$\Phi_0 = 0$$.
+- Since the number of objects cannot be negative, $$\Phi_i \ge 0$$ for all $$i$$.
+
+#### 1) Push operation
+If the $$i$$th operation on a stack containing $$s$$ objects is a `push(S, n)` operation,
+
+1. The potential diferrence is  
+    $$
+    \begin{align}
+    \Phi_i - \Phi_{i-1} & = (s+1) - s \\
+    & = 1
+    \end{align}
+    $$
+2. The amortized cost of this `push()` operation is  
+    $$
+    \begin{align}
+    \hat{c_i} & = c_i + \Phi_i - \Phi_{i-1} \\
+    & = 1 + 1 \\
+    & = 2
+    \end{align}
+    $$
+
+#### 2) Pop operation
+If the $$i$$th operation on a stack containing $$s$$ objects is a `pop(S)` operation,
+
+1. The potential difference is  
+    $$
+    \begin{align}
+    \Phi_i - \Phi_{i-1} & = (s-1) - s \\
+    & = -1
+    \end{align}
+    $$
+2. The amortized cost of this `pop()` operation is  
+    $$
+    \begin{align}
+    \hat{c_i} & = c_i + \Phi_i - \Phi_{i-1} \\
+    & = 1 - 1
+    & = 0
+    \end{align}
+    $$
+
+#### 3) Multipop operation
+Suppose the $$i$$th operation on a stack containing $$s$$ objects is a `multipop(S, k)` operation and $$k'=min(k,s)$$ objects are popped off the stack.  
+
+1. The actual cost of the operation is $$k'$$.
+2. The potential difference is  
+    $$
+    \begin{align}
+    \Phi_i - \Phi_{i-1} & = (s-k') - s \\
+    & = -k'
+    \end{align}
+    $$
+3. The amortized cost of this `multipop()` operation is  
+    $$
+    \begin{align}
+    \hat{c_i} & = c_i + \Phi_i - \Phi_{i-1} \\
+    & = k' - k' \\
+    & = 0
+    \end{align}
+    $$
+
+#### Summary of stack operations
+The moartized cost of each of the three operations is $$O(1)$$, and thus the total amortized cost of a sequence of $$n$$ operations is $$O(n)$$.
+
+Since we already argued that $$\Phi_i \ge \Phi_0$$, ***the total amortized cost of $$n$$ operations is an upper bound*** on the total actual cost.  
+***The worse-cast cost of $$n$$ operations is therefore $$O(n)$$.***
+
+
+
 
 ## Reference
 - Thomas H. Cormen, Charles Eric. Leiserson, Ronald L. Rivest, and Clifford Stein. 2001. Introduction to algorithms, Cambridge, MA: MIT Press.
