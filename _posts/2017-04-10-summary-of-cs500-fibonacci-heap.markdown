@@ -3,7 +3,7 @@ layout: post
 title: "Summary of CS500: Fibonacci Heap"
 date: "2017-04-10 16:22:50 +0900"
 author: "Insu Jang"
-tag: [study, algorithm, cs500]
+tag: [study, cs500]
 math: true
 ---
 # Relaxed Binomial Tree
