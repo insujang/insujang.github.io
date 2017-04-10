@@ -54,11 +54,11 @@ Assume `increment(A)` is called $$k$$ times. As figure shows,
 - `A[1]` flips only every other time: flips $$\frac{k}{2}$$ times.
 - `A[2]` flips $$\frac{k}{4}$$ times
 - ...
-- `A[i]` for $$i=k-1$$ flips $$\frac{n}{2^{k-1}} times.
+- `A[i]` for $$i=k-1$$ flips $$\frac{n}{2^{k-1}}$$ times.
 
 In general,
 - `A[i]` for $$i=0, 1, ..., k-1$$, `A[i]` flips $$\frac{n}{2^i}$$ times
-- `A[i]` for $$i \gt k$$, `A[i]` never flips.
+- `A[i]` for $$i \ge k$$, `A[i]` never flips.
 
 Hence, the total number of flips in the sequence is  
 $$
@@ -71,9 +71,11 @@ $$
 The average cost of each operation, and therefore the amortized cost per operation, is $$ \frac {O(n)}{n} = O(1) $$.
 
 ## 2. The potential method
-The ***potential method*** o amortized analysis **represents the prepaid work as <mark>potential energy</mark>**, that can be released to pay for future operations.
+The ***potential method*** of amortized analysis **represents the prepaid work as <mark>potential energy</mark>**, that can be released to pay for future operations.
 
 > 잘 발생하지 않는 expensive operation의 cost를 자주 발생하는 cheap operation의 cost를 약간 증가시켜 대체한다고 보면 되겠음.
+>
+> Accounting method를 설명하지 않는 이유는 potential이 account 역할을 하기 때문. 자주 발생하지 않는 expensive operation을 위해 cheap operation을 실행할 때 미리 account를 쌓아놓는다고 볼 수 있다.
 
 Let
 
@@ -107,6 +109,8 @@ $$
 ***Note that if $$ \Phi_n \ge \Phi_0 $$, then $$ \sum_{i=1}^{n}c_i \le \sum_{i=1}^{n} \hat{c_i}$$, so <mark>the amortized cost can be used as a bound</mark> of total actual cost.***
 
 > We usually define $$ \Phi_0 = 0 $$ and then show that $$ \Phi_i \ge 0 $$ for all $$i$$.
+>
+> 이 조건이 굉장히 중요하기 때문에 한국어로 재설명. 부등식 $$ \Phi_n \ge \Phi_0 $$ 이 성립해야 amortized cost가 upper bound 역할을 할 수 있다.
 
 ### Example. Incrementing a binary counter
 We define the potential of the binary counter as **the number of 1s in the counter after the $$i$$th operation.**
