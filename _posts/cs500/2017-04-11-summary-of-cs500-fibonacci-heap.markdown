@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Summary of CS500: Fibonacci Heap"
-date: "2017-04-10 16:22:50 +0900"
+date: "2017-04-11 13:22:50 +0900"
 author: "Insu Jang"
 tag: [study, cs500]
 math: true
