@@ -93,6 +93,8 @@ $$\#T(0)+1=F_3, \#T(h+1)+1=\#T(h)+1+\#T(h-1)+1=F_{h+4}$$
 with Fibonacci number $$F_h$$.
 -->
 
+As it requires $$O(n)$$ to merge two AVL trees, binomial tree is introduced.
+
 ## Reference
 - Minimal AVL trees. http://stackoverflow.com/a/30770189
 - AVL tree. https://en.wikipedia.org/wiki/AVL_tree
