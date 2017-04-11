@@ -47,6 +47,13 @@ $$F_h = \frac{\varphi^h - (-\frac{1}{\varphi}^h)}{\sqrt{5}} \ge \Omega({1.6}^h)$
 
 > Assignment 2: Verify this inequality.
 >
+> AS $$\varphi = \frac{1+\sqrt{5}}{2} > 1$$, $${\frac{1}{\varphi}}^h$$ goes to $$+0$$ when $$h \rightarrow \infty$$.
+>
+> Hence, $$\frac{\varphi^h}{\sqrt{5}} = \Omega({\varphi^h}) \le
+\frac{\varphi^h - (-{\frac{1}{\varphi}}^h)}{\sqrt{5}} = F_h$$
+>
+> **Another study**
+>
 > Since the golden ratio satisfies the equation
 $$\varphi^2 = \varphi+1$$
 >
