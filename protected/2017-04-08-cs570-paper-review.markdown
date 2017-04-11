@@ -68,15 +68,26 @@ Typically, one network is created for each scale factor. We need an economical w
 The authors proposed a network structure that learns residual images.  
 SRCNN must preserve all input detail since the image is discarded and the output is generated from the learned features alone. In this model, the authors argued that the vanishing/exploding gradients problem should be critical.  
 As the input and output images are largely similar, they defined a residual image $$r=y-x$$, where $$x$$ is a low-resolution  image, and $$y$$ is a high-resolution image.  
+
+![vdsr_architecture](/assets/images/vdsr_architecture.png){: .center-image width="800px"}
+
 This residual learning brought big performance improvement for both converge speed and performance. The author's experiments showed that residual network converges faster than the standard non-residual network, and showed higher performance as well.
 
 7. Advantages of the proposed solution  
-Same with 5?
+<!-- Same with 5?  -->
+- Much faster than existing approach
+- Have strength for edge / line super resolution.
+- Much faster converge rate
+- Trainable for multi-scale low resolution images
 
 8. Limitations of the proposed solution  
 Some limitations are already proposed by Iljun Ahn and Woohyun Nam, which is that this work still suffers from limited performance on texture regions that consist of very complex and fine patterns.
 
+![vdsr_vs_hrst](/assets/images/protected/170408/vdsr_vs_hrst.png){: .center-image width="800px"}
+
 9. Result Presented  
+![vdsr_result](/assets/images/vdsr_result.png){: .center-image}
+
 The authors compared this work with state-of-art methods, including SRCNN. Compared methods are A+, RFL, SelfEx, and SRCNN.
 PSNR and SSIM are used as performance metrics.  
 They provided the processing time as well, to show that this work is relatively fast. One unfair thing is that they said the public code of SRCNN is based on CPU implementation, which is much slower that the GPU implementation in the paper.  
