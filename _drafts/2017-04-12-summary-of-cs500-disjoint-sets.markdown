@@ -1,0 +1,167 @@
+---
+layout: post
+title: "Summary of CS500: Disjoint Sets"
+date: "2017-04-12 12:54:12 +0900"
+author: "Insu Jang"
+tags: [study, cs500]
+math: true
+---
+
+# Disjoint Set Data Structure
+A **disjoint-set data structure** is a data structure that keeps track of a set of elements partitioned into a number of disjoint (nonoverlapping) subsets.
+
+> Hence it can be used with Kruskal's algorithm for minimal spanning tree creation.
+
+It supports useful operations:
+- **MakeSet**: Make a set containing only a given element $$x$$.  
+Since the sets are disjoint, it is required that $$x$$ not already be in some other set.
+- **Find**: Determine which subset a particular element $$x$$ is in.
+- **Union**: Join two subsets into a single subset.
+
+In the textbook, two more functions are provided.
+- **`ConnectedComponents(G)`**:
+
+    - Initially places each vertex $$v$$ in its own set.
+    - For each edge $$(u, v)$$, it merges the sets containing $$u$$ and $$v$$.
+- **`SameComponent(u, v)`**: A query about whether two vertices are in the same connected component.
+
+```
+ConnectedComponents(G)
+for each vertext v in G.vertex
+    MakeSet(v)
+for each edge (u, v) in G.edge
+    if Find(u) != Find(v)
+        Union(u, v)
+```
+
+# Representation of Disjoint Sets
+### 1. Linked-list
+
+- The object for each set has attributes
+    1. **head**: Point to the first object in the list.
+    2. **tail**: Point to the last object.
+- Each object contains a set of vertices in any order.
+
+![disjoint_linked_list](/assets/images/disjoint_linked_list.png){: .center-image width="800px"}
+* Linked list representation of disjoint sets. (b) represents the result of `Union(g, e)`.
+{: .center}
+
+- **`MakeSet(x)`**: Create a new linked list whose only object is $$x$$. ($$O(1)$$)
+- **`FindSet(x)`**: Follow the pointer from $$x$$ back to its set object and return the the object that *head* points to. ($$O(1)$$)
+- **`Union(x, y)`**:
+
+    - Append y's list onto the end of x's list.
+    - Modify x's tail pointer to y's tail.
+    - Update the pointer to the set object for all emenets in y's list, to S1.  
+    For example, in the above figure, pointers in the object c, h, e, b should be updated.
+
+We construct a sequence of $$m$$ operations on $$n$$ objects. Suppose we have $$n$$ object, $$x_1,x_2,...,x_n$$. We execute the sequence of $$n$$ `MakeSet` operations, and $$n-1$$ `Union` operations, so that $$m=2n-1$$.
+
+![disjoint_linked_list_operations](/assets/images/disjoint_linked_list_operations.png){: .center-image width="400px"}
+* A sequence of $$2n-1$$ operations on $$n$$ object takes $$\Theta(n^2)$$ time.
+{: .center}
+
+The total number of objects updated by all $$n-1$$ `Union` operations is
+
+$$\sum_{i=1}^{n-1}i=\Theta({n^2})$$
+
+The total number of operations is $$2n-1$$, so each operation on average requires $$\Theta(n)$$ time.
+
+That is, the amortized time of an operation is $$\Theta(n)$$.
+
+### 2. A weighted-union heuristic
+`Union` requires an average of $$\Theta(n)$$ per call in the worst case, because we may be **appending a longer list onto a shorter list**; we must update the pointer to the set object for each element of the longer list.
+
+- Each list also includes the length of the list.
+- We can always append the shorter list onto the longer.
+- **A sequence of $$m$$ `MakeSet, Union, FindSet` operations, $$n$$ of which are `MakeSet` operations, takes $$O(m+nlog_{}n)$$ time.**
+
+We perform at most $$n-1$$ `Union` operations over all.
+
+Consider a particular object $$x$$. Each time $$x$$'s pointer was updated, $$x$$ must started in the smaller set.
+- The first time $$x$$'s pointer was update, the resulting set must have had at least 2 members.
+- The next time $$x$$'s pointer was update, the resulting set must have had 4 members.
+...
+For any $$k \le n$$, after $$x$$'s pointer has been update $$log_{}k$$ times, the resulting set must have at least $$k$$ members. Since the largest set has at most $$n$$ members, each object's pointer is updated at most $$log_{}n$$ times over all the `Union` operations.
+
+Thus the total time spent over all `Union` operations is $$O(nlog_{}n)$$.  
+Each `MakeSet` and `FindSet` operation takes $$O(1)$$ time, and there are $$O(m)$$ of them.
+
+The total time for the entire sequence is thus $$O(m+nlog_{}n)$$.
+
+<!--
+* A single `Union` operation still take $$\Omega(n)$$ if both sets have $$\Omega(n)$$ members.
+-->
+
+
+### 3. Disjoint set forests
+> As all connected grahps generated during minimum spanning tree generation is a tree, it can be called as a forest.
+
+![disjoint_set_forest](/assets/images/disjoint_set_forest.png){: .center-image}
+* A disjoint set forest. (b) represents the result of `Union(e, g)`.
+{: .center}
+
+Although the straightforward algorithms that use this representation are no faster than ones that use the linked-list representation, we can achieve **an asymptotically optimal (linear running time in the total number of operations $$m$$) disjoint-set data structure by introducing two heuristics: "union by rank", and "path compression"**.
+
+1. **Union by rank**:  
+Similar to the weighted-union heuristic.
+
+    For each node, we maintain a ***rank***, which is an upper bound on the height of the node.  
+    Make the root with smaller rank point to the root with larger rank during a `Union` operation.
+
+2. **Path compression**:  
+Make each node on the `Find()` path **point directly to the root**. But it does not change any ranks.
+
+    ![disjoint_set_path_compression](/assets/images/disjoint_set_path_compression.png){: .center-image width="600px"}
+    * Each node has a pointer to its parent (a). After executing `FindSet(a)`, each node on the infd path now points directly to the root.
+    {: .center}
+
+
+Using both union by rank and path compression, the worse case running time is $$O(m \alpha(n))$$ for $$m$$ disjoint-set operations on $$n$$ elements, where $$\alpha(n)$$ is a very slowly growing function.  
+In any conceivable application of a disjoint-set data structure, $$\alpha(n) \le 4$$.
+
+### A very quickly growing function and its very slowly growing inverse
+For integers $$k \ge 0$$ and $$j \ge 1$$, we define the function $$A_k(j)$$ as
+
+$$A_k(j)= \begin{cases}
+j+1 &\text{if  } k=0 \\
+A_{k-1}^{(j+1)}(j) &\text{if  } k \ge 1.
+\end{cases}
+$$
+
+where the expression $$A_{k-1}^{(j+1)}(j)$$ **uses the functional interation notation**:
+
+$$ A_{k-1}^{0}(j) = j \\
+A_{k-1}^{(i)}(j) = A_{k-1}(A_{k-1}^{(i-1)}(j))
+$$
+
+The parameter $$k$$ is referred as the **level of the function A**.
+
+#### Example
+We see how quickly $$A_k(j)$$ grows by simply examining $$A_k(1)$$ for levels $$k=0, 1, 2, 3, 4$$.
+
+$$
+A_0(1) = 1 + 1 = 2 \\
+A_1(1) = A_0^2(1) = 2 + 1 = 3 \\
+A_2(1) = A_1^2(1) = 2^{(1+1)} \cdot (1+1) - 1 = 7 \\
+A_3(1) = A_2^2(1) = A_2(A_2(1)) = A_2(7) = 2^8 \cdot 8 - 1 = 2^{11} - 1 \\
+A_4(1) = A_3^2(1) = A_3(A_3(1)) = A_3(2047) = A_2^{2048}(2047) >> A_2(2047) = 2^{2048} \cdot 2048 - 1 > 2^{2048} = 16^512 >> 10^80
+$$
+
+The symbol $$>>$$ denotes that the "much-grater-than" relation.
+
+Define the inverse of the function $$A_k(n)$$, for integer $$n \ge 0$$:  
+$$ \alpha(n) = min\{k:A_k(1) \ge n\}$$.
+
+In words, $$\alpha(n)$$ is the lowest level $$k$$ for which $$A_k(1)$$ is at least $$n$$. From the above values of $$A_k(1)$$, we see that  
+$$ \alpha(n) = \begin{cases}
+0 &\text{for } 0 \le n \le 2, \\
+1 &\text{for } n = 3, \\
+2 &\text{for } 4 \le n \le 7, \\
+3 &\text{for } 8 \le n \le 2047, \\
+4 &\text{for } 2048 \le n \le A_4(1).
+\end{cases}
+$$
+
+#### Properties of ranks
+In order to prove the bound running time $$O(m\alpha(n))$$, we first prove some simple properties of ranks.
