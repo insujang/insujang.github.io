@@ -70,7 +70,7 @@ The total number of operations is $$2n-1$$, so each operation on average require
 That is, the amortized time of an operation is $$\Theta(n)$$.
 
 ### 2. A weighted-union heuristic
-`Union` requires an average of $$\Theta(n)$$ per call in the worst case, because we may be **appending a longer list onto a shorter list**; we must update the pointer to the set object for each element of the longer list.
+`Union` requires an average of $$\Theta(n)$$ per call in the worst case, because we may be **<mark>appending a longer list onto a shorter list</mark>**; we must update the pointer to the set object for each element of the longer list.
 
 - Each list also includes the length of the list.
 - We can always append the shorter list onto the longer.
@@ -107,7 +107,7 @@ Although the straightforward algorithms that use this representation are no fast
 Similar to the weighted-union heuristic.
 
     For each node, we maintain a ***rank***, which is an upper bound on the height of the node.  
-    Make the root with smaller rank point to the root with larger rank during a `Union` operation.
+    **<mark>Make the root with smaller rank point to the root with larger rank</mark> during a `Union` operation.**
 
 2. **Path compression**:  
 Make each node on the `Find()` path **point directly to the root**. But it does not change any ranks.
@@ -168,3 +168,23 @@ In order to prove the bound running time $$O(m\alpha(n))$$, we first prove some 
 
 1. For all nodes $$x$$, we have `x.rank <= x.parent.rank`, wich strict ineqaulity $$x \ne x.parent$$.
 2. Every node has rank at most $$n-1$$ (weak bound) or at most $$log_{}n$$ (tight bound).
+
+#### Potential function
+$$\Phi_q(x)$$
+: A potential to the node $$x$$ after $$q$$ operations.
+
+$$\Phi_q$$
+: Sum the node potentials for the potentials of the entire tree. $$\Phi_q = \sum_{x}\phi_q(x)$$
+
+$$
+\varphi_q(x) = \begin{cases}
+\alpha(n) \cdot x.rank &\text{if } x \text{ is a root or } x.rank = 0 \\
+(\alpha(n) - \text{level}(x)) \cdot x.rank - \text{iter}(x) &\text{if } x \text{is not a root and } x.rank \ge 1
+\end{cases}
+$$
+
+where
+- $$\text{level}(x) = max\{k: x.parent.rank \ge A_k(x.rank)\}$$  $$(0 \le \text{level}(x) \le \alpha(n))$$
+- $$\text{iter}(x) = max\{i : x.parent.rank \ge A_{\text{level}(x)}^i(x.rank)\}$$ $$(1 \le \text{iter}(x) \le x.rank)$$
+
+The value of $$\Phi_q(x)$$ depends on whether $$x$$ is a tree root or not, after $$q$$th operation.
