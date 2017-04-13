@@ -165,3 +165,6 @@ $$
 
 #### Properties of ranks
 In order to prove the bound running time $$O(m\alpha(n))$$, we first prove some simple properties of ranks.
+
+1. For all nodes $$x$$, we have `x.rank <= x.parent.rank`, wich strict ineqaulity $$x \ne x.parent$$.
+2. Every node has rank at most $$n-1$$ (weak bound) or at most $$log_{}n$$ (tight bound).
