@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Summary of CS500: Disjoint Sets"
-date: "2017-04-12 12:54:12 +0900"
+date: "2017-04-13 15:29:26 +0900"
 author: "Insu Jang"
 tags: [study, cs500]
 math: true
@@ -42,7 +42,7 @@ for each edge (u, v) in G.edge
     2. **tail**: Point to the last object.
 - Each object contains a set of vertices in any order.
 
-![disjoint_linked_list](/assets/images/disjoint_linked_list.png){: .center-image width="800px"}
+![disjoint_linked_list](/assets/images/170412/disjoint_linked_list.png){: .center-image width="800px"}
 * Linked list representation of disjoint sets. (b) represents the result of `Union(g, e)`.
 {: .center}
 
@@ -57,7 +57,7 @@ for each edge (u, v) in G.edge
 
 We construct a sequence of $$m$$ operations on $$n$$ objects. Suppose we have $$n$$ object, $$x_1,x_2,...,x_n$$. We execute the sequence of $$n$$ `MakeSet` operations, and $$n-1$$ `Union` operations, so that $$m=2n-1$$.
 
-![disjoint_linked_list_operations](/assets/images/disjoint_linked_list_operations.png){: .center-image width="400px"}
+![disjoint_linked_list_operations](/assets/images/170412/disjoint_linked_list_operations.png){: .center-image width="400px"}
 * A sequence of $$2n-1$$ operations on $$n$$ object takes $$\Theta(n^2)$$ time.
 {: .center}
 
@@ -94,33 +94,107 @@ The total time for the entire sequence is thus $$O(m+nlog_{}n)$$.
 -->
 
 
-### 3. Disjoint set forests
+## Disjoint Set forests
 > As all connected grahps generated during minimum spanning tree generation is a tree, it can be called as a forest.
 
-![disjoint_set_forest](/assets/images/disjoint_set_forest.png){: .center-image}
+![disjoint_set_forest](/assets/images/170412/disjoint_set_forest.png){: .center-image}
 * A disjoint set forest. (b) represents the result of `Union(e, g)`.
 {: .center}
 
-Although the straightforward algorithms that use this representation are no faster than ones that use the linked-list representation, we can achieve **an asymptotically optimal (linear running time in the total number of operations $$m$$) disjoint-set data structure by introducing two heuristics: "union by rank", and "path compression"**.
+![union_by_rank](/assets/images/170412/union_by_rank.png){: .center-image}
+* Each node has a ***rank***, which is the height of its subtree.
+
+Although the straightforward algorithms that use this representation are no faster than ones that use the linked-list representation, we can achieve **an asymptotically optimal (linear running time in the total number of operations $$m$$ disjoint-set data structure by introducing two heuristics: "union by rank", and "path compression"**.
 
 1. **Union by rank**:  
 Similar to the weighted-union heuristic.
 
-    For each node, we maintain a ***rank***, which is an upper bound on the height of the node.  
     **<mark>Make the root with smaller rank point to the root with larger rank</mark> during a `Union` operation.**
 
-2. **Path compression**:  
-Make each node on the `Find()` path **point directly to the root**. But it does not change any ranks.
+    If both trees have the same rank, link one to the other and **increase the rank of a new root by one**.
 
-    ![disjoint_set_path_compression](/assets/images/disjoint_set_path_compression.png){: .center-image width="600px"}
-    * Each node has a pointer to its parent (a). After executing `FindSet(a)`, each node on the infd path now points directly to the root.
+2. **Path compression**:  
+Make each node on the `FindSet()` path **<mark>point directly to the root</mark>**. But it does not change any ranks.
+
+    ![disjoint_set_path_compression](https://courses.cs.washington.edu/courses/cse326/00wi/handouts/lecture18/img035.gif){: .center-image width="600px"}
+    * Each node has a pointer to its parent. After executing `FindSet(e)`, each node on the find path (c, a, b, e) now points directly to the root (c).
     {: .center}
+
+#### Operations
+1. `MakeSet(x)`
+
+    ```
+    x.parent = x
+    x.rank = 0
+    ```
+2. `Union(x, y)`
+
+    ```
+      Link(FindSet(x), FindSet(y))
+    ```
+3. `Link(x, y)`
+
+    ```
+    if x.rank > y.rank
+        y.parent = x
+    else
+        // if two trees have same rank, link on to the other and increase the rank of the other.
+        x.parent = y
+        if x.rank == y.rank
+            y.rank = y.rank + 1
+    ```
+4. `FindSet(x)`
+
+    ```
+    if x != x.parent
+        x.parent = FindSet(x.parent)
+    return x.parent
+    ```
 
 
 Using both union by rank and path compression, the worse case running time is $$O(m \alpha(n))$$ for $$m$$ disjoint-set operations on $$n$$ elements, where $$\alpha(n)$$ is a very slowly growing function.  
 In any conceivable application of a disjoint-set data structure, $$\alpha(n) \le 4$$.
 
+
 ### A very quickly growing function and its very slowly growing inverse
+- $$2^n$$: exponential  
+$$2^{2^n}$$: doubly exponential  
+$$2^{2^{.^{.^{.^2}}}}$$: tower of height $$n$$.  
+a.k.a. **<mark>tetration</mark>** $$2\uparrow\uparrow n=2^{2\uparrow\uparrow(n-1)}$$
+- $$logN=min\{n: 2^n \ge N\}$$  
+$$loglogN=min\{n: 2^{2^n} \ge N\}$$  
+$$log*(N)$$ = # iterations of log = $$1+log*(logN)$$
+
+Example:  
+$$
+\begin{align}
+log*(2^{256}) & = 1+log*(256) &= 1+log*(2^8) \\
+&= 2+log*(8) &= 2+log*(2^3) \\
+&= 3+log*(3) &= 3+log(2^{1.7...}) \\
+&= 4+log*(1.7) &= 5
+\end{align}
+$$
+
+#### Ackermann function
+$$A_0(n)=n+2 \\
+A_{k+1}(0)=A_k(1) \\
+A_{k+1}(n+1) = A_k(A_{k+1}(n))$$
+
+> The definition of Ackermann function in here is different from that in Wikipedia.
+
+Example:  
+$$
+\begin{align}
+A_1(n) &= 2n+3 \\
+A_2(n) &= 2^{n+3}-3 \\
+A_3(n) &= 2\uparrow\uparrow(n+3)-3
+\end{align}
+$$
+
+#### Inverse Ackermann
+$$\alpha(N) = min\{n: A_n(n) \ge N\}$$
+
+<!--
 For integers $$k \ge 0$$ and $$j \ge 1$$, we define the function $$A_k(j)$$ as
 
 $$A_k(j)= \begin{cases}
@@ -145,7 +219,7 @@ A_0(1) = 1 + 1 = 2 \\
 A_1(1) = A_0^2(1) = 2 + 1 = 3 \\
 A_2(1) = A_1^2(1) = 2^{(1+1)} \cdot (1+1) - 1 = 7 \\
 A_3(1) = A_2^2(1) = A_2(A_2(1)) = A_2(7) = 2^8 \cdot 8 - 1 = 2^{11} - 1 \\
-A_4(1) = A_3^2(1) = A_3(A_3(1)) = A_3(2047) = A_2^{2048}(2047) >> A_2(2047) = 2^{2048} \cdot 2048 - 1 > 2^{2048} = 16^512 >> 10^80
+A_4(1) = A_3^2(1) = A_3(A_3(1)) = A_3(2047) = A_2^{2048}(2047) >> A_2(2047) = 2^{2048} \cdot 2048 - 1 > 2^{2048} = 16^512 >> 10^{80}
 $$
 
 The symbol $$>>$$ denotes that the "much-grater-than" relation.
@@ -162,29 +236,71 @@ $$ \alpha(n) = \begin{cases}
 4 &\text{for } 2048 \le n \le A_4(1).
 \end{cases}
 $$
+-->
 
-#### Properties of ranks
-In order to prove the bound running time $$O(m\alpha(n))$$, we first prove some simple properties of ranks.
-
-1. For all nodes $$x$$, we have `x.rank <= x.parent.rank`, wich strict ineqaulity $$x \ne x.parent$$.
-2. Every node has rank at most $$n-1$$ (weak bound) or at most $$log_{}n$$ (tight bound).
-
-#### Potential function
+## Potential function
 $$\Phi_q(x)$$
 : A potential to the node $$x$$ after $$q$$ operations.
+
+    $$
+    \phi_q(x) = \begin{cases}
+    \alpha(n) \cdot x.rank &\text{if } x \text{ is a root or } x.rank = 0 \\
+    (\alpha(n) - \text{level}(x)) \cdot x.rank - \text{iter}(x) &\text{if } x \text{ is not a root and } x.rank \ge 1
+    \end{cases}
+    $$
+
+    where
+    - $$\text{level}(x) = max\{k: x.parent.rank \ge A_k(x.rank)\}$$  $$\therefore(0 \le \text{level}(x) \le \alpha(n))$$
+    - $$\text{iter}(x) = max\{i : x.parent.rank \ge A_{\text{level}(x)}^i(x.rank)\}$$ $$\therefore(1 \le \text{iter}(x) \le x.rank)$$
 
 $$\Phi_q$$
 : Sum the node potentials for the potentials of the entire tree. $$\Phi_q = \sum_{x}\phi_q(x)$$
 
-$$
-\varphi_q(x) = \begin{cases}
-\alpha(n) \cdot x.rank &\text{if } x \text{ is a root or } x.rank = 0 \\
-(\alpha(n) - \text{level}(x)) \cdot x.rank - \text{iter}(x) &\text{if } x \text{is not a root and } x.rank \ge 1
-\end{cases}
-$$
 
-where
-- $$\text{level}(x) = max\{k: x.parent.rank \ge A_k(x.rank)\}$$  $$(0 \le \text{level}(x) \le \alpha(n))$$
-- $$\text{iter}(x) = max\{i : x.parent.rank \ge A_{\text{level}(x)}^i(x.rank)\}$$ $$(1 \le \text{iter}(x) \le x.rank)$$
+> The value of $$\Phi_q(x)$$ depends on whether $$x$$ is a tree root or not, after $$q$$th operation.
 
-The value of $$\Phi_q(x)$$ depends on whether $$x$$ is a tree root or not, after $$q$$th operation.
+## Amortized cost of disjoint set operations
+1. `MakeSet()`: $$O(1)$$ (Lemma 21.11)
+
+    **Actual cost**: $$O(1)$$.
+
+    **Potential change**:  
+    This operation creates node $$x$$ with rank 0, so $$\phi_q(x) = 0$$. No other ranks or potentials change, so $$\Phi_q = \Phi_{q-1}$$.
+
+    **Amortized cost**: $$O(1)$$.
+2. `Link()`: $$O(\alpha(n))$$ (Lemma 21.12)
+
+    Suppose `Link(x, y)` makes y the parent of x.
+
+    **Actual cost**: $$O(1)$$.
+
+    **Potential change**:  
+    Note that the only nodes whose potentials may change are x, y, and the children of y.
+    - By Lemma 21.10, any y's child node cannot have its potential increase due to the `Link()`.
+    - Since $$x$$ was a root before the $$q$$th operation, $$\phi_{q-1}(x) = \alpha(n) \cdot x.rank$$.
+        - If x.rank == 0, $$\phi_q(x) = \phi_{q-1}(x) = 0$$
+        - Otherwise, $$\phi_q(x) < \alpha(n) \cdot x.rank = \phi_{q-1}(x)$$
+
+        So x's potential decreases.
+    - Since $$y$$ was a root before $$q$$th operation, $$\phi_{q-1}(y) = \alpha(n) \cdot y.rank$$.
+
+        $$y$$ remains as a root, it either leaves y's rank same or it increases y's rank by 1.  
+        Therefore, either $$\phi_q(y) = \phi_{q-1}(y)$$ or $$\phi_q(y) = \phi_{q-1}(y) + \alpha(n)$$.
+
+    **Amortized cost**: $$O(1)+\alpha(n) = O(\alpha(n))$$
+3. `FindSet()`: $$O(\alpha(n))$$ (Lemma 21.13)
+
+    **Actual cost**: $$O(s)$$. ($$s$$ is the number of nodes that the find path contains.)
+
+    **Potential change**:  
+    No node's potential increases due to the `FindSet()` operation, and at least $$max(0, s-(\alpha(n)+2))$$ nodes on the find path have their potential decrease by at least 1. (Proof omitted)
+
+    **Amortized cost**: at most $$O(s) - (s-(\alpha(n)+2))=O(s)-s+O(\alpha(n))=O(\alpha(n))$$.
+
+**Theorem 21.14**  
+A sequence of $$m$$ `MakeSet(), Union(), FindSet()` operations, $$n$$ of which are `MakeSet()` operations, can be performed on a disjoint-set forest with union by rank and path compression **in worst-case time $$O(m\alpha(n))$$**, where $$\alpha$$ is an *extremely slowly-growing function*.
+
+## Reference
+- Disjoint Set Forest. Stanford University. https://web.stanford.edu/class/cs166/lectures/16/Small16.pdf
+- Path compresison. University of Wahington. https://courses.cs.washington.edu/courses/cse326/00wi/handouts/lecture18/sld035.htm
+- Ackermann function. Wikipedia. https://en.wikipedia.org/wiki/Ackermann_function

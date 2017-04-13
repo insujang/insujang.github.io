@@ -154,7 +154,7 @@ If min-heap order has been violated, however, many changes occur.
     * The node with key 46 has its key decreased to 15. The node becomes a root, and its parent (with key 24) becomes marked.
     {: .center}
 2. $$x$$ might be the second child cut from its parent $$y$$. $$y$$ is cut, and `CascadingCut()` calls itself recursively on $$y$$'s parent $$z$$.
-    ![fib_heap_decr2](/assets/images/fib_heap_decr2.jpg){: .center-image width="800px"}
+    ![fib_heap_decr2](/assets/images/170409/fib_heap_decr2.jpg){: .center-image width="800px"}
     * The node (with key 35) has its key decreased to 5, and `CascadingCut()` is called, as its parent node is already marked.
     {: .center}
     ```c
