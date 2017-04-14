@@ -3,6 +3,7 @@ layout: post
 title: "Adding an Additional SGX Instruction"
 date: "2017-04-14 23:22:59 +0900"
 author: "Insu Jang"
+tag: [research, sgx]
 ---
 # Implementing a SGX SDK Function for the Instruction
 ## 1. Function Declaration
