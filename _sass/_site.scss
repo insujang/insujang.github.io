@@ -56,13 +56,19 @@ body {
   }
 
   &-nav {
+    // border: 1px solid $oc-gray-5;
+    // border-radius: 5px;
+    border-top: 1px solid $oc-gray-3;
+    border-bottom: 1px solid $oc-gray-3;
+    padding: .3rem;
+
     a {
-      color: $oc-gray-7;
+      color: $oc-gray-6;
       text-transform: lowercase;
       -webkit-transition: all .2s ease;
          -moz-transition: all .2s ease;
               transition: all .2s ease;
-      margin-right: .3rem;
+      padding: 0 .5rem 0 .5rem;
 
       &:hover,
       &:focus {
