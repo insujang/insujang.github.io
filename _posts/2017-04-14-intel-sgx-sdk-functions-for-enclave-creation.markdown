@@ -122,13 +122,13 @@ EnclaveCreatorHW::EnclaveCreatorHW():
 
 I used a sample user program provided by Intel, `SampleEnclave`.
 
-![enclave_hw](/assets/images/170414enclave_hw.png){: .center-image}
+![enclave_hw](/assets/images/170414/enclave_hw.png){: .center-image}
 * The result when compiling the sample enclave with `SGX_MODE=HW`.
 {: .center}
 
 `prints()` is called when the program is compiled with the option `SGX_MODE=HW`, however, it is not called when it is compiled with the option `SGX_MODE=SIM`.
 
-![enclave_hw2](/assets/images/170414enclave_hw2.png){: .center-image}
+![enclave_hw2](/assets/images/170414/enclave_hw2.png){: .center-image}
 * The result when compiling the sample enclave with `SGX_MODE=SIM`.
 {: .center}
 
@@ -155,7 +155,7 @@ int EnclaveCreatorSim::create_enclave(secs_t *secs, sgx_enclave_id_t *enclave_id
 }
 ```
 
-![enclave_sim](/assets/images/170414enclave_sim.png){: .center-image}
+![enclave_sim](/assets/images/170414/enclave_sim.png){: .center-image}
 * The result when compiling the sample enclave with `SGX_MODE=SIM`.
 {: .center}
 
