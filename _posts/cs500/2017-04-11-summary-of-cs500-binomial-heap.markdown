@@ -92,7 +92,7 @@ The running time of `BinomialHeapMerge(H1, H2)` is $$O(lg_{}n)$$, where $$n$$ is
 
 $$H_1$$ contains at most $$log_{}{n_1}+1$$ roots and $$H_2$$ contains at most $$log_{}{n_2}+1$$ roots, so $$H$$ contains **at most $$log_{}{n_1}+log_{}{n_2}+2 \le 2 \cdot log_{}{n}+2=O(log_{}n)$$ roots** immediately after the call of `BinomialHeapMerge(H1, H2)`. Each iteration takes $$O(1)$$ time, so there are at most $$log_{}{n_1}+log_{}{n_2}+2$$ iterations.
 
-![log_average](/assets/images/log_average.png){: .center-image width="700px"}
+![log_average](/assets/images/170409/log_average.png){: .center-image width="700px"}
 
 Thus the total time is $$O(log_{}n)$$.
 
