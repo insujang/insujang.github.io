@@ -128,15 +128,14 @@ The size of the root list is at most $$D(n) + t(H) - 1$$, since
 
     Total number of iterations of the `while()` loop is at most the number of roots in the root list. Thus, the total actual work in extracting the minimum node is $$O(D(n) + t(H))$$.
 
-- **Changed Potential**: $$D(n) + 1 - t(H)$$.  
-    1. The potential before etracting the minimum node: $$t(h) + 2m(H)$$, and
+- **Changed Potential**: $$D(n) + 1 - t(H) = O(D(n) - t(H))$$.  
+    1. The potential before etracting the minimum node: $$t(H) + 2m(H)$$, and
     2. The potential afterward: $$(D(n) + 1 + 2m(H))$$, since at most $$D(n) + 1$$ roots remain and no nodes become marked during the operation.
 
 - **Amortized Cost**: Actual cost + changed potential =
 
     $$
-    O(D(n) + t(H)) + ((D(n) + 1) + 2m(H)) - (t(H) + 2m(H)) \\
-    = O(D(n)) + O(t(H)) - t(H) \\
+    O(D(n) + t(H)) + O(D(n) - t(H)) \\
     = O(D(n))
     $$
 

@@ -7,7 +7,7 @@ tags: [study, cs500]
 math: true
 ---
 
-Amortized analysis can be used to show that ***the average cost of an operation is small***, even though a single operation within the sequence might be expensive.  
+Amortized analysis is a worst-case **analysis of a sequence of operations** — to obtain a tighter bound on **the overall or average cost per operation** in the sequence than is obtained by separately analyzing each operation in the sequence.  
 In other words, while certain operations for a given algorithm may have a significant cost in resources, other operations may not be as costly.  
 Amortized analysis considers both the costly and less costly operations together over the whole series of operations of the algorithm
 
@@ -86,7 +86,7 @@ $$\Phi_i$$
 : the potential function after $$i$$th operation
 
 **The amortized cost $$\hat{c_i}$$ of the $$i$$th operation** with respect to potential function $$\Phi$$ is defined by
-$$\hat{c_i} = c_i + \Phi(D_i) - \Phi(d_{i-1})$$.  
+$$\hat{c_i} = c_i + \Phi_i - \Phi_{i-1}$$.  
 The amortized cost of each operation is therefore its actual cost plus the increase in potential due to the operation. Hence, the total amortized cost of the $$n$$ operation is
 
 $$
@@ -201,11 +201,18 @@ Suppose the $$i$$th operation on a stack containing $$s$$ objects is a `multipop
     $$
 
 #### Summary of stack operations
-The moartized cost of each of the three operations is $$O(1)$$, and thus the total amortized cost of a sequence of $$n$$ operations is $$O(n)$$.
+The amortized cost of each of the three operations is $$O(1)$$, and thus the total amortized cost of a sequence of any $$n$$ operations is $$O(n)$$.
 
 Since we already argued that $$\Phi_i \ge \Phi_0$$, ***the total amortized cost of $$n$$ operations is an upper bound*** on the total actual cost.  
-***The worse-cast cost of $$n$$ operations is therefore $$O(n)$$.***
+***The worse-cast amortized cost of $$n$$ operations is therefore $$O(n)$$, and the amortized cost per operation is $$O(1)$$.***
 
+vs. worst-case analysis.
+- `push(S, k), pop(S)`의 worst-case cost는 $$O(1)$$이고 `multipop(S, k)` operation의 worst-cast cost는 $$O(n)$$이다.
+- 따라서, worst-case of any stack operation = $$O(n)$$. ($$∵ O(1) ≤ O(n)$$)
+- worst-case of $$n$$ operations is $$O(n^2)$$. (we may have $$O(n)$$ `multipop()` operations costing $$O(n)$$ each.)
+
+amortized cost는 worst-case의 operation sequence인데, stack의 경우에는 모든 operation의 amortized cost가 $$O(1)$$이므로 worst-case sequence of operations은 어떤 조합이라도 될 수 있다. 따라서, amortized cost per operation은 $$O(1)$$이라고 할 수 있음.  
+만약 어떤 operation의 amortized cost가 $$O(n)$$이라면 worst-case amortized cost는 해당 operation을 $$n$$번 호출한 sequence operation의 amortized cost의 average이므로 $$O(n)$$이라고 할 수 있음.
 
 
 

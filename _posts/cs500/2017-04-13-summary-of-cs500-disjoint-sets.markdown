@@ -102,7 +102,8 @@ The total time for the entire sequence is thus $$O(m+nlog_{}n)$$.
 {: .center}
 
 ![union_by_rank](/assets/images/170412/union_by_rank.png){: .center-image}
-* Each node has a ***rank***, which is the height of its subtree.
+* Each node has a ***rank***, the value of which can be up to its height.
+{: .center}
 
 Although the straightforward algorithms that use this representation are no faster than ones that use the linked-list representation, we can achieve **an asymptotically optimal (linear running time in the total number of operations $$m$$ disjoint-set data structure by introducing two heuristics: "union by rank", and "path compression"**.
 
@@ -130,7 +131,8 @@ Make each node on the `FindSet()` path **<mark>point directly to the root</mark>
 2. `Union(x, y)`
 
     ```
-      Link(FindSet(x), FindSet(y))
+    // The parameter for `Link` must be the root of a tree.
+    Link(FindSet(x), FindSet(y))
     ```
 3. `Link(x, y)`
 
@@ -139,6 +141,8 @@ Make each node on the `FindSet()` path **<mark>point directly to the root</mark>
         y.parent = x
     else
         // if two trees have same rank, link on to the other and increase the rank of the other.
+        // It is implementation specific, and the following example links x to y.
+        // The root of y is still the root of the new tree.
         x.parent = y
         if x.rank == y.rank
             y.rank = y.rank + 1
@@ -146,6 +150,8 @@ Make each node on the `FindSet()` path **<mark>point directly to the root</mark>
 4. `FindSet(x)`
 
     ```
+    // x != x.parent means that x is not a root.
+    // then perform path compression.
     if x != x.parent
         x.parent = FindSet(x.parent)
     return x.parent

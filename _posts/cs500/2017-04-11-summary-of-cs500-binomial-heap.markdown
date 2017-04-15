@@ -24,7 +24,8 @@ order
 A binomial tree of order $$ k$$ has $$ 2^k $$ nodes, and height $$ k $$.
 
 degree
-: The number of children that the node has.
+: The number of child trees that the node has.  
+Same number with order.
 
 ## Some properties of binomial tree
 For the binomial tree $$ B_k $$,
@@ -53,7 +54,7 @@ Binomial tress in the binomial heap are ***sorted by ascending number of childre
 1. Creating a new binomial heap ($$ \Theta(1) $$)
 2. Finding the minimum node ($$ \Theta(lg_{}n) $$)
 3. Merging two binomial heaps ($$ O(lg_{}n) $$)
-4. Inserting a node ($$ <!--\Theta(1)--> O(lg_{}n) $$)
+4. Inserting a node (<!--\Theta(1)-->$$ O(lg_{}n) $$)
 5. Decreasing a key ($$ O(lg_{}n) $$)
 6. Extracting a key ($$ \Theta(lg_{}n) $$)
 
@@ -77,7 +78,8 @@ The running time is $$O(log_{}n)$$.
     * A new sinle linked list has all root lists in $$H_1$$ and $$H_2$$.
     {: .center}
 2. Links roots of equal degree until at most one root remains of each degree.
-    **`Link(x, y)`** merges two binomial trees into one whoose roots have the same degree.
+    **`Link(x, y)`** merges two binomial trees into one whoose roots have the same degree.  
+    `Link(x, y)` has $$O(1)$$ time because it just compares two roots and links one to the other.
     ![link](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Binomial_heap_merge1.svg/200px-Binomial_heap_merge1.svg.png){: .center-image}
     * Link operation between two binomial trees with the same degree or order.
     {: .center}
@@ -88,7 +90,9 @@ The running time is $$O(log_{}n)$$.
 
 The running time of `BinomialHeapMerge(H1, H2)` is $$O(lg_{}n)$$, where $$n$$ is the total number of nodes in binomial heaps $$H_1$$, and $$H_2$$.
 
-$$H_1$$ contains at most $$log_{}{n_1}+1$$ roots and $$H_2$$ contains at most $$log_{}{n_2}+1$$ roots, so $$H$$ contains at most $$log_{}{n_1}+log_{}{n-2}+2 \le log_{}{n}+2=O(log_{}n)$$ roots immediately after the call of `BinomialHeapMerge(H1, H2)`. Each iteration takes $$O(1)$$ time, so there are at most $$log_{}{n_1}+log_{}{n_2}+2$$ iterations.
+$$H_1$$ contains at most $$log_{}{n_1}+1$$ roots and $$H_2$$ contains at most $$log_{}{n_2}+1$$ roots, so $$H$$ contains **at most $$log_{}{n_1}+log_{}{n_2}+2 \le 2 \cdot log_{}{n}+2=O(log_{}n)$$ roots** immediately after the call of `BinomialHeapMerge(H1, H2)`. Each iteration takes $$O(1)$$ time, so there are at most $$log_{}{n_1}+log_{}{n_2}+2$$ iterations.
+
+![log_average](/assets/images/log_average.png){: .center-image width="700px"}
 
 Thus the total time is $$O(log_{}n)$$.
 
@@ -106,7 +110,7 @@ The total running time is $$O(log_{}n)$$.
 The procedure of decreasing a key is in the same manner as in a binary min-heap: by ***bubble-up*** the key in the heap.
 
 After assigning the new key to $$x$$, the procedure goes up the tree.  
-`x.key` is checked against the key of $$x$$'s parent $$y$$. If $$x$$ is the root or `x.key` $$\ge$$ `y.ket`, the binomial tree is now min-heap-ordered.
+`x.key` is checked against the key of $$x$$'s parent $$y$$. If $$x$$ is the root or `x.key` $$\ge$$ `y.key`, the binomial tree is now min-heap-ordered.
 
 ![binomial_heap_decr_key](/assets/images/170409/binomial_heap_decr_key.png){: .center-image width="800px"}
 * Procedure of decreasing a key with a binomial heap
