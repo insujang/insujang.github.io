@@ -20,8 +20,7 @@ The stable marriage problem has been stated as follows:
 - The runtime complexity is $$O(n^2)$$ where $$n$$ is the number of men of women.
 - The algorithm guarantees that
     1. **Everyone gets married**: There cannot be a man and a woman both unengaged, as he must have proposed to her at some point, and, if she is proposed to, she would necessarily be engaged thereafter.
-    2. **The marriages are stable**: Let Alice and Bob both be engaged, but not to each other.
-
+    2. **The marriages are stable**: Let Alice and Bob both be engaged, but not to each other.  
     Upon completion of the algorithm, it is not possible for both Alice and Bob to prefer each other over their current partners.
 
 ### Algorithm

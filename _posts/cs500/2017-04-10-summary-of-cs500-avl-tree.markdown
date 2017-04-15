@@ -47,11 +47,26 @@ $$F_h = \frac{\varphi^h - (-\frac{1}{\varphi}^h)}{\sqrt{5}} \ge \Omega({1.6}^h)$
 
 > Assignment 2: Verify this inequality.
 >
+> ***Theorem.*** For all integers $$n \ge 3$$, $$F_n \gt \varphi^{n-2} = \Omega({\varphi}^n)$$, where $$\varphi = 1.618$$.
+>
+> **Base cases.**  
+- For $$n=3$$, $$F_3 = 2 \gt \varphi = 1.618$$.  
+- For $$n=4$$, $$F_4 = 3 \gt \varphi^2 = 2.618$$.
+>
+> **Inductive step.** Note that $$\varphi^2 = \varphi + 1$$, thus $$\varphi^{k-1} = (\varphi+1)\varphi^{k-3}$$.
+- For $$k \ge 4$$, assume $$F_{k-1} \gt \varphi^{k-3}$$ and $$F_k \gt \varphi^{k-2}$$.
+- So, $$F_{k+1} = F_k + F_{k-1} \gt \varphi^{k-2} + \varphi^{k-3} = \varphi^{k-1}$$.
+>
+> Thus, $$F_n \ge \Omega(\varphi^n)$$ holds for all integers $$n \ge 3$$.
+
+<!--
 > AS $$\varphi = \frac{1+\sqrt{5}}{2} > 1$$, $${\frac{1}{\varphi}}^h$$ goes to $$+0$$ when $$h \rightarrow \infty$$.
 >
 > Hence, $$\frac{\varphi^h}{\sqrt{5}} = \Omega({\varphi^h}) \le
 \frac{\varphi^h - (-{\frac{1}{\varphi}}^h)}{\sqrt{5}} = F_h$$
 >
+-->
+
 > **Another study**
 >
 > Since the golden ratio satisfies the equation
@@ -69,7 +84,7 @@ $$
 $$\varphi^h = F_h\varphi + F_{h-1}$$.  
 > Hence, $$F_h\varphi \le \varphi^h$$, as $$F_{h} \ge 0 $$ for all $$h \ge 0$$. Therefore, $$F_h = O(\varphi^h)=O(1.6^h)$$.
 >
-> I cannot derive $$\Omega({1.6}^h)$$ yet.
+<!-- I cannot derive $$\Omega({1.6}^h)$$ yet.-->
 
 ### Rotation
 When inserting an element into an AVL tree, the AVL tree property can be violated. In this case, the tree should be rotated.
@@ -105,5 +120,6 @@ As it requires $$O(n)$$ to merge two AVL trees, binomial tree is introduced.
 ## Reference
 - Minimal AVL trees. http://stackoverflow.com/a/30770189
 - AVL tree. https://en.wikipedia.org/wiki/AVL_tree
-- Fibonacci number. https://en.wikipedia.org/wiki/Fibonacci_number
+- Fibonacci number. Wikipedia. https://en.wikipedia.org/wiki/Fibonacci_number
 - AVL Tree. Btech Smart Class. http://btechsmartclass.com/DS/U5_T2.html
+- Lower bound on Fibonacci number. Duke University. https://www.cs.duke.edu/courses/spring06/cps102/notes/slides10-4up.pdf
