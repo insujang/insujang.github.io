@@ -65,6 +65,7 @@ $$F_h = \frac{\varphi^h - (-\frac{1}{\varphi}^h)}{\sqrt{5}} \ge \Omega({1.6}^h)$
 > Hence, $$\frac{\varphi^h}{\sqrt{5}} = \Omega({\varphi^h}) \le
 \frac{\varphi^h - (-{\frac{1}{\varphi}}^h)}{\sqrt{5}} = F_h$$
 >
+> 간단히 생각해보면 n=1, 2에 대해서도 증명 가능할것 같다.
 -->
 
 > **Another study**
@@ -84,6 +85,9 @@ $$
 $$\varphi^h = F_h\varphi + F_{h-1}$$.  
 > Hence, $$F_h\varphi \le \varphi^h$$, as $$F_{h} \ge 0 $$ for all $$h \ge 0$$. Therefore, $$F_h = O(\varphi^h)=O(1.6^h)$$.
 >
+
+$$ \therefore F_n = \Theta(\varphi^h)$$
+
 <!-- I cannot derive $$\Omega({1.6}^h)$$ yet.-->
 
 ### Rotation

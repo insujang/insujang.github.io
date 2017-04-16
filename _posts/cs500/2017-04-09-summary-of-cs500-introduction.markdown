@@ -34,7 +34,11 @@ We want an algorithm to do solve a problem ***efficiently***, making the best us
 
 #### Algorithmic complexity: Measuring the growth of work
 We need a way to measure the rate of growth of an algorithm ***based upon the size of the input***.  
-***<mark>Asymptotic cost</mark> of optimal algorithm that solves a problem.***
+Problem complexity is defined by
+- An upper bound
+- A lower bound
+
+***Problem complexity is an <mark>Asymptotic cost</mark> of optimal algorithm that solves a problem.***
 
 Example : Big O ($$O$$), Big Omega($$\Omega$$), Big Theta ($$\Theta$$)
 

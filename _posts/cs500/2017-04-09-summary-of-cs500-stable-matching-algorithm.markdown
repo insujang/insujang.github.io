@@ -105,12 +105,10 @@ She only "trades up".
 
 Using the above observations, we prove the following three claims.
 
-- **Claim 1**: Algorithm terminates after at most $$n^2$$ iterations of while loop.
-    > Proof of termination
+- **Claim 1**: Algorithm terminates after at most $$n^2$$ iterations of while loop. (Proof of termination)
 
     **Proof**: Each time through the while loop a man proposes to **a new woman**. There are only $$n^2$$ possible proposals.
-- **Claim 2**: All men and women get matched.
-    > Proof of perfection
+- **Claim 2**: All men and women get matched. (Proof of perfection)
 
     **Proof**: Proof by contradiction.
 
@@ -118,8 +116,7 @@ Using the above observations, we prove the following three claims.
     - Then some woman, say Amy, is not matched upon termination (because only $$n-1$$ men are matched)
     - By **observation 1**, Amy was never proposed to.
     - But, Zeus proposes to everyone, since he ends up unmatched.
-- **Claim 3**: There are no unstable pairs.
-    > Proof of stability
+- **Claim 3**: There are no unstable pairs. (Proof of stability)
 
     **Proof**: Suppose the matching $$S*$$ does not contain the pair A-Z.
 
@@ -128,7 +125,7 @@ Using the above observations, we prove the following three claims.
         = A-Z is stable.
     - **Case 2**: Z proposed to A.  
         = A rejected Z.  
-        = A prefers her partner Y to Z.
+        = A prefers her partner Y to Z.  
         = A-Z is stable.
 
         In either case, the pair A-Z is ***stable***.
