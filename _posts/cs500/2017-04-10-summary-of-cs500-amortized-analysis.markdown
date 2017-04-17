@@ -117,8 +117,17 @@ We define **the potential $$\Phi_i$$** of the binary counter as **the number of 
 
 Suppose that the $$i$$th operation resets $$t_i$$ bits.
 - The acutal cost of the operation is at most $$t_i+1$$, since in addition to resetting $$t_i$$ bits, it sets at most one bit to 1.
+
+<!--
 - As the number of 1s are decreased by $$t_i$$, and increased by 1, the potential difference is  
 $$ \Phi_i - \Phi_{i-1} = 1-t_i$$.
+-->
+**(Update)**
+
+- In terms of potential function, there are two subcases:
+    - If $$\Phi_i = 0$$, then i-th operation resets all $$n$$ bits, hence $$\Phi_{i-1} = n = t_i$$
+    - If $$\Phi_i > 0$$, then $$\Phi_i = \Phi_{i-1} - t_i + 1$$.
+    - In either case, $$\Phi_i \le \Phi_{i-1} - t_i + 1$$. Thus $$\Phi_i - \Phi_{i-1} \le 1 - t_i$$.
 
 The amortized cost is therefore  
 $$
@@ -214,6 +223,10 @@ vs. worst-case analysis.
 amortized cost는 worst-case의 operation sequence인데, stack의 경우에는 모든 operation의 amortized cost가 $$O(1)$$이므로 worst-case sequence of operations은 어떤 조합이라도 될 수 있다. 따라서, amortized cost per operation은 $$O(1)$$이라고 할 수 있음.  
 만약 어떤 operation의 amortized cost가 $$O(n)$$이라면 worst-case amortized cost는 해당 operation을 $$n$$번 호출한 sequence operation의 amortized cost의 average이므로 $$O(n)$$이라고 할 수 있음.
 
+
+### 요약
+1. $$\Phi_n - \Phi_0 \ge 0$$임을 보여 amortized cost가 actual cost의 upper bound가 됨을 보이기.
+2. 실제 amortized cost를 계산할 때는 amortized cost의 정의 $$\hat{c_i} = c_i + \Phi_i - \Phi_{i-1}$$을 사용해 계산
 
 
 ## Reference
