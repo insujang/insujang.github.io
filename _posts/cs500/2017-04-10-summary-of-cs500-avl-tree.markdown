@@ -20,6 +20,10 @@ Heights of any two sibling subtrees must differ by ***at most one***.
 |-----------------|----------------|----------------|----------------|----------|
 | Time complexity | $$O(log_{}n)$$ | $$O(log_{}n)$$ | $$O(log_{}n)$$ | $$O(n)$$ |
 
+> Note that merge operation on AVL tree takes $$O(n)$$, while that on Binomial heap takes $$O(logn)$$.  
+It can be improved further with Fibonacci heap, which takes $$O(1)$$.
+
+
 Minimum number of nodes of AVL tree of height $$h$$:
 $$N(h+1) = N(h) + N(h-1) + 1$$  
 where $$N(0) = 1, N(1) = 2$$.

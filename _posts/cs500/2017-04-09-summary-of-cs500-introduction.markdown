@@ -117,6 +117,8 @@ $$
 
 ***By the master method***, the recurrence has the solution $$T(n)=\Theta(n^{log_{2}7})$$.
 
+> **Assignment 1** was to verify this time complexity, $$O(n^{log_{2}7})$$.
+
 <!--
 #### 1. Recursive power function
 Given $$x$$, calculate $$x^n$$ with as few multiplications as possible.
