@@ -7,8 +7,8 @@ tags: [research, sgx, linux]
 ---
 
 ### Environment
-- Host: Ubuntu 14.04.5 LTS, Intel Core-i7 6700 Skylake processor
-- Guest: Ubuntu 14.04.4 LTS, QEMU-KVM based virtual machine (using Intel VT-x)
+- Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor
+- Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)
 
 # 1. ENCLS
 - SGX Programming Reference, Section 5.2.1
@@ -94,7 +94,7 @@ if (_ cpu_based_exec_control & CPU_BASED_ACTIVATE_SECONDARY_CONTROLS) {
   ...
 }
 ```
-- Bit position 15 of the secondary processor-based VM-execution controls MSR (`MSR_IA32_VMX_PROCBASED_CTLS2`) is **Enalbe ENCLS exiting**. For a VMM to hook a specific ENCLS instruction called in a guest machine, this bit must be set. However, it is **not** set by default. Hence, set this bit as follows.
+- Bit position 15 of the secondary processor-based VM-execution controls MSR (`MSR_IA32_VMX_PROCBASED_CTLS2`) is **Enable ENCLS exiting**. For a VMM to hook a specific ENCLS instruction called in a guest machine, this bit must be set. However, it is **not** set by default. Hence, set this bit as follows.
 ```c
 ...
 // Set bit position 15 as 1 of the MSR_IA32_VMX_PROCBASED_CTLS2.
