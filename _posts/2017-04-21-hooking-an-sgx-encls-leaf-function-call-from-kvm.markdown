@@ -179,7 +179,7 @@ As commented right above the declaration of `kvm_vmx_exit_handlers`, the exit ha
 Also I added `skip_emulated_instruction()` call because `vmx_handle_exit()` is called indefinitely without this function call.  
 Currently I just added a simple `printk()`, but you can implement it as you want.
 
-If a guest virtual machine calls the following assembly,  
+If a guest virtual machine calls the following `__eabc()` function,  
 ```c
 #define __encls(rax, rbx, rcx, rdx...)  \
     ({              \
@@ -201,6 +201,7 @@ If a guest virtual machine calls the following assembly,
 static inline int __eabc (void) {
     unsigned long rbx = 0;
     unsigned long rcs = 0;
+    // The value of the RAX register will be 0x1A, the leaf number of a custom ENCLS isntruction EABC.
     return __encls(0x1A, rbx, rcx, "d"(0));
 }
 ```  
@@ -215,4 +216,4 @@ The result from the VMM dmesg is as follows.
 
 ### References
 - Intel Corporation. *Intel Software Guard Extensions Programming Reference*. [\[Online\]](https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf). Oct. 2014
-- Intel Corportation. *Intel 64 and IA-32 Architectures Software Developer's Manual Volume 3*. [\[Online\]](https://software.intel.com/sites/default/files/managed/a4/60/325384-sdm-vol-3abcd.pdf). Mar. 2017
+- Intel Corporation. *Intel 64 and IA-32 Architectures Software Developer's Manual Volume 3*. [\[Online\]](https://software.intel.com/sites/default/files/managed/a4/60/325384-sdm-vol-3abcd.pdf). Mar. 2017
