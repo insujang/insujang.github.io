@@ -39,7 +39,7 @@ comments: false
     2. KVM-SGX를 수정해 CPU가 새로운 SGX Instruction을 hook해 VMM에게 넘기도록 설정
     3. VMM의 VMexit 핸들러를 추가해 새로운 Instruction을 VMexit 핸들러에서 새 Instruction을 에뮬레이션
 
-### GPU Enclave의 안전한 로딩 방법: 딱히 없음... 초기화는 다 이루어졌다고 가정하는 것이...
+### GPU Enclave의 안전한 로딩 방법: 딱히 생각나지 않음... 초기화는 다 이루어졌다고 가정하는 것이...
 - GPU Enclave 초기화 후에는 MMIO 접근 권한을 GPU Enclave 프로세스에게 주고 다른 프로세스 및 커널의 MMIO 접근을 차단
     - Enclave 프로세스가 자신의 EPC 메모리에 접근하는 것을 SGX에서 체크하는 것처럼 GPU Enclave만을 MMIO 접근할 수 있도록 체크할 수 있음.
     - 체크 항목
@@ -85,4 +85,23 @@ The guest device drivers consider that the physical memory space originates at 0
 * GPU Enclave가 메모리를 할당할 때 물리적으로 파티션이 되어있는 공간 내에서 주소를 할당함으로써 다른 프로세스의 영역에 침범하지 못하게 한다.
 {: .center}
 
-단, shared memory에 대해서는 page table이 어떻게 동작하는지에 대한 언급이 없음. shared memory에 대한 확인이 필요한데 아마 같은 방법으로 page table을 사용하지 않을까 생각됨.
+단, shared memory에 대해서는 page table이 어떻게 동작하는지에 대한 논문에서 언급이 없음. shared memory에 대한 확인이 필요한데 아마 같은 방법으로 page table을 사용하지 않을까 생각되며, gdev 내부 코멘트에도 아래와 같은 언급이 있다.
+
+> /gdev/common/gdev/nvidia.h:99
+>
+>
+virtual address space (VAS) object struct:
+>
+> NVIDIA GPUs support virtual memory (VM) with 40 bits addressing.  
+VAS hence ranges in `[0:1<<40]`. In particular, **the pscnv bo function will  
+allocate `[0x20000000:1<<40]` to any buffers in so called global memory,  
+local memory, and constant memory. the rest of VAS is used for different  
+purposes, e.g., for shared memory.**  
+CUDA programs access these memory spaces as follows:  
+`g[$reg]` redirects to one of `g[$reg]`, `l[$reg-$lbase]`, and `s[$reg-$sbase]`,  
+depending on how local memory and shared memory are set up.  
+in other words, `g[$reg]` may reference global memory, local memory, and  
+shared memory.
+
+
+다만, shared memory의 경우 사이즈가 작기 때문에 (48KB 또는 16KB / block) 이를 partition해서 제공하는 것이 좋을지는 생각해볼 문제.
