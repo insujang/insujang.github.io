@@ -15,7 +15,7 @@ comments: false
 - 구현과 관련된 문제: SGX Simulation 모드 vs VM 사용하기 중 어떤 것이 나을지? **VM 모드를 사용하기로 결정**
 - GPUvm을 읽고 gdev (CUDA 오픈소스 프레임워크)및 Nouveau (NVIDIA GPU 오픈소스 디바이스 드라이버)의 동작방식에 대해 분석 중
 - MMIO 영역을 보호하기 위해 VFIO (KVM에서 PCI Passthrough에 사용되는 디바이스 드라이버)에 대해 분석 중
-- OS 부팅 중 GPU Enclave의 정상적인 로딩에 대해서는 그냥 정상적으로 로딩되었다고 가정하고 싶습니다..
+- OS 부팅 중 GPU Enclave의 안전한 초기화 방법
 
 ### VM 사용하기: 어떻게 새로운 SGX Instruction을 구현할 지
 - Intel은 VM Guest 머신에서 SGX를 사용할 수 있도록 수정된 QEMU-KVM(https://github.com/01org/qemu-sgx, https://github.com/01org/kvm-sgx) / Xen(https://github.com/01org/xen-sgx)을 제공 중
@@ -32,9 +32,19 @@ comments: false
             2. Example) ENCLS, EAX = 0x1: EADD
             3. etc
 
-    - ENCLS-exiting bitmap은 총 64비트 VMCS 필드로, 총 32개+1개의 ENCLS leaf function에 대해 비트맵을 구성할 수 있음. 예를 들어, **<mark>비트맵의 인덱스 1의 비트 값이 1일 경우, EAX = 0x1에 해당하는 EADD가 호출되면 CPU가 VMexit을 호출함.**
+    - ENCLS-exiting bitmap은 총 64비트 VMCS 필드로, 총 32개+1개의 ENCLS leaf function에 대해 비트맵을 구성할 수 있음. 예를 들어, **<mark>비트맵의 인덱스 1의 비트 값이 1일 경우, EAX = 0x1에 해당하는 EADD가 호출되면 CPU가 VMexit을 호출함.</mark>**
 
 - 이를 사용해 새로운 Instruction을 에뮬레이트할 수 있음.
     1. VM의 SGX 드라이버와 SDK를 수정해 함수 인터페이스 제공
     2. KVM-SGX를 수정해 CPU가 새로운 SGX Instruction을 hook해 VMM에게 넘기도록 설정
-    3. VMM의 VMexit 핸들러를 추가해 새로운 Instruction을 에뮬레이트
+    3. VMM의 VMexit 핸들러를 추가해 새로운 Instruction을 VMexit 핸들러에서 새 Instruction을 에뮬레이션
+
+### GPU Enclave의 안전한 로딩 방법
+- GPU Enclave 자체도 하나의 Enclave이므로 SGX의 Attestation을 통해 정상적인 GPU Enclave가 정상적으로 동작하는지 확인
+- GPU Enclave 초기화 후에는 MMIO 접근 권한을 GPU Enclave 프로세스에게 주고 다른 프로세스 및 커널의 MMIO 접근을 차단
+    - Enclave 프로세스가 자신의 EPC 메모리에 접근하는 것을 SGX에서 체크하는 것처럼 GPU Enclave만을 MMIO 접근할 수 있도록 체크할 수 있음.
+    - 체크 항목
+        1. 등록된 GPU Enclave인가? 맨 처음 등록을 요청한 GPU Enclave가 등록된 GPU Enclave가 되며, 등록 시 특정 GPU의 고유번호를 넘겨 GPU 당 하나의 GPU Enclave를 생성하도록 한다. **악의적인 커널이 별도로 만든 GPU Enclave가 먼저 등록을 요청하면 이 Enclave가 등록된 GPU Enclave가 된다. GPU Enclave를 생성한 주체가 악의적인 목적을 가지고 있는지를 구분할 방법은 사실 없음. 하지만 GPU Enclave 자체는 Integrity가 보장되므로 유저의 데이터가 유출되지는 않음.**
+        2. 물리 메모리 주소가 GPU를 가리키는, GPU BAR에 저장된 메모리 영역이 맞는가?
+        3. 가상 메모리 주소가 GPU Enclave가 가지고 있는 MMIO 영역에 매핑된 영역인가?
+- GPU Enclave는 초기화된 후 GPU 메모리 영역 및 MMIO 영역을 zero-fill함으로써 초기화 전 악의적인 커널이 삽입했을 수 있는 커맨드를 삭제
