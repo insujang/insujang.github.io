@@ -32,7 +32,7 @@ comments: false
             2. Example) ENCLS, EAX = 0x1: EADD
             3. etc
 
-    - ENCLS-exiting bitmap은 총 64비트 VMCS 필드로, 총 32개+1개의 ENCLS leaf function에 대해 비트맵을 구성할 수 있음. 예를 들어, **<mark>비트맵의 인덱스 1의 비트 값이 1일 경우, EAX = 0x1에 해당하는 EADD가 호출되면 CPU가 VMexit을 호출함.</mark>**
+    - ENCLS-exiting bitmap은 총 64비트 VMCS 필드로, 총 32개+1개의 ENCLS leaf function에 대해 비트맵을 구성할 수 있음. 예를 들어, **<mark>비트맵의 인덱스 6의 비트 값이 1일 경우, EAX = 0x6에 해당하는 leaf function인 EEXTEND가 호출되면 CPU가 VMexit을 호출함.</mark>**
 
 - 이를 사용해 새로운 Instruction을 에뮬레이트할 수 있음.
     1. VM의 SGX 드라이버와 SDK를 수정해 함수 인터페이스 제공
