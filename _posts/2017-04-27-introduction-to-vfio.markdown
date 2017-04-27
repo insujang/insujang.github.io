@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Introduction to VFIO"
-date: "2017-04-24 10:13:55 +0900"
+date: "2017-04-27 13:14:24 +0900"
 author: "Insu Jang"
 tags: [research, linux, pcie]
 ---
@@ -16,7 +16,7 @@ tags: [research, linux, pcie]
 ## VFIO Device Filer descriptor
 - located in /dev/vfio
 
-    ![vfio_list](/assets/images/vfio_list.png)
+    ![vfio_list](/assets/images/170427/vfio_list.png)
 - Each divided into regions
     - **Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space)**
     - Region count and information discovered **through ioctl**.  
@@ -37,7 +37,7 @@ tags: [research, linux, pcie]
             #define VFIO_DEVICE_GET_IRQ_INFO    _IO(VFIO_TYPE, VFIO_BASE + 9)
             ```
 
-    ![vfio_regionmap](/assets/images/vfio_regionmap.png){: .center-image width="800px"}
+    ![vfio_regionmap](/assets/images/170427/vfio_regionmap.png){: .center-image width="800px"}
     - `vfio_pci_ioctl()` function is implemented in `/linux/drivers/vfio/pci/vfio_pci.c:545`.
 
 ## VFIO-PCI Device Driver Structure
