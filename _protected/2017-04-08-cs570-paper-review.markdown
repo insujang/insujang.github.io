@@ -69,7 +69,7 @@ The authors proposed a network structure that learns residual images.
 SRCNN must preserve all input detail since the image is discarded and the output is generated from the learned features alone. In this model, the authors argued that the vanishing/exploding gradients problem should be critical.  
 As the input and output images are largely similar, they defined a residual image $$r=y-x$$, where $$x$$ is a low-resolution  image, and $$y$$ is a high-resolution image.  
 
-![vdsr_architecture](/assets/images/vdsr_architecture.png){: .center-image width="800px"}
+![vdsr_architecture](/assets/images/protected/170408/vdsr_architecture.png){: .center-image width="800px"}
 
 This residual learning brought big performance improvement for both converge speed and performance. The author's experiments showed that residual network converges faster than the standard non-residual network, and showed higher performance as well.
 
@@ -86,7 +86,7 @@ Some limitations are already proposed by Iljun Ahn and Woohyun Nam, which is tha
 ![vdsr_vs_hrst](/assets/images/protected/170408/vdsr_vs_hrst.png){: .center-image width="800px"}
 
 9. Result Presented  
-![vdsr_result](/assets/images/vdsr_result.png){: .center-image}
+![vdsr_result](/assets/images/protected/170408/vdsr_result.png){: .center-image}
 
 The authors compared this work with state-of-art methods, including SRCNN. Compared methods are A+, RFL, SelfEx, and SRCNN.
 PSNR and SSIM are used as performance metrics.  

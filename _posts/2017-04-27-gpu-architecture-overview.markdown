@@ -1,14 +1,14 @@
 ---
 layout: post
 title: "GPU Architecture Overview"
-date: "2017-04-19 11:30:19 +0900"
+date: "2017-04-27 10:15:41 +0900"
 author: "Insu Jang"
 tags: [research, cuda]
 ---
 
 # GPU Model
 
-![gpu_management_model](/assets/images/gpu_management_model.png){: .center-image width:600px}
+![gpu_management_model](/assets/images/170427/gpu_management_model.png){: .center-image width:600px}
 
 It explains several important designs that recent GPUs have adopted.
 
@@ -43,3 +43,14 @@ It explains several important designs that recent GPUs have adopted.
     - A command queue is a ring buffer with the put and get pointers.
     - All accesses to channel control area are intercepted by PFIFO engine for execution.
     - GPU driver uses a channel descriptor to store the settings for associated channel.
+    - Nouveau says that the PFIFO engine of the GPU reads commands from a section of memory, and relays them to the PGRAPH engine. (Maybe this for graphics?)
+
+7. **Bo**
+    - Nouveau and gdev uses *bo* really a lot.
+    - Buffer Object (bo). A block of memory. It can store a texture, a render target, shader code, ... everything.
+
+### References
+1. Yusuke Suzuki et al. *GPUvm: GPU Virtualization at the Hypervisor"*. IEEE Transactions on Computers. 2016
+2. Hong-Cyuan Hsu et al. *G-KVM: A Full GPU Virtualization on KVM"*. IEEE International Conference on Computer and Information Technology. 2016
+3. Nouveau Terms. [\[Online\]](https://nouveau.freedesktop.org/wiki/NouveauTerms/) (Accessed at Apr 27, 2017. Documentation version Aug 24, 2013)
+4. Nouveau Team. nVidia Hardware Documentation. [\[Online\]](https://media.readthedocs.org/pdf/envytools/latest/envytools.pdf) (Accessed at Apr 27, 2017. Documentation version Apr 18, 2017)
