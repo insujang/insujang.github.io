@@ -135,7 +135,7 @@ CUresult cuCtxCreate_v2(CUcontext *pctx, unsigned int flags, CUdevice dev) {
 
 As `cuCtxPushCurrent()` and `gquery()` does not use any Nouveau driver function, they will be passed.
 
-#### `gopen()`
+#### 1-1. `gopen()`
 When `cuCtxCreate()` is called, the selected gdev device is opened. The function for this purpose is `gopen()`. It is implemented in `/gdev/common/gdev_api.c` and will be copied into `/gdev/release/mod/gdev/gdev_api.c` after performing `cmake`.
 
 It opens the device as well as allocates some memory regions for this context.
@@ -362,8 +362,6 @@ The call flow is as follows. `cuCtxCreate()` -> `gopen()` (in CUDA runtime) -> `
 
 ### 3. `cuMemAlloc()`
 
-An easy part of analysis.
-
 ```
 // a[]
 gmalloc: allocating device memory by calling gdev_mem_alloc. size: 0x24
@@ -380,3 +378,265 @@ gmalloc: allocating device memory by calling gdev_mem_alloc. size: 0x24
 gdev_raw_mem_alloc: allocating memory at device. size: 0x24
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x24
 ```
+
+### 4. `cuMemcpyHtoD()`
+
+#### 4-1. How gdev transfer the data into device?
+Defined in `/gdev/cuda/driver/memory.c`.
+
+```c
+CUresult cuMemcpyHtoD_v2 (CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount) {
+    ...
+    gmemcpy_to_device(handle, dst_addr, src_buf, size);
+    return CUDA_SUCCESS;
+}
+```
+`/gdev/common/gdev_api.c`
+```c
+int gmemcpy_to_device(struct gdev_handle *h, uint64_t dst_addr, const void *src_buf, uint64_t size) {
+    return __gmemcpy_to_device(h, dst_addr, src_buf, size, NULL, __ f_memcpy);
+}
+
+// a wrapper function of gmemcpy_to_device().
+static int __gmemcpy_to_device (struct gdev_handle *h, uint64_t dst_addr, const void *src_buf, uint64_t size, uint32_t *id, int (*host_copy)(void*, const void*, uint32_t)) {
+    mem = gdev_mem_lookup_by_addr(vas, dst_addr, GDEV_MEM_DEVICE);
+    gdev_mem_lock(mem);
+    __gmemcpy_to_device_locked(ctx, dst_addr, src_buf, size, id, ch_size, p_count, vas, mem, dma_mem, host_copy);
+    gdev_mem_unlock(mem);
+    ...
+}
+
+static int __gmemcpy_to_device_locked(gdev_ctx *ctx, uint64_t dst_addr, const void *src_buf, uint64_t size, uint32_t *id, uint32_t ch_size, int p_count, gdev_vas_t *vas, gdev_mem_t *mem, gdev_mem_t **dma_mem, int (*host_copy)(void*, const void*, uint32_t)) {
+    if (size <= 4 && mem->map)
+        gdev_write32(mem, dst_addr, ((uint32_t*)src_buf)[0]);
+
+    // GDEV_MEMCPY_IOWRITE_LIMIT = 0x400000 (4MB) defined in mod/gdev/gdev_conf.h
+    else if (size <= GDEV_MEMCPY_IOWRITE_LIMIT && mem->map)
+        gdev_write(mem, dst_addr, src_buf, size);
+
+    else if ((hmem = gdev_mem_lookup_by_buf(vas, src_buf, GDEV_MEM_DMA))) {
+        __gmemcpy_dma_to_device(ctx, dst_addr, hmem->addr, size, id);
+    }
+
+    else {
+        // prepare bounce buffer memory.
+        // In a test configuration, it is not called.
+        if(!dma_mem) bmem = __malloc_dma(vas, __min(size, ch_size), p_count);
+
+        if (p_count > 1 && size > ch_size) __gmemcpy_to_device_p(ctx, dst_addr, src_buf, size, ch_size, p_count, bmem, host_copy);
+        else __gmemcpy_to_device_np(dst_addr, src_buf, size, ch_size, bmem, host_copy);
+
+        if(!dma_mem) __free_dma(bmem, p_count);
+    }
+}
+```
+
+The last function calls `gdev_write32()` or `gdev_write()`, both are defined in `/mod/gdev/gdev_nvidia_compute.c`. Also you can see that gdev transfers data in different ways in terms of its size.
+
+- If size is less than 4 bytes, it just write 4 bytes (32 bits) via MMIO.
+- If size is less than 4MB, it uses MMIO (maybe).
+- Else, it transfers via DMA.
+
+This strategy is well explained in the paper *Data Transfer Matters for GPU Computing* [\[link\](http://www.ertl.jp/~shinpei/papers/icpads13.pdf)]. The author of Gdev is a coworker of this paper.
+
+`gdev_write32()` and `gdev_write()` call `gdev_raw_write32()` and `gdev_raw_write()` respectively, defined in `/mod/gdev/gdev_drv_nvidia.c`.
+
+```c
+void gdev_raw_write32 (struct gdev_mem *mem, uint64_t addr, uint32_t val) {
+    bo.addr = mem->addr;
+    bo.size = mem->size;
+    bo.map = mem->map;
+    gdev_drv_write32(drm, &vspace, &bo, offset, val);
+}
+
+void gdev_raw_write (struct gdev_mem *mem, uint64_t addr, const void *buf, uint32_t size) {
+    bo.addr = mem->addr;
+    bo.size = mem->size;
+    bo.map = mem->map;
+    gdev_drv_write(drm, &vspace, &bo, offset, size, buf);
+}
+```
+
+`/linux/drivers/gpu/drm/nouveau/gdev_interface.c`
+
+```c
+int gdev_drv_write32 (struct drm_device *drm, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo, uint64_t offset, uint32_t val) {
+    if(drv_bo->map) iowrite32_native(val, drv_bo->map + offset);
+    return 0;
+}
+
+int gdev_drv_write (struct drm_device *drm, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo, uint64_t offset, uint64_t size, const void *buf) {
+    if(drv_bo->map) memcpy_toio(drv_bo->map + offset, buf, size);
+}
+```
+
+`/linux/include/asm-generic/io.h`
+
+```c
+static inline void memcpy_toio(volatile void __ iomem *addr, const void*buffer, size_t size) {
+    memcpy(__ io_virt(addr), buffer, size);
+}
+
+static inline void iowrite32 (u32 value, volatile void __ iomem *addr) {
+    writel(value, addr);
+}
+```
+
+#### 4-2. How gdev get the MMIO address for the variable?
+Now, we understand that the target address is `drv_bo->map + offset (gdev_drv_write())`, the first one of which comes from `mem->map(gdev_raw_write())`, which returns from `gdev_mem_lookup_by_addr()` in `__gmemcpy_to_device()`.
+
+Seeing `__gmemcpy_to_device()` again, the function works as follows.
+
+```c
+static int __gmemcpy_to_device (struct gdev_handle *h, uint64_t dst_addr, const void *src_buf, uint64_t size, uint32_t *id, int (*host_copy)(void*, const void*, uint32_t)) {
+    mem = gdev_mem_lookup_by_addr(vas, dst_addr, GDEV_MEM_DEVICE);
+    __gmemcpy_to_device_locked(ctx, dst_addr, src_buf, size, id, ch_size, p_count, vas, mem, dma_mem, host_copy);
+    ...
+}
+```
+
+Keep in mind that, all software <mark>must</mark> access to memory including MMIO via virtual address, not physical address. hence, what `gdev_mem_lookup_by_addr` returns is a virtual address mapped to `dst_addr`. For `a[]`, printing the information is as follows.
+
+```c
+gdev_mem *mem = gdev_mem_lookup_by_addr(vas, dst_addr, GDEV_MEM_DEVICE);
+printk("%s: gdev_mem_lookup_by_addr returns mem->map: 0x%lx, dst_addr: 0x%lx\n",
+        __func__, mem->map, dst_addr);
+```
+
+```
+dmesg
+
+// cuMemAlloc for a[]
+gmalloc: calling gdev_mem_alloc, size: 0x24.
+gdev_raw_mem_alloc: allocating memory at device. size: 0x24
+__gdev_raw_mem_alloc: allocating memory of 0x24 bytes at addr 0x10554000
+
+...
+
+// cuMemcpyHtoD for a[]
+__gmemcpy_to_device: gdev_mem_lookup_by_addr returns mem->map: 0xffffc90010e9c000, dst_addr: 0x10554000
+```
+
+As the name of the function is `lookup_by_addr`, and `dst_addr` is given as a parameter, `gdev_mem` structure would store both physical address and virtual address mapped to it.
+
+For more detail, let's see implementation of the function to see how it get objects with `dst_addr`. It is implemented in `/gdev/common/gdev_nvidia_mem.c`.
+
+```c
+struct gdev_mem *gdev_mem_lookup_by_addr(struct gdev_vas *vas, uint64_t addr, int type) {
+    switch (type){
+    case GDEV_MEM_DEVICE:
+        gdev_list_for_each (mem, &vas->mem_list, list_entry_heap) {
+            if (addr >= mem->addr) && (addr < mem->addr + mem->size)) break;
+        }
+        ...
+    }
+    return mem;
+}
+```
+It compares `dst_addr` with `mem->addr` for all `gdev_mem` objects.
+
+Then let's figure out when `gdev_mem` object is created for each data. One good starting point would be `__gdev_raw_mem_alloc()`, defined in `/gdev/mod/gdev/gdev_drv_nvidia.c`.
+
+```c
+static intline struct gdev_mem *__gdev_raw_mem_alloc(struct gdev_vas *vas, uint64_t size, uint32_t flags) {
+    struct gdev_mem* mem;
+    mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+    gdev_drv_bo_alloc(drm, size, flags, &vpsace, &bo);
+    printk("%s: allocating memory of 0x%lx bytes at addr 0x%lx\n",
+           __func__, size, bo.addr);
+    mem->addr = bo.addr;
+    mem->size = bo.size;
+    mem->map = bo.map;
+    mem->bo = bo.priv;
+    mem->padata = (void*)drm;
+
+    return mem;
+}
+
+__gdev_raw_mem_alloc: allocating memory of 0x24 bytes at addr 0x10554000
+```
+
+Hence `mem->addr = bo.addr`. Then how `bo.addr` is set? It is set in `gdev_drv_bo_alloc()` defined in `/linux/drivers/gpu/drm/nouveau/gdev_interface.c`.
+
+```c
+int gdev_drv_bo_alloc (struct drm_device *drm, uint64_t size, uint32_t drv_flags, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo) {
+    struct nouveau_bo* bo;
+    nouveau_bo_new(drm, size, 0, flags, 0, 0, NULL, &bo);
+    ...
+    nouveau_vma* vma - kzalloc(sizeof(*vma), GFP_KERNEL);
+    nouveau_bo_vma_add(bo, client->vm, vma);
+    drv_bo->addr = vma->offset;
+    // otherwise drv_bo->addr will be 0.
+    drv_bo->map = bo->kmap.virtual;
+    drv_bo->size = bo->bo.mem.size;
+    drv_bo->priv = bo;
+
+    return 0;
+}
+```
+
+Returned `bo` by `nouveau_bo_new()` seems to set the target phyiscal address.
+
+<!--
+`/linux/drivers/gpu/drm/nouveau/nouveau_bo.c`
+```c
+int nouveau_bo_vma_add (struct nouveau_bo *nvbo, struct nouveau_vm *vm, struct nouveau_vma *vma) {
+    ...
+    nouveau_vm_map(vma, nvbo->bo.mem.mm_node);
+    ...
+}
+```
+
+`/linux/drivers/gpu/drm/nouveau/core/subdev/vm/base.c`
+```c
+void nouveau_vm_map (struct nouveau_vma *vma, struct nouveau_mem *node) {
+    if(node->sg)          nouveau_vm_map_sg_table(vma, 0, node->size << 12, node);
+    else {
+        if (node->pages)  nouveau_vm_map_sg(vma, 0, node->size << 12, node);
+        else              nouveau_vm_at(vma, 0, node);
+    }
+}
+```
+
+In the test, `nouveau_vm_map_sg` is called.
+
+```c
+static void
+nouveau_vm_map_sg_table(struct nouveau_vma *vma, u64 delta, u64 length,
+            struct nouveau_mem *mem)
+{
+    struct nouveau_vm  vm = vma->vm;
+    struct nouveau_vmmgr* vmm = vm->vmm;
+    int big = vma->node->type != vmm->spg_shift;
+    u32 offset = vma->node->offset + (delta >> 12);
+    u32 bits = vma->node->type - 12;
+    u32 num  = length >> vma->node->type;
+    u32 pde  = (offset >> vmm->pgt_bits) - vm->fpde;
+    u32 pte  = (offset & ((1 << vmm->pgt_bits) - 1)) >> bits;
+    u32 max  = 1 << (vmm->pgt_bits - bits);
+    unsigned m, sglen;
+    u32 end, len;
+    int i;
+    struct scatterlist* sg;
+
+    for_each_sg(mem->sg->sgl, sg, mem->sg->nents, i) {
+        struct nouveau_gpuobj* pgt = vm->pgt[pde].obj[big];
+        sglen = sg_dma_len(sg) >> PAGE_SHIFT;
+
+        end = pte + sglen;
+        if (unlikely(end >= max))
+            end = max;
+        len = end - pte;
+
+        for (m = 0; m < len; m++) {
+            dma_addr_t addr = sg_dma_address(sg) + (m << PAGE_SHIFT);
+
+            vmm->map_sg(vma, pgt, mem, pte, 1, &addr);
+            num--;
+            pte++;
+
+            if (num == 0)
+                goto finish;
+
+```
+-->

@@ -23,3 +23,4 @@ comments: false
     - 커널 영역에는 Interrupt handler만이 있을 것. 그러면 OS가 Interrupt handler만 가지고는
     GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.
     - 특정 enclave (GPU Enclave)가 특정 MMIO 영역(GPU의 BAR)을 가질 수 있다는 것을 증명
+    - IO 영역은 privilege 레벨이 필요할텐데 GPU enclave 프로세스가 이 영역에 접근할 수 있는 방법에 대해 증명
