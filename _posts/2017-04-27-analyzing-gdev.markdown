@@ -482,6 +482,10 @@ static inline void iowrite32 (u32 value, volatile void __ iomem *addr) {
 }
 ```
 
+These functions are for MMIO defined in Linux kernel. For more information, visit [\[here\](http://www.makelinux.net/ldd3/chp-9-sect-4)].
+
+
+
 #### 4-2. How gdev get the MMIO address for the variable?
 Now, we understand that the target address is `drv_bo->map + offset (gdev_drv_write())`, the first one of which comes from `mem->map(gdev_raw_write())`, which returns from `gdev_mem_lookup_by_addr()` in `__gmemcpy_to_device()`.
 
