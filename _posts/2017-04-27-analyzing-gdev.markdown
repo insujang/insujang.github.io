@@ -15,7 +15,7 @@ Detail implementations are described in the other paper that the author wrote, *
 
 ## Internal Implementation
 
-![gdev_internal](/assets/images/gdev_internal.png){: .center-image}
+![gdev_internal](/assets/images/170427/gdev_internal.png){: .center-image}
 * Implementation of Gdev
 
 Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source. Gdev mainly works well with Nouveau.
