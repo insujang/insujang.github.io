@@ -40,8 +40,11 @@ comments: false
     * PCI Express Register Range Base Address (PCIEXBAR)
     {: .center}
 
-    > 예시로, B.D.F. 번호가 0001:00.0 인 디바이스의 BAR0에 접근하는 방법을 그려서 보이기.
-
+    > 예시: B.D.F가 0001:00.0인 PCI 디바이스의 BAR0에 접근하는 방법
+    >
+    > ![accesing_pci_01_00_0](/assets/images/protected/170427/accesing_pci_01_00_0.png){: .center-image width="1000px"}
+    >
+    > PCI 디바이스에 접근하기 위해서는 BAR 주소를 알아야 하며, BAR 주소를 알기 위해서는 PCI Configuration Space의 위치를 알아야 한다. 따라서, 먼저 PCI Configuration Space의 물리 주소를 PCH에 있는 PCIEXBAR 레지스터를 사용해 찾고, 해당 PCI Configuration Space에서 BAR에 저장된 물리 주소를 찾으면 해당 디바이스에 접근할 수 있다.
 
     이 MMIO 영역을 통해 어떤 특정 B.D.F 번호를 가진 PCI 디바이스의 configuration space가 매핑된 MMIO 주소를 알 수 있다.  
     여기에 접근하는 것을 막기 위한 방법으로는,
@@ -52,9 +55,11 @@ comments: false
 
 2. **GPU device driver를 MMIO와 Interrupt handler를 별도로 분리시키는 것이 가능한가?**
 
-    CUDA open source 소프트웨어인 gdev 내부 코드를 자세히 분석한 결과, GPGPU 컴퓨팅 과정에서 인터럽트를 사용하지 않는 것으로 나타났다. 관련 내용은 논문 *Implementing Open-Source CUDA Runtime* 에 나와 있으며, 요약하자면 NVIDIA GPU는 fence라는 기술을 사용해, 특정 위치의 값을 계속하여 polling한다. 이 값이 바뀔 경우 GPU 커널 실행이 끝난 것을 의미한다고 하며, 실제 코드 또한 인터럽트 핸들러를 사용하지 않는 것으로 나타났다. (cuMemcpy, cuCtxSynchronize 함수에 대하여)
+    CUDA open source 소프트웨어인 gdev 내부 코드를 자세히 분석한 결과, **GPGPU 컴퓨팅 과정에서 인터럽트를 사용하지 않는 것으로 나타났다.** 관련 내용은 논문 *Implementing Open-Source CUDA Runtime* 에 나와 있으며, 요약하자면 NVIDIA GPU는 fence라는 기술을 사용해 특정 위치의 값을 계속하여 polling한다. 이 값이 바뀔 경우 GPU 커널 실행이 끝난 것을 의미한다.
 
-    따라서 커널 영역에서 디바이스 드라이버는 GPU Enclave를 실행할 프로세스를 fork하는 역할만을 담당하며, 부팅이 끝난 이후 **커널 영역 디바이스 드라이버는 유저 프로세스가 GPU Enclave를 통해 GPU를 사용할 때 GPU Enclave를 실행하는 프로세스를 깨우는 역할만** 하게 되며, **GPU와 직접적으로 통신하는 역할은 모두 GPU Enclave를 실행하는 프로세스가 맡는다.**
+    실제 코드 확인 결과 인터럽트 핸들러가 구현되어 있으나 사용하지 않는 것을 확인했다. (cuMemcpy, cuCtxSynchronize 함수에 대해서 fence만 사용하도록 구현되어 있음)
+
+    따라서 부팅이 끝난 이후 **커널 영역 디바이스 드라이버는 유저 프로세스가 GPU Enclave를 통해 GPU를 사용할 때 GPU Enclave를 실행하는 프로세스를 깨우는 역할만 하게 되며 (처리할 커맨드가 없을 경우 GPU Enclave 프로세스는 슬립 상태), GPU와 직접적으로 통신하는 역할은 모두 GPU Enclave를 실행하는 프로세스가 맡는다.**
     GPU Enclave를 실행하는 프로세스는 위에서 언급하였듯 커널 부팅 중 생성되며, 소유자는 root이다. 프로세스가 실행되면 GPU Enclave를 생성하고, 생성이 확인되면 커널 영역의 디바이스 드라이버가 깨울 때까지 슬립한다.
 
 3. **OS가 Interrupt handler만 가지고는 GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.**
@@ -70,13 +75,15 @@ comments: false
 
     또한, GPU-SGX는 이 요청을 처리하기 전에 1번에서 언급한 대로 System address map fix가 되어 있는지 PCIe controller와 하드웨어 통신을 통해 체크한다. fix가 되어 있을 경우에만 GPU Enclave의 GPU MMIO 영역 소유에 대한 요청을 처리하고, GPU Enclave를 GPU 소유자로 등록한다.
 
-    이후 같은 GPU에 대한 다른 enclave의 소유 요청은 거부한다.
+    이후 같은 GPU에 대한 다른 enclave의 소유 요청은 거부하며, 등록된 GPU의 MMIO에 접근할 때 해당 프로세스가 GPU Enclave인지 아닌지를 판별해, GPU Enclave에서 접근하는 것이 아닐 경우 접근을 거부한다.  
+    이는 기존 SGX가 어떤 enclave에서 EPC page에 접근할 때 EPC page의 소유자와 일치하는지 확인하는 과정을 응용해 구현할 수 있다.
 
 5. **IO 영역은 privilege 레벨이 필요한데 GPU enclave 프로세스가 이 영역에 접근할 수 있는 방법에 대해 증명하기**
 
-    실험 결과 **유저 프로세스도 MMIO 영역에 대한 virtual address만 있으면 이후에는 privilege 레벨 없이 MMIO 영역에 접근 가능하다는 것을 확인** 하였다. [\[링크\]](/protecteduic2ws/2017-04-03/gpu-enclave-protection-mechanism/)
+    IO port를 통해 디바이스에 접근할 때는 IO instruction이 privilege 레벨을 요구한다.  
+    그러나, MMIO를 통해 디바이스에 접근할 때는 **유저 프로세스라도 MMIO 영역에 대한 virtual address만 있으면 이후에는 privilege 레벨 없이 MMIO 영역에 접근 가능하다는 것을 확인** 하였다. [\[링크\]](/protecteduic2ws/2017-04-03/gpu-enclave-protection-mechanism/)
 
-    커널의 도움을 받아 MMIO 영역에 매핑된 virtual address를 받는 것은, 기존 SGX가 EPC 물리 주소에 매핑된 virtual address를 받기 위해 커널의 도움을 받는 것과 같다.
+    커널의 도움을 받아 MMIO 영역에 매핑된 virtual address를 받는 것은, 기존 SGX가 EPC 물리 주소에 매핑된 virtual address를 받기 위해 커널의 도움을 받는 것과 비슷하다고 볼 수 있다.
 
     기존 SGX는 EPC page의 physical address를 커널에게 넘기며 해당 주소에 매핑된 virtual address를 커널에게 요청하고, 돌아온 virtual address를 SGX의 내부 자료구조에 기록한다. 추후 이 EPC page에 유저 프로세스가 다시 접근했을 때 MMU에서 기록한 virtual address와 방금 address translation을 통해 생성한 virtual address가 일치하는지 확인한다. 일치하지 않으면 커널에 의해 페이지 테이블이 수정되었다는 의미이므로, 접근을 거부한다.
 
