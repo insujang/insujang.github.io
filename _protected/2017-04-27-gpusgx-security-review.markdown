@@ -49,7 +49,10 @@ comments: false
     이 MMIO 영역을 통해 어떤 특정 B.D.F 번호를 가진 PCI 디바이스의 configuration space가 매핑된 MMIO 주소를 알 수 있다.  
     여기에 접근하는 것을 막기 위한 방법으로는,
 
-    1. I/O port는 protected mode에서 사용하지 않으므로 0xCF8과 0xCFC 레지스터를 막는다. 이 두 제리스터는 PCI configuration space에 접근하기 위해서만 사용되므로 막아도 전체 시스템에 문제가 발생하지 않는다. GPUvm 논문에서도 I/O port는 현재 사용되지 않는다고 한다.
+    1. I/O port는 protected mode에서 사용하지 않으므로 0xCF8과 0xCFC 레지스터를 막는다. 이 두 레지스터는 PCI configuration space에 접근하기 위해서만 사용되고, 소프트웨어는 리눅스 커널의 자료 구조를 사용하도록 권장되므로 I/O port는 막아도 전체 시스템에 문제가 발생하지 않는다. GPUvm 논문에서도 I/O port는 현재 사용되지 않는다고 한다.
+
+        > 하지만, 하이퍼바이저 레벨에서 CPU I/O port를 막는 방법에 대해서는 찾지 못했으므로 구현할 때에는 위 I/O port를 사용하지 않는다고 가정한다.
+
     2. PCI configuration space가 매핑된 MMIO 영역은 RO로 한다. Write request가 올 경우 PCIe controller에서 이를 거부하도록 설정한다.  
     구체적인 설명으로, PCIe controller에 System address map fix라는 새로운 기능을 구현한다. 이 기능은 한번 호출되면 이후 PCI MMIO 영역을 리매핑하는 요청을 포함해, PCI configuration space의 레지스터 값을 수정하는 요청을 모두 거부한다. GPU Enclave 프로세스가 GPU enclave를 생성하기 전 `ioctl()`을 통해 PCIe controller에게 System address map fix를 요청한다. GPU enclave는 PCI configuration space가 locked되어있지 않으면 초기화에 실패하도록 구현한다.
 
@@ -61,6 +64,8 @@ comments: false
 
     따라서 부팅이 끝난 이후 **커널 영역 디바이스 드라이버는 유저 프로세스가 GPU Enclave를 통해 GPU를 사용할 때 GPU Enclave를 실행하는 프로세스를 깨우는 역할만 하게 되며 (처리할 커맨드가 없을 경우 GPU Enclave 프로세스는 슬립 상태), GPU와 직접적으로 통신하는 역할은 모두 GPU Enclave를 실행하는 프로세스가 맡는다.**
     GPU Enclave를 실행하는 프로세스는 위에서 언급하였듯 커널 부팅 중 생성되며, 소유자는 root이다. 프로세스가 실행되면 GPU Enclave를 생성하고, 생성이 확인되면 커널 영역의 디바이스 드라이버가 깨울 때까지 슬립한다.
+
+    MMIO에 접근하는 것 자체는 유저스페이스 애플리케이션에서 가능한 일이므로, 기존 커널 영역에 있는 device driver의 역할을 축소하고 MMIO 접근 기능을 애플리케이션으로 분리하는 것은 가능하다.
 
 3. **OS가 Interrupt handler만 가지고는 GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.**
 
