@@ -54,25 +54,37 @@ comments: false
         > 하지만, 하이퍼바이저 레벨에서 CPU I/O port를 막는 방법에 대해서는 찾지 못했으므로 구현할 때에는 위 I/O port를 사용하지 않는다고 가정한다.
 
     2. PCI configuration space가 매핑된 MMIO 영역은 RO로 한다. Write request가 올 경우 PCIe controller에서 이를 거부하도록 설정한다.  
-    구체적인 설명으로, PCIe controller에 System address map fix라는 새로운 기능을 구현한다. 이 기능은 한번 호출되면 이후 PCI MMIO 영역을 리매핑하는 요청을 포함해, PCI configuration space의 레지스터 값을 수정하는 요청을 모두 거부한다. GPU Enclave 프로세스가 GPU enclave를 생성하기 전 `ioctl()`을 통해 PCIe controller에게 System address map fix를 요청한다. GPU enclave는 PCI configuration space가 locked되어있지 않으면 초기화에 실패하도록 구현한다.
+    구체적인 설명으로, PCIe controller에 address map lock이라는 새로운 기능을 구현한다. 이 기능은 한번 호출되면 이후 GPU의 PCI MMIO 물리 주소가 저장된 BAR 영역에 대해 수정 요청을 모두 거부한다. GPU Enclave 프로세스가 GPU enclave를 생성하기 전 PCIe controller에게 address map lock을 요청한다. GPU enclave는 PCI configuration space가 locked되어있지 않으면 초기화에 실패하도록 구현한다.
+
+        PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
+
+        ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image}
+        * Address map lock 후 BAR 읽어오기를 거부하는 시스템 테스트
+        {: .center}
+
+        ![test_bar_read2](/assets/images/protected/170427/test_bar_read2.png){: .center-image}
+        * 이 때 QEMU에서는 BAR가 lock되어 의도적으로 잘못된 데이터를 보냈음을 표시함.
+        {: .center}
+
+        ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image}
+        * address map lock bit 초기화를 거부하는 시스템 테스트
+        {: .center}
+
+        ![address_map_lock2](/assets/images/protected/170427/address_map_lock2.png){: .center-image}
+        * 이 때 QEMU에서는 address map lock bit 초기화 시도가 있었음을 표시함.
+        {: .center}
 
 2. **GPU device driver를 MMIO와 Interrupt handler를 별도로 분리시키는 것이 가능한가?**
 
-    CUDA open source 소프트웨어인 gdev 내부 코드를 자세히 분석한 결과, **GPGPU 컴퓨팅 과정에서 인터럽트를 사용하지 않는 것으로 나타났다.** 관련 내용은 논문 *Implementing Open-Source CUDA Runtime* 에 나와 있으며, 요약하자면 NVIDIA GPU는 fence라는 기술을 사용해 특정 위치의 값을 계속하여 polling한다. 이 값이 바뀔 경우 GPU 커널 실행이 끝난 것을 의미한다.
+    CUDA open source 소프트웨어인 gdev 내부 코드를 자세히 분석한 결과, **GPGPU 컴퓨팅 과정에서 인터럽트를 사용하지 않는 것으로 나타났다.** 논문 *Implementing Open-Source CUDA Runtime* 에서도 polling을 사용한다고 되어 있었으나 인터럽트 핸들러를 완전히 사용하는지는 확실하지 않았었지만, 실제 코드 확인 결과 인터럽트 핸들러가 구현되어 있으나 사용하지 않는 것을 확인했다. 논문을 요약하자면 NVIDIA GPU는 fence라는 기술을 사용해 특정 위치의 값을 계속하여 polling한다. 이 값이 바뀔 경우 GPU 커널 실행이 끝난 것을 의미한다. (cuMemcpy, cuCtxSynchronize 함수에 대해서 fence만 사용하도록 구현되어 있음)
 
-    실제 코드 확인 결과 인터럽트 핸들러가 구현되어 있으나 사용하지 않는 것을 확인했다. (cuMemcpy, cuCtxSynchronize 함수에 대해서 fence만 사용하도록 구현되어 있음)
-
-    따라서 부팅이 끝난 이후 **커널 영역 디바이스 드라이버는 유저 프로세스가 GPU Enclave를 통해 GPU를 사용할 때 GPU Enclave를 실행하는 프로세스를 깨우는 역할만 하게 되며 (처리할 커맨드가 없을 경우 GPU Enclave 프로세스는 슬립 상태), GPU와 직접적으로 통신하는 역할은 모두 GPU Enclave를 실행하는 프로세스가 맡는다.**
-    GPU Enclave를 실행하는 프로세스는 위에서 언급하였듯 커널 부팅 중 생성되며, 소유자는 root이다. 프로세스가 실행되면 GPU Enclave를 생성하고, 생성이 확인되면 커널 영역의 디바이스 드라이버가 깨울 때까지 슬립한다.
+    따라서 부팅이 끝난 이후 **커널 영역 디바이스 드라이버는 GPU Enclave와 유저 Enclave 간 시그널을 통한 깨우기만을 수행하며, 두 프로세스가 주고받는 데이터는 디바이스 드라이버를 거치지 않고 공유 메모리를 사용하여 전달된다.**
 
     MMIO에 접근하는 것 자체는 유저스페이스 애플리케이션에서 가능한 일이므로, 기존 커널 영역에 있는 device driver의 역할을 축소하고 MMIO 접근 기능을 애플리케이션으로 분리하는 것은 가능하다.
 
 3. **OS가 Interrupt handler만 가지고는 GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.**
 
-    Interrupt handler를 사용하지 않음으로써 커널 영역에서는 OS가 어떤 방법으로도 정보를 뽑아낼 수 없다.
-
-    1. OS의 도움을 받아 생성하는 유저 프로세스 - GPU Enclave 프로세스 간 공유 메모리에는 암호화된 데이터가 쓰여지며, 암호화에 사용되는 shared secret key는 인텔 SGX에서 사용되는 Diffie-Hellman 라이브러리를 사용하므로 안전하게 데이터를 이동할 수 있다.
-    2. OS가 공유 메모리의 데이터를 일부 수정할 경우, AES128-GCM 프로토콜에 의해 authentication failure를 알 수 있다.
+    Interrupt handler를 사용하지 않음으로써 이는 증명하지 않아도 되게 되었다. 여전히 유저 프로세스가 GPU를 사용하려면 디바이스 드라이버의 도움을 받아 GPU Enclave 프로세스를 깨워서 통신해야 하지만, 이 과정에서 유저 데이터는 암호화되어 전달되므로 OS에서 데이터를 볼 수 없다.
 
 4. **특정 enclave (GPU Enclave)가 특정 MMIO 영역을 독점적으로 소유할 수 있다는 것을 증명해야 한다.**
 
