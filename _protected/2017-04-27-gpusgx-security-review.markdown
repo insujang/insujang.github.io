@@ -52,7 +52,8 @@ comments: false
     /qemu-sgx/hw/pci/pci_host.c
     ```
 
-    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 아래와 같이 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.  
+    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 아래와 같이 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
+
     PCI COMMAND는 CPU 내부에 있는 Platform Controller Hub(PCH)의 PCIe 컨트롤러에 있는 레지스터 중 하나로, 이 레지스터의 11번째 비트를 address map lock bit로 구현하였다. 데이터시트에는 이 비트가 RO로 되어있지만, QEMU에서 이 비트를 RW로 설정할 수 있다.
 
     ![pci_command_register](/assets/images/protected/170427/pci_command_register.png){: .center-image width="800px"}
@@ -86,6 +87,8 @@ comments: false
 3. **OS가 Interrupt handler만 가지고는 GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.**
 
     Interrupt handler를 사용하지 않음으로써 이는 증명하지 않아도 되게 되었다. 여전히 유저 프로세스가 GPU를 사용하려면 디바이스 드라이버의 도움을 받아 GPU Enclave 프로세스를 깨워서 통신해야 하지만, 이 과정에서 유저 데이터는 암호화되어 전달되므로 OS에서 데이터를 볼 수 없다.
+
+    또한 GPU Enclave 프로세스만이 MMIO 영역에 접근 가능하므로, 디바이스 드라이버는 GPU의 데이터 영역에 접근할 수 없다.
 
 4. **특정 enclave (GPU Enclave)가 특정 MMIO 영역을 독점적으로 소유할 수 있다는 것을 증명해야 한다.**
 
