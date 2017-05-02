@@ -32,8 +32,7 @@ comments: false
     * Figure: PCIe configuration sapce header for type0
     {: .center}
 
-    PCI 디바이스에 하드웨어적으로 존재하는 레지스터에 OS가 접근해 MMIO 주소를 바꾸지 못하도록 해야 한다.
-
+    PCI 디바이스에 하드웨어적으로 존재하는 레지스터에 OS가 접근해 MMIO 주소를 바꾸지 못하도록 해야 한다.  
     MMIO 주소는 위 PCI configuration space에서 BAR 레지스터에 저장되어 있으며, 다음 두 가지 방법으로 접근 가능하다.
 
     1. CPU I/O port (0xCF8: PCI CONFIG ADDRESS REGISTER, 0xCFC: PCI CONFIG DATA REGISTER)
@@ -44,36 +43,23 @@ comments: false
 
     > **헷갈림 주의**: BAR에 저장된 물리 주소는 디바이스 컨트롤을 위한 MMIO 영역이며, PCI configuration space 자체도 별도 영역에 MMIO로 매핑되어 있다.
 
-    ![pciexbar](/assets/images/protected/170427/pciexbar.png){: .center-image width="800px"}
-    * PCI Express Register Range Base Address (PCIEXBAR)
-    {: .center}
+    두 가지 방법 중 어느 것을 쓰더라도, PCI 디바이스에 데이터를 쓰기 위해서는 ***CPU와 PCI device를 이어주는 PCIe 컨트롤러를 거치게 된다.*** 따라서, **<mark>PCIe 컨트롤러를 수정함으로써 소프트웨어에서 PCI 디바이스의 BAR 값에 접근하는 행위를 모두 차단</mark>할 수 있다.**
 
-    > 예시: B.D.F가 0001:00.0인 PCI 디바이스의 BAR0에 접근하는 방법
-    >
-    > ![accesing_pci_01_00_0](/assets/images/protected/170427/accesing_pci_01_00_0.png){: .center-image width="1000px"}
-    >
-    > 1. PCI 디바이스에 접근하기 위해서는 BAR 주소를 알아야 하며, BAR 주소를 알기 위해서는 PCI Configuration Space의 위치를 알아야 한다.  
-    2. 따라서, 먼저 PCI Configuration Space의 물리 주소를 PCH에 있는 PCIEXBAR 레지스터를 사용해 찾는다.  
-    3. 이 주소에 접근해 PCI Configuration Space에서 BAR에 저장된, MMIO가 매핑된 주소를 찾는다.  
-    4. 해당 디바이스의 MMIO 영역에 접근할 수 있다.
+    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 아래와 같이 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
 
-    두 가지 방법 중 어느 것을 쓰더라도, PCI 디바이스에 데이터를 쓰기 위해서는 ***CPU와 PCI device를 이어주는 PCIe 컨트롤러를 거치게 된다.*** 따라서, **<mark>PCIe 컨트롤러를 수정함으로써 소프트웨어에서 PCI 디바이스의 BAR 값을 수정하는 행위를 모두 차단</mark>할 수 있다.**
-
-    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
-
-    ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image}
+    ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image width="800px"}
     * Address map lock 후 BAR 읽어오기를 거부하는 시스템 테스트
     {: .center}
 
-    ![test_bar_read2](/assets/images/protected/170427/test_bar_read2.png){: .center-image}
+    ![test_bar_read2](/assets/images/protected/170427/test_bar_read2.png){: .center-image width="800px"}
     * 이 때 QEMU에서는 BAR가 lock되어 의도적으로 잘못된 데이터를 보냈음을 표시함.
     {: .center}
 
-    ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image}
-    * address map lock bit 초기화를 거부하는 시스템 테스트
+    ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image width="800px"}
+    * address map lock bit를 0으로 세팅하는 프로세스를 거부하는 시스템 테스트
     {: .center}
 
-    ![address_map_lock2](/assets/images/protected/170427/address_map_lock2.png){: .center-image}
+    ![address_map_lock2](/assets/images/protected/170427/address_map_lock2.png){: .center-image width="800px"}
     * 이 때 QEMU에서는 address map lock bit 초기화 시도가 있었음을 표시함.
     {: .center}
 
