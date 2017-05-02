@@ -81,19 +81,7 @@ comments: false
     * 이 때 QEMU에서는 address map lock bit 초기화 시도가 있었음을 기록한 모습.
     {: .center}
 
-2. **GPU device driver를 MMIO와 Interrupt handler를 별도로 분리시키는 것이 가능한가?**
-
-    CUDA open source 소프트웨어인 gdev 내부 코드를 자세히 분석한 결과, **GPGPU 컴퓨팅 과정에서 인터럽트를 사용하지 않는 것으로 나타났다.** 논문 *Implementing Open-Source CUDA Runtime* 에서도 polling을 사용한다고 되어 있었으나 인터럽트 핸들러를 완전히 사용하는지는 확실하지 않았었지만, 실제 코드 확인 결과 인터럽트 핸들러를 전혀 사용하지 않는 것을 확인했다. 논문을 요약하자면 NVIDIA GPU는 fence라는 기술을 사용해 MMIO 영역에서 특정 위치의 값을 계속하여 polling한다. 이 값이 바뀔 경우 GPU 커널 실행이 끝난 것을 의미한다. (synchronize 함수인 cuMemcpy, cuCtxSynchronize 함수에 대해서 fence만 사용하도록 구현되어 있음)
-
-    MMIO에 접근하는 것 자체는 유저스페이스 애플리케이션에서 가능한 일이므로, 기존 커널 영역에 있는 device driver의 역할을 축소하고 MMIO 접근 기능을 애플리케이션으로 분리하는 것은 가능하다. 단, Gdev는 MMIO 영역 할당을 위해 Nouveau 디바이스 드라이버를 사용하는데, Nouveau 디바이스 드라이버에서 MMIO를 어떻게 할당하고 있는지는 조금 더 분석이 필요하다.
-
-3. **OS가 Interrupt handler만 가지고는 GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.**
-
-    Interrupt handler를 사용하지 않는 것으로 밝혀졌다. 여전히 유저 프로세스가 GPU를 사용하려면 디바이스 드라이버의 도움을 받아 GPU Enclave 프로세스를 깨워서 통신해야 하지만, 이 과정에서 유저 데이터는 암호화되어 전달되므로 OS에서 데이터를 볼 수 없다.
-
-    또한 GPU Enclave 프로세스만이 MMIO 영역에 접근 가능하므로, 디바이스 드라이버 코드는 GPU의 데이터 영역에 접근할 수 없다.
-
-4. **특정 enclave (GPU Enclave)가 특정 MMIO 영역을 독점적으로 소유할 수 있다는 것을 증명해야 한다.**
+2. **특정 enclave (GPU Enclave)가 특정 MMIO 영역을 독점적으로 소유할 수 있다는 것을 증명해야 한다.**
 
     1. GPU Enclave가 초기화되면서 특정 B.D.F 번호를 가진 GPU에 대해 MMIO 영역 소유를 GPU-SGX에게 요청한다.
     2. GPU-SGX는 먼저 1번에서 언급한 대로 address map lock이 되어있는지 PCIe controller와 레지스터를 확인해 체크한다. 이 과정은 하드웨어적으로 진행되므로 OS가 개입할 수 없다.
@@ -101,11 +89,32 @@ comments: false
     4. 이후 같은 GPU에 대한 소유 요청은 전부 거부하며, 등록된 GPU의 MMIO에 접근할 때 해당 프로세스가 GPU Enclave인지 아닌지를 판별하고 GPU Enclave에서 접근하는 것이 아닐 경우 MMIO 접근을 거부한다.  
     이는 기존 SGX가 어떤 enclave에서 EPC page에 접근할 때 EPC page의 소유자와 일치하는지 확인하는 과정을 응용해 구현할 수 있다.
 
-    - **1, 4번에서 서술한 방법을 통해서, <mark>다음 항목들이 보장</mark>된다.**
+    > **1, 2번에서 서술한 방법을 통해서, <mark>다음 항목들이 보장</mark>된다.**
+    >
+    > 1. 특정 GPU는 단 하나의 GPU Enclave에게만 소유된다.
+    > 2. GPU가 매핑된 MMIO는 GPU Enclave가 초기화된 후 변경되지 못한다.
+    > 3. GPU Enclave 판별 매커니즘을 통해 GPU를 소유하고 있는 GPU Enclave만이 해당 GPU의 MMIO 영역에 접근할 수 있다.
 
-        1. 특정 GPU는 단 하나의 GPU Enclave에게만 소유된다.
-        2. GPU가 매핑된 MMIO는 GPU Enclave가 초기화된 후 변경되지 못한다.
-        3. GPU Enclave 판별 매커니즘을 통해 GPU를 소유하고 있는 GPU Enclave만이 해당 GPU의 MMIO 영역에 접근할 수 있다.
+
+3. **GPU device driver를 MMIO와 Interrupt handler를 별도로 분리시키는 것이 가능한가?**
+
+    CUDA open source 소프트웨어인 gdev 내부 코드를 자세히 분석한 결과, **GPGPU 컴퓨팅 과정에서 인터럽트를 사용하지 않는 것으로 나타났다.** 논문 *Implementing Open-Source CUDA Runtime* 에서도 polling을 사용한다고 되어 있었으나 인터럽트 핸들러를 완전히 사용하는지는 확실하지 않았었지만, 실제 코드 확인 결과 인터럽트 핸들러를 전혀 사용하지 않는 것을 확인했다. 논문을 요약하자면 NVIDIA GPU는 fence라는 기술을 사용해 MMIO 영역에서 특정 위치의 값을 계속하여 polling한다. 이 값이 바뀔 경우 GPU 커널 실행이 끝난 것을 의미한다. (synchronize 함수인 cuMemcpy, cuCtxSynchronize 함수에 대해서 fence만 사용하도록 구현되어 있음)
+
+    MMIO에 접근하는 것 자체는 유저스페이스 애플리케이션에서 가능한 일이므로, 기존 커널 영역에 있는 device driver의 역할을 축소하고 MMIO 접근 기능을 애플리케이션으로 분리하는 것은 가능하다. 단, Gdev는 MMIO 영역 할당을 위해 Nouveau 디바이스 드라이버를 사용하는데, Nouveau 디바이스 드라이버에서 MMIO를 어떻게 할당하고 있는지는 조금 더 분석이 필요하다.
+
+4. **OS가 Interrupt handler만 가지고는 GPU에서 정보를 뽑아낼 수 없다는 것을 증명해야 한다.**
+
+    Interrupt handler를 사용하지 않는 것으로 밝혀졌다. 여전히 유저 프로세스가 GPU를 사용하려면 디바이스 드라이버의 도움을 받아 GPU Enclave 프로세스를 깨워서 통신해야 하지만, 이 과정에서 유저 데이터는 암호화되어 전달되므로 OS에서 데이터를 볼 수 없다.
+
+    또한 GPU Enclave 프로세스만이 MMIO 영역에 접근 가능하므로, 디바이스 드라이버 코드는 GPU의 데이터 영역에 접근할 수 없다.
+
+
+    > **3, 4번에서 서술한 바를 정리하면, 커널 영역의 디바이스 드라이버의 역할은 아래와 같다.**
+    >
+    > 1. 인터럽트 핸들러는 사용하지 않는다.
+    > 2. 커널 영역의 디바이스 드라이버에서 GPU의 MMIO 영역에는 접근하지 못한다.
+    > 3. 커널 영역의 디바이스 드라이버가 하는 일: GPU Enclave 프로세스가 sleep 상태일 때, 유저 프로세스가 디바이스 드라이버에게 GPU Enclave 프로세스 깨우기 및 유저 프로세스 Enclave와 GPU Enclave 간 통신 중재를 요청한다. Diffie-Hellman 라이브러리를 사용해 공유 메모리 공간 생성 및 shared secret 키를 생성한 후에는 디바이스 드라이버의 중재를 거치지 않고 Enclave 간 통신을 수행한다.
+
 
 5. **IO 영역은 privilege 레벨이 필요한데 GPU enclave 프로세스가 이 영역에 접근할 수 있는 방법에 대해 증명하기**
 
