@@ -41,11 +41,23 @@ comments: false
 
         2번 방법의 경우, MMIO 영역이 매핑된 주소가 BAR에 저장된 것처럼 configuration space도 매핑된 주소를 저장할 곳이 필요하다. Configuration space의 물리 주소는 PCH의 레지스터 중 하나인 PCI Express Register Range Base Address (= PCIEXBAR)에 저장되어 있다.
 
-    > **헷갈림 주의**: BAR에 저장된 물리 주소는 디바이스 컨트롤을 위한 MMIO 영역이며, PCI configuration space 자체도 별도 영역에 MMIO로 매핑되어 있다.
+        > **헷갈림 주의**: BAR에 저장된 물리 주소는 디바이스 컨트롤을 위한 MMIO 영역이며, PCI configuration space 자체도 별도 영역에 MMIO로 매핑되어 있다.
 
     두 가지 방법 중 어느 것을 쓰더라도, PCI 디바이스에 데이터를 쓰기 위해서는 ***CPU와 PCI device를 이어주는 PCIe 컨트롤러를 거치게 된다.*** 따라서, **<mark>PCIe 컨트롤러를 수정함으로써 소프트웨어에서 PCI 디바이스의 BAR 값에 접근하는 행위를 모두 차단</mark>할 수 있다.**
 
-    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 아래와 같이 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
+    ```
+    QEMU에서 PCIe Controller의 코드
+    /qemu-sgx/hw/pci/pci.c
+    /qemu-sgx/hw/pci/pci_bridge.c
+    /qemu-sgx/hw/pci/pci_host.c
+    ```
+
+    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 아래와 같이 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.  
+    PCI COMMAND는 CPU 내부에 있는 Platform Controller Hub(PCH)의 PCIe 컨트롤러에 있는 레지스터 중 하나로, 이 레지스터의 11번째 비트를 address map lock bit로 구현하였다. 데이터시트에는 이 비트가 RO로 되어있지만, QEMU에서 이 비트를 RW로 설정할 수 있다.
+
+    ![pci_command_register](/assets/images/protected/170427/pci_command_register.png){: .center-image width="800px"}
+    * PCIe 컨트롤러에 있는 PCI COMMAND 레지스터의 Specification. 인텔의 칩셋 데이터시트에서 찾을 수 있음.
+    {: center}
 
     ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image width="800px"}
     * Address map lock 후 BAR 읽어오기를 거부하는 시스템 테스트
