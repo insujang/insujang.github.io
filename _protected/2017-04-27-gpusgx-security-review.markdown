@@ -36,6 +36,10 @@ comments: false
     MMIO 주소는 위 PCI configuration space에서 BAR 레지스터에 저장되어 있으며, 다음 두 가지 방법으로 접근 가능하다.
 
     1. CPU I/O port (0xCF8: PCI CONFIG ADDRESS REGISTER, 0xCFC: PCI CONFIG DATA REGISTER)
+
+        > I/O port를 막는 것이 필요할 경우, VMM의 I/O bitmap addresses 섹션을 볼 필요가 있음.  
+        Intel SDM volume 3. Section 24.6.4 참조
+
     2. MMIO (Configuration space 자체도 MMIO로 매핑되어 있음.)
 
 
@@ -57,10 +61,15 @@ comments: false
     PCI COMMAND는 CPU 내부에 있는 Platform Controller Hub(PCH)의 PCIe 컨트롤러에 있는 레지스터 중 하나로, 이 레지스터의 11번째 비트를 address map lock bit로 구현하였다. 데이터시트에는 이 비트가 RO로 되어있지만, QEMU에서 이 비트를 RW로 설정할 수 있다.
 
     ![pci_command_register](/assets/images/protected/170427/pci_command_register.png){: .center-image width="800px"}
-    * PCIe 컨트롤러에 있는 PCI COMMAND 레지스터의 Specification. 인텔의 칩셋 데이터시트에서 찾을 수 있음.
-    {: center}
+    * PCIe 컨트롤러에 있는 PCI COMMAND 레지스터의 Specification. 인텔의 칩셋 데이터시트에서 찾을 수 있음. 11~15번째 비트는 Reserved로 되어 있으며 RO로 세팅되어 있음.  
+    11번째 비트를 RW로 바꾸고 address map lock bit로 설정한다. 기본값은 0이며 1로 세팅할 경우 0으로 바꿀 수 없고 BAR에 접근하는 요청을 PCIe 컨트롤러에서 모두 차단한다.
+    {: .center}
 
-    ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image width="800px"}
+    ![bar_access_lock_diagram](/assets/images/protected/170427/bar_access_lock_diagram.png){: .center-image width="800px"}
+    * Guest VM의 BAR 접근을 차단하는 구조도. QEMU에 있는 에뮬레이트된 PCIe 컨트롤러를 수정해 address map lock bit가 세팅되어있을 경우 GPU의 BAR 레지스터 액세스를 차단한다.
+    {: .center}
+
+    ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image width="500px"}
     * Address map lock 후 BAR 읽어오기를 거부하는 시스템 테스트
     {: .center}
 
@@ -68,7 +77,7 @@ comments: false
     * 이 때 QEMU에서는 BAR가 lock되어 의도적으로 잘못된 데이터를 보냈음을 표시함.
     {: .center}
 
-    ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image width="800px"}
+    ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image width="500px"}
     * address map lock bit를 0으로 세팅하는 프로세스를 거부하는 시스템 테스트
     {: .center}
 
@@ -92,11 +101,10 @@ comments: false
 
 4. **특정 enclave (GPU Enclave)가 특정 MMIO 영역을 독점적으로 소유할 수 있다는 것을 증명해야 한다.**
 
-    GPU Enclave가 초기화되면서 특정 B.D.F 번호를 가진 GPU에 대해 MMIO 영역 소유를 GPU-SGX에게 요청한다. GPU-SGX는 이 GPU-Enclave의 enclave ID와 함께 해당 GPU의 MMIO 영역의 물리 주소를 SGX 내부 구조에 저장한다. 이 자료구조는 기존 SGX의 SECS와 같이 소프트웨어에서는 접근하지 못하는 SGX 내부 자료구조이므로, OS가 소프트웨어 해킹을 통해 변경할 수 없다.
-
-    또한, GPU-SGX는 이 요청을 처리하기 전에 1번에서 언급한 대로 System address map fix가 되어 있는지 PCIe controller와 하드웨어 통신을 통해 체크한다. fix가 되어 있을 경우에만 GPU Enclave의 GPU MMIO 영역 소유에 대한 요청을 처리하고, GPU Enclave를 GPU 소유자로 등록한다.
-
-    이후 같은 GPU에 대한 다른 enclave의 소유 요청은 거부하며, 등록된 GPU의 MMIO에 접근할 때 해당 프로세스가 GPU Enclave인지 아닌지를 판별해, GPU Enclave에서 접근하는 것이 아닐 경우 접근을 거부한다.  
+    1. GPU Enclave가 초기화되면서 특정 B.D.F 번호를 가진 GPU에 대해 MMIO 영역 소유를 GPU-SGX에게 요청한다.
+    2. GPU-SGX는 먼저 1번에서 언급한 대로 System address map lock이 되어있는지 PCIe controller와 통신하여 체크한다.
+    3. Address map lock이 되어 있다면, GPU-SGX는 GPU-Enclave의 enclave ID와 함께 해당 GPU의 MMIO 영역의 물리 주소를 SGX 내부 구조에 저장한다. 이 자료구조는 기존 SGX의 SECS와 같이 소프트웨어에서는 접근하지 못하는 SGX 내부 자료구조이므로, OS가 소프트웨어 해킹을 통해 변경할 수 없다.
+    4. 이후 같은 GPU에 대해 소유 요청은 거부하며, 등록된 GPU의 MMIO에 접근할 때 해당 프로세스가 GPU Enclave인지 아닌지를 판별해, GPU Enclave에서 접근하는 것이 아닐 경우 접근을 거부한다.  
     이는 기존 SGX가 어떤 enclave에서 EPC page에 접근할 때 EPC page의 소유자와 일치하는지 확인하는 과정을 응용해 구현할 수 있다.
 
 5. **IO 영역은 privilege 레벨이 필요한데 GPU enclave 프로세스가 이 영역에 접근할 수 있는 방법에 대해 증명하기**
