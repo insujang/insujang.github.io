@@ -107,14 +107,12 @@ comments: false
         2. GPU가 매핑된 MMIO는 GPU Enclave가 초기화된 후 변경되지 못한다.
         3. GPU Enclave 판별 매커니즘을 통해 GPU를 소유하고 있는 GPU Enclave만이 해당 GPU의 MMIO 영역에 접근할 수 있다.
 
-<!--
-
 5. **IO 영역은 privilege 레벨이 필요한데 GPU enclave 프로세스가 이 영역에 접근할 수 있는 방법에 대해 증명하기**
 
     IO port를 통해 디바이스에 접근할 때는 IO instruction이 privilege 레벨을 요구한다.  
     그러나, MMIO를 통해 디바이스에 접근할 때는 **유저 프로세스라도 MMIO 영역에 대한 virtual address만 있으면 이후에는 privilege 레벨 없이 MMIO 영역에 접근 가능하다는 것을 확인** 하였다. [\[링크\]](/protecteduic2ws/2017-04-03/gpu-enclave-protection-mechanism/)
 
-    단 MMIO 영역 주소에 매핑된 virtual address를 받아오기 위해서는 여전히 privilege 레벨이 필요하다. 이는 기존 SGX에서 EPC 페이지에 매핑된 virtual address를 얻기 위해서는 커널의 도움을 받는 것과 비슷하다. 이 부분은 여전히 커널의 도움을 받아야 하며, 기존 SGX와 비슷하게 매핑이 유효한지를 검사하는 매커니즘을 추가할 것이다.
+    단 MMIO 영역 주소에 매핑된 virtual address를 받아오기 위해서는 여전히 privilege 레벨이 필요하다. 이는 기존 SGX에서 EPC 페이지에 매핑된 virtual address를 얻기 위해서는 커널의 도움을 받는 것과 비슷하다. 여전히 커널의 도움을 받아야 하지만, 기존 SGX와 비슷하게 매핑이 유효한지를 검사하는 매커니즘을 추가할 것이다.
 
     > **기존 SGX에서 EPC 페이지가 매핑된 virtual address를 커널로부터 받는 방법**
     >
@@ -124,6 +122,4 @@ comments: false
     >
     > - 일치하지 않으면 커널에 의해 페이지 테이블이 수정되었다는 의미이므로, 접근을 거부한다.
 
-    같은 방법으로, GPU-SGX는 커널에게 MMIO 영역 물리 주소를 넘기며 이 영역에 대한 virtual address를 요청한다. 받은 virtual address를 SGX 내부 자료구조에 저장해 두고, 다음에 MMIO 영역에 접근할 때 MMU에서 페이지 테이블 변형이 일어나지 않았는지 검사하게 된다.
-
--->
+    같은 방법으로, GPU-SGX는 커널에게 MMIO 영역 물리 주소를 넘기며 이 영역에 대한 virtual address를 요청한다. 받은 virtual address를 SGX 내부 자료구조에 저장해 두고, 다음에 유저 프로세스가 MMIO 영역에 접근할 때 MMU에서 페이지 테이블 변형이 일어나지 않았는지 검사하게 된다.
