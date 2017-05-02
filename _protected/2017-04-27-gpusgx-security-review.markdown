@@ -32,7 +32,15 @@ comments: false
     * Figure: PCIe configuration sapce header for type0
     {: .center}
 
-    PCI 디바이스에 하드웨어적으로 존재하는 레지스터에 OS가 접근해 MMIO 주소를 바꾸지 못하도록 해야 한다. MMIO 주소는 위 PCI configuration register에서 BAR 레지스터에 저장되어 있으며, CPU I/O port (0xCF8: PCI CONFIG ADDRESS REGISTER 와 0xCFC: PCI CONFIG DATA REGISTER) 또는 MMIO 영역 (Configuration space 자체도 MMIO로 매핑되어 있음. 물리 주소는 PCH의 레지스터 중 하나인 PCI Express Register Range Base Address = PCIEXBAR에 저장되어 있음)으로 접근할 수 있다.
+    PCI 디바이스에 하드웨어적으로 존재하는 레지스터에 OS가 접근해 MMIO 주소를 바꾸지 못하도록 해야 한다.
+
+    MMIO 주소는 위 PCI configuration space에서 BAR 레지스터에 저장되어 있으며, 다음 두 가지 방법으로 접근 가능하다.
+
+    1. CPU I/O port (0xCF8: PCI CONFIG ADDRESS REGISTER, 0xCFC: PCI CONFIG DATA REGISTER)
+    2. MMIO (Configuration space 자체도 MMIO로 매핑되어 있음.)
+
+
+        2번 방법의 경우, MMIO 영역이 매핑된 주소가 BAR에 저장된 것처럼 configuration space도 매핑된 주소를 저장할 곳이 필요하다. Configuration space의 물리 주소는 PCH의 레지스터 중 하나인 PCI Express Register Range Base Address (= PCIEXBAR)에 저장되어 있다.
 
     > **헷갈림 주의**: BAR에 저장된 물리 주소는 디바이스 컨트롤을 위한 MMIO 영역이며, PCI configuration space 자체도 별도 영역에 MMIO로 매핑되어 있다.
 
@@ -44,35 +52,30 @@ comments: false
     >
     > ![accesing_pci_01_00_0](/assets/images/protected/170427/accesing_pci_01_00_0.png){: .center-image width="1000px"}
     >
-    > PCI 디바이스에 접근하기 위해서는 BAR 주소를 알아야 하며, BAR 주소를 알기 위해서는 PCI Configuration Space의 위치를 알아야 한다. 따라서, 먼저 PCI Configuration Space의 물리 주소를 PCH에 있는 PCIEXBAR 레지스터를 사용해 찾고, 해당 PCI Configuration Space에서 BAR에 저장된 물리 주소를 찾으면 해당 디바이스에 접근할 수 있다.
+    > 1. PCI 디바이스에 접근하기 위해서는 BAR 주소를 알아야 하며, BAR 주소를 알기 위해서는 PCI Configuration Space의 위치를 알아야 한다.  
+    2. 따라서, 먼저 PCI Configuration Space의 물리 주소를 PCH에 있는 PCIEXBAR 레지스터를 사용해 찾는다.  
+    3. 이 주소에 접근해 PCI Configuration Space에서 BAR에 저장된, MMIO가 매핑된 주소를 찾는다.  
+    4. 해당 디바이스의 MMIO 영역에 접근할 수 있다.
 
-    이 MMIO 영역을 통해 어떤 특정 B.D.F 번호를 가진 PCI 디바이스의 configuration space가 매핑된 MMIO 주소를 알 수 있다.  
-    여기에 접근하는 것을 막기 위한 방법으로는,
+    두 가지 방법 중 어느 것을 쓰더라도, PCI 디바이스에 데이터를 쓰기 위해서는 ***CPU와 PCI device를 이어주는 PCIe 컨트롤러를 거치게 된다.*** 따라서, **<mark>PCIe 컨트롤러를 수정함으로써 소프트웨어에서 PCI 디바이스의 BAR 값을 수정하는 행위를 모두 차단</mark>할 수 있다.**
 
-    1. I/O port는 protected mode에서 사용하지 않으므로 0xCF8과 0xCFC 레지스터를 막는다. 이 두 레지스터는 PCI configuration space에 접근하기 위해서만 사용되고, 소프트웨어는 리눅스 커널의 자료 구조를 사용하도록 권장되므로 I/O port는 막아도 전체 시스템에 문제가 발생하지 않는다. GPUvm 논문에서도 I/O port는 현재 사용되지 않는다고 한다.
+    PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
 
-        > 하지만, 하이퍼바이저 레벨에서 CPU I/O port를 막는 방법에 대해서는 찾지 못했으므로 구현할 때에는 위 I/O port를 사용하지 않는다고 가정한다.
+    ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image}
+    * Address map lock 후 BAR 읽어오기를 거부하는 시스템 테스트
+    {: .center}
 
-    2. PCI configuration space가 매핑된 MMIO 영역은 RO로 한다. Write request가 올 경우 PCIe controller에서 이를 거부하도록 설정한다.  
-    구체적인 설명으로, PCIe controller에 address map lock이라는 새로운 기능을 구현한다. 이 기능은 한번 호출되면 이후 GPU의 PCI MMIO 물리 주소가 저장된 BAR 영역에 대해 수정 요청을 모두 거부한다. GPU Enclave 프로세스가 GPU enclave를 생성하기 전 PCIe controller에게 address map lock을 요청한다. GPU enclave는 PCI configuration space가 locked되어있지 않으면 초기화에 실패하도록 구현한다.
+    ![test_bar_read2](/assets/images/protected/170427/test_bar_read2.png){: .center-image}
+    * 이 때 QEMU에서는 BAR가 lock되어 의도적으로 잘못된 데이터를 보냈음을 표시함.
+    {: .center}
 
-        PCIe controller에서 쓰지 않는 비트 하나를 사용해 address map lock 기능을 구현하고 유저 프로세스에서 BAR 값을 읽을 때에 이를 거부하도록 샘플을 구현해본 결과, 잘 작동하였다. 또한 address map lock bit는 1로 세팅된 이후에는 0으로 시스템이 종료될때까지 초기화하지 못하도록 설정할 수 있었다.
+    ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image}
+    * address map lock bit 초기화를 거부하는 시스템 테스트
+    {: .center}
 
-        ![test_bar_read1](/assets/images/protected/170427/test_bar_read1.png){: .center-image}
-        * Address map lock 후 BAR 읽어오기를 거부하는 시스템 테스트
-        {: .center}
-
-        ![test_bar_read2](/assets/images/protected/170427/test_bar_read2.png){: .center-image}
-        * 이 때 QEMU에서는 BAR가 lock되어 의도적으로 잘못된 데이터를 보냈음을 표시함.
-        {: .center}
-
-        ![address_map_lock1](/assets/images/protected/170427/address_map_lock1.png){: .center-image}
-        * address map lock bit 초기화를 거부하는 시스템 테스트
-        {: .center}
-
-        ![address_map_lock2](/assets/images/protected/170427/address_map_lock2.png){: .center-image}
-        * 이 때 QEMU에서는 address map lock bit 초기화 시도가 있었음을 표시함.
-        {: .center}
+    ![address_map_lock2](/assets/images/protected/170427/address_map_lock2.png){: .center-image}
+    * 이 때 QEMU에서는 address map lock bit 초기화 시도가 있었음을 표시함.
+    {: .center}
 
 2. **GPU device driver를 MMIO와 Interrupt handler를 별도로 분리시키는 것이 가능한가?**
 
