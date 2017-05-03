@@ -34,7 +34,11 @@ As in the reference post, we just define `KBUILD_EXTRA_SYMBOLS` in Kbuild.in. We
 
 ...
 KBUILD_EXTRA_SYMBOLS = /kernel1/Module.symvers
+
+EXTRA_CFLAGS = -I/kernel1/functions.h
 ...
 ```
+
+* Note that EXTRA_CFLAGS seems deprecated and ccflags-y should be used instead.
 
 Now compiling kernel2 will show no warnings.
