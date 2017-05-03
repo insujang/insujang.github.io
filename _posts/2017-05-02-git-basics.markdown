@@ -23,6 +23,13 @@ $ git checkout https://github.com/username/abc.git branch_name
 
 The last `.git` can be omitted. This will copy files in the remote repository. You can directly checkout a branch by adding `branch_name` to the tail of the command.
 
+To checkout a remote branch into the existing git local repository, use the following:
+
+```
+$ git fetch
+$ git checkout branch_name
+```
+
 ### 3. Commit / Push
 
 ```
