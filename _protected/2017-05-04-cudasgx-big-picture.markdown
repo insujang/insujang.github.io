@@ -56,6 +56,10 @@ CUDA-SGX에서 안전한 GPU 컴퓨팅을 위해 보호 기능을 제공해야 �
         2. Physical address가 MMIO 영역인지 확인한다.
         3. 해당 MMIO 영역을 가지는 GPU를 GPU Enclave가 소유하고 있는지 확인한다.
 
+<!--
+    - `handle_ept_violation() (/kvm-linux/arch/x86/kvm/vmx.c:6072)` 또는 `kvm_mmu_page_fault() (/kvm-linux/arch/x86/kvm/mmu.c:4508)`을 수정해 구현.
+-->
+
 > 노란 밑줄 쳐진 부분이 GPU Enclave가 생성될 때 이루어진다.
 
 - GPU Enclave의 생성은 다음과 같이 이루어진다.
@@ -75,3 +79,17 @@ CUDA-SGX에서 안전한 GPU 컴퓨팅을 위해 보호 기능을 제공해야 �
 - 유저 Enclave는 공유 메모리에 생성된 secret 키를 사용해 암호화된 데이터 및 커맨드를 입력하고, GPU Enclave 프로세스는 데이터를 GPU Enclave 내부로 복사한다.
 - GPU Enclave 프로세스는 이후 GPU Enclave로 진입해 GPU Enclave 코드와 MMIO 영역을 사용해 GPU로 데이터를 전송한다.
 - GPU Enclave는 GPU 커널 실행이 끝날 때까지 polling을 사용해 체크한다.
+
+<br/><br/><br/>
+
+![cuda_sgx_architecture](/assets/images/protected/170504/cuda_sgx_architecture.png){: .center-image width="800px"}
+* CUDA-SGX 구현 레벨에서의 아키텍쳐
+{: .center}
+
+![cuda_sgx_step1](/assets/images/protected/170504/cuda_sgx_step1.png){: .center-image width="1000px"}
+* GPU Enclave Creation에서의 플로우
+{: .center}
+
+![cuda_sgx_step2](/assets/images/protected/170504/cuda_sgx_step2.png){: .center-image width="1000px"}
+* Inter-Enclave Creation에서의 플로우
+{: .center}
