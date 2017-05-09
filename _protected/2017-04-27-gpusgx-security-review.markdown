@@ -37,16 +37,11 @@ comments: false
 
     1. CPU I/O port (0xCF8: PCI CONFIG ADDRESS REGISTER, 0xCFC: PCI CONFIG DATA REGISTER)
 
-        > I/O port를 막는 것이 필요할 경우, VMM의 I/O bitmap addresses 섹션을 볼 필요가 있음.  
-        Intel SDM volume 3. Section 24.6.4 참조
-
     2. MMIO (Configuration space 자체도 MMIO로 매핑되어 있음.)
 
+    2번 방법의 경우, MMIO 영역이 매핑된 주소가 BAR에 저장된 것처럼 configuration space도 매핑된 주소를 저장할 곳이 필요하다. Configuration space의 물리 주소는 PCH의 레지스터 중 하나인 PCI Express Register Range Base Address (= PCIEXBAR)에 저장되어 있다.
 
-        2번 방법의 경우, MMIO 영역이 매핑된 주소가 BAR에 저장된 것처럼 configuration space도 매핑된 주소를 저장할 곳이 필요하다. Configuration space의 물리 주소는 PCH의 레지스터 중 하나인 PCI Express Register Range Base Address (= PCIEXBAR)에 저장되어 있다.
-
-        > **헷갈림 주의**: BAR에 저장된 물리 주소는 디바이스 컨트롤을 위한 MMIO 영역이며, PCI configuration space 자체도 별도 영역에 MMIO로 매핑되어 있다.
-
+    > **헷갈림 주의**: BAR에 저장된 물리 주소는 디바이스 컨트롤을 위한 MMIO 영역이며, PCI configuration space 자체도 별도 영역에 MMIO로 매핑되어 있다.
 
     두 가지 방법 중 어느 것을 쓰더라도, PCI 디바이스에 데이터를 쓰기 위해서는 ***CPU와 PCI device를 이어주는 PCIe root complex를 거치게 된다. Root Complex는 PCI Express Specification에 적힌대로 CPU/memory 시스템과 PCI I/O를 연결하는 root이다.*** 또한, PCI Express 프로토콜은 TCP/IP와 비슷하게 여러 레이어로 구성된 Transaction Layer Packet을 사용해 디바이스 간 통신을 하는데, CPU에서 동작하는 소프트웨어가 PCIe 디바이스에 접근하려 할 경우 이 접근에 해당하는 패킷을 생성하는 것은 PCIe root complex이다.  
     따라서, **<mark>PCIe root complex 내부에 있는 PCIe 컨트롤러를 수정함으로써 소프트웨어에서 PCI 디바이스의 BAR 값에 접근하는 행위를 차단</mark>할 수 있다.** PCIe 컨트롤러에 이미 존재하는 하드웨어 레지스터 중 1비트를 사용해 차단/허용 여부를 결정하도록 설정할 수도 있다. 예를 들어, 해당 비트 값이 1이면 PCIe 컨트롤러는 BAR에 접근하는 요청을 모두 차단한다.
@@ -91,8 +86,8 @@ comments: false
 
     > **1, 2번에서 서술한 방법을 통해서, <mark>다음 항목들이 보장</mark>된다.**
     >
-    > 1. 특정 GPU는 단 하나의 GPU Enclave에게만 소유된다.
-    > 2. GPU가 매핑된 MMIO는 GPU Enclave가 초기화된 후 변경되지 못한다.
+    > 1. GPU 등록이 완료되면 다른 GPU Enclave에게 할당되지 못한다. 따라서, 특정 GPU는 단 하나의 GPU Enclave에게만 소유된다.
+    > 2. GPU Enclave 초기화는 Address Map Lock 이후에만 정상적으로 이루어진다. 따라서, GPU가 매핑된 MMIO는 GPU Enclave가 초기화된 후 변경되지 못한다.
     > 3. GPU Enclave 판별 매커니즘을 통해 GPU를 소유하고 있는 GPU Enclave만이 해당 GPU의 MMIO 영역에 접근할 수 있다.
 
 
