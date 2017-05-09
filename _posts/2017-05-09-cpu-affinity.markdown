@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "CPU Affinity"
-date: "2017-05-09 21:02:43 +0900"
+date: "2017-05-09 21:56:25 +0900"
 author: "Insu Jang"
 tags: [research, linux]
 ---
