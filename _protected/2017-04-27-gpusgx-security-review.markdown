@@ -17,6 +17,10 @@ comments: false
     - 논문에 써야 할 것들: 이렇게 만드는 것이 불가능하지 않다. Generalized된 접근 방법을 제시해
     이 방법이 불가능하지 않다고 수긍시켜야 함.
 
+- 가정들
+    1. 우리의 Threat Model은 Remote Software Attack을 막는 것. 공격자가 하드웨어적으로 접근하지 못한다고 가정한다.
+    2. IO 디바이스에는 MMIO와 PMIO로 접근 가능하다. 하지만 I/O port는 실제로 거의 사용되지 않으므로, GPU에 접근할때는 I/O port가 사용되지 않고 MMIO로만 접근한다고 가정한다. \[레퍼런스: GPUvm\]
+
 - Security 측면에서 다음 질문에 대한 답이 필요
     - OS가 IO path를 변조하지 못하게 하드웨어적으로 막는 것이 가능한가?
     - GPU device driver를 MMIO와 Interrupt handler를 별도로 분리시키는 것이 가능한가?
