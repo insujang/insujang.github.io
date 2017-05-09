@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Usermode Helper API"
-date: "2017-05-10 00:45:16 +0900"
+date: "2017-05-10 01:58:06 +0900"
 author: "Insu Jang"
 tags: [research, linux]
 ---
