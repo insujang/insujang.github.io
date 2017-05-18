@@ -87,7 +87,9 @@ Branch is a beauty of git. You can work with coworkers without any interference 
     Or if you want to remove a branch in a remote repository, you can type
 
     ```
-    $ git branch origin :branch_name
+    $ git branch --delete branch_name
+    $ git push origin :branch_name
     ```
 
     colon (:) is the key.
+    After deleting a local branch, push this change into the remote repository.
