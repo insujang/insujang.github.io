@@ -48,8 +48,10 @@ author: "Insu Jang"
 
     현재 Root Complex의 변경 사항은 다음과 같다.
 
-    - **PCI command register의 11번째 bit의 사용 용도 변경**: 1로 세팅될 경우, 0으로 다시 바꿀 수 없고 모든 GPU의 MMIO 수정 및 스위치의 라우팅 정보 수정이 불가능해짐. (Address Lock)
-    - **PCI command register의 12번째 bit의 사용 용도 변경**: 기존 PCI 디바이스의 경우, BAR가 필요로 하는 사이즈를 얻기 위해서는 다음과 같은 절차를 거쳐야 한다. (PCI Specification에 의해 정의됨)
+    - **PCI command register의 11번째 bit의 사용 용도 변경**: 1로 세팅될 경우 모든 GPU의 MMIO 수정 및 스위치의 라우팅 정보 수정이 불가능해짐. (Address Lock) 또한 1로 세팅된 후에는 0으로 바뀔 수 없다.
+    - **PCI command register의 12번째 bit의 사용 용도 변경**:
+
+        기존 PCI 디바이스의 경우, BAR가 필요로 하는 사이즈를 얻기 위해서는 다음과 같은 절차를 거쳐야 한다. (PCI Specification에 의해 정의됨)
 
         1. BAR 값을 백업한다.
         2. 32비트 BAR에 모두 1을 쓴다.
@@ -66,14 +68,14 @@ author: "Insu Jang"
 
         아래 구현은 Root Complex 내부에 구현된 내용이다.
         ```
-        if 12-th bit of command register == 1?
-            bar_tmp = read(BAR)
-            BAR = ~0 (all 1 bits)
-            addr = read(BAR)
-            write(BAR, bar_tmp)
+        if 12-th bit of command register == 1? # Bit set, reading BAR should return its size, not its address.
+            bar_tmp = read(BAR)       # read BAR address
+            write(BAR, ~0)            # all 1 bits
+            addr = read(BAR)          # read BAR size
+            write(BAR, bar_tmp)       # restore BAR address
             return addr
         else
-            return read(BAR)
+            return read(BAR)          # just read BAR address
         ```
 
 
