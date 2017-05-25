@@ -44,7 +44,7 @@ author: "Insu Jang"
 
 3. **Root Complex의 변경사항이 구체적으로 설명되어야 한다.**
 
-    OS가 다른 무엇을 해도 바꿀 수 없음을 증명해야 한다. Root Complex는 **CPU/Memory 서브시스템과 PCI 서브시스템을 잇는 다리이다. <mark>하드웨어 직접 접근이 불가능하다면, OS를 포함한 어떤 소프트웨어도 Root Complex를 우회해서 PCI 시스템에 접근할 수 있는 방법은 없다.</mark>**
+    OS가 다른 무엇을 해도 바꿀 수 없음을 증명해야 한다. Root Complex는 **CPU/Memory 서브시스템과 PCI 서브시스템을 잇는 다리이다. <mark>하드웨어에 물리적인 접근이 불가능하다면, OS를 포함한 어떤 소프트웨어도 Root Complex를 우회해서 PCI 시스템에 접근할 수 있는 방법은 없다.</mark>**
 
     현재 Root Complex의 변경 사항은 다음과 같다.
 
