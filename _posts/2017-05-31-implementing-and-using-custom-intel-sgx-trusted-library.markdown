@@ -25,7 +25,7 @@ Installation guide of Intel SGX Eclipse plugin is in [\[here\]](https://01.org/s
 
 # Implementing Intel SGX Trusted Library in Eclipse
 
-## Simple template
+## 1. Simple library template
 
 ![sgx_eclipse_trusted_new](/assets/images/170531/sgx_eclipse_trusted_new.png){: .center-image}
 
@@ -41,7 +41,7 @@ The structure is simple: nothing in `untrusted` directory, a file for ecall in `
 
 When we build it, `libtrusted.sgx.static.lib.a` library file and `trusted_u.c/h` in `untrusted` directory are created.
 
-## Implementing a function callable inside an enclave
+## 2. Implementing a function callable inside an enclave
 
 Just building a simple template is super easy. Then how we can add a trusted function into this trusted library?
 
@@ -51,6 +51,9 @@ Define and implement a function in a file with any name in `static_trusted` dire
 
 That's it. As it is not an ECALL, we don't need to add the function into EDL.
 
+
+## 3. Linking a library to a SGX application
+
 Now our new trusted function can be used within any enclave. Let's link this library to an SGX application.  
 Making a sample SGX application is well explained in the Eclipse Help content (`Help > Help Contents > Intel(R) SGX Eclipse Plug-in Developer Guide` in Eclipse window).
 
@@ -58,7 +61,7 @@ From the basic understanding of using a library, what we need is:
 - A header including the definition of the function (`static_trusted/another_trusted.h`)
 - A binary library file that is linked (`libtrusted.sgx.static.lib.a`)
 
-Add this information into the makefile for trusted enclave.
+Add this information into the makefile for an application enclave.
 
 ![sgx_eclipse_trusted_new_function3](/assets/images/170531/sgx_eclipse_trusted_new_function3.png){: .center-image}
 
