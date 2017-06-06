@@ -3,18 +3,14 @@ title: About
 permalink: /about/
 ---
 
-
-## Author
-
-![profile](/assets/images/profile.png)
+![profile](/assets/images/profile.png){: .center-image}
 
 #### Insu Jang
+{: .center}
 
-M.S. Student  
-[School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)
-
-Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)  
-Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
+M.S. Student, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)  
+Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)   Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
+{: .center}
 
 
 #### Education

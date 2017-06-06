@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Summary of CS500: NP Completeness"
-date: "2017-06-04 15:24:00 +0900"
+date: "2017-06-06 14:36:16 +0900"
 author: "Insu Jang"
 tags: [study, cs500]
 math: true
@@ -51,6 +51,10 @@ Then, there is a polynomial time algorithm for $$Y$$. (Lemma 34.3, p 985)
         If $$X$$ is a language such that $$Y \le {}_{p} X$$ for some $$Y \in $$ NP-complete, then $$X$$ is NP-hard.  
         Moreover, if $$Y \in $$ NP, then $$X \in$$ NP-complete.
 
+- **<mark>Proving NP complete</mark>**:
+    1. Prove the problem is NP by showing that it is verifiable in polynomial time. P is also NP, hence only verifiability is enough to prove NP.
+    2. Prove the problem is NP-hard by showing that $$ \le {}_p SAT$$. In other words, check whether it can be reduced in polynomial time to an instance of formula satisfiability.
+
 
 <!--
 # Circuit satisfiability
@@ -91,3 +95,37 @@ Example: $$(x_1 \lor \neg x_1 \lor x_2) \land (x_3 \lor x_2 \lor x_4) \land (\ne
 In 3-CNF-SAT, we are asked whether a given boolean formular $$\phi$$ in 3-CNF is satisfiable.
 
 ***Satisfiability of boolean formulas in 3-CNF is NP-complete.***
+
+# Disjunctive Normal Form (DNF)
+
+Used in proving satisfiability of boolean formulas in 3-CNF is NP-complete.
+
+**DNF**: A disjunction ($$\lor$$) of one or more conjunctions ($$\land$$) of one or more literals.
+
+e.g.: $$ (y_1 \land y_2 \land x_2) \lor (y_1 \land \neg y_2 \land x_2)$$
+
+### Converting CNF to DNF
+
+Use De Morgan's laws.
+
+$$A \lor (B \land \neg A) = (A \lor B) \land (A \lor \neg A) = A \lor B$$
+
+# Clique Problem
+A *clique* in an undirected graph $$ G= (V, E)$$ is **a subset $$V' \subseteq V$$ of vertices**, each pair of which is connected by an edge in $$E$$. The *size** of a clique is the number of vertices it contains.
+
+$$\text{CLIQUE} = \{<G, k> : G \text{is a graph with a clique of size} k. \}$$
+
+Proving the clique problem is NP-complete
+
+1. show that $$\text{CLIQUE} \in \text{NP}$$, checking whether $$V'$$ is a clique and for each pair $$u, v \in V'$$, the edge $$(u, v)$$ belongs to $$E$$.
+2. show that $$\text{CLIQUE} \in \text{NP-hard}$$, checking whether $$\text{3-CNF-SAT} \le {}_p \text{CLIQUE}$$.
+
+# Vertex Cover Problem
+A *vertex cover* of an undirected graph $$G = (V, E)$$ is **a subset $$V' \subseteq V$$** such that if $$(u, v) \in E$$, then $$u \in V'$$ or $$v \in \V'$$ or both.
+The size of a vertex cover is the number of vertices in it.
+
+**The vertex cover problem** is to find a vertex cover of minimum size in a given graph.
+
+### cf) edge cover problem
+
+For a graph $$G$$, find a smallest subset $$F$$ of edges s.t. any vertex $$v$$ is adjacent to at least one edge $$e \in F$$.
