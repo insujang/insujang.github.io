@@ -70,3 +70,58 @@ $$3 \le 4, \pi(3)=4 \ge 3=\pi(4)$$).
 $$\pi_1 = x_{12} \times -x_{12} \times x_{34} \times -x_{34} = (x_{12} x_{34})^2$$
 >
 > $$i=1, 2, 3, 4$$에 대하여 $$\sum_{\pi{i}}$$을 계산할 수 있음.
+
+# Polynomial Identity Testing
+
+Polynomial identity testing (PIT) is **the problem of efficiently determining whether two multivariate polynomials are identical.**  
+It can be trivially transformed into the question "Is a certain polynomial equal to 0?".
+
+Given a polynomial $$p(x_1, ..., x_n)$$ over $$F$$, we must decide whether, we can write it as a sum over monomials with various coefficients. For example, given $$p(x, y, z) = (x+2y)(3y-z)$$, we can expand it into a sum of monomials as
+
+$$p(x, y, z) = 3xy + 6t^2 - xz - 2yz$$
+
+The problem is to decide whether, after expanding $$p$$ into monomials, are all coefficients of those monomials equal to zero? If so, we say that $$p$$ is the zero polynomial, or that it is **identically zero**.
+
+The Schewartz-Zippel algorithm provides a practical probabilistic solution, by simply **randomly testing inputs and checking whether the output is zero**.
+
+**Degree of a multivariate polynomial (or even monomial)**: A monomial is any expression of the form $$a \times \Phi_{i=1}^n x_i^{β_i}$$, where $$a \in F$$ and $$\beta_1, ..., \beta_n$$ are non-negative integers. The total degree of that monomial is $$Σ_i \beta_i . The total degree of a polynomial is defined to be the largest total degree of its monomials.
+
+> Degree d 짜리 univariate polynomial에서 근(root)의 개수는 최대 (at most) d개이다.
+
+There is no known deterministic algorithm for deciding PIT.
+
+# The Schwartz-Zippel Lemma
+Let $$p(x_1, ..., x_n)$$ be a polynomial of total degree d. Assume that p is not identically zero. Let $$S ⊂ F$$ be any finite set. Then, if we pick $$y_1, ..., y_n$$ independently and uniformly from S,
+
+$$\text{Pr}[p(y_1, ..., y_n) = 0] \le \frac {d}{\|S\|}$$.
+
+<!--
+**Proof by induction on n**.
+
+The base case is the case $$n=1$$. As any univariate polynomial of degree d has at most d roots, so the probability that $$y_1$$ is a root is at most $$ \frac{d}{\|S\|}$$.
+
+Assume the theorem is true for polynomials with $$n-1$$ variables, prove it for those with $$n$$ variables.
+
+By using $$\text{Pr}[A] = \text{Pr}[A \land B] + \text{Pr}[A \land \neg B] \le \text{Pr}[B] + \text{Pr}[A \| \neg B] \times \text{Pr}[\neg B]$$,
+
+$$
+\begin{equation}
+\begin{split}
+p(x_1, ..., x_n) \ne 0 &= Σ_{0 \le j \le d} p_j (x_1, ..., x_{n-1}) x_n^j\\
+\\
+&\le \text{Pr}[p_j(r_1, ..., r_{n-1}) = 0] + \text{Pr}[p(r_1, ..., r_n) = 0 \| p_j (r_1, ..., r_{n-1}) \ne 0]
+\end{split}
+\end{equation}
+$$
+
+
+Assume the theorem is true for polynomials with $$n-1$$ variables, prove it for those with $$n$$ variables.
+
+*The main idea** obtain polynomials with fewer variables by factoring out the variable $$x_1$$ from $$p$$.
+
+$$p(x_1, ..., x_n) = \Sigma_{i=0}^k x_1^i \times (x_2, ..., x_n)$$
+
+By our choice of $$k$$, the polynomial $$q_k$$ is not identically zero. Furthermore its total degree is at most $$d-k$$, so by induction,
+
+$$Pr[q_k (y_2, ..., y_n) = 0] \le \frac{d-k}{\|S\|}$$
+-->
