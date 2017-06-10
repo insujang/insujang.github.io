@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Summary of CS500: Randomization"
-date: "2017-06-06 14:36:27 +0900"
+date: "2017-06-10 23:48:36 +0900"
 author: "Insu Jang"
 tags: [study, cs500]
 math: true
