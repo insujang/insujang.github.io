@@ -88,40 +88,41 @@ The Schewartz-Zippel algorithm provides a practical probabilistic solution, by s
 
 > Degree d 짜리 univariate polynomial에서 근(root)의 개수는 최대 (at most) d개이다.
 
+e.g.) $$2x + 3xy^2$$ is a polynomial of two variables with degree 3. It has two monomials $$x$$ with coefficient 2 and $$xy^2$$ with coefficient 3.
+
+e.g.) $$0x^3 + 4x^2 + 3x - 1$$ is a polynomial of a single variable with degree 2.
+
 There is no known deterministic algorithm for deciding PIT.
 
 # The Schwartz-Zippel Lemma
-Let $$p(x_1, ..., x_n)$$ be a polynomial of total degree d. Assume that p is not identically zero. Let $$S ⊂ F$$ be any finite set. Then, if we pick $$y_1, ..., y_n$$ independently and uniformly from S,
+Let $$p(x_1, ..., x_n)$$ be a polynomial of total degree d. Assume that p is not identically zero. Let $$S ⊂ F$$ be *any finite subset*. Then, if we pick $$y_1, ..., y_n$$ independently and uniformly from S,
 
 $$\text{Pr}[p(y_1, ..., y_n) = 0] \le \frac {d}{\|S\|}$$.
 
-<!--
+If the polynomial $$p$$ evaluates to zero, it is highly unlikely that $$p$$ is nonzero: the probability that $$p$$ evalulates to zero when it's not identically zero is quite small, especially when $$\|S\| \ge d$$.
+
 **Proof by induction on n**.
 
-The base case is the case $$n=1$$. As any univariate polynomial of degree d has at most d roots, so the probability that $$y_1$$ is a root is at most $$ \frac{d}{\|S\|}$$.
+*The base case*: With $$n=1$$, then the problem is reduced to the univariate case.
 
-Assume the theorem is true for polynomials with $$n-1$$ variables, prove it for those with $$n$$ variables.
+*The inductive step*: First, fix $$x_1, ..., x_{n-1}$$ arbitrarily. Then all values in $$p(x_1, ..., x_n)$$ are known except for $$x_n$$, so $$p$$ becomes a univariate polynomial of $$x_n$$ of degree $$k$$, for some $$k \le d$$:
 
-By using $$\text{Pr}[A] = \text{Pr}[A \land B] + \text{Pr}[A \land \neg B] \le \text{Pr}[B] + \text{Pr}[A \| \neg B] \times \text{Pr}[\neg B]$$,
+$$p(x_n) = a_k x_n^k + a_{k-1} x_n^{k-1} + ... +a_1 x_n^1 + a_0$$
 
-$$
-\begin{equation}
-\begin{split}
-p(x_1, ..., x_n) \ne 0 &= Σ_{0 \le j \le d} p_j (x_1, ..., x_{n-1}) x_n^j\\
-\\
-&\le \text{Pr}[p_j(r_1, ..., r_{n-1}) = 0] + \text{Pr}[p(r_1, ..., r_n) = 0 \| p_j (r_1, ..., r_{n-1}) \ne 0]
-\end{split}
-\end{equation}
-$$
+The problem is reduced to the univariate case again, so the probability for $$p$$ to be zero is small:
 
+$$\text{P}[p(x_n) = 0] \le \frac{k}{\|S\|} \le \frac{d}{\|S\|}$$
 
-Assume the theorem is true for polynomials with $$n-1$$ variables, prove it for those with $$n$$ variables.
+> Univariate case: a polynomial of a single variable of degree n
+>
+> $$p(x) = a_0 x^n + a_1 x^{n-1} + ... + a_{n-1} + a_n$$
+>
+> Is p identical to zero? It suffices to evaluate $$p$$ at $$(n=1)$$ distinct values of $$x$$, e.g.  
+$$p(1), p(2), ..., p(n+1)$$.
+>
+> If any of them evaluates to nonzero, $$p$$ is clearly not identical to zero. If, on the other hand, all of the (n+1) values are zero, then $$p$$ is indeed identical to zero, then since it has degree n, it would have at most n real roots. Since $$p(1)=p(2)=...=p(n+1)=0$$, p hase at least (n+1) roots among the subset S and thus p must be identically zero.
 
-*The main idea** obtain polynomials with fewer variables by factoring out the variable $$x_1$$ from $$p$$.
+# Markov Chain for Solving 3-SAT
 
-$$p(x_1, ..., x_n) = \Sigma_{i=0}^k x_1^i \times (x_2, ..., x_n)$$
-
-By our choice of $$k$$, the polynomial $$q_k$$ is not identically zero. Furthermore its total degree is at most $$d-k$$, so by induction,
-
-$$Pr[q_k (y_2, ..., y_n) = 0] \le \frac{d-k}{\|S\|}$$
--->
+Recap) **3SAT**: Given a formula F, each clause has exactly 3 literals.  
+**3SAT problem**: Decide if F is satisfiable.
