@@ -126,3 +126,18 @@ $$p(1), p(2), ..., p(n+1)$$.
 
 Recap) **3SAT**: Given a formula F, each clause has exactly 3 literals.  
 **3SAT problem**: Decide if F is satisfiable.
+
+**Schoning's algorithm, version 1** (bound of $$poly(n) \times 1.733^n$$)
+
+1. Pick a random initial assignment x.
+2. While there is at least one unsatisfied clause and have done this at most n times:
+    1. Pick an arbitrary unsatisfied clause c.
+    2. Flip the bit of a random $$x_i$$ in the clause.
+
+Consider some arbitrary correct astisfying assignment $$\alpha$$. Let A be the event that initial assignment x agrees with $$\alpha$$ on at least $$n/2$$ variables. Then, $$\text{Pr}[A] \ge 1/2$$ by symmetry.
+
+Now, every iteration of step 2 has at least 1/3 chance of increasing the agreement with $$\alpha$$ by 1. Hence the probability $$p$$ that this procedure succeeds is at least
+
+$$\text{Pr}[A] \times \text{Pr}[succeed\|A] \ge \frac{1}{2} (\frac{1}{3})^{n/2}$$
+
+To success with high probability requires only $$O(\frac{1}{p} logn)$$ repetitions. Putting these together with the fact that each repetition runs in polynomial time, we get a total work of $$\text{poly}(n) \times 3^{n/2}=O(1.733^n)$$.
