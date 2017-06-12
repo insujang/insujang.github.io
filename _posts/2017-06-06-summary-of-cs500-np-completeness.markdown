@@ -155,6 +155,14 @@ Given a graph G and a number k, does G contain a vertex cover of size at most k?
 
 **If $$G=(V, E)$$ is a graph, then S is an independent set <=> V-S is a vertex cover. (= $$IS \le _{p} VC$$)**
 
+&&\text{Independent Set} \le_{p} \text{Vertext Cover}$$ and $$\text{Vertex Cover} \le_{p} \text{Independent Set}$$.
+
+- Suppose that we have an efficient algorithm for solving Vertex Cover, it can be used to decide whether $$G$$ has an independent set of size at least $$k$$ by asking it to determine **whether $$G$$ has a vertex cover of size at most $$n-k$$**.
+- Suppose that we have an efficient algorithm for solving Independent Set, it can be used to decide whether $$G$$ has a vertex cover of size at most $$k$$, by asking it to determine **whether $$G$$ has an independent set of size at least $$n-k$$**.
+
+**Proof**: If S is an independent set for a given graph $$G=(V, E)$$, then for any edge $$e=(u, v)$$, at most one of the vertices $$u$$ and $$v$$ is in $$S$$. Hence, at least one of them must be in $$V-S$$. Thus, every edge has at least one end in $$V-S$$. So $$V-S$$ must be a vertex cover.
+
+**The clique problem (whether the graph G has a k-clique) is reducible to the independent set problem (whether the graph G has k pairwise non-adjacent vertices)**.
 
 # Definition of NP
 
