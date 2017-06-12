@@ -78,6 +78,10 @@ An instance of SAT is a boolean formula $$\phi$$ composed of
 - **A satisfying assignment** is a truth assignment that **causes it to evaluate to 1**.
 - A formula with a satisfying assignment is a **satisfiable formula**.
 
+**Satisfiability**: Given a set of clauses $$C_1, ..., C_k$$ over variable $$X={x_1, ..., x_n}$$, is there a satisfying assignment?
+
+> 3-SAT는 각 clause가 정확히 3개의 literal을 가지고 있을 때의 problem이라고 보면 됨.
+
 SAT = $$\{<\phi>: \phi $$ is a satisfiable boolean formula $$\}$$.
 
 ### Example
@@ -111,7 +115,9 @@ Use De Morgan's laws.
 $$A \lor (B \land \neg A) = (A \lor B) \land (A \lor \neg A) = A \lor B$$
 
 # Clique Problem
-A *clique* in an undirected graph $$ G= (V, E)$$ is **a subset $$V' \subseteq V$$ of vertices**, each pair of which is connected by an edge in $$E$$. The *size** of a clique is the number of vertices it contains.
+A *clique* in an undirected graph $$ G= (V, E)$$ is **a subset $$V' \subseteq V$$ of vertices**, each pair of which is connected by an edge in $$E$$ (e.g. vertices are adjacent). The *size** of a clique is the number of vertices it contains.
+
+> 특정 vertex (개수 k개)에 대하여 해당 vertex가 모두 연결되어 있으면 k-clique을 만족한다고 한다.
 
 $$\text{CLIQUE} = \{<G, k> : G \text{is a graph with a clique of size} k. \}$$
 
@@ -124,8 +130,33 @@ Proving the clique problem is NP-complete
 A *vertex cover* of an undirected graph $$G = (V, E)$$ is **a subset $$V' \subseteq V$$** such that if $$(u, v) \in E$$, then $$u \in V'$$ or $$v \in \V'$$ or both.
 The size of a vertex cover is the number of vertices in it.
 
+**업데이트**: Vertex cover is that, given an undirected graph $$G = (V, E)$$, find the last number $$k$$ of vertices such that every edge $$e \in E$$ is incident to at least one vertex from the set.
+
 **The vertex cover problem** is to find a vertex cover of minimum size in a given graph.
+
+### VC to SAT reduction
+
+Number of vertex cover (k) = minimum vertex cover number + the size of a maximum independent set (Gallai 1959)
+
+
 
 ### cf) edge cover problem
 
 For a graph $$G$$, find a smallest subset $$F$$ of edges s.t. any vertex $$v$$ is adjacent to at least one edge $$e \in F$$.
+
+# Independent Set (IS)
+
+Given graph G and a number k, does G contain a set of at least k independent vertices?
+
+An independent set is a set of vertices such that no pair of vertices in the set is adjacent.
+
+It can be reduced to vertex cover problem:  
+Given a graph G and a number k, does G contain a vertex cover of size at most k?
+
+**If $$G=(V, E)$$ is a graph, then S is an independent set <=> V-S is a vertex cover. (= $$IS \le _{p} VC$$)**
+
+
+# Definition of NP
+
+**Relationship**: 3SAT $$ \le_{p}$$ Independent set $$\le_{p}$$Vertex Cover $$\le_{p}$$Set Cover  
+3SAT $$\le_{p}$$SAT$$\le_{p}$$3SAT

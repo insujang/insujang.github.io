@@ -78,13 +78,13 @@ It can be trivially transformed into the question "Is a certain polynomial equal
 
 Given a polynomial $$p(x_1, ..., x_n)$$ over $$F$$, we must decide whether, we can write it as a sum over monomials with various coefficients. For example, given $$p(x, y, z) = (x+2y)(3y-z)$$, we can expand it into a sum of monomials as
 
-$$p(x, y, z) = 3xy + 6t^2 - xz - 2yz$$
+$$p(x, y, z) = 3xy + 6y^2 - xz - 2yz$$
 
 The problem is to decide whether, after expanding $$p$$ into monomials, are all coefficients of those monomials equal to zero? If so, we say that $$p$$ is the zero polynomial, or that it is **identically zero**.
 
 The Schewartz-Zippel algorithm provides a practical probabilistic solution, by simply **randomly testing inputs and checking whether the output is zero**.
 
-**Degree of a multivariate polynomial (or even monomial)**: A monomial is any expression of the form $$a \times \Phi_{i=1}^n x_i^{β_i}$$, where $$a \in F$$ and $$\beta_1, ..., \beta_n$$ are non-negative integers. The total degree of that monomial is $$Σ_i \beta_i . The total degree of a polynomial is defined to be the largest total degree of its monomials.
+**Degree of a multivariate polynomial (or even monomial)**: A monomial is any expression of the form $$a \times \Pi_{i=1}^n x_i^{β_i}$$, where $$a \in F$$ and $$\beta_1, ..., \beta_n$$ are non-negative integers. The total degree of that monomial is $$Σ_i \beta_i$$ . The total degree of a polynomial is defined to be the largest total degree of its monomials.
 
 > Degree d 짜리 univariate polynomial에서 근(root)의 개수는 최대 (at most) d개이다.
 
@@ -100,6 +100,8 @@ Let $$p(x_1, ..., x_n)$$ be a polynomial of total degree d. Assume that p is not
 $$\text{Pr}[p(y_1, ..., y_n) = 0] \le \frac {d}{\|S\|}$$.
 
 If the polynomial $$p$$ evaluates to zero, it is highly unlikely that $$p$$ is nonzero: the probability that $$p$$ evalulates to zero when it's not identically zero is quite small, especially when $$\|S\| \ge d$$.
+
+> 이 알고리즘은 Monte Carlo algorithm이고, false positive prob이 매우 낮고 falst negative는 없음.
 
 **Proof by induction on n**.
 
