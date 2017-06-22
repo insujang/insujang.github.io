@@ -155,7 +155,7 @@ Given a graph G and a number k, does G contain a vertex cover of size at most k?
 
 **If $$G=(V, E)$$ is a graph, then S is an independent set <=> V-S is a vertex cover. (= $$IS \le _{p} VC$$)**
 
-&&\text{Independent Set} \le_{p} \text{Vertext Cover}$$ and $$\text{Vertex Cover} \le_{p} \text{Independent Set}$$.
+$$\text{Independent Set} \le_{p} \text{Vertext Cover}$$ and $$\text{Vertex Cover} \le_{p} \text{Independent Set}$$.
 
 - Suppose that we have an efficient algorithm for solving Vertex Cover, it can be used to decide whether $$G$$ has an independent set of size at least $$k$$ by asking it to determine **whether $$G$$ has a vertex cover of size at most $$n-k$$**.
 - Suppose that we have an efficient algorithm for solving Independent Set, it can be used to decide whether $$G$$ has a vertex cover of size at most $$k$$, by asking it to determine **whether $$G$$ has an independent set of size at least $$n-k$$**.
