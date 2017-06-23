@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "GPU Resource Management"
-date: "2017-06-22 22:14:54 +0900"
+date: "2017-06-23 10:13:09 +0900"
 author: "Insu Jang"
 tags: [research, cuda]
 ---
