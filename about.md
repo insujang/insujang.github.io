@@ -44,7 +44,10 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)   A
 - Grand Prize, 2013 Mobile E-learning App Idea Contest, Sep 2013
 
 #### Skills
-- Java, C++, C, CUDA, HLS, Python
+- Java, C++, **C**, Python, HTML5
+- KVM, QEMU
+- CUDA
+- Vivado HLS
 
 ## Blog
 This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme.  
