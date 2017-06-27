@@ -8,13 +8,13 @@ permalink: /about/
 #### Insu Jang
 {: .center}
 
-M.S. Student, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)  
+M.S. Candidate, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)  
 Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)   Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
 {: .center}
 
 
 #### Education
-- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (GPA: 4.06 / 4.3)
+- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (GPA: 3.99 / 4.3)
 - B.S., Computer Engineering, [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
 
 #### Research Interests
