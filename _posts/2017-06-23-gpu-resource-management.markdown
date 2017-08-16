@@ -232,4 +232,41 @@ struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas
 }
 ```
 
-This variable is used by the function `gdev_fifo_push()` in gdev_nvidia_fifo.c code, but this is not used. Hence, it would be reasonable to say that indirect buffer in Nouveau device driver is used.
+This variable is used by the function `gdev_fifo_push()` in gdev_nvidia_fifo.c code, but this is used when gdev is running as a kernel mode.
+
+```
+struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas)
+{
+    struct gdev_ctx *ctx;
+    ...
+    crx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+    ...
+    /* command FIFO. */
+    ctx->fifo.regs = chan.regs;
+    ctx->fifo.ib_bo = chan.ib_bo;
+    ctx->fifo.ib_map = chan.ib_map;
+    ctx->fifo.ib_order = chan.ib_order;
+    ctx->fifo.ib_base = chan.ib_base;
+    ctx->fifo.ib_mask = chan.ib_mask;
+    ctx->fifo.ib_put = 0;
+    ctx->fifo.ib_get = 0;
+    ctx->fifo.pb_bo = chan.pb_bo;
+    ctx->fifo.pb_map = chan.pb_map;
+    ctx->fifo.pb_order = chan.pb_order;
+    ctx->fifo.pb_base = chan.pb_base;
+    ctx->fifo.pb_mask = chan.pb_mask;
+    ctx->fifo.pb_size = chan.pb_size;
+    ctx->fifo.pb_pos = 0;
+    ctx->fifo.pb_put = 0;
+    ctx->fifo.pb_get = 0;
+    ctx->fifo.push = gdev_fifo_push;
+    ctx->fifo.update_get = gdev_fifo_update_get;
+    ...
+}
+```
+
+Therefore, it is reasonable to say that `__nouveau_fifo_push()` is used for user space gdev, and `gdev_fifo_push()` is used for kernel space gdev.
+
+The difference is that, push buffer is allocated in user space in user space gdev, and allocated in kernel space in kernel space gdev.
+
+The same thing is that index buffer (indirect buffer) is allocated in kernel space. In case of user space gdev, indirect buffer is managed by libdrm, not Nouveau or gdev.
