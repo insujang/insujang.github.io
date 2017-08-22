@@ -9,7 +9,7 @@ permalink: /about/
 {: .center}
 
 M.S. Candidate, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)  
-Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)   Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
+Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
 {: .center}
 
 [[Curriculum Vitae]](/assets/cv/cv_insujang.pdf)
