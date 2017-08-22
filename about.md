@@ -12,6 +12,7 @@ M.S. Candidate, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://ww
 Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr)   Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
 {: .center}
 
+[[Curriculum Vitae]](/assets/cv/cv_insujang.pdf)
 
 #### Education
 - M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (GPA: 3.99 / 4.3)
