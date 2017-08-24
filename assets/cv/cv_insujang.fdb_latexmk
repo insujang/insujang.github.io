@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1503552382 "cv_insujang.tex" "cv_insujang.pdf" "cv_insujang" 1503552383
+["pdflatex"] 1503552785 "cv_insujang.tex" "cv_insujang.pdf" "cv_insujang" 1503552787
   "c:/texlive/2016/texmf-dist/fonts/map/fontname/texfonts.map" 1490152325 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "c:/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1490152015 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "c:/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1490152015 1324 c910af8c371558dc20f2d7822f66fe64 ""
@@ -54,12 +54,11 @@
   "c:/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1490153551 1908524 9994669902f5159941d747b8a9490348 ""
   "c:/texlive/2016/texmf-var/web2c/pdftex/pdflatex.fmt" 1490153650 3869747 2bc154424fbd3d6e21cd89e9f822501a ""
   "c:/texlive/2016/texmf.cnf" 1490153522 673 4ae7b2f49cee444c5343a45b5d0f169c ""
-  "cv_insujang.aux" 1503552383 1498 a91b3f31b03c700d42932e50ddaf453e ""
-  "cv_insujang.out" 1503552383 512 3f3a14f7b5c17824d873c67f3d78cc37 ""
-  "cv_insujang.tex" 1503552374 21947 7559e45dfb241dc125a6a5942ee2de24 ""
-  "qrcode.eps" 1503551836 21193 a356833624299db7dcd819354ef2a172 ""
+  "cv_insujang.aux" 1503552787 1498 a91b3f31b03c700d42932e50ddaf453e ""
+  "cv_insujang.out" 1503552787 512 3f3a14f7b5c17824d873c67f3d78cc37 ""
+  "cv_insujang.tex" 1503552784 21916 3c9f16be9a5fdb4b34812c87de308eeb ""
   (generated)
-  "cv_insujang.out"
-  "cv_insujang.pdf"
   "cv_insujang.log"
+  "cv_insujang.pdf"
+  "cv_insujang.out"
   "cv_insujang.aux"

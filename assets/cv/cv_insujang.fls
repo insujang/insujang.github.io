@@ -93,15 +93,6 @@ OUTPUT cv_insujang.out
 INPUT c:/texlive/2016/texmf-dist/fonts/map/fontname/texfonts.map
 INPUT c:/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT c:/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
-INPUT qrcode.eps
-INPUT ./qrcode.eps
-INPUT ./qrcode.eps
-INPUT ./qrcode-eps-converted-to.pdf
-INPUT ./qrcode-eps-converted-to.pdf
-INPUT ./qrcode.eps
-INPUT ./qrcode-eps-converted-to.pdf
-INPUT ./qrcode-eps-converted-to.pdf
-INPUT ./qrcode-eps-converted-to.pdf
 INPUT c:/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm
 INPUT c:/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 INPUT c:/texlive/2016/texmf-dist/tex/latex/base/omscmr.fd

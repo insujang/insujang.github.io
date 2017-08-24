@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/W32TeX) (preloaded format=pdflatex 2017.3.22)  24 AUG 2017 14:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/W32TeX) (preloaded format=pdflatex 2017.3.22)  24 AUG 2017 14:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -308,20 +308,6 @@ LaTeX Info: Redefining \nameref on input line 231.
 \@outlinefile=\write4
 \openout4 = `cv_insujang.out'.
 
-Package epstopdf Info: Source file: <qrcode.eps>
-(epstopdf)                    date: 2017-08-24 14:17:16
-(epstopdf)                    size: 21193 bytes
-(epstopdf)             Output file: <qrcode-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-08-24 14:17:47
-(epstopdf)                    size: 5646 bytes
-(epstopdf)             Command: <repstopdf --outfile=qrcode-eps-converted-to.pdf qrcode.eps>
-(epstopdf)             \includegraphics on input line 232.
-Package epstopdf Info: Output file is already uptodate.
- <qrcode-eps-converted-to.pdf, id=44, 25.09375pt x 25.09375pt>
-File: qrcode-eps-converted-to.pdf Graphic file (type pdf)
- <use qrcode-eps-converted-to.pdf>
-Package pdftex.def Info: qrcode-eps-converted-to.pdf used on input line 232.
-(pdftex.def)             Requested size: 25.09367pt x 25.09367pt.
 \rcollength=\skip60
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 244.
@@ -340,7 +326,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 267.
  [1
 
-{c:/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./qrcode-eps-converted-to.pdf>]
+{c:/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 Overfull \hbox (0.26825pt too wide) in paragraph at lines 461--462
 []\OT1/cmr/m/n/10 Proposed an al-go-rithm to re-duce power con-sump-tion while keep-ing real-time con-straints. 
  []
@@ -363,18 +349,18 @@ Package rerunfilecheck Info: File `cv_insujang.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 542.
  ) 
 Here is how much of TeX's memory you used:
- 6149 strings out of 493014
- 91653 string characters out of 6137001
+ 6143 strings out of 493014
+ 91512 string characters out of 6137001
  192020 words of memory out of 5000000
- 9630 multiletter control sequences out of 15000+600000
+ 9626 multiletter control sequences out of 15000+600000
  5200 words of font info for 19 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 29i,14n,43p,337b,462s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 29i,13n,43p,337b,462s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><c:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on cv_insujang.pdf (3 pages, 94251 bytes).
+Output written on cv_insujang.pdf (3 pages, 90586 bytes).
 PDF statistics:
- 98 PDF objects out of 1000 (max. 8388607)
- 85 compressed objects within 1 object stream
+ 95 PDF objects out of 1000 (max. 8388607)
+ 83 compressed objects within 1 object stream
  14 named destinations out of 1000 (max. 500000)
- 86 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
 
