@@ -30,6 +30,7 @@
 % This is a helpful package that puts math inside length specifications
 \usepackage{calc}
 \usepackage{comment}
+\usepackage[british]{babel}
 
 % Simpler bibsection for CV sections
 % (thanks to natbib for inspiration)
@@ -269,7 +270,9 @@ Daejeon, Republic of Korea
  \item[] Advisor: \href{http://calab.kaist.ac.kr:8080/~jhuh}{Jaehyuk Huh, Ph.D.}
  \end{innerlist}
 %\end{outerlist}
-\vspace{.1in}
+
+\halfblankline
+
 \href{http://www.skku.edu/eng_home/index.jsp}{\textbf{Sungkyunkwan University}},
 Suwon, Republic of Korea
 \begin{innerlist}
@@ -277,7 +280,6 @@ Suwon, Republic of Korea
         \href{http://shb.skku.edu/eng_cs}
              {Computer Science}, Feb 2016
              (GPA: 4.24 / 4.5)
-
 \end{innerlist}
 
 \section{Research Experience}
@@ -354,6 +356,7 @@ Suwon, Republic of Korea
 \begin{innerlist}
 \item[] Electronics and Telecommunications Research Institute (ETRI) \\
 Daejeon, Republic of Korea
+\item[] Topic: Xen virtualization
 \end{innerlist}
 
 \halfblankline
@@ -362,6 +365,7 @@ Daejeon, Republic of Korea
 \begin{innerlist}
 \item[] Advanced Institutes of Convergence Technology (AICT) \\
 Suwon, Republic of Korea
+\item[] Topics: Hadoop and Apache Spark
 \end{innerlist}
 
 \halfblankline
@@ -369,6 +373,7 @@ Suwon, Republic of Korea
 \textbf{Purdue/NIPA Capstone Project} \hfill {Jul 2014 -- Aug 2014}
 \begin{innerlist}
 \item[] Purdue University, West Lafayette, IN, USA
+\item[] Topic: cooperative fire security system with a humanoid robot
 \end{innerlist}
 
 \halfblankline
@@ -376,6 +381,8 @@ Suwon, Republic of Korea
 \textbf{Developer Member} \hfill {Jan 2013 -- Apr 2014}
 \begin{innerlist}
 \item[] Samsung Software Membership, Suwon, Republic of Korea
+\item[] Topics: Smart Lecture: HTML5 based lecture share system, intranet total management system,
+MoleRush: Smart TV - Android interactive game
 \end{innerlist}
 
 
@@ -416,9 +423,7 @@ Korea Ministry of Education
 \textbf{RTSR: Real Time Video Super Resolution} \hfill {Spring 2017}
 \begin{innerlist}
 \item[] CS570 -- Machine Learning \\
-Applied deep learning based Single Image Super Resolution (SISR) technique into
-videos.
-\item[] \href{https://insujang.github.io/assets/pdf/cs570_final.pdf}{[Report]} \href{https://insujang.github.io/assets/pdf/cs570_final_ppt.pdf}{[PPT]}
+Applied deep learning based Single Image Super Resolution (SISR) into videos.
 \end{innerlist}
 
 \halfblankline
@@ -427,7 +432,6 @@ videos.
 \begin{innerlist}
 \item[] CS710 -- Topics in Computing Acceleration with FPGA
 \item[] Implemented Xilinx FPGA based implementation for file data deduplication.
-\item[] \href{https://insujang.github.io/assets/pdf/cs710_final_ppt.pdf}{[PPT]} \href{https://github.com/insujang/HEAD}{[Code]}
 \end{innerlist}
 
 \halfblankline
@@ -437,7 +441,7 @@ Intelligently from Now to forEver} \hfill {Spring 2016}
 \begin{innerlist}
 \item[] CS442 -- Mobile Computing and Applications
 \item[] Proposed an intelligent way to control mobile app execution and Internet contents based on contents related factor analysis.
-\item[] \href{https://insujang.github.io/assets/pdf/cs442_final.pdf}{[Report]}
+Implementation is on Android AOSP 5.0.
 \end{innerlist}
 
 \halfblankline
@@ -446,8 +450,6 @@ Intelligently from Now to forEver} \hfill {Spring 2016}
 \begin{innerlist}
 \item[] CS546 -- Wireless Mobile Internet
 \item[] Proposed a way to notify a collision from a router to clients with Bluetooth Low Energy (BLE).
-\item[] \href{https://insujang.github.io/assets/pdf/cs546_proposal.pdf}{[Proposal]}
-\href{https://github.com/insujang/csmacn}{[Code]}
 \end{innerlist}
 
 \halfblankline
@@ -456,7 +458,6 @@ Intelligently from Now to forEver} \hfill {Spring 2016}
 \begin{innerlist}
 \item[] ECE5756 -- Real Time Systems Special Topics
 \item[] Proposed an algorithm to reduce power consumption while keeping real-time constraints.
-\item[] \href{https://insujang.github.io/assets/pdf/ece5756_final.pdf}{[Report]}
 \end{innerlist}
 
 \halfblankline
@@ -467,8 +468,6 @@ Intelligently from Now to forEver} \hfill {Spring 2016}
 \item[] ICE3037 -- Design Capstone Project
 \item[] Awarded an excellence prize in 2015 Convergence App Contest
 \item[] Proposed an automatic way of user's summaries in PDFs with Android tablet.
-\item[] \href{https://insujang.github.io/assets/pdf/ece3037_final.pdf}{[Report (Korean)]}
-\href{https://insujang.github.io/assets/pdf/ece3037_final_ppt.pdf}{[PPT (Korean)]}
 \end{innerlist}
 
 \halfblankline
@@ -487,27 +486,27 @@ and speakers embedded in off-the-shelf smartphones.
 \hfill {Sep 2013}
 \begin{innerlist}
 \item[] A project in Samsung Software Membership
-\item[] Awarded a grand prize in 2013 Smart TV App and Peripherals Contest
-\item[] Designed a game using smartphones as controllers, and a smart TV as a display board.
-\item[] \href{https://youtu.be/fFzxrAJX9wo}{[Playmovie (Korean)]}
+\item[] Awarded the grand prize in 2013 Smart TV App and Peripherals Contest
+\item[] Designed using smartphones as controllers, and a smart TV as a display board.
 \end{innerlist}
 
 \section{Skills}
 
 \textbf{Languages}
 \begin{innerlist}
-\item[] C, C++, Java, Python, Vivado HLS
+\item[] \textbf{C}, C++, Java, Python, Vivado HLS
 \end{innerlist}
 
 \halfblankline
 
 \textbf{Software Frameworks}
 \begin{innerlist}
+\item[] Mobile: Android
 \item[] Virtualization: KVM, QEMU
 \item[] Database: MySQL, MongoDB
 \item[] FPGA: Vivado, Vivado HLS, Petalinux
-\item[] GPU: CUDA
-\item[] Security: SGX
+\item[] GPU: NVIDIA CUDA
+\item[] Security: Intel Software Guard Extensions (SGX)
 \end{innerlist}
 
 \textbf{Documentation Tools}
@@ -519,13 +518,12 @@ and speakers embedded in off-the-shelf smartphones.
 
 Jaehyuk Huh
 \begin{innerlist}
-\item[] Associate Professor \hfill{e-mail: jhuh@kaist.ac.kr} \\
-School of Computing, KAIST
+\item[] Associate Professor, School of Computing, KAIST \hfill{e-mail: jhuh@kaist.ac.kr}
 \end{innerlist}
 
 \blankline
 
-\hfill{[CV last updated on Aug 23, 2017]}
+\hfill{[CV last updated on Aug 24, 2017]}
 
 %\section{Hardware and Software Skills}
 \begin{comment}

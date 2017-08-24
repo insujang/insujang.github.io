@@ -44,11 +44,78 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
 - Grand Prize, 2013 Smart TV App and Peripherals Contest, Nov 2013
 - Grand Prize, 2013 Mobile E-learning App Idea Contest, Sep 2013
 
+#### Projects
+- **RTSR: Real Time Video Super Resolution**  
+(KAIST Spring 2017 CS570 Machine Learning Project)
+
+    Applied a deep larning based Single Image Super Resolution (SISR) technique named [VDSR](http://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Kim_Accurate_Image_Super-Resolution_CVPR_2016_paper.html) into videos.
+    Instead of applying SISR to all video frames, we used it only into I-frame in [the H.264 group of picture structure](https://en.wikipedia.org/wiki/Group_of_pictures) to apply super resolution in real time speed.  
+    [[Report]](/assets/pdf/cs570_final.pdf)
+    [[PPT]](/assets/pdf/cs570_final_ppt.pdf)
+
+- **HEAD: HardwarE Accelerated Deduplication**  
+(KAIST Fall 2016 CS710 Topics in Computing Acceleration with FPGA Project)
+
+    Implemented Xilinx FPGA based implementation for file data dedpuplication.
+    Used [Murmurhash](https://en.wikipedia.org/wiki/MurmurHash) for fast, and partial parallel hashing algorithm to boost deduplication fingerprinting process.  
+    [[PPT]](/assets/pdf/cs710_final_ppt.pdf)
+    [[Code]](https://github.com/insujang/HEAD)
+
+- **SUNSHINE: Service for You to eNhance Self-management Helpfully and Intelligently from Now to forEver**  
+(KAIST Spring 2016 CS442 Mobile Computing and Applications Project)
+
+    Proposed an intelligent way to control mobile app execution and Internet browser contents based on
+    'contents related factor' analysis. The control is done in a system level, and a prototype implementation is on Android AOSP 5.0.  
+    [[Report]](/assets/pdf/cs442_final.pdf)
+    [[PPT]](/assets/pdf/cs442_final_ppt.pdf)
+
+- **CSMA/CN: Collision Notification for 802.11 WLAN with BLE**  
+(KAIST Spring 2016 CS546 Wireless Mobile Internet Project)
+
+    Proposed a way to notify a collision from a router to clients with Bluetooth Low Energy while it is sending its data. Solved a problem of half-duplex Wi-Fi constraints.  
+    [[Proposal]](/assets/pdf/cs546_proposal.pdf)
+    [[Code]](https://github.com/insujang/csmacn)
+
+- **Energy Aware Real-time Scheduling Algorithm on ARM big.LITTLE HMP Architecture**  
+(Sungkyunkwan University Fall 2015 ECE5756 Real Time Systems Special Topics Project)
+
+    Proposed an algorithm to reduce power consumption while keep real-time constraints
+    with a low-overhead heuristic mathmatical calculation.  
+    [[Report]](/assets/pdf/ece5756_final.pdf)
+
+- **My Summary Note: Automatic Note Summary Application**  
+(Sungkyunkwan University Fall 2015 ICE3037 Design Capstone Project Project)
+
+    Awarded an excellence prize in 2015 Convergence App Contest.
+    Proposed an automatic way of user's note summaries in PDFs with a Android tablet.  
+    [[Report (Korean)]](/assets/pdf/ice3037_final.pdf)
+    [[PPT (Korean)]](/assets/pdf/ice3037_final_ppt.pdf)
+
+- **Data Transmission with Inaudible Sound**  
+(A research project as an undergraduate research assistant, Jul 2014 ~ May 2015)
+
+    Proposed a short-distance data transmission mechanism between microphones and
+    speakers embedded in off-the-shelf smartphones.
+
+    [[Paper (Unpublished)]](/assets/pdf/research_paper_data_communication.pdf)
+
+- **MoleRush: Smart TV - Android Interactive Game**  
+(Samsung Software Membership Project, Sep 2013)
+
+    Awarded the grand prize in 2013 Smart TV and Peripherals Contest.
+    Designed a game using smartphones as controllers, and a smart TV as a display board.  
+    [[Playmovie (Korean)]](https://youtu.be/fFzxrAJX9wo)
+
+
 #### Skills
-- Java, C++, **C**, Python, HTML5
+- **C**, C++, Java, Python, Vivado HLS
+- Android
 - KVM, QEMU
 - CUDA
-- Vivado HLS
+- MySQL, MongoDB
+- Vivado HLS, Petalinux
+- Intel Software Guard Extensions (SGX)
+- Latex, matplotlib
 
 ## Blog
 This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme.  

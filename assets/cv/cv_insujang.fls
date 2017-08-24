@@ -12,6 +12,11 @@ INPUT c:/texlive/2016/texmf-dist/tex/latex/tools/calc.sty
 INPUT c:/texlive/2016/texmf-dist/tex/latex/tools/calc.sty
 INPUT c:/texlive/2016/texmf-dist/tex/latex/comment/comment.sty
 INPUT c:/texlive/2016/texmf-dist/tex/latex/comment/comment.sty
+INPUT c:/texlive/2016/texmf-dist/tex/generic/babel/babel.sty
+INPUT c:/texlive/2016/texmf-dist/tex/generic/babel/babel.sty
+INPUT c:/texlive/2016/texmf-dist/tex/generic/babel-english/english.ldf
+INPUT c:/texlive/2016/texmf-dist/tex/generic/babel-english/english.ldf
+INPUT c:/texlive/2016/texmf-dist/tex/generic/babel/babel.def
 INPUT c:/texlive/2016/texmf-dist/tex/latex/geometry/geometry.sty
 INPUT c:/texlive/2016/texmf-dist/tex/latex/geometry/geometry.sty
 INPUT c:/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
