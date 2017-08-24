@@ -30,7 +30,7 @@
 % This is a helpful package that puts math inside length specifications
 \usepackage{calc}
 \usepackage{comment}
-\usepackage[british]{babel}
+\usepackage{graphicx}
 
 % Simpler bibsection for CV sections
 % (thanks to natbib for inspiration)
@@ -82,7 +82,7 @@
 %% Use these lines for letter-sized paper
 \usepackage[paper=letterpaper,
             %includefoot, % Uncomment to put page number above margin
-            marginparwidth=1.2in,     % Length of section titles
+            marginparwidth=1in,     % Length of section titles
             marginparsep=.05in,       % Space between titles and text
             margin=1in,               % 1 inch margins
             includemp]{geometry}
@@ -229,7 +229,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%% Begin CV Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-\makeheading{Insu Jang}
+\makeheading{Insu Jang \hfill{\includegraphics{qrcode.eps}}}
 
 \section{Contact Information}
 
@@ -244,6 +244,7 @@
 \begin{tabular}[t]{@{}p{\textwidth-\rcollength}p{\rcollength}}
 KAIST, 291 Daehak-ro, Yuseong-gu   & +82-10-2578-8375 \\
 Daejeon, Republic of Korea 34141     & \email{insujang@calab.kaist.ac.kr}\\
+& https://insujang.github.io \\
 \end{tabular}
 
 %\section{Objective}
@@ -255,7 +256,7 @@ Daejeon, Republic of Korea 34141     & \email{insujang@calab.kaist.ac.kr}\\
 
 \section{Research Interests}
 
-Computer architecture, high performance computing, cloud computing, memory systems, hardware security
+Computer architecture, high performance computing, cloud computing, memory systems, and hardware security
 
 \section{Education}
 
