@@ -95,8 +95,7 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
 (A research project as an undergraduate research assistant, Jul 2014 ~ May 2015)
 
     Proposed a short-distance data transmission mechanism between microphones and
-    speakers embedded in off-the-shelf smartphones.
-
+    speakers embedded in off-the-shelf smartphones.  
     [[Paper (Unpublished)]](/assets/pdf/research_paper_data_communication.pdf)
 
 - **MoleRush: Smart TV - Android Interactive Game**  
