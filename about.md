@@ -9,10 +9,14 @@ permalink: /about/
 {: .center}
 
 M.S. Candidate, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)  
-Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)
+Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)  
 {: .center}
 
-[[Curriculum Vitae]](/assets/cv/cv_insujang.pdf)
+[[Curriculum Vitae]](/assets/cv/cv_insujang.pdf) &nbsp;&nbsp;
+<a href="https://github.com/{{ site.author.github }}"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a> &nbsp;&nbsp;
+<a href="https://www.linkedin.com/in/{{ site.author.linkedin }}"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a> &nbsp;&nbsp;
+<a href="mailto:{{ site.author.email }}"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a>
+{: .center}
 
 #### Education
 - M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (GPA: 3.99 / 4.3)
@@ -48,10 +52,15 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
 - **RTSR: Real Time Video Super Resolution**  
 (KAIST Spring 2017 CS570 Machine Learning Project)
 
-    Applied a deep larning based Single Image Super Resolution (SISR) technique named [VDSR](http://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Kim_Accurate_Image_Super-Resolution_CVPR_2016_paper.html) into videos.
+    Applied a state of the art deep learning based Single Image Super Resolution (SISR) technique named [VDSR](http://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Kim_Accurate_Image_Super-Resolution_CVPR_2016_paper.html) into videos.
     Instead of applying SISR to all video frames, we used it only into I-frame in [the H.264 group of picture structure](https://en.wikipedia.org/wiki/Group_of_pictures) to apply super resolution in real time speed.  
+    Implementation is based on [Pytorch](http://pytorch.org/), [VDSR on Pytoch](https://github.com/twtygqyy/pytorch-vdsr),
+    [FFmpeg](https://www.ffmpeg.org/), and [a simple FFmpeg player](https://github.com/Akagi201/ffmpeg-player).  
     [[Report]](/assets/pdf/cs570_final.pdf)
     [[PPT]](/assets/pdf/cs570_final_ppt.pdf)
+
+    [![rtsr](/assets/images/projects/rtsr_thumbnail.png)](https://youtu.be/_cVU23W_Jt8)
+    (Click the image to go to Youtube)
 
 - **HEAD: HardwarE Accelerated Deduplication**  
 (KAIST Fall 2016 CS710 Topics in Computing Acceleration with FPGA Project)
@@ -92,7 +101,7 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
     [[PPT (Korean)]](/assets/pdf/ice3037_final_ppt.pdf)
 
 - **Data Transmission with Inaudible Sound**  
-(A research project as an undergraduate research assistant, Jul 2014 ~ May 2015)
+(A research project as an undergraduate research assistant, Jul 2014 - May 2015)
 
     Proposed a short-distance data transmission mechanism between microphones and
     speakers embedded in off-the-shelf smartphones.  
@@ -102,8 +111,11 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
 (Samsung Software Membership Project, Sep 2013)
 
     Awarded the grand prize in 2013 Smart TV and Peripherals Contest.
-    Designed a game using smartphones as controllers, and a smart TV as a display board.  
-    [[Playmovie (Korean)]](https://youtu.be/fFzxrAJX9wo)
+    Designed a game using smartphones as controllers, and a smart TV as a display board.
+    At most 4 players can play together, and more families can enjoy the game together by seeing the smart TV.  
+
+    [![molerush](/assets/images/projects/molerush_thumbnail.png)](https://youtu.be/fFzxrAJX9wo)
+    (Click the image to go to Youtube)
 
 
 #### Skills
@@ -114,7 +126,7 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
 - MySQL, MongoDB
 - Vivado HLS, Petalinux
 - Intel Software Guard Extensions (SGX)
-- Latex, matplotlib
+- LaTeX, matplotlib
 
 ## Blog
 This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme.  
