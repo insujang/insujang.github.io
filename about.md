@@ -8,8 +8,7 @@ permalink: /about/
 #### Insu Jang
 {: .center}
 
-M.S. Candidate, [School of Computing](https://cs.kaist.ac.kr), [KAIST](http://www.kaist.edu/html/en/index.html)  
-Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Advisor: [Jaehyuk Huh](http://calab.kaist.ac.kr:8080/~jhuh)  
+System Engineer, [TmaxOS](http://tmaxos.com)
 {: .center}
 
 [[Curriculum Vitae]](/assets/cv/cv_insujang.pdf) &nbsp;&nbsp;
@@ -19,7 +18,7 @@ Research Group: [Computer Architecture Laboratory](http://calab.kaist.ac.kr), Ad
 {: .center}
 
 #### Education
-- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Current (GPA: 3.99 / 4.3)
+- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
 - B.S., Computer Engineering, [Sungkyunkwan University](http://www.skku.edu/eng_home/index.jsp), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
 
 #### Research Interests
