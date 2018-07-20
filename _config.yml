@@ -64,8 +64,6 @@ nav:
     url:            "/tags"
   - name:           "Github"
     url:            "https://github.com/insujang"
-  - name:           "Conferences"
-    url:            "http://www.confsearch.org"
 
 # Sass
 sass:
