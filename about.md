@@ -3,7 +3,7 @@ title: About
 permalink: /about/
 ---
 
-![profile](/assets/images/profile.png){: .center-image}
+<!-- ![profile](/assets/images/profile.png){: .center-image} -->
 
 #### Insu Jang
 {: .center}
@@ -25,9 +25,10 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 - Computer Architecture
 - High Performance Computing
 - Cloud Computing
-- Memory Systems
-- Hardware Security
 
+#### Publications
+1. **Insu Jang**, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. "Heterogeneous Isolated Execution for Commodity GPUs".
+*The International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS) 2019*, April 2019
 
 #### Extracurricular Activities
 - Vice Representative of School of Computing, [School of Computing, KAIST](https://cs.kaist.ac.kr), Mar 2016 - Jul 2016
