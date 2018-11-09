@@ -5,17 +5,14 @@ permalink: /about/
 
 <!-- ![profile](/assets/images/profile.png){: .center-image} -->
 
-#### Insu Jang
-{: .center}
-
-System Engineer, [TmaxOS](http://tmaxos.com)
-{: .center}
+## Insu Jang
 
 [[Curriculum Vitae]](/assets/cv/cv_insujang.pdf) &nbsp;&nbsp;
 <a href="https://github.com/{{ site.author.github }}"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a> &nbsp;&nbsp;
 <a href="https://www.linkedin.com/in/{{ site.author.linkedin }}"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a> &nbsp;&nbsp;
 <a href="mailto:{{ site.author.email }}"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a>
-{: .center}
+
+System Engineer, [TmaxOS](http://tmaxos.com)
 
 #### Education
 - M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
@@ -27,7 +24,7 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 - Cloud Computing
 
 #### Publications
-1. **Insu Jang**, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. "Heterogeneous Isolated Execution for Commodity GPUs".
+1. **Insu Jang**, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. **"Heterogeneous Isolated Execution for Commodity GPUs"**.
 *The International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS) 2019*, April 2019
 
 #### Extracurricular Activities
