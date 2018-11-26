@@ -112,8 +112,8 @@ Therefore, all `udev.service`, `systemd-udevd-control.socket`, and `systemd-udev
 Description=udev Kernel Device manager
 Documentation=man:systemd-udevd.service(8) man:udev(7)
 <b>Defaultdependencies=no</b>
-Wants=systemd-udevd-control.service systemd-udevd-kernel.sockets
-<b>After=systemd-udevd-control.service systemd-udevd-kernel.socket systemd-sysusers.service</b>
+Wants=systemd-udevd-control.socket systemd-udevd-kernel.socket
+<b>After=systemd-udevd-control.socket systemd-udevd-kernel.socket systemd-sysusers.service</b>
 Before=sysinit.target
 ...
 </pre>
