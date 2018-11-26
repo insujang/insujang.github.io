@@ -75,7 +75,7 @@ local-fs-pre.target
                             v
                   graphical.target
 ```
-The first target of systemd to be launched is `default.target`, which is typically a simlink to `graphical.target` or `multi-user.target`
+The first target of systemd to be launched is `default.target`, which is typically a symbolically linked to `graphical.target` or `multi-user.target`
 (depending on whether system is configured for a GUI or only a text console).
 If you want to add your own system service into systemd hierarchy, it would be usally be added `multi-user.target`, like for example:
 ```
@@ -93,6 +93,48 @@ WantedBy=multi-user.target
 
 as illustrated in [freedesktop systemd.target manual](https://www.freedesktop.org/software/systemd/man/systemd.target.html).
 
+`timers.target`, `paths.target`, and `sockets.target` are special targets for the initialization of timers, paths, and sockets, respectively.
+These targets have default dependencies: target unites are automatically configured with:
+
+- `After=sysinit.target`,
+- `Requires=sysinit.target`,
+- `Before=shutdown.target`,
+- and `Conflicts=shutdown.target`.
+
+Those default dependencies can be ignored with the following statement in the unit: `DefaultDependencies=no`.
+For example, `udev.service` uses two sockets: `systemd-udevd-control.socket` and `systemd-udevd-kernel.socket`. In the chart above, `udev.service` should be initialized in the stage before `sysinit.target`.
+Therefore, all `udev.service`, `systemd-udevd-control.socket`, and `systemd-udevd-kernel.socket` have `DefaultDependencies=no` statement to avoid those default dependencies.
+
+<pre>
+/lib/systemd/system/udev.service
+
+[Unit]
+Description=udev Kernel Device manager
+Documentation=man:systemd-udevd.service(8) man:udev(7)
+<b>Defaultdependencies=no</b>
+Wants=systemd-udevd-control.service systemd-udevd-kernel.sockets
+<b>After=systemd-udevd-control.service systemd-udevd-kernel.socket systemd-sysusers.service</b>
+Before=sysinit.target
+...
+</pre>
+
+<pre>
+/lib/systemd/system/systemd-udevd-control.socket
+
+[Unit]
+Description=udev Control Socket
+Documentation=man:systemd-udevd.service(8) man:udev(7)
+<b>DefaultDependencies=no</b>
+Before=sockets.target
+ConditionPathIsReadWrite=/sys
+
+[Socket]
+Service=systemd-udevd.service
+ListenSequentialPacket=/run/udev/control    // Socket Path for FIFO UNIX domain socket
+SocketMode=600
+PassCredentials=yes
+RemoveOnStop=yes
+</pre>
 
 There are [more special systemd units](https://www.freedesktop.org/software/systemd/man/systemd.special.html#),
 such like `network.target` or `network-online.target`,
