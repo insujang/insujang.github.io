@@ -28,53 +28,9 @@ For the daemons to be automatically and normally launched, we need to acknowledg
 The following chart is a structural overview of well-known systemd units and their position in the boot-up logic,
 according to freedesktop.
 The chart comes from [here](https://www.freedesktop.org/software/systemd/man/bootup.html).
-Should be clear to see in PC, or visit [here](https://linoxide.com/linux-how-to/systemd-boot-process/) to see it as an image in mobile.
 
-```
-local-fs-pre.target
-         |
-         v
-(various mounts and   (various swap   (various cryptsetup
- fsck services...)     devices...)        devices...)       (various low-level   (various low-level
-         |                  |                  |             services: udevd,     API VFS mounts:
-         v                  v                  v             tmpfiles, random     mqueue, configfs,
-  local-fs.target      swap.target     cryptsetup.target    seed, sysctl, ...)      debugfs, ...)
-         |                  |                  |                    |                    |
-         \__________________|_________________ | ___________________|____________________/
-                                              \|/
-                                               v
-                                        sysinit.target
-                                               |
-          ____________________________________/|\________________________________________
-         /                  |                  |                    |                    \
-         |                  |                  |                    |                    |
-         v                  v                  |                    v                    v
-     (various           (various               |                (various          rescue.service
-    timers...)          paths...)              |               sockets...)               |
-         |                  |                  |                    |                    v
-         v                  v                  |                    v              rescue.target
-   timers.target      paths.target             |             sockets.target
-         |                  |                  |                    |
-         v                  \_________________ | ___________________/
-                                              \|/
-                                               v
-                                         basic.target
-                                               |
-          ____________________________________/|                                 emergency.service
-         /                  |                  |                                         |
-         |                  |                  |                                         v
-         v                  v                  v                                 emergency.target
-     display-        (various system    (various system
- manager.service         services           services)
-         |             required for            |
-         |            graphical UIs)           v
-         |                  |           multi-user.target
-         |                  |                  |
-         \_________________ | _________________/
-                           \|/
-                            v
-                  graphical.target
-```
+![systemd-boot](/assets/images/181126/systemd_boot.png){: .center-image width="900px"}
+
 The first target of systemd to be launched is `default.target`, which is typically a symbolically linked to `graphical.target` or `multi-user.target`
 (depending on whether system is configured for a GUI or only a text console).
 If you want to add your own system service into systemd hierarchy, it would be usally be added `multi-user.target`, like for example:
