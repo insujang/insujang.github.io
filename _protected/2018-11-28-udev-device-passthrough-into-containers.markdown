@@ -126,3 +126,8 @@ What the kernel actually does when `lxc-device` calls `mknod()` system call?
 Actually, udev does nothing for `mknod()` system calls.
 Device nodes that are created though `mknod()` system calls are just special devide node files,
 and the actual connection between the device node and the device is evaluated when userspace processes open the device node via `open()`.
+
+[http://jake.dothome.co.kr/devtmpfs/](http://jake.dothome.co.kr/devtmpfs/)
+[http://jake.dothome.co.kr/kobject/](http://jake.dothome.co.kr/kobject/)
+
+A device node with its major number and minor number is created when the device driver is loaded, finally through `vfs_mknod()` kernel function.
