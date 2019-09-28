@@ -19,6 +19,11 @@ Each has the following advantages:
 ![vscode_insiders](/assets/images/190928/vscode_insiders.png){:  width="300px"}
 *Those files are stored in my server.*
 
+- Jekyll Post plugin: This provides a post template that is convenient. Keeping the format of posts without any help is quite annoying (manually copy and paste of the existing post, rename, modify, etc), but this plugin helps eliminate it.
+This plugin automatically generates the following format.
+
+![jekyll_post](/assets/images/190928/jekyll_post.png){: width="600px"}
+
 - Docker Jekyll: A main advantage of using Docker is that dependent packages are isolated, so each applications can be modulized as standalone. By using [Docker Jekyll](https://hub.docker.com/r/jekyll/jekyll/), we do not have to take care of any dependencies: just one command is enough to run it.
 
 ```
