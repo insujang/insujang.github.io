@@ -75,6 +75,8 @@ System Engineer, [TmaxOS](http://tmaxos.com)
     [[Report]](/assets/pdf/cs442_final.pdf)
     [[PPT]](/assets/pdf/cs442_final_ppt.pdf)
 
+    **In October 2019, a similar feature (restricting app executions) called Focus Mode has been implemented in [Samsung Galaxy's One UI 2.0]((https://news.samsung.com/global/one-ui-beta-program-enjoy-android-10-on-galaxy-s10-starting-today)) three years later of our project!**
+
 - **CSMA/CN: Collision Notification for 802.11 WLAN with BLE**  
 (KAIST Spring 2016 CS546 Wireless Mobile Internet Project)
 
