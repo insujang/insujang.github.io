@@ -6,8 +6,8 @@ figure.highlight::before {
     color: $highlight-comment !important;
   }
   .highlight > pre {
-    font-size: 0.8em;
-    border-radius: 1em;
+    font-size: 0.8rem;
+    border-radius: 1rem;
     color: $highlight-foreground;
     background-color: $highlight-background !important;
     .c   { color: $highlight-comment; } /* Comment */

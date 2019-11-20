@@ -1,0 +1,61 @@
+// code from https://gist.github.com/phrz/f3f2ecafe4442327b186dd25873cb173
+
+div.highlighter-rouge {
+	position: relative;
+}
+
+div.highlighter-rouge:before {
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	right: 0;
+  padding: 0.2rem 1.5rem;
+  border-radius: 0 1rem 0 1rem;
+  background-color: $oc-gray-7;
+	font-weight: bold;
+	color: $background-over-color;
+}
+
+$languages: (
+	apache: 'Apache',
+	c: 'C',
+	cmake: 'Cmake',
+	coffeescript: 'CoffeeScript',
+	cpp: 'C++',
+	csharp: 'C#',
+	css: 'CSS',
+	go: 'Go',
+	html: 'HTML',
+	http: 'HTTP',
+	java: 'Java',
+	javascript: 'JavaScript',
+	json: 'JSON',
+	make: 'Make',
+	markdown: 'Markdown',
+	perl: 'Perl',
+	php: 'PHP',
+	powershell: 'PowerShell',
+	python: 'Python',
+	ruby: 'Ruby',
+	rust: 'Rust',
+	scss: 'SCSS',
+	shell: 'Shell',
+	sql: 'SQL',
+	swift: 'Swift',
+	tex: 'TeX',
+	typescript: 'TypeScript',
+	xml: 'XML',
+	yaml: 'YAML'
+);
+
+$selectors: ();
+@each $value, $_ in $languages {
+	$selector: unquote(".language-#{$value} pre");
+	$selectors: append($selectors, $selector, comma);
+}
+
+@each $slug, $name in $languages {
+	.language-#{$slug}:before {
+		content: $name;
+	}
+}

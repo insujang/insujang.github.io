@@ -39,7 +39,7 @@ If logging is not responsible for a centralized container runtime daemon, the pr
 cri-o executes `conmon`, which creates a container process by using runc or Kata container (whatever low level container runtime). `stdout` and `stderr` streams of the container process are connected to `conmon`, where one `conmon` is launched per container, and are handled by it. Therefore, even during the downtime of cri-o daemon, conmon safely handles containers' logs.
 
 [\[source\]](https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/internal/oci/runtime_oci.go#L76)
-```
+```go
 func (r *runtimeOCI) CreateContainer(c *Container, cgroupParent string) (err error) {
   ...
   cmd := exec.Command(r.config.Conmon, args...)
