@@ -9,6 +9,8 @@ figure.highlight::before {
     font-size: 0.8rem;
     border-radius: 1rem;
     color: $highlight-foreground;
+    white-space: pre;
+    overflow: auto;
     background-color: $highlight-background !important;
     .c   { color: $highlight-comment; } /* Comment */
     .err { color: $highlight-red; } /* Error */
