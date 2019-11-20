@@ -267,6 +267,14 @@ a.footnote {
 //   font-family: $code-font;
 // }
 
+code.highlighter-rouge {
+    padding: .25em .5em;
+    font-size: 90%;
+    color: $code-color;
+    background-color: $code-background-color;
+    border-radius: 3px;
+}
+
 // code {
 //   padding: .25em .5em;
 //   // font-size: 85%;
