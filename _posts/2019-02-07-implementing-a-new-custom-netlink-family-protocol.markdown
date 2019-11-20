@@ -40,7 +40,7 @@ The following is a basic kernel module that creates a custom netlink protocol fa
 Note that the signature of the function was changed since kernel version 2.6.
 [\[link\]](https://elixir.bootlin.com/linux/latest/source/include/linux/netlink.h#L58)
 
-```
+```c
 static inline struct sock *
 netlink_kernel_create(struct net *net, int unit, struct netlink_kernel_cfg *cfg)
 {
