@@ -127,11 +127,11 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 - Intel Software Guard Extensions (SGX)
 - LaTeX, matplotlib
 
-## Blog
-This blog is hosted by [Github Pages](https://pages.github.com/) and is using [Kiko-plus](https://aweekj.github.io/Kiko-plus) theme.  
-This theme is released under MIT License.
+## License
+This blog is using modified [Kiko-plus](https://github.com/aweekj/Kiko-plus) theme for the entire webpages and [Tomorrow](https://github.com/chriskempson/tomorrow-theme) theme, embedded in [jekyll TeXt](https://github.com/kitian616/jekyll-TeXt-theme) theme, for code highlight.
+It is powered by [Github Pages](https://pages.github.com/).
 
-Copyright (c) 2016 AWEEKJ(Hanju Jamie Jo)
+Copyright (c) 2016 AWEEKJ(Hanju Jamie Jo), Copyright (c) 2017 Tian Qi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

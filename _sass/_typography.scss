@@ -262,48 +262,48 @@ a.footnote {
   Code Snippet
   -------------- */
 
-code,
-pre {
-  font-family: $code-font;
-}
+// code,
+// pre {
+//   font-family: $code-font;
+// }
 
-code {
-  padding: .25em .5em;
-  // font-size: 85%;
-  color: $code-color;
-  background-color: $code-background-color;
-  border-radius: 3px;
-}
+// code {
+//   padding: .25em .5em;
+//   // font-size: 85%;
+//   color: $code-color;
+//   background-color: $code-background-color;
+//   border-radius: 3px;
+// }
 
-pre {
-  display: block;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  padding: .5rem;
-  // font-size: .8rem;
-  line-height: 1.4;
-  white-space: pre;
-  white-space: pre-wrap;
-  word-break: break-all;
-  // word-wrap: break-word;
-  background-color: $code-background-color;
-}
+// pre {
+//   display: block;
+//   margin-top: 0;
+//   margin-bottom: 1rem;
+//   padding: .5rem;
+//   // font-size: .8rem;
+//   line-height: 1.4;
+//   white-space: pre;
+//   white-space: pre-wrap;
+//   word-break: break-all;
+//   // word-wrap: break-word;
+//   background-color: $code-background-color;
+// }
 
-pre code {
-  padding: 0;
-  font-size: 100%;
-  color: inherit;
-  background-color: transparent;
-}
+// pre code {
+//   padding: 0;
+//   font-size: 100%;
+//   color: inherit;
+//   background-color: transparent;
+// }
 
-.highlight {
-  margin-bottom: 1rem;
-  border-radius: 4px;
-}
+// .highlight {
+//   margin-bottom: 1rem;
+//   border-radius: 4px;
+// }
 
-.highlight pre {
-  margin-bottom: 0;
-}
+// .highlight pre {
+//   margin-bottom: 0;
+// }
 
 /*--------------
   gist
@@ -350,22 +350,22 @@ img {
   -------------- */
 
 table {
-  margin-bottom: 1rem;
+  // margin-bottom: 1rem;
   width: 100%;
-  border: 1px solid $table-border-color;
+  // border: 1px solid $table-border-color;
   border-collapse: collapse;
 }
 
 td,
 th {
   padding: .25rem .5rem;
-  border: 1px solid $table-border-color;
+  // border: 1px solid $table-border-color;
 }
 
-tbody tr:nth-child(odd) td,
-tbody tr:nth-child(odd) th {
-  background-color: $table-background-color;
-}
+// tbody tr:nth-child(odd) td,
+// tbody tr:nth-child(odd) th {
+//   background-color: $table-background-color;
+// }
 
 /*--------------
   Alignment
