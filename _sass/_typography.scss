@@ -262,10 +262,12 @@ a.footnote {
   Code Snippet
   -------------- */
 
-// code,
-// pre {
-//   font-family: $code-font;
-// }
+code,
+pre {
+  font-family: $code-font;
+  font-size: 100%;
+  margin: 0.2em 0em;
+}
 
 code.highlighter-rouge {
     padding: .25em .5em;
