@@ -118,7 +118,7 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 
 
 #### Skills
-- **C**, C++, Java, Python, Vivado HLS
+- C, **C++17**, Java, Python, Vivado HLS
 - Android
 - KVM, QEMU
 - CUDA
@@ -126,6 +126,8 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 - Vivado HLS, Petalinux
 - Intel Software Guard Extensions (SGX)
 - LaTeX, matplotlib
+- Kubernetes
+- Docker
 
 ## License
 This blog is using modified [Kiko-plus](https://github.com/aweekj/Kiko-plus) theme for the entire webpages and [Tomorrow](https://github.com/chriskempson/tomorrow-theme) theme, embedded in [jekyll TeXt](https://github.com/kitian616/jekyll-TeXt-theme) theme, for code highlight.
