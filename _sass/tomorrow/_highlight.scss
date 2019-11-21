@@ -5,6 +5,10 @@ figure.highlight::before {
   pre.lineno {
     color: $highlight-comment !important;
   }
+  td.rouge-gutter {
+    table-layout: fixed;
+    width: 3em;
+  }
   .highlight > pre {
     font-size: 0.8rem;
     border-radius: 1rem;
