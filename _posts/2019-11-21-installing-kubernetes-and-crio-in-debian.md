@@ -49,7 +49,7 @@ There are not cri-o related packages in default apt repository; we should add Pr
 But you will show errors when using `add-apt-repository ppa:projectatomic/ppa`:
 
 ```shell
-root@kubernetesdebian:~# add-apt-repository ppa:projectatomic/ppa -y && apt update
+$ add-apt-repository ppa:projectatomic/ppa -y && apt update
 gpg: keybox '/tmp/tmp51iyzqdm/pubring.gpg' created
 gpg: /tmp/tmp51iyzqdm/trustdb.gpg: trustdb created
 gpg: key 8BECF1637AD8C79D: public key "Launchpad PPA for Project Atomic" imported
@@ -76,7 +76,7 @@ Create a source new file `/etc/apt/sources.list.d/projectatomics.list` as
 deb http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic main
 deb-src http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic main
 ```
-*You can use any other Ubuntu distributions that ProjectAtomics supports. Currently, it supports Xenial (16.04), Bionic (18.04), Disco (19.04), and Eoan (19.10).*
+*You can use any other Ubuntu distributions that ProjectAtomic supports. Currently, it supports Xenial (16.04), Bionic (18.04), Disco (19.04), and Eoan (19.10).*
 
 You can see the following error when you type `apt update` after writing the source file:
 ```shell
@@ -93,12 +93,12 @@ N: See apt-secure(8) manpage for repository creation and user configuration deta
 
 You can solve this problem by adding the public key as:
 ```shell
-root@kubernetesdebian:~# apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
+$ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
 Executing: /tmp/apt-key-gpghome.3pmgjRnYte/gpg.1.sh --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
 gpg: key 8BECF1637AD8C79D: public key "Launchpad PPA for Project Atomic" imported
 gpg: Total number processed: 1
 gpg:               imported: 1
-root@kubernetesdebian:~# apt update
+$ apt update
 Hit:1 http://security.debian.org/debian-security buster/updates InRelease
 Hit:2 http://deb.debian.org/debian buster InRelease         
 Hit:4 http://deb.debian.org/debian buster-updates InRelease
@@ -117,24 +117,8 @@ All packages are up to date.
 
 Now you can install cri-o with apt. Currently the latest version of in apt repository is cri-o is 1.15.
 ```shell
-root@kubernetesdebian:~# apt install cri-o-1.15 -y
-
+$ apt install cri-o-1.15 -y
 ...
-
-root@kubernetesdebian:~# apt search cri-o*
-Sorting... Done
-Full Text Search... Done
-cri-o-1.12/bionic 1.12.4-1~dev~ubuntu18.04~ppa1 amd64
-  OCI-based implementation of Kubernetes Container Runtime Interface.
-
-cri-o-1.13/bionic 1.13.11-1~dev~ubuntu18.04~ppa1 amd64
-  OCI-based implementation of Kubernetes Container Runtime Interface.
-
-cri-o-1.14/bionic 1.14.10-1~dev~ubuntu18.04~ppa6 amd64
-  OCI-based implementation of Kubernetes Container Runtime Interface.
-
-cri-o-1.15/bionic,now 1.15.3-1~dev~ubuntu18.04~ppa4 amd64 [installed]
-  OCI-based implementation of Kubernetes Container Runtime Interface.
 ```
 
 Although it suggests to install `containernetworking-plugins` package together, it will be uninstalled during Kubernetes installation, so we don't have to install it.
@@ -142,8 +126,7 @@ Although it suggests to install `containernetworking-plugins` package together, 
 ### 3. Configuring cri-o
 
 By default, cri-o finds conmon in `/usr/libexec/crio`, which does not exist. Hence, when you start cri-o, it says it could not find conmon.
-By changing the configuration file of cri-o: `/etc/crio/crio.conf`
-
+Change the configuration file of cri-o `/etc/crio/crio.conf`:
 ```
 # Path to the conmon binary, used for monitoring the OCI runtime.
 # originally it was "/usr/libexec/crio/conmon". Following path comes from $which conmon, which may be different from other environments.
@@ -151,7 +134,6 @@ conmon = "/usr/bin/conmon"
 ```
 
 Also, you have to add repositores to pull images. This configuration can be either `/etc/crio/crio.conf` or `/etc/containers/registries.conf` like:
-
 ```
 ...
 [registries.search]
@@ -163,7 +145,7 @@ Or easily pull the content from Project Atomic by `curl https://raw.githubuserco
 You can now start cri-o by `systemctl start crio`.
 
 ```shell
-root@kubernetesdebian:~# systemctl status crio
+$ systemctl status crio
 ● crio.service - Container Runtime Interface for OCI (CRI-O)
    Loaded: loaded (/lib/systemd/system/crio.service; disabled; vendor preset: enabled)
    Active: active (running) since Thu 2019-11-21 18:30:16 KST; 32min ago
@@ -187,7 +169,7 @@ Installing Kubernetes in Debian is quite explained well[^2].
 
 At first add a public key for Kubernetes.
 ```shell
-root@kubernetesdebian:~# apt install curl -y && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+$ apt install curl -y && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 ...
 ```
 
@@ -199,7 +181,7 @@ deb https://apt.kubernetes.io/ kubernetes-xenial main
 And then install packages.
 
 ```shell
-root@kubernetesdebian:~# apt update && apt install kubelet kubeadm kubectl -y
+$ apt update && apt install kubelet kubeadm kubectl -y
 ...
 ```
 
@@ -207,7 +189,7 @@ root@kubernetesdebian:~# apt update && apt install kubelet kubeadm kubectl -y
 
 Kubelet automatically starts, however, it repeatedly fails due to lack of configurations.
 ```shell
-root@kubernetesdebian:~# systemctl status kubelet
+$ systemctl status kubelet
 ...
 Nov 21 18:06:02 kubernetesdebian systemd[1]: Started kubelet: The Kubernetes Node Agent.
 Nov 21 18:06:03 kubernetesdebian kubelet[9249]: F1121 18:06:03.006915    9249 server.go:196] failed to Kubelet config file /var/lib/kubelet/config.yaml, error failed to read kubelet config file "/var/lib/kubelet/config.yaml", error: open /var/lib/kubelet/config.yaml: no such file or directory
@@ -229,7 +211,7 @@ Then type `systemctl daemon-reload` to apply the changed configurations.
 Now initialize a control-plane node by `kubeadm init`, with proper arguments as you want[^3].
 
 ```shell
-root@kubernetesdebian:~# kubeadm init
+$ kubeadm init
 ...
 [bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
 [bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
@@ -258,7 +240,7 @@ You can now join any number of machines by running the following on each node as
 You now have a working Kubernetes control-plane node in Debian.
 
 ```shell
-root@kubernetesdebian:~# kubectl describe nodes
+$ kubectl describe nodes
 Name:               kubernetesdebian
 Roles:              master
 Labels:             beta.kubernetes.io/arch=amd64
@@ -316,7 +298,7 @@ By default, any control-plane nodes pods are not schedulable; therefore, when yo
 Following command will make Kubernetes be able to schedule pods in control-plane nodes as well[^4].
 
 ```shell
-root@kubernetesdebian:~# kubectl taint nodes <node_name> node-role.kubernetes.io/master-
+$ kubectl taint nodes <node_name> node-role.kubernetes.io/master-
 node/<node_name> untainted
 ```
 
@@ -336,9 +318,9 @@ spec:
 ```
 
 ```shell
-root@kubernetesdebian:~# kubectl apply -f test_pod.yaml
+$ kubectl apply -f test_pod.yaml
 pod/myapp-pod created
-root@kubernetesdebian:~# kubectl describe pods
+$ kubectl describe pods
 Name:         myapp-pod
 Namespace:    default
 Priority:     0
