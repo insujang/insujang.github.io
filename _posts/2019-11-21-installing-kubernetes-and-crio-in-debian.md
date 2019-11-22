@@ -302,7 +302,8 @@ Annotations:        kubeadm.alpha.kubernetes.io/cri-socket: /var/run/crio/crio.s
                     node.alpha.kubernetes.io/ttl: 0
                     volumes.kubernetes.io/controller-managed-attach-detach: true
 CreationTimestamp:  Thu, 21 Nov 2019 18:14:01 +0900
-Taints:             <none> 
+Taints:             node-role.kubernetes.io/master:NoSchedule
+                    node.kubernetes.io/disk-pressure:NoSchedule
 Unschedulable:      false
 Conditions:
   Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
