@@ -121,8 +121,6 @@ $ apt install cri-o-1.15 -y
 ...
 ```
 
-Although it suggests to install `containernetworking-plugins` package together, it will be uninstalled during Kubernetes installation, so we don't have to install it.
-
 ### 3. Configuring cri-o
 
 By default, cri-o finds conmon in `/usr/libexec/crio`, which does not exist. Hence, when you start cri-o, it says it could not find conmon.
@@ -160,10 +158,45 @@ Nov 21 18:30:16 kubernetesdebian systemd[1]: Starting Container Runtime Interfac
 Nov 21 18:30:16 kubernetesdebian systemd[1]: Started Container Runtime Interface for OCI (CRI-O).
 ```
 
+### 4. Confiuring Container Networking Interface (CNI) [^2]
+
+crio suggests to install `containernetworking-plugins` package together, however, it will be deleted by apt when you install Kubernetes (specifically, `kubernetes-cni` package).
+`containernetworking-plugins` package copies some files for CNI networking in `/etc/cni/net.d`, which is necessary for container networking.
+
+You can easily install it before installing Kubernetes, however, you can also make network configruations manually in `/etc/cni/net.d`.
+
+`/etc/cni/net.d/100-crio-bridge.conf`
+```
+{ 
+    "cniVersion": "0.3.0", 
+    "name": "crio-bridge", 
+    "type": "bridge", 
+    "bridge": "cni0", 
+    "isGateway": true, 
+    "ipMasq": true, 
+    "ipam": { 
+        "type": "host-local", 
+        "subnet": "10.88.0.0/16", 
+        "routes": [ 
+            { "dst": "0.0.0.0/0" } 
+        ] 
+    } 
+}
+```
+
+`/etc/cni/net.d/200-loopback.conf`
+```
+{ 
+    "cniVersion": "0.3.0", 
+    "type": "loopback" 
+}
+```
+
+Don't know details yet. Have to dig more.
 
 # Installing Kubernetes
 
-Installing Kubernetes in Debian is quite explained well[^2].
+Installing Kubernetes in Debian is quite explained well[^3].
 
 ### 1. Add PPA and installing packages
 
@@ -208,7 +241,10 @@ Then type `systemctl daemon-reload` to apply the changed configurations.
 
 ### 3. Configuring Kubernetes
 
-Now initialize a control-plane node by `kubeadm init`, with proper arguments as you want[^3].
+Now initialize a control-plane node by `kubeadm init`, with proper arguments as you want[^4].
+
+> Note that crio is running, so kubeadm detects crio as its container runtime.
+> If not, kubeadm says some errors like `docker is not found`.
 
 ```shell
 $ kubeadm init
@@ -308,7 +344,7 @@ System Info:
 ### Some test with a single node cluster
 
 By default, any control-plane nodes pods are not schedulable; therefore, when you try to schedule a pod, it should be in pending status.
-Following command will make Kubernetes be able to schedule pods in control-plane nodes as well[^4].
+Following command will make Kubernetes be able to schedule pods in control-plane nodes as well[^5].
 
 ```shell
 $ kubectl taint nodes <node_name> node-role.kubernetes.io/master-
@@ -378,6 +414,7 @@ Conditions:
 
 
 [^1]: Project Atomic PPA: [https://launchpad.net/~projectatomic/+archive/ubuntu/ppa](https://launchpad.net/~projectatomic/+archive/ubuntu/ppa)
-[^2]: Installing kubeadm: [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
-[^3]: Creating a single control-plane cluster with kubeadm: [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#instructions)
-[^4]: Control plane node isolation: [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#control-plane-node-isolation)
+[^2]: Netwokr plugins: [https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/)
+[^3]: Installing kubeadm: [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+[^4]: Creating a single control-plane cluster with kubeadm: [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#instructions)
+[^5]: Control plane node isolation: [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#control-plane-node-isolation)
