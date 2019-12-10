@@ -33,7 +33,7 @@ go build -buildmode=c-shared -o libtest.so test.go
 
 ```shell
 # as c-archive(static) library
-go build -buildmode=c-static -o libtest.a test.go
+go build -buildmode=c-archive -o libtest.a test.go
 ```
 
 With the command above, [cgo](https://golang.org/cmd/cgo/) automatically generates a header file and a library file:
