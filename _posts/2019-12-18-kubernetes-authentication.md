@@ -133,6 +133,25 @@ users:
     client-key-data: LS0tLS1CRU...
 ```
 
+`certificate-authority-data` is a base64-encoded string of `/etc/kubernetes/ca.crt` [^8]. `client-certificate-data` and `client-key-data` are base64-encoded kubernetes-admin certificate and key, respectively.
+This admin certificate is automatically created and managed by kubeadm.
+
+```
+$ kubeadm alpha certs check-expiration
+CERTIFICATE                EXPIRES                  RESIDUAL TIME   EXTERNALLY MANAGED
+admin.conf                 Dec 17, 2020 07:20 UTC   364d            no      
+apiserver                  Dec 17, 2020 07:20 UTC   364d            no      
+apiserver-etcd-client      Dec 17, 2020 07:20 UTC   364d            no      
+apiserver-kubelet-client   Dec 17, 2020 07:20 UTC   364d            no      
+controller-manager.conf    Dec 17, 2020 07:20 UTC   364d            no      
+etcd-healthcheck-client    Dec 17, 2020 07:20 UTC   364d            no      
+etcd-peer                  Dec 17, 2020 07:20 UTC   364d            no      
+etcd-server                Dec 17, 2020 07:20 UTC   364d            no      
+front-proxy-client         Dec 17, 2020 07:20 UTC   364d            no      
+scheduler.conf             Dec 17, 2020 07:20 UTC   364d            no  
+```
+`kubeadm alpha certs` command shows the client certificates in the `/etc/kubernetes/pki`[^9] and the client certificate embedded in `KUBECONFIG` files (admin.conf, controller-manager.conf, and scheduler.conf).
+
 For more details, refer to [^5], [^6], and [^7].
 
 [^1]: Controlling access: [https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/](https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/)
@@ -142,3 +161,5 @@ For more details, refer to [^5], [^6], and [^7].
 [^5]: Understanding Kubernetes Authentication and Authorization [http://cloudgeekz.com/1045/kubernetes-authentication-and-authorization.html](http://cloudgeekz.com/1045/kubernetes-authentication-and-authorization.html)
 [^6]: Authentication and Authorization in Kubernetes [https://www.sovsystems.com/blog/authentication-and-authorization-in-kubernetes](https://www.sovsystems.com/blog/authentication-and-authorization-in-kubernetes)
 [^7]: 쿠버네티스 인증 [https://arisu1000.tistory.com/27847](https://arisu1000.tistory.com/27847)
+[^8]: Access Kubernetes API with Client Ceritifcate. [https://codefarm.me/2019/02/01/access-kubernetes-api-with-client-certificates/](https://codefarm.me/2019/02/01/access-kubernetes-api-with-client-certificates/)
+[^9]: Certificate Management with kubeadm. [https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/)
