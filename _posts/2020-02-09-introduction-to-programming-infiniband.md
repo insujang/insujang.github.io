@@ -27,7 +27,7 @@ SQ and RQ are always grouped and managed as a queue pair (QP).
 
 ![qp](/assets/images/200209/queue_pair.png) [^3]
 
-We can **post a work request (WR) by posting a work queue entry (WRE) into the work queue**,
+We can **post a work request (WR) by generating a work queue entry (WRE) into the work queue**,
 e.g. (1) posting a send work request into the SQ to send some data to a remote node, (2) posting a receive work request into the RQ to receive data from a remote node, etc.
 Posted work requests are directly handled by hardware (HCA) [^3] [^4].
 Once a request is completed, the hardware posts a Work Completion (WC) into a completion queue (CQ). Programming Interface provides flexibility that we can specify distinct completion queues to the SQ and the RQ,
@@ -47,12 +47,10 @@ With the APIs, the program runs as the following simplified description:
 3. Create a completion queue (`struct ibv_cq* ibv_create_cq()`)
 4. **Create a queue pair** (`struct ibv_qp* ibv_create_qp()`)
 5. Exchange identifier information to establish connection
-6. Change the queue pair state (`ibv_modify_qp()`): change the state of the queue pair from RESET to INIT, RTR (Ready to Receive), and finally RTS (Ready to Send) [^5]
+6. **Change the queue pair state** (`ibv_modify_qp()`): change the state of the queue pair from RESET to INIT, RTR (Ready to Receive), and finally RTS (Ready to Send) [^5]
 7. Register a memory region (`ibv_reg_mr()`)
 8. Exchange memory region information to handle operations
 9. **Perform data communication**
-
-**bold** steps are what I just said: a more briefly summarized program function flow.
 
 > In [^3], [4], and many example codes, *6: memory region registration* is illustrated as a part of initialization (somewhere between step 2~6).
 > However, **there is no problem for lazy registration** and memory regions can dynamically be registered and deregistered at any time before posting a work request (after step 6).
@@ -207,7 +205,7 @@ Note that several arguments are taken.
 
 #### ib_port
 
-`ib_port` is the number of port that this queue pair uses in the host. You can easily see how many ports the device supports and their numbers with `ibstat`:
+`ib_port` is a port number that this queue pair uses in the host. You can easily see how many ports the device supports and their numbers with `ibstat`:
 
 ```shell
 $ ibstat
@@ -258,7 +256,7 @@ uint32_t getQueuePairNumber(struct ibv_qp* qp) {
 
 > Note that these return **its local information, not a destination information (information of the opposite node)**. It means these functions must be called in each side and they exchange information to know each other's destination information.
 >
-> **For this purpose, all examples that I referred use a TCP socket.** Before processing RDMA operations, a server and a client establishes a TCP connection and exchange their local ID and QP number.
+> **For this purpose, all examples that I referred use a TCP socket.** Before processing RDMA operations, a server and a client establish a TCP connection and exchange their local ID and QP number.
 > This is why step 5 includes *exchange* identifier information.
 > 
 > The TCP connection is also used in step 8, to let the counterpart know about its memory regions.
@@ -306,8 +304,8 @@ Before discussing it further, let us dig into types of operations that Infiniban
 ![operation diagram: rdma write](/assets/images/200209/operation_diagram_rdma_write.png)
 * Those sequence diagrams are refined images illustrated in [^4].
 
-Personally thinking, the most main reason memory region registration is mostly in *initialization phase* is due to RDMA operations.
-Different from receive, where the remote side actively post a receive work request so that it is able to decide the moment that a memory region to be registered (just before posting a receive work request),
+Personally thinking, the main reason memory region registration is mostly in *initialization phase* is due to RDMA operations.
+Different from receive operation, where the remote side actively post a receive work request so that it is able to decide the moment that a memory region is registered (just before posting a receive work request),
 **RDMA read and RDMA write can be done without any operations in the remote node, requiring the memory region to be registered in advance**.
 
 Again, in operation, there is no problem *initializing* a queue pair without registering memory regions. It is *a runtime problem* that the HCA cannot read or write data from or to the remote node's memory.
