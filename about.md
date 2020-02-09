@@ -16,12 +16,13 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 
 #### Education
 - M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
-- B.S., Computer Engineering, [Sungkyunkwan University](https://www.skku.edu/eng/), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
+- B.S., Computer Science and Engineering, [Sungkyunkwan University](https://www.skku.edu/eng/), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
 
 #### Research Interests
 - Computer Architecture
 - High Performance Computing
 - Cloud Computing
+- Parallel Computing
 
 #### Publications
 1. **Insu Jang**, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. **"Heterogeneous Isolated Execution for Commodity GPUs"**.
@@ -53,11 +54,13 @@ System Engineer, [TmaxOS](http://tmaxos.com)
     Instead of applying SISR to all video frames, we used it only into I-frame in [the H.264 group of picture structure](https://en.wikipedia.org/wiki/Group_of_pictures) to apply super resolution in real time speed.  
     Implementation is based on [Pytorch](http://pytorch.org/), [VDSR on Pytoch](https://github.com/twtygqyy/pytorch-vdsr),
     [FFmpeg](https://www.ffmpeg.org/), and [a simple FFmpeg player](https://github.com/Akagi201/ffmpeg-player).  
+
+    ![rtsr](/assets/images/projects/rtsr_thumbnail.png)
+
     [[Report]](/assets/pdf/cs570_final.pdf)
     [[PPT]](/assets/pdf/cs570_final_ppt.pdf)
-
-    [![rtsr](/assets/images/projects/rtsr_thumbnail.png)](https://youtu.be/_cVU23W_Jt8)
-    (Click the image to go to Youtube)
+    [[Youtube]](https://youtu.be/_cVU23W_Jt8)
+    
 
 - **HEAD: HardwarE Accelerated Deduplication**  
 (KAIST Fall 2016 CS710 Topics in Computing Acceleration with FPGA Project)
@@ -92,7 +95,7 @@ System Engineer, [TmaxOS](http://tmaxos.com)
     [[Report]](/assets/pdf/ece5756_final.pdf)
 
 - **My Summary Note: Automatic Note Summary Application**  
-(Sungkyunkwan University Fall 2015 ICE3037 Design Capstone Project Project)
+(Sungkyunkwan University Fall 2015 ICE3037 Design Capstone Project)
 
     Awarded an excellence prize in 2015 Convergence App Contest.
     Proposed an automatic way of user's note summaries in PDFs with a Android tablet.  
@@ -113,21 +116,21 @@ System Engineer, [TmaxOS](http://tmaxos.com)
     Designed a game using smartphones as controllers, and a smart TV as a display board.
     At most 4 players can play together, and more families can enjoy the game together by seeing the smart TV.  
 
-    [![molerush](/assets/images/projects/molerush_thumbnail.png)](https://youtu.be/fFzxrAJX9wo)
-    (Click the image to go to Youtube)
+    ![molerush](/assets/images/projects/molerush_thumbnail.png)
+    [[Youtube]](https://youtu.be/fFzxrAJX9wo)
 
 
 #### Skills
-- C, **C++17**, Java, Python, Vivado HLS
+- C, **C++17**, Python
 - Android
 - KVM, QEMU
 - CUDA
-- MySQL, MongoDB
 - Vivado HLS, Petalinux
 - Intel Software Guard Extensions (SGX)
 - LaTeX, matplotlib
 - Kubernetes
 - Docker
+- Infiniband RDMA
 
 ## License
 This blog is using modified [Kiko-plus](https://github.com/aweekj/Kiko-plus) theme for the entire webpages and [Tomorrow](https://github.com/chriskempson/tomorrow-theme) theme, embedded in [jekyll TeXt](https://github.com/kitian616/jekyll-TeXt-theme) theme, for code highlight.
