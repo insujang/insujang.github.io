@@ -136,9 +136,12 @@ body {
   }
 
    &-tag {
-    margin-bottom: 1.5rem;
+     margin-bottom: 0;
+    // margin-bottom: 1.5rem;
 
     ul {
+      margin: 0;
+
       li:before {
         content: ""
       }
