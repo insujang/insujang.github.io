@@ -13,6 +13,9 @@
 
   <link rel="alternate" type="application/rss+xml" title="RSS Feed for {{ site.name }}" href="{{ site.baseurl }}/feed.xml" />
 
+  <!-- Google Analytics -->
+  {% include google-analytics.html %}
+
   <!-- MathJax -->
   {% if page.math %}
   <script type="text/x-mathjax-config">
@@ -24,5 +27,4 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
   </script>
   {% endif %}
-
 </head>
