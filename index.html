@@ -55,28 +55,8 @@ layout: default
 
   </div>
 {% endfor %}
-  <!-- Pagination links -->
-  <div class="list-pagination">
-    <span class="list-pagination-previous">
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="previous">
-          &#xE000; previous
-        </a>
-      {% else %}
 
-      {% endif %}
-    </span>
+{% include pagination.html %}
 
-    <span class="list-pagination-next">
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path | prepend: site.baseurl }}" class="next">
-          next &#xE001;
-        </a>
-      {% else %}
-
-      {% endif %}
-    </span>
-
-  </div>
 {% endif %}
 </div>

@@ -383,3 +383,19 @@ body {
     }
   }
 }
+
+.pagination {
+  margin: 2em;
+  text-align: center;
+
+  span.current {
+    padding: .25em .5em;
+    color: $base-color;
+    background-color: $oc-gray-3;
+    border-radius: 3px;
+  }
+
+  > * {
+    padding: .2em .5em;
+  }
+}
