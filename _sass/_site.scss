@@ -404,11 +404,15 @@ body {
   Table of Contents
   -------------- */
 
-div.post-toc {
+.post-toc {
   margin-bottom: 3em;
   border-bottom: 1px solid #eee;
 
   a.footnote {
     display: none;
+  }
+
+  &-no-header {
+    color: $oc-gray-6;
   }
 }

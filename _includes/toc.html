@@ -98,4 +98,8 @@
     {% endif %}
 {% endcapture %}{% assign tocWorkspace = '' %}{{ my_toc | markdownify | strip }}
 
+{% if firstHeader == true %}
+<p class="post-toc-no-header">This post has no headers.</p>
+{% endif %}
+
 </div>
