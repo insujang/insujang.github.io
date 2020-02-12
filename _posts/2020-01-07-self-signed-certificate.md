@@ -15,7 +15,7 @@ A self-signed certificate is a ceritificate, which is **not** signed by a certif
 When using Kubernetes, `kubeadm` automatically genereates a self-signed Kubernetes CA before generating other certificates.
 
 
-## Steps to create a certificate [^3]
+# Steps to create a certificate [^3]
 
 Follow the steps to create a self-signed certificate:
 
@@ -23,7 +23,7 @@ Follow the steps to create a self-signed certificate:
 - Generate a Certificate Signing Request (CSR)
 - Generate a self-signed certificate
 
-#### Generate a private key
+## Generate a private key
 
 A generated certificate must be signed with the Certificate Authority's private key, which we are going to make here.
 Here we generate 2048bit aes256 key pair.
@@ -71,7 +71,7 @@ $ cat rootca.key
 -----END RSA PRIVATE KEY-----
 ```
 
-#### Generate a CSR
+## Generate a CSR
 
 The CSR is a **request**, which will be sent to a Certificate Authority to ask it to issue a signed certificate.
 Here, we want to generate a certificate for a Certificate Authority, we will self-sign the CSR.
@@ -155,7 +155,7 @@ $ cat rootca.csr
 
 In C code, there is no need for CSR creation.
 
-#### Generate a self-signed certificate
+## Generate a self-signed certificate
 
 Generate a temporary certificate valid for 1 year.
 
@@ -200,15 +200,14 @@ PEM_write_X509(x509_file, x509);
 fclose(x509_file);
 ```
 
-#### Extract information from CRT
+### Extract information from CRT
 
 ```
 openssl x509 -in rootca.crt -text -noout
 ```
 
-
-## 
-#### Verifying CRT in the code
+ 
+### Verifying CRT in the code
 
 ```c
 bool check_certificate_valid(X509* x509) {
@@ -222,7 +221,7 @@ bool check_certificate_valid(X509* x509) {
 }
 ```
 
-#### Building the code
+## Building the code
 ```cmake
 cmake_minimum_required(VERSION 3.0)
 project(create-x509)

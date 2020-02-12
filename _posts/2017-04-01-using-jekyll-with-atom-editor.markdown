@@ -20,25 +20,25 @@ I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll packa
 
 
 
-#### [Markdown Preview Enhanced](https://atom.io/packages/markdown-preview-enhanced)
+# [Markdown Preview Enhanced](https://atom.io/packages/markdown-preview-enhanced)
 It shows Markdown result in real time. Not perfectly suitable to Jekyll, but still good to see it roughly.
 - Toggle Preview: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>M</kbd>, or <kbd>&#8679;</kbd> + <kbd>&#8984;</kbd> + <kbd>M</kbd>
 - Insert Image (Image Helper): <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>I</kbd>, or <kbd>&#8679;</kbd> + <kbd>&#8984;</kbd> + <kbd>I</kbd>  
 This is an awesome feature, because it was hard to organize images in Markdown (except those in the web). However, Image Helper automatically copies the image to specified location (In my case, set `/assets/images`)
 ![atom_markdown_image_helper](/assets/images/170401/atom_markdown_image_helper.png){: width="601px"}
 
-### [Latex](https://atom.io/packages/latex)
+# [Latex](https://atom.io/packages/latex)
 With pdfview plugin, I can see a compiled result right after clicking the build shortcut.
 - Build: <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>B</kbd>
 - Clean: <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>C</kbd>
 
-### [Git Plus](https://atom.io/packages/git-plus)
+# [Git Plus](https://atom.io/packages/git-plus)
 Using this plugin, I no longer have to use Github desktop, manually committing and pushing modified files in a separate window.  
 There are too many shortcuts, it would be better to use a menu.
 - Menu: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>H</kbd>  
 We can add, add and commit, add and commit and push, etc.
 
-### [Jekyll](https://atom.io/packages/jekyll)
+# [Jekyll](https://atom.io/packages/jekyll)
 At the first time, I committed and pushed to see a change, which was really burdensome. I had no choice but to install Jekyll in a local machine, and run a local server temporarily to see the change. After seeing the result, I can push it only if it is good.
 - New Post: <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>J</kbd>
 It creates a default template (Jekyll format).
@@ -46,6 +46,6 @@ It creates a default template (Jekyll format).
 It starts or stops the local server. Whenever I hit the save shortcut (<kbd>&#8984;</kbd> + <kbd>S</kbd>), it automatically re-build my blog and I can see it in a web browser (`localhost:3000`).
 ![jekyll_plugin](/assets/images/170401/jekyll_plugin.png){: height="100px"}
 
-#### Reference
+# Reference
 - Atom: [https://atom.io/](https://atom.io/)
 - MacOS command unicode: [http://tech.karbassi.com/2009/05/27/command-option-shift-symbols-in-unicode/](http://tech.karbassi.com/2009/05/27/command-option-shift-symbols-in-unicode/)

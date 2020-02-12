@@ -6,7 +6,7 @@ author: "Insu Jang"
 tags: [research,sgx]
 ---
 
-### 1. ECREATE
+# 1. ECREATE
 - [Intel SGX Explained p63] Section 5.3.1. Creation
 - [Programming References p21] Section 5.3. ECREATE
 
@@ -50,7 +50,7 @@ uintptr_t _ECREATE(page_info_t* pi)
 }
 ```
 
-### 2. EADD
+# 2. EADD
 - [Intel SGX Explained p64] Section 5.3.2. Loading
 - [Programming References p11] Section 5.3. EADD
 
@@ -185,7 +185,7 @@ CEnclaveSim* CEnclaveMngr::get_enclave(const void* base_addr)
 It just checks which enclave `base_addr` is in its ELRANGE (`BASEADDR` ~ `BASEADDR+SIZE`).
 -->
 
-#### 2-1. How a free EPC page is selected in SGX simulation mode?
+## 2-1. How a free EPC page is selected in SGX simulation mode?
 
 Simulation implementation might be different from hardware implementation. In simulation mode, `ECREATE` allocates all EPC pages via `mmap()`.
 
@@ -217,7 +217,7 @@ void* se_virtual_alloc(void* address, size_t size, uint32_t type)
 
 As SGX simulation simulates SGX behavior by software, it copies EPC page data with **virtual address**. Hence `_EADD()` does not have detailed information about picking a physical EPC page.
 
-#### 2.2. How system software selects a EPC page in SGX hardware mode?
+## 2.2. How system software selects a EPC page in SGX hardware mode?
 
 SGX simulation code can't tell EPC page allocation in detail, as it is also a software, so it cannot use the physical address.
 
@@ -377,7 +377,7 @@ void isgx_insert_pte(struct isgx_enclave * enclave,
 
 ***To be concluded, when a SGX platform is initialized, several EPC page instances (`struct isgx_epc_page`) are allocated to represent all EPC pages. System software manages them as a linked list, called `isgx_free_list`. When `EADD` is called, system software picks a free EPC page instance from the list, and create a page table entry, pointing the physical address that is saved in `epc_page->pa`, with the expected virtual address `enclave_page->addr`, a part of user enclave's ELRANGE.***
 
-### 3. EEXTEND
+# 3. EEXTEND
 - [Intel SGX Explained p64] Section 5.3.2. Loading
 - [Programming References p31] Section 5.3. EEXTEND
 
@@ -395,7 +395,7 @@ RCX register contains the effective address of the 256 byte region of an EPC pag
 No simulation code
 ```
 
-### 4. EINIT
+# 4. EINIT
 - [Intel SGX Explained p64] Section 5.3.3. Initialization
 - [Programming References p34] Section 5.3. EINIT
 
@@ -462,7 +462,7 @@ uintptr_t _EINIT(secs_t* secs, enclave_css_t* css, token_t* launch)
 }
 ```
 
-### References
+# References
 - Intel Software Guard Extensions Programming Reference. [\[link\]](https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf)
 - Intel SGX Explained. [\[link\]](https://eprint.iacr.org/2016/086.pdf)
 - Intel SGX Tutorial Slide presented in ISCA 2015.
@@ -471,10 +471,10 @@ uintptr_t _EINIT(secs_t* secs, enclave_css_t* css, token_t* launch)
 - Intel SGX Linux Driver Github Repository.
 [\[link\]](https://github.com/01org/linux-sgx-driver)
 
-### License
+# License
 All source codes are from Intel SGX SDK Github repository and Intel SGX Linux driver Github repository, released under BSD License 2.0 and GNU General Public License 2.0, respectively.
 
-#### Intel SGX SDK
+## Intel SGX SDK
 Copyright (C) 2011-2017 Intel Corporation. All rights reserved.  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -498,7 +498,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#### Intel SGX Linux driver
+## Intel SGX Linux driver
 (C) Copyright 2015 Intel Corporation
 
 Authors:

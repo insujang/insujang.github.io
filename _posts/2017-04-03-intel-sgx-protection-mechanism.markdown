@@ -162,6 +162,6 @@ SGX adds the access control logic to the PMH. SGX's security checks are performe
 
 
 
-### References
+# References
 - Software Guard Extensions, Wikipedia. [Online] [https://en.wikipedia.org/wiki/Software_Guard_Extensions](https://en.wikipedia.org/wiki/Software_Guard_Extensions)
 - Costan V, Devadas S, Intel SGX Explained, IACR Cryptology ePrint Archive, 2016 [\[link\]](https://pdfs.semanticscholar.org/2d7f/3f4ca3fbb15ae04533456e5031e0d0dc845a.pdf)

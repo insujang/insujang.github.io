@@ -96,6 +96,6 @@ int kvm_arch_init_vm (struct kvm *kvm, unsigned long type)
 }
 ```
 
-### References
+# References
 - Wikipedia. Kernel-based Virtual Machine. \[Online\]. https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine
 - Novell. KVM Architecture. \[Online\]. https://www.slideshare.net/NOVL/virtualization-with-kvm-kernelbased-virtual-machine

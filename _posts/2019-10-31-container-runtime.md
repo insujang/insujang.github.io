@@ -25,7 +25,7 @@ Here are very clear explanations what is container runtime exactly, written by [
 
 Remaining parts of this post is a summary of those four posts and supplements for better understanding.
 
-## Why the definition becomes unclear?
+# Why the definition becomes unclear?
 
 Here is a quote from Part 1.
 
@@ -83,7 +83,7 @@ Therefore from figure Docker Internal Architecture,
 ![runtime_architecture](/assets/images/191031/runtime-architecture.png)
 * A conceptual diagram how the components fit together. Source: Container Runtimes Part 3: High-Level Runtimes*
 
-## CRI-O and Podman
+# CRI-O and Podman
 This wonder actually comes from the relationship between Kubernetes and Podman; what is Podman? What are differences between Podman and CRI-O, which is a container runtime for Kubenetes?
 
 ![kubernetes](/assets/images/191031/kubernetes.png)

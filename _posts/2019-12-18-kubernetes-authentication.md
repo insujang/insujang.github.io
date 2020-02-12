@@ -31,7 +31,7 @@ Kubernetes provides the following modules for authentication.
 - HTTP basic auth
 
 
-### Client certificate
+## Client certificate
 
 By default, Kubernetes set by `kubeadm` uses X509 based client certificate for authentication.
 
@@ -99,7 +99,7 @@ Containers:
       ...
 ```
 
-### kubectl access
+## kubectl access
 
 When we use `kubectl`, everything works fine. This does not mean `kubectl` is special, nor bypasses authentication module.
 With `KUBECONFIG` environment variable, `kubectl` automatically loads a configuration file with certificate information before accessing the api server.

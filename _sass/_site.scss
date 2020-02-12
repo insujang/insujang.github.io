@@ -399,3 +399,16 @@ body {
     padding: .2em .5em;
   }
 }
+
+/*--------------
+  Table of Contents
+  -------------- */
+
+div.post-toc {
+  margin-bottom: 3em;
+  border-bottom: 1px solid #eee;
+
+  a.footnote {
+    display: none;
+  }
+}

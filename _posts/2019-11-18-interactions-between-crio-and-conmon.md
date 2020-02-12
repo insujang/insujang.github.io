@@ -20,9 +20,9 @@ After introducing Open Container Initiative (OCI) container standard, Red Hat im
 
 Okay... What are noticable differences from Docker?
 
-## conmon: Container Monitor
+# conmon: Container Monitor
 
-### How conmon is used in cri-o
+## How conmon is used in cri-o
 cri-o executes `conmon` when it receives a request for container creation, which creates a container process by using runc or Kata container (whatever a low level container runtime).
 `stdout` and `stderr` streams of the container process are connected to `conmon`, where one `conmon` is launched per container, and are handled by it. Therefore, even during the downtime of cri-o daemon, conmon safely handles containers' logs.
 This flow is different from the existing Dockerd or containerd: in containerd, daemon itself creates a container process directly.
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-### Why cri-o uses conmon?
+## Why cri-o uses conmon?
 
 > Each container is monitored by a separate `conmon` process. The conmon process holds the pty of the PID1 of the container process. It handles logging for the container and records the exit code for the container process.
 >
@@ -131,7 +131,7 @@ For this reason, when `dockerd` receives a `SIGTERM` signal, it explicitly termi
 
 If logging is not responsible for a centralized container runtime daemon, the problem can be solved. `conmon` is the answer of cri-o team as a solution; even cri-o daemon is down, loggings for each container process are handled by conmon processes.
 
-### How information "container terminated" is passed to cri-o?
+## How information "container terminated" is passed to cri-o?
 
 When a main process of a containter terminates, all processes in the container and the container itself are terminated as well. In containerd, daemon has connected pipes to the main process of the container, which are closed during termination, hence they role as a *notification* of containter termination to containerd.
 

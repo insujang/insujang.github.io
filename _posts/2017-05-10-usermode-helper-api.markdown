@@ -65,5 +65,5 @@ static char* envp[] = {
 return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
 ```
 
-## References
+# References
 - Invoking user-space applications from the kernel. M. Jones. \[Online\]: https://www.ibm.com/developerworks/library/l-user-space-apps/

@@ -6,7 +6,7 @@ author: "Insu Jang"
 tag: [study, git]
 ---
 
-### 1. Initialize a Git Repository
+# 1. Initialize a Git Repository
 
 ```
 $ git init
@@ -14,7 +14,7 @@ $ git init
 
 This will create `.git` directory to store all information for version control.
 
-### 2. Checking out a Remote Repository
+# 2. Checking out a Remote Repository
 
 ```
 $ git checkout https://github.com/username/abc.git
@@ -30,7 +30,7 @@ $ git fetch
 $ git checkout branch_name
 ```
 
-### 3. Commit / Push
+# 3. Commit / Push
 
 ```
 $ git commit -m "commit message"
@@ -41,7 +41,7 @@ Unlike SVN, git has two steps to apply changes to a remote repository. First is 
 
 `origin` in push command means the remote repository you checked out.
 
-### 4. Git branch_name
+# 4. Git branch_name
 
 Branch is a beauty of git. You can work with coworkers without any interference with them.
 

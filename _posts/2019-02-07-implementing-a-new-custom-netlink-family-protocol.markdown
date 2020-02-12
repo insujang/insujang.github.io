@@ -6,7 +6,7 @@ author: "Insu Jang"
 tags: [research, linux]
 ---
 
-## Netlink Protocol
+# Netlink Protocol
 
 Netlink is a communication protocol between kernel and userspace.
 Unlike `ioctl()`, netlink is based on socket, which enables notification from the kernel to userspace.
@@ -32,9 +32,9 @@ This is one of the main reasons that the generic netlink family was created.
 In this post, we use the existing netlink protocol (not generic netlink protocol).
 As there are 23 protocol families exist in the latest kernel, we can implement up to 9 custom protocol families (23~31) so far.
 
-## Basic Implementation with Custom Netlink
+# Basic Implementation with Custom Netlink
 
-### Kernel Module
+## Kernel Module
 
 The following is a basic kernel module that creates a custom netlink protocol family, the value of which is 25, using the kernel function `netlink_kernel_create()`.
 Note that the signature of the function was changed since kernel version 2.6.
@@ -97,7 +97,7 @@ You can use the variable for creation or your own network namespace variable.
 Also note that since netlink is aware of network namespace, netlink multicast, by default, can only be received from within the specified network namespace.
 For instance, if two network namespaces are available (namely initial netns and ns1), and the above kernel module sends a multicast message to the initial network namespace, every processes in the other network namespace ns1 will not receive the message.
 
-### Userspace Program
+## Userspace Program
 
 The below code is a userspace program that can send and receive messages with the kernel
 through `NETLINK_TESTFAMILY` family protocol.
@@ -152,7 +152,7 @@ Entering: test_nl_receive_message
 Received message: Hello
 ```
 
-### Unicast from Kernel Module
+## Unicast from Kernel Module
 
 Let us make the kernel module send a response for a request.
 
@@ -183,7 +183,7 @@ when it is sent through `nlmsg_unicast()`, hence calling `nlmsg_unicast()`
 contains the memory management [\[link\]](https://stackoverflow.com/a/10138935).
 Therefore, calling `nlmsg_free()` is forbidden, otherwise a kernel panic would be occured.
 
-### Multicast from Kernel Module
+## Multicast from Kernel Module
 
 The kernel module can also send a multicast netlink message, a broadcast for a specific group in netlink family.
 

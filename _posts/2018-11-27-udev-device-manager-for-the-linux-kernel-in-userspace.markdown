@@ -6,7 +6,7 @@ author: "Insu Jang"
 tags: [research, linux]
 ---
 
-## What is udev?
+# What is udev?
 > udev (userspace /dev) is a device manager for the Linux kernel.
 As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory.
 At the same time, udev also handls all user space events
@@ -20,7 +20,7 @@ udev was developed by [Greg Kroah-Hartman](https://en.wikipedia.org/wiki/Greg_Kr
 Greg Kroah-Hartman published **[the paper](https://landley.net/kdocs/ols/2003/ols2003-pages-249-257.pdf)** regarding to udev,
 which is worth reading.
 
-## Why was udev developed?
+# Why was udev developed?
 `/dev` directory is where all device files for the system are loaded (note that everything in Linux is files, so are devices).
 This directory had been managed by `devfs` filesystem until Linux kernel version 2.5.
 The introduction of `devfs` solved some problem, however, still many problems remained. For those problems, please refer to Section 2 in [the paper](https://landley.net/kdocs/ols/2003/ols2003-pages-249-257.pdf).
@@ -31,8 +31,8 @@ udev was started to solve all of those problems, and its goals are:
 - Provide consistent device naming (e.g. `eth0` -> `enp2s0`), and
 - Provide a userspace API to access info about current system devices.
 
-## udev Internals
-### kobject_uevent
+# udev Internals
+## kobject_uevent
 Though udev runs in userspace, it is highly entangled with the Linux kernel.
 The first entry that recognizes device insertion/deletion events is surely the Linux kernel.
 While there were no mechanisms for the Linux kernel to *push notifications* to userspace processes
@@ -94,7 +94,7 @@ MAJOR=13\0             // major number
 MINOR=34\0",           // minor number
 ```
 
-### libudev and kobject_uevent message groups
+## libudev and kobject_uevent message groups
 We should note that the other userspace processes except udevd **must not** receive netlink messages from the kernel directly
 by using the above netlink socket.
 Then how our program can receive device notification? The answer is `libudev`.
@@ -123,7 +123,7 @@ Both message groups are sent from the kernel to user space, the actual origin of
 Although [netlink](http://man7.org/linux/man-pages/man7/netlink.7.html) is the IPC mechanism between the kernel and the userspace processes, it can also be used to communicate between two userspace processes, if we have a bit of code in the kernel for the support [\[cite\]](https://stackoverflow.com/a/44274783).
 
 
-### Example case: USB device hotplugged
+## Example case: USB device hotplugged
 
 ![udev summary](/assets/images/181127/udev_summary.png){: .center-image width="700px"}
 
@@ -136,7 +136,7 @@ Each message is analyzed in:
 - [\[GROUP_KERNEL kernel function call flow\]](/2018-11-28/udev-function-flow-for-kobjectuevent-kernel-group-message/)
 - [\[GROUP_UDEV function call flow\]](/#)
 
-### References
+# References
 - [udev: An Introduction To Linux's udev](https://www.iredale.net/p/by-title/introduction-to-udev/udev-introduction-latest.pdf)
 - [udev - A Userspace Implementation of devfs](https://landley.net/kdocs/ols/2003/ols2003-pages-249-257.pdf)
 - [Hotplugging with udev](https://bootlin.com/doc/legacy/udev/udev.pdf)

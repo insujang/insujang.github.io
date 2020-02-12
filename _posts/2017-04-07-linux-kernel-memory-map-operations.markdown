@@ -8,7 +8,7 @@ tag: [study,linux]
 Memory mapping is one of the most important features to protect the memory system in Linux.  
 Linux provides several functions to map a physical address into a virtual address.
 
-#### 1. `mmap`
+# 1. `mmap`
 
 ```c
 Linux/fs/sysfs/bin.c:337
@@ -18,7 +18,7 @@ static int mmap(struct file* file, struct vm_area_struct* vma) {...}
 
 `mmap()` maps the file to a virtual memory. And this can be used with the special file `/dev/mem` (system memory) or `/dev/kmem` (kernel memory).
 
-#### 2. `vm_insert_pfn`
+# 2. `vm_insert_pfn`
 
 This function is called by `sgx_enclave_add_page()`. Map a physical memory page into a **user space virtual memory address** space.
 
@@ -51,7 +51,7 @@ int vm_insert_pfn(struct vm_area_struct* vma, unsigned long addr,
 }
 ```
 
-#### 3. `remap_pfn_range`
+# 3. `remap_pfn_range`
 While `vm_insert_pfn()` adds a single pfn into user virtual memory address, `remap_pfn_range()` maps a consecutive block of physical memory to user space.
 
 ```c
@@ -72,7 +72,7 @@ int remap_pfn_range(struct vm_area_struct* vma, unsigned long addr,
 ```
 The comment says it **remaps kernel memory** to userspace. I didn't get it what kernel memory is. Some Stack Overflow articles says it maps physical address to userspace virtual address. [\[link1\]](http://stackoverflow.com/a/17278263)[\[link2\]](http://unix.stackexchange.com/q/237783)
 
-#### 4. `ioremap`
+# 4. `ioremap`
 While `remap_pfn_range()` maps physical address to user space virtual address, `ioremap()` maps physical address to **kernel space virtual address**.  
 This range must be accessed via special function `iowrite()` and `ioread()`.
 
@@ -113,8 +113,8 @@ Linux/arch/x86/mm/ioremap.c
 void __iomem *ioremap_nocache(resource_size_t phys_addr, unsigned long size){}
 ```
 
-### References
+# References
 - Jessica McKellar, Alessandro Rubini, Jonathan Corbet, and Kr. 2015. *Linux Device Drivers*, O'Reilly Media.
 
-### License
+# License
 Linux kernel source codes are released under the GPLv2.

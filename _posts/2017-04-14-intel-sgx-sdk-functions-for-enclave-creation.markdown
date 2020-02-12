@@ -11,7 +11,7 @@ This post explains how Intel [Linux SGX SDK](https://github.com/01org/linux-sgx)
 
 As we all know, There is an SGX instruction we use to create an enclave, `EADD`. This is a Intel CPU microcode instruction. However, a user program does not directly call this instruction, but calls `sgx_create_enclave()` SDK function. How this function is related to `EADD`?
 
-### 1. `sgx_create_enclave()`
+# 1. `sgx_create_enclave()`
 At first, we include `"sgx_urts.h"` to use untrusted sgx library functions when programming a SGX user program. The header is in `/linux-sgx/common/inc/sgx_urts.h`, and its implementation is in `linux-sgx/psw/urts/linux/urts.cpp`.
 
 ```c
@@ -33,7 +33,7 @@ extern "C" sgx_status_t sgx_create_enclave(const char *file_name, const int debu
 }
 ```
 
-### 2. `_create_enclave()`
+# 2. `_create_enclave()`
 As indicated, `_create_enclave()` is declared and defined in `/linux-sgx-/psw/urts/urts_com.h`. It calls an internal function defined in the same file, `__create_enclave()`.
 
 ```c
@@ -61,7 +61,7 @@ static int __create_enclave(BinParser &parser, uint8_t* base_addr, const metadat
 }
 ```
 
-### 3. `get_enclave_creator()`
+# 3. `get_enclave_creator()`
 At the first time, I taught that `CEnclave` is an enclave created by CPU, however, it is just a container for a software. Actual enclave is not created by this function call. Instead, `get_enclave_creator()->initialize()` function makes an actual enclave.
 
 `get_enclave_creator()` function is defined in `/linux-sgx/psw/urts/loader.cpp`.
@@ -76,13 +76,13 @@ EnclaveCreator* get_enclave_creator(void)
 }
 ```
 
-### 4. `g_enclave_creator`
+# 4. `g_enclave_creator`
 At here, a function that allocates a class instance for `g_enclave_creator` depends on SGX running mode; simulation, or hardware.
 
-#### SGX running mode
+## SGX running mode
 When we compile a sample code, we can put an option named `SGX_MODE`, the value of which is either `SIM` or `HW`. The instruction says that we can use `SGX_MODE=SIM` to run it in simulation mode, and `SGX_MODE=HW` to run it in hardware mode. Some different libraries are linked in terms of the value of the option.
 
-#### Hardware mode
+### Hardware mode
 When compiling a program with `SGX_MODE=HW`, `g_enclave_creator` is initialized in `linux-sgx/psw/urts/linux/enclave_creator_hw.cpp`.
 
 ```c++
@@ -132,7 +132,7 @@ I used a sample user program provided by Intel, `SampleEnclave`.
 * The result when compiling the sample enclave with `SGX_MODE=SIM`.
 {: .center}
 
-#### Simulation mode
+### Simulation mode
 The above result means that there is another enclave creator for simulation mode.
 
 In the simulation mode, `g_enclave_creator` is initialized in `/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.cpp` as follows.
@@ -160,7 +160,7 @@ int EnclaveCreatorSim::create_enclave(secs_t *secs, sgx_enclave_id_t *enclave_id
 {: .center}
 
 
-### 5. `EnclaveCreatorHW::create_enclave()`
+# 5. `EnclaveCreatorHW::create_enclave()`
 In simulation mode, Intel SGX SDK does not use any CPU's SGX instructions. So Let's see the internal function call flows of `EnclaveCreatorHW` class.
 
 ```c++
@@ -226,7 +226,7 @@ static inline unsigned long __ecreate(struct page_info *pginfo, void *secs)
 
 And CPU calls `ECREATE` instruction inside itself.
 
-### 6. `EnclaveCreatorSim::create_enclave()`
+# 6. `EnclaveCreatorSim::create_enclave()`
 While simulation mode does not use CPU's SGX instructions, all SGX instructions are also simulated. For example, `ECREATE` is implemented in `/linux-sgx/sdk/simulation/uinst/u_instructions.cpp`.
 
 Let's see how this simulated instruction is called. The starting point is `/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.cpp`.
@@ -252,7 +252,7 @@ int create_enclave(secs_t           *secs,
 }
 ```
 
-### 7. `DoECREATE_SW()`
+# 7. `DoECREATE_SW()`
 `DoECREATE_SW()` function is declared in `/linux-sgx/sdk/simulation/assembly/asxsim.h`, however, there is no definition on the name. Instead, it uses a macro to change the function name. The macro is defined in `/linux-sgx/sdk/simulation/assembly/linux/sw_emu.h`
 
 ```
@@ -307,12 +307,12 @@ uintptr_t _SE0(uintptr_t xax, uintptr_t xbx,
 
 It seems that macros are used for simulating registers and CPU behaviors. Hence, `SE_ECREATE()` is saved in the `xax` variable and `_SE0` calls `_ECREATE()`, which is a simulated `ECREATE` function, as I explained in [\[here\]](/2017-04-05/intel-sgx-instructions-in-enclave-initialization/).
 
-## References
+# References
 - Intel SGX SDK Github repository. https://github.com/01org/linux-sgx
 - Intel SGX Linux driver Github repository. https://github.com/01org/linux-sgx-driver
 
-## License
-#### Intel SGX SDK
+# License
+## Intel SGX SDK
 Copyright (C) 2011-2017 Intel Corporation. All rights reserved.  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -336,7 +336,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#### Intel SGX Linux driver
+## Intel SGX Linux driver
 (C) Copyright 2015 Intel Corporation
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.

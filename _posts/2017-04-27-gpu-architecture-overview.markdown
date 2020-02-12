@@ -49,7 +49,7 @@ It explains several important designs that recent GPUs have adopted.
     - Nouveau and gdev uses *bo* really a lot.
     - Buffer Object (bo). A block of memory. It can store a texture, a render target, shader code, ... everything.
 
-### References
+# References
 1. Yusuke Suzuki et al. *GPUvm: GPU Virtualization at the Hypervisor"*. IEEE Transactions on Computers. 2016
 2. Hong-Cyuan Hsu et al. *G-KVM: A Full GPU Virtualization on KVM"*. IEEE International Conference on Computer and Information Technology. 2016
 3. Nouveau Terms. [\[Online\]](https://nouveau.freedesktop.org/wiki/NouveauTerms/) (Accessed at Apr 27, 2017. Documentation version Aug 24, 2013)

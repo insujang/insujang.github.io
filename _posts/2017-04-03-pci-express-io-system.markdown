@@ -70,7 +70,7 @@ BAR5: `0xe000` (I/O ports)
 
 PCI Expansion ROM address `0xdf000000` is saved in `30h~34h` (Expansion ROM Base Address) in configuration space header, not BAR 6, as explained in *'Implementing open-source CUDA runtime'*.
 
-### References
+# References
 - Silberschatz A, Galbin P.B, Gagne G, Operating System Concepts, Wiley, 2012, ISBN:9781118063330
 - PCI SIG, PCI Express Base Specification Revision 3.0, 2010
 - Root Complex, Wikipedia [Online] https://en.wikipedia.org/wiki/Root_complex

@@ -9,7 +9,7 @@ tags: [research, sgx, io]
 There is a few information related to sealing, even no detailed explanation in the paper: Intel SGX explaned.
 All in this post are from Intel, with a little thought of mine.
 
-## Sealing
+# Sealing
 
 Sealing is a service that Intel provides with Intel SGX technology for secure data saving.  
 Intel SGX provides protections data only if it is in the enclave, part of main memory.
@@ -27,12 +27,12 @@ These policies affect the derivation of the encryption key, and this is partiall
 - Section 5.7.2. Certificate-Based Enclave identity (MRSIGNER)
 - Section 5.7.4. Establishing an Enclave's Identity
 
-### MRENCLAVE
+## MRENCLAVE
 Derive a key based on the value of the enclave's MRENCLAVE. Any change that impacts the enclave's measurement will yield a different key, providing full isolation between enclaves.  
 The paper also mentions that "different versions of the same enclave will also have different seal keys, preventing offline data migration."
 In other words, the MRENCLAVE-based keys are available only to enclave instances sharing the same MRENCLAVE.
 
-### MRSIGNER
+## MRSIGNER
 Derive a key based on the value of the enclave's MRSIGNER, and the enclave's version. MRSIGNER reflects the **key or identity of the Sealing Authority** that signed the enclave's certificate.
 The Sealing Authority may sign multiple enclaves and enable them to retrieve the same seal key. These enclaves can transparently access data that was sealed by the other.
 
@@ -54,7 +54,7 @@ can have different security version numbers (SVN). The SGX design disallows the 
 >
 > As explained above, a software module’s SVN should only be incremented when a security vulnerability is found. SIGSTRUCT only allocates 2 bytes to the ISVSVN field, which translates to 65,536 possible SVN values. This space can be exhausted if a large team (incorrectly) sets up a continuous build system to allocate a new SVN for every software build that it produces, and each code change triggers a build.
 
-### SDK Functions
+## SDK Functions
 
 Intel SGX SDK provides some functions for data sealing.
 
@@ -87,7 +87,7 @@ res = sgx_unseal_data((sgx_sealed_data_t *) sealed, NULL, NULL, plaintext, &plai
 assert (res == SGX_SUCCESS);
 ```
 
-### References
+# References
 
 - Innovative Technology for CPU Based Attestation and Sealing [[link]](https://software.intel.com/sites/default/files/article/413939/hasp-2013-innovative-technology-for-attestation-and-sealing.pdf)
 - Introduction to Intel(R) SGX Sealing [[link]](https://software.intel.com/en-us/blogs/2016/05/04/introduction-to-intel-sgx-sealing)

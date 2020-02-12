@@ -58,7 +58,7 @@ sched_setaffinity(getpid(), size, mask);
 CPU_FREE(mask);
 ```
 
-## References
+# References
 - Processor affinity. Wikipedia. \[Online\]: https://en.wikipedia.org/wiki/Processor_affinity
 - sched_setaffinity. Linux man page. \[Online\]: https://linux.die.net/man/2/sched_setaffinity
 - CPU SET. Linux Programmer's Manual. \[Online\]: http://man7.org/linux/man-pages/man3/CPU_SET.3.html

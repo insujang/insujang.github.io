@@ -61,7 +61,7 @@ With the APIs, the program runs as the following simplified description:
 Note that [^4] listed and grouped related functions well.
 I only show how the sequence of those function calls should be.
 
-### 1. Create an Infiniband context
+## 1. Create an Infiniband context
 
 Open the HCA and generate a userspace device context.
 
@@ -88,7 +88,7 @@ struct ibv_context* createContext(const std::string& device_name) {
 }
 ```
 
-### 2. Create a protection domain
+## 2. Create a protection domain
 
 Literally create a protection domain, protecting resources from arbitrary accesses from the remote.
 Components that can be registered to a protection domain is
@@ -113,7 +113,7 @@ struct ibv_context* context = createContext(/* device name */);
 struct ibv_pd* protection_domain = ibv_alloc_pd(context);
 ```
 
-### 3. Create a completion queue
+## 3. Create a completion queue
 
 It is a prerequisite step to create a queue pair, like step 2.
 
@@ -128,7 +128,7 @@ struct ibv_cq* completion_queue = ibv_create_cq(context, cq_size, nullptr, nullp
 >
 > All examples that I saw pass `nullptr` to both `cq_context` and `channel` and worked well, so I do not understand what they exactly do.
 
-### 4. Create a queue pair
+## 4. Create a queue pair
 
 Now we are ready to create a queue pair.
 
@@ -152,7 +152,7 @@ struct ibv_qp* createQueuePair(struct ibv_pd* pd, struct ibv_pd* pd, struct ibv_
 > `qp_type` indiciates the type of this queue pair. There are three types of queue pairs: (1) Reliable Connection (RC), (2) Unreliable Connection (UC), and (3) Unreliable Datagram (UD).
 > Refer to *Chapter 2.2 Transport Modes* in [^1] for more details.
 
-### 5. Exchange identifier information to establish connection and 6. change the queue pair state
+## 5. Exchange identifier information to establish connection and 6. change the queue pair state
 
 Right after created, the queue pair has a state `RESET`. With this state the queue pair does not work. We have to establish queue pair connection with another queue pair to make it work.
 The queue pair state machine diagram is as follows.
@@ -203,7 +203,7 @@ bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t 
 
 Note that several arguments are taken. 
 
-#### ib_port
+### ib_port
 
 `ib_port` is a port number that this queue pair uses in the host. You can easily see how many ports the device supports and their numbers with `ibstat`:
 
@@ -232,7 +232,7 @@ CA 'mlx5_0'
 
 My CA has one port and its number is 1. You can manually pass this information when you launch a program.
 
-#### destination_qp_number and destination_local_id
+### destination_qp_number and destination_local_id
 
 For the queue pair to connect the other queue pair and be ready to receive, it has to know information about the peer QP.
 `destination_qp_number` and `destination_local_id` are the ones.
@@ -282,7 +282,7 @@ bool changeQueuePairStateToRTS(struct ibv_qp* queue_pair) {
 As peer information is already stored at RTR step, changing the state to RTS does not require any further peer information.
 
 
-#### 7. Register a memory region
+## 7. Register a memory region
 
 Until step 6, it is an **initialization phase**. After step 6 the queue pair is *able to communicate* each other; a posted work request is forwarded to the opposite node, the HCA of which will consume it.
 Of course, this will be rejected due to permission error *since there is no memory regions registered*; work requests are unable to read or write anything from or to any space of the peer node.
@@ -327,7 +327,7 @@ bool registerMemoryRegion(struct ibv_pd* pd, void* buffer, size_t size) {
 >
 > If `IBV_ACCESS_REMOTE_WRITE` or `IBV_ACCESS_REMOTE_ATOMIC` is set, then `IBV_ACCESS_LOCAL_WRITE` must be set too.
 
-####  8. Exchange memory region information to handle operations and 9. **Perform data communication**
+##  8. Exchange memory region information to handle operations and 9. Perform data communication
 
 TODO
 

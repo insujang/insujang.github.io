@@ -10,7 +10,7 @@ In the previous post, I showed how to link a trusted function that can be called
 
 However, Intel SGX provides a way to **import EDL** to make a library have an ECALL. The post from Intel is [\[here\]](https://software.intel.com/en-us/node/708990).
 
-## 1. Implementing a trusted SGX library
+# 1. Implementing a trusted SGX library
 
 As we do in the previous post, make a trusted library.
 
@@ -18,7 +18,7 @@ As we do in the previous post, make a trusted library.
 
 So our simple trusted SGX library has a function named `ecall_testlib_sample`. Let's call this function from user space application, but outside an enclave.
 
-## 2. Importing an EDL file
+# 2. Importing an EDL file
 
 ![sgx_eclipse_trusted_new_function_2_1](/assets/images/170601/sgx_eclipse_trusted_new_function_2_1.png){: .center-image}
 
@@ -26,7 +26,7 @@ The most important thing is to import a trusted library's EDL, as explained in t
 
 You can selectively import functions by specifying function names instead of using wildcard character.
 
-## 3. Specifying search path for the imported EDL
+# 3. Specifying search path for the imported EDL
 
 When building it, it says 'cannot find testlib.edl' in the search path. We need to add a search path to help GNU make search this EDL file.
 
@@ -34,7 +34,7 @@ When building it, it says 'cannot find testlib.edl' in the search path. We need 
 
 You should add search path to two Makefiles for trusted source code and untrusted one, respectively.
 
-## 4. Linking a static library
+# 4. Linking a static library
 
 Link a built binary static trusted library into a Makefile for trusted source.
 

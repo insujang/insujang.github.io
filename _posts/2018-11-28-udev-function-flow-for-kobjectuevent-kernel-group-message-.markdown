@@ -6,7 +6,7 @@ author: "Insu Jang"
 tags: [research, linux]
 ---
 
-## Identifying the device
+# Identifying the device
 ![USB subsystem in Linux](/assets/images/181127/usb_subsystem_linux.png){: .center-image}
 [\[source\]](https://opensourceforu.com/2011/10/usb-drivers-in-linux-1/)
 

@@ -123,6 +123,6 @@ tags: [research, linux, pcie]
         For GPU, `vfio_pci_rw()` is mostly called with the index 7 (=`VFIO_PCI_CONFIG_REGION_INDEX`) and 8 (=`VFIO_PCI_VGA_REGION_INDEX`). Small number of calls are done with index 0 (=`VFIO_PCI_BAR0_REGION_INDEX`). Note that each index can be found in `/linux/include/uapi/linux/vfio.h:418`.
     - After a VM starts execution, it communicates with a PCI device via QEMU (`vfio_pci_read_config()` and `vfio_pci_write_config()`) and KVM VFIO device driver (`vfio_pci_rw()`).
 
-## References
+# References
 - Alex Williamson. *An Introduction to PCI Device Assignment with VFIO*. [\[Online\]](http://events.linuxfoundation.org/sites/events/files/slides/An%20Introduction%20to%20PCI%20Device%20Assignment%20with%20VFIO%20-%20Williamson%20-%202016-08-30_0.pdf). Aug 2016.
 - Alex Williamson. *VFIO: PCI device assignment breaks free of KVM*. [\[Online\]](http://www.linux-kvm.org/images/d/d1/2011-forum-VFIO.pdf). 2011.

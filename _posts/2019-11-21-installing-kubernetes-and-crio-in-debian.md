@@ -26,7 +26,7 @@ BUG_REPORT_URL="https://bugs.debian.org/"
 
 # Installing cri-o
 
-### 0. Prerequiste for using cri-o with Kubernetes
+## 0. Prerequiste for using cri-o with Kubernetes
 
 Kubernetes requires the following configurations be set before using cri-o container runtime [\[link\]](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cri-o):
 
@@ -43,7 +43,7 @@ EOF
 sysctl --system
 ```
 
-### 1. Adding PPA
+## 1. Adding PPA
 
 There are not cri-o related packages in default apt repository; we should add Project Atomic Personal Package Archives (PPA) [^1].
 But you will show errors when using `add-apt-repository ppa:projectatomic/ppa`:
@@ -113,7 +113,7 @@ Reading state information... Done
 All packages are up to date.
 ```
 
-### 2. Installing cri-o
+## 2. Installing cri-o
 
 Now you can install cri-o with apt. Currently the latest version of in apt repository is cri-o is 1.15.
 ```shell
@@ -121,7 +121,7 @@ $ apt install cri-o-1.15 -y
 ...
 ```
 
-### 3. Configuring cri-o
+## 3. Configuring cri-o
 
 By default, cri-o finds conmon in `/usr/libexec/crio`, which does not exist. Hence, when you start cri-o, it says it could not find conmon.
 Change the configuration file of cri-o `/etc/crio/crio.conf`:
@@ -158,7 +158,7 @@ Nov 21 18:30:16 kubernetesdebian systemd[1]: Starting Container Runtime Interfac
 Nov 21 18:30:16 kubernetesdebian systemd[1]: Started Container Runtime Interface for OCI (CRI-O).
 ```
 
-### 4. Confiuring Container Networking Interface (CNI) [^2]
+## 4. Confiuring Container Networking Interface (CNI) [^2]
 
 crio suggests to install `containernetworking-plugins` package together, however, it will be deleted by apt when you install Kubernetes (specifically, `kubernetes-cni` package).
 `containernetworking-plugins` package copies some files for CNI networking in `/etc/cni/net.d`, which is necessary for container networking.
@@ -198,7 +198,7 @@ Don't know details yet. Have to dig more.
 
 Installing Kubernetes in Debian is quite explained well[^3].
 
-### 1. Add PPA and installing packages
+## 1. Add PPA and installing packages
 
 At first add a public key for Kubernetes.
 ```shell
@@ -218,7 +218,7 @@ $ apt update && apt install kubelet kubeadm kubectl -y
 ...
 ```
 
-### 2. Configuring kubelet
+## 2. Configuring kubelet
 
 Kubelet automatically starts, however, it repeatedly fails due to lack of configurations.
 ```shell
@@ -239,7 +239,7 @@ Then type `systemctl daemon-reload` to apply the changed configurations.
 
 > Note that, using --cgroup-driver is deprecated. We have to pass the information with --config argument. Here, we just use it for simplicity.
 
-### 3. Configuring Kubernetes
+## 3. Configuring Kubernetes
 
 Now initialize a control-plane node by `kubeadm init`, with proper arguments as you want[^4].
 
@@ -342,7 +342,7 @@ System Info:
 ```
 
 
-### Some test with a single node cluster
+# Some test with a single node cluster
 
 By default, any control-plane nodes pods are not schedulable; therefore, when you try to schedule a pod, it should be in pending status.
 Following command will make Kubernetes be able to schedule pods in control-plane nodes as well[^5].

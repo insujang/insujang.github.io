@@ -6,7 +6,7 @@ author: "Insu Jang"
 tags: [research, sgx, linux]
 ---
 
-### Environment
+# Environment
 - Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor
 - Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)
 
@@ -75,7 +75,7 @@ if (in VMX non-root operation) and (Enable_ENCLS_EXITING = 1):
 **`/linux/arch/x86/kvm/vmx.c:3269 static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf)`**  
 **`/linux/arch/x86/kvm/vmx.c:4936 static int vmx_vcpu_setup()`**
 
-### (1) In `setup_vmcs_config()` (`/linux/arch/x86/kvm/vmx.c:3269`).
+## (1) In `setup_vmcs_config()` (`/linux/arch/x86/kvm/vmx.c:3269`).
 
 In terms of configuring secondary processor-based VM-exeuction controls MSR,
 - It first checks bit position 31 of the primary processor-based VM-execution controls MSR (`MSR_IA32_VMX_PROCBASED_CTLS`) is 1. This indicates that the secondary processor-based VM-execution controls MSR (`MSR_IA32_VMX_PROCBASED_CTLS2`) is used.  
@@ -107,7 +107,7 @@ adjust_vmx_controls(min2, opt2, MSR_IA32_VMX_PROCBASED_CTLS2, &_ cpu_based_2nd_e
 ...
 ```
 
-### (2) In `vmx_vcpu_setup()` (`/linux/arch/x86/kvm/vmx.c:4939`).
+## (2) In `vmx_vcpu_setup()` (`/linux/arch/x86/kvm/vmx.c:4939`).
 
 Set an ENCLS0-exiting bitmap VMCS control field (encoding `0x0000202E`). This indicates which ENCLS instruction should be hooked by a VMM. It is **not** set by default. Hence, set the VMCS control field as follows to hook an ENLS instruction call.
 
@@ -139,7 +139,7 @@ if (cpu_has_secondary_exec_ctrls()) {
 
 > If you want to hook multiple ENCLS instructions, the value passed should be a or-ed combination of several numbers.
 
-### (3) In `vmx_handle_exit()` (`/linux/arch/x86/kvm/vmx.c:8314`).
+## (3) In `vmx_handle_exit()` (`/linux/arch/x86/kvm/vmx.c:8314`).
 
 Now the KVM will hook an ENCLS instruction that is set to be hooked. However, as the exit reason `ENCLS` is not included in Linux kernel by default, it prints `vmx: unexpected exit reason 0x3C` in dmesg.
 
@@ -214,6 +214,6 @@ The result from the VMM dmesg is as follows.
 3. Check whether it works or not.
 -->
 
-### References
+# References
 - Intel Corporation. *Intel Software Guard Extensions Programming Reference*. [\[Online\]](https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf). Oct. 2014
 - Intel Corporation. *Intel 64 and IA-32 Architectures Software Developer's Manual Volume 3*. [\[Online\]](https://software.intel.com/sites/default/files/managed/a4/60/325384-sdm-vol-3abcd.pdf). Mar. 2017

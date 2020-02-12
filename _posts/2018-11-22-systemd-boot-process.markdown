@@ -6,7 +6,7 @@ author: "Insu Jang"
 tags: [research, linux]
 ---
 
-## What is systemd?
+# What is systemd?
 > systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
 >
 > [https://www.freedesktop.org/wiki/Software/systemd](https://www.freedesktop.org/wiki/Software/systemd)
@@ -23,7 +23,7 @@ systemd provides parallelized boot, uses sockets and d-bus activation for starti
 We can easily attach our own daemons to systemd by creating service scripts in either `/lib/systemd/system` or `/etc/systemd/system` directories.
 For the daemons to be automatically and normally launched, we need to acknowledge the systemd launch process, which this post will investigate more.
 
-## systemd boot process in Linux
+# systemd boot process in Linux
 
 The following chart is a structural overview of well-known systemd units and their position in the boot-up logic,
 according to freedesktop.
@@ -96,7 +96,7 @@ There are [more special systemd units](https://www.freedesktop.org/software/syst
 such like `network.target` or `network-online.target`,
 by default freedesktop does not show which position those targets sit in.
 
-### References
+# References
 - [bootup - System bootup process](https://www.freedesktop.org/software/systemd/man/bootup.html)
 - [Systemd Boot Process a Close Look in Linux](https://linoxide.com/linux-how-to/systemd-boot-process/)
 - [CREATING AND MODIFYING SYSTEMD UNIT FILES](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-managing_services_with_systemd-unit_files)
