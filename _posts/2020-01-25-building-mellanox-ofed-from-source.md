@@ -12,6 +12,8 @@ Mellanox is a manufacturer of networking products based on **infiniband**, which
 Though their documents are explained and managed well in their [\[website\]](https://www.mellanox.com),
 I cannot find how to build an infiniband device driver from source code they provide.
 
+# Building Mellanox OFED source code: inside install script
+
 Source code can be downloaded in [\[here\]](https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed).
 Currently the latest version of MLNX_OFED is [4.7-3.2.9.0](http://www.mellanox.com/downloads/ofed/MLNX_OFED-4.7-3.2.9.0/MLNX_OFED_SRC-debian-4.7-3.2.9.0.tgz).
 
@@ -63,6 +65,8 @@ Installing mlnx-ofed-kernel-dkms-4.7...
 Running /usr/bin/dpkg -i --force-confnew --force-confmiss /home/insujang/MLNX_OFED_SRC-4.7-3.2.9.0/DEBS/ubuntu18.04/x86_64/COMMON/mlnx-ofed-kernel-dkms_4.7-OFED.4.7.3.2.9.1.g457f064_all.deb
 ```
 
+# Compiling modified code: using dpkg-buildpackage
+
 So, we can modify the source code with manual debian package build for customization.
 
 ```
@@ -71,6 +75,7 @@ $ cp mlnx-ofed-kernel_4.7.orig.tar.gz ~/Documents/mlnx-ofed-kernel
 $ tar xvf ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel_4.7.orig.tar.gz # The root path of untared source code: ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel-4.7
 ```
 
+## Adding code
 Add some modifications to the code. I added a simple `printk()` function call into `drivers/net/ethernet/mellanox/mlx5/core/main.c:static int __init init(void)`, the function that is called when the kernel module is loaded.
 ```c
 drivers/net/ethernet/mellanox/mlx5/core/main.c
@@ -85,6 +90,7 @@ static int __init init(void)
 ...
 ```
 
+## building a package
 When you try to build a deb package (`dpkg-buildpackage -us -uc`), it says:
 ```shell
 dpkg-source: info: local changes detected, the modified files are:
@@ -120,6 +126,7 @@ dpkg-genchanges: info: including full source code in upload
 dpkg-buildpackage: info: full upload (original source is included)
 ```
 
+## Installing a package
 Install the package:
 ```
 $ sudo dpkg -i mlnx-ofed-kernel-dkms-4.7-OFED.4.7.3.2.9.1.g457f064_all.deb
@@ -134,6 +141,7 @@ update-initramfs.........
 DKMS: install completed.
 ```
 
+## Test
 Reload the kernel module.
 ```
 $ sudo /etc/init.d/openibd restart
@@ -151,3 +159,129 @@ $ dmesg
 ```
 
 Changed source code are applied in the kernel module: `mlx5_core`.
+
+# Compiling modified code: using Makefile (libibverbs)
+
+However, this work is too burdensome to test our customized code; commit the changes that might have bugs to test whether there is a bug.
+Many components are userspace drivers, so we can just build it.
+
+## Compiling with Makefile
+For example, let us build `libibverbs`, a verb API library that we use for RDMA programming.
+`libibverbs` adopted `autogen` system for cross-domain build.
+
+```shell
+$ cd libibverbs
+$ ./autogen.sh
+$ ./configure
+$ make -j
+```
+
+the system will kindly introduce which packages are missing to build the library. After `make` command is done, the library will be built on `libibverbs/src/.libs` directory.
+
+```shell
+libibverbs/src/.libs$ $ ls -l
+total 2704
+-rw-rw-r-- 1 insujang insujang 1087330 Jan 29 13:55 libibverbs.a
+lrwxrwxrwx 1 insujang insujang      16 Jan 29 13:55 libibverbs.la -> ../libibverbs.la
+-rw-rw-r-- 1 insujang insujang     987 Jan 29 13:55 libibverbs.lai
+lrwxrwxrwx 1 insujang insujang      19 Jan 29 13:55 libibverbs.so -> libibverbs.so.1.0.0
+lrwxrwxrwx 1 insujang insujang      19 Jan 29 13:55 libibverbs.so.1 -> libibverbs.so.1.0.0
+-rwxrwxr-x 1 insujang insujang  566096 Jan 29 13:55 libibverbs.so.1.0.0
+...
+```
+
+Use `libibverbs.so` to build our test program. I personally use CMake, so adding the following code into CMakeLists.txt would be enough.
+```cmake
+include_directories(/home/insujang/libibverbs/include)
+link_directories(/home/insujang/libibverbs/src/.libs)
+
+add_executable(test_program ${SRCS})
+target_link_libraries(test_program ibverbs)
+```
+
+## No userspace device-specific driver. How to fix it?
+Are we done? Sadly no. When you launch a program, libibverbs prints warning messages and your program cannot find infiniband devices.
+
+```
+libibverbs: Warning: couldn't open config directory '/usr/local/etc/libibverbs.d'.
+libibverbs: Warning: no userspace device-specific driver found for /sys/class/infiniband_verbs/uverbs1
+libibverbs: Warning: no userspace device-specific driver found for /sys/class/infiniband_verbs/uverbs0
+```
+
+What is a difference between libraries installed with dpkg and manual compiled one? To investigate it, we recompile the test program using libraries that are installed by dpkg.
+To see internal works, use `strace` to trace its system calls.
+
+```shell
+$ strace ./test_program
+...
+openat(AT_FDCWD, "/sys/class/infiniband_verbs/abi_version", O_RDONLY) = 3
+read(3, "6\n", 8)                       = 2
+close(3)                                = 0
+geteuid()                               = 1003
+prlimit64(0, RLIMIT_MEMLOCK, NULL, {rlim_cur=RLIM64_INFINITY, rlim_max=RLIM64_INFINITY}) = 0
+openat(AT_FDCWD, "/etc/libibverbs.d", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3               <-- here. The program with custom library finds `/usr/local/etc/libibverbs.d` at this point.
+fstat(3, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+getdents(3, /* 5 entries */, 32768)     = 144
+stat("/etc/libibverbs.d/.", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat("/etc/libibverbs.d/..", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat("/etc/libibverbs.d/rxe.driver", {st_mode=S_IFREG|0644, st_size=11, ...}) = 0
+openat(AT_FDCWD, "/etc/libibverbs.d/rxe.driver", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=11, ...}) = 0
+read(4, "driver rxe\n", 4096)           = 11
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+stat("/etc/libibverbs.d/mlx4.driver", {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+openat(AT_FDCWD, "/etc/libibverbs.d/mlx4.driver", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+read(4, "driver /usr/lib/libibverbs/libml"..., 4096) = 35
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+stat("/etc/libibverbs.d/mlx5.driver", {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+openat(AT_FDCWD, "/etc/libibverbs.d/mlx5.driver", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+read(4, "driver /usr/lib/libibverbs/libml"..., 4096) = 35
+...
+```
+
+It reads `/etc/libibverbs.d`, instead of `/usr/lib/etc/libibverbs.d`. `/etc/libibverbs.d` contains the following files:
+```shell
+$ tree /etc/libibverbs.d/
+/etc/libibverbs.d/
+├── mlx4.driver
+├── mlx5.driver
+└── rxe.driver
+```
+
+As I use mlx5 device, let's see mlx5.driver file...
+```shell
+$ cat /etc/libibverbs/mlx5.driver
+driver /usr/lib/libibverbs/libmlx5
+```
+
+`libibverbs` library should search its userspace driver in `/usr/lib/libverbs`, but the directory contains:
+```shell
+/usr/lib/libibverbs$ ls
+libmlx4-rdmav2.so  libmlx5-rdmav2.so
+```
+Then it means that `libibverbs` library appends `-rdmav2.so` to the value of driver in `/etc/libibverbs/mlx5.driver`; `/etc/libibverbs/libmlx5-rdmav2.so`.
+strace result also shows it load the file.
+```shell
+$ strace ./test_program
+...
+openat(AT_FDCWD, "/usr/lib/libibverbs/libmlx5-rdmav2.so", O_RDONLY|O_CLOEXEC) = 3             <-- here.
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\200W\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=358712, ...}) = 0
+mmap(NULL, 2453888, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f248f566000
+mprotect(0x7f248f5bc000, 2093056, PROT_NONE) = 0
+mmap(0x7f248f7bb000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x55000) = 0x7f248f7bb000
+...
+```
+
+Now we got what we have to do.
+
+1. Copy `/etc/libibverb.d` into `/usr/local/etc/libibverbs.d`.
+2. Modify `/usr/local/etc/libibverbs.d/mlx5.driver` to point your own libmlx5 library if needed.
+  - I also build `libmlx5.so` which is stored in `/home/insujang/libmlx5/src/.libs`. I created a symbolic link named `libmlx5-rdmav2.so` (the name that `libibverbs` loads) at `/home/insujang`, linking to `/home/insujang/libmlx5/src/.libs/libmlx5.so.1.0.0`.
+  - I modified `/usr/local/etc/libibverbs.d/mlx5.driver` to: `driver /home/insujang/libmlx5`.
+
+The program should work.
