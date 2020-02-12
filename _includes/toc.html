@@ -43,7 +43,6 @@
         {% if node == "" %}
             {% continue %}
         {% endif %}
-        {% increment number_nodes %}
 
         {% assign headerLevel = node | replace: '"', '' | slice: 0, 1 | times: 1 %}
 
@@ -86,6 +85,7 @@
         {% capture heading_body %}{% if include.sanitize %}{{ header | strip_html }}{% else %}{{ header }}{% endif %}{% endcapture %}
         {% capture my_toc %}{{ my_toc }}
 {{ space }}{{ listModifier }} {{ listItemClass }} [{{ heading_body | replace: "|", "\|" }}]({% if include.baseurl %}{{ include.baseurl }}{% endif %}#{{ html_id }}){% if include.anchor_class %}{:.{{ include.anchor_class }}}{% endif %}{% endcapture %}
+    {% endfor %}
 
     {% if include.class and include.class != blank %}
         {% capture my_toc %}{:.{{ include.class }}}
@@ -97,6 +97,5 @@
 {{ my_toc | lstrip }}{% endcapture %}
     {% endif %}
 {% endcapture %}{% assign tocWorkspace = '' %}{{ my_toc | markdownify | strip }}
-
 
 </div>
