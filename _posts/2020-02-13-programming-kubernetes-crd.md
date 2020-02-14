@@ -447,10 +447,8 @@ import (
 
 ### Right: using Go modules for code generation
 
-> There are already many examples using a Go module (posted in remote repositories). Here I tried to make the code as local Go modules and use them.
->
-> If you intend to publish your code as a library into Git remote repository, you can push the template code and use it.
-> Here I investigate how to generate code *without a remote repository*.
+> There are already many examples using a Go module posted in remote repositories. Actually there is no examples using the generated code as local Go modules...
+> I tried to make the code as local Go modules and use them *without a remote repository*.
 
 Now I understand that I should use an URL of Go modules, but what made me annoying is that `generate-groups.sh` keeps try to access the *remote repository* if you use well-known remote repository URL such as `github.com` as a module path:
 
@@ -512,7 +510,7 @@ Generating informers for testresource:v1beta1 at insujang.github.io/kubernetes-c
 
 ### Playing with output directory
 
-The output directory is `insujang.github.io/kubernetes-custom-controller-api/**client**`. Don't understand why it would be **`client`** :/ Maybe it is not necessarily be... Can we just generate code at `api` diretory at all? So I changed the output directory to `insujang.github.io/kubernetes-custom-controller-api/api`.
+The output directory is `insujang.github.io/kubernetes-custom-controller-api/**client**`. Don't understand why it would be **`client`**; Maybe it is not necessarily be... Can we just generate code at `api` diretory at all? So I changed the output directory to `insujang.github.io/kubernetes-custom-controller-api/api`.
 The generated code resides in our Go module directory as follows:
 
 ```shell
@@ -555,17 +553,16 @@ insujang.github.io/kubernetes-custom-controller-api/
 └── go.mod
 ```
 
-### One more step: code division
+### One more step: dividing modules
 
-Advancing what I just figured out, now I divide the code into two parts: `insujang:github.io/custom-controller-code-template`, which contains the template code and `zz_generated_deepcopy.go` file, and `insujang.github.io/custom-controller-code-generated`, which contains generated code by code generator.
+Advancing what I just figured out, now I divide the module into two parts: `insujang:github.io/custom-controller-code-template`, which contains the template code and `zz_generated_deepcopy.go` file, and `insujang.github.io/custom-controller-code-generated`, which contains generated code by code generator.
 
-This should give you *more clear understanding of the result code*.
+This should give you *more clear understanding of the generated code*.
 
 ```shell
 $ cat /home/insujang/go/src/k8s.io/code-generator/go.mod
 ...
 replace insujang.github.io/custom-controller-code-template => ../../insujang.github.io/custom-controller-code-template
-replace insujang.github.io/custom-controller-code-generated => ../../insujang.github.io/custom-controller-code-generated
 ```
 
 My module structure before code generation:
@@ -614,7 +611,7 @@ My module structure after code generation:
 > - `k8s.io/apimachinery/pkg/apis/meta/v1` => `insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1`
 > - `k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset` => `insujang.github.io/custom-controller-code-generated/pkg/client/clientset/versioned`
 
-Initialize `custom-controller-code-generate` module:
+Of course code-generator does not initialize the generated code as a module. Initialize `custom-controller-code-generate` module as well ():
 
 ```shell
 /home/insujang/go/src/insujang.github.io/custom-controller-code-generated $ go mod init insujang.github.io/custom-controller-code-generated
@@ -622,7 +619,9 @@ Initialize `custom-controller-code-generate` module:
 
 These Go modules I will use for the next step.
 
-## 3. Implement a controller logic with the generated code and client-go library
+## 3. Implement a CRD operator with the generated code and client-go library
+
+Here I implement a CRD operator (i.e. creates a CRD type and object, gets CRD objects, and watches the changes of CRD objects).
 
 ### Register a CRD programatically
 
@@ -798,11 +797,10 @@ I0214 10:22:36.338054   11345 main.go:152] [0] Found CRD object: {
 I0214 10:22:36.338101   11345 main.go:156] Done!
 ```
 
-### Implement a controller
+
+## 4. Implement a controller logic with the generated code and client-go library
 
 TODO
-
-## 4. Test our custom controller
 
 [^1]: [client-go demo Pod informer](https://github.com/nelvadas/podinformer)
 [^2]: [Kubernetes sample-controller](https://github.com/kubernetes/sample-controller)
