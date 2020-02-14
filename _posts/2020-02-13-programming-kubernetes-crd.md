@@ -11,6 +11,8 @@ summary:
 In [[previous post]](/2020-02-11/kubernetes-custom-resource/), I briefly introduced a custom resource definition and how to create it through CLI.
 In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
 
+> Example code used in this post is uploaded in [[my Github repository]](https://github.com/insujang/kubernetes-test-controller).
+
 # client-go
 
 Kubernetes provides **[[client-go]](https://github.com/kubernetes/client-go)**, which includes a set of APIs to watch objects' status from the apiserver.
