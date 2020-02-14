@@ -19,10 +19,10 @@ Kubernetes provides **[[client-go]](https://github.com/kubernetes/client-go)**, 
 Thanks to client-go library, implementing an informer or a controller becomes easy.
 The picture velow illustrate how a controller works, and how components in client-go and our implementation divide roles.
 
-![kubernetes controller diagram](https://raw.githubusercontent.com/kubernetes/sample-controller/master/docs/images/client-go-controller-interaction.jpeg){: width="800px" .center-image}
+![kubernetes controller diagram](/assets/images/200213/client-go-controller-interaction.jpeg){: width="800px" .center-image #diagram}
 
 client-go watches events from the kube-apiserver (1) and passes them to informer (2, 3). The internal indexer stores data in its local thread safe cache (5).
-Then, client-go invokes user-implemented event handlers (7, 8). (9) will be discussed later.
+Then, client-go invokes user-implemented event handlers. The example below does until this step (so no operations for step 7, 8, and 9). Those steps will be discussed [later](#4-implement-a-custom-controller-with-the-generated-code-and-client-go-library).
 
 ## Example: implementing an event watcher (informer)
 
@@ -658,13 +658,13 @@ Here I implement a CRD operator (i.e. creates a CRD type and object, gets CRD ob
 ### Register a CRD programatically
 
 In [[the previous post]](/2020-02-11/kubernetes-custom-resource), I introduced how to create a CRD using CLI and a yaml file.
-Here, I introduce how to create a CRD *programmatically in Go*. This is not a mandatory step and using yaml for creating a CRD is still valid for our custom controller to run.
+Here, I show you how to create a CRD *programmatically in Go*. This is not a mandatory step and using yaml for creating a CRD is still valid for our custom controller to run (if and only if the definition is same).
 
 The program will be implemented with client-go and auto-generated code that you created in [[2]](#2-get-auto-generated-go-code-with-code-generator).
 
 Create a new module named `crd-operator` in `$GOPATH/src/insujang.github.io/kubernetes-test-controller`.
 
-Initialize module and explicitly get `client-go`. **It is important to explicitly get specific verion of the library**, otherwise it pulls incompatible library, invoking build errors. Also we use our local modules, so add `replace` statements in the module file to use our generated code.
+Initialize module and explicitly get `client-go`. **It is important to explicitly get specific verion of the library**, otherwise Go pulls incompatible library, invoking build errors. Also we use our local modules, so add `replace` statements in the module file to use our generated code.
 
 ```shell
 /home/insujang/go/src/insujang.github.io/crd-operator $ go mod init insujang.github.io/crd-operator
@@ -891,7 +891,7 @@ func Resource(resource string) schema.GroupResource {
 
 Now we can receive events about changes of our CRD objects from the apiserver.
 
-The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller/tree/master/crd-operator).
+The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller).
 
 ```shell
 I0214 13:44:58.192788   23889 main.go:27] Creating a CRD: testresources.insujang.github.io
@@ -925,9 +925,17 @@ I0214 13:44:59.249026   23889 main.go:121] new TestResource added: example-testr
 
 
 
-## 4. Implement a controller logic with the generated code and client-go library
+## 4. Implement a custom controller with the generated code and client-go library
 
 TODO
+
+<!-- 
+Let us review [[the diagram]](#diagram). We implemented a resource event handler in informer implementation, but (7), (8), and (9) are missing, which are roles of a controller.
+On top of the informer code, we need to work queue operations, objects handling operations, and indexer related operations.
+
+The implementation of [sample controller](https://github.com/kubernetes/sample-controller/blob/master/controller.go) is soooo great and clearly understandable that I do not have much things to explain. -->
+
+
 
 [^1]: [client-go demo Pod informer](https://github.com/nelvadas/podinformer)
 [^2]: [Kubernetes sample-controller](https://github.com/kubernetes/sample-controller)
