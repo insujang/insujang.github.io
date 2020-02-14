@@ -227,6 +227,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// This const variables are used in our CRD operator and a custom controller.
 const (
 	GroupName    string = "insujang.github.io"
 	Kind         string = "TestResource"
@@ -623,31 +624,53 @@ These Go modules I will use for the next step.
 
 Here I implement a CRD operator (i.e. creates a CRD type and object, gets CRD objects, and watches the changes of CRD objects).
 
+> **Note that from here I use my Github repository code, the structure of which is different from those above.**
+>
+> ```shell
+>/home/insujang/go/src/insujang.github.io/kubernetes-test-controller $ tree -d .
+> .
+> ├── code-generated
+> │   └── pkg
+> │       └── client
+> │           ├── clientset
+> │           │   └── versioned
+> │           │       ├── fake
+> │           │       ├── scheme
+> │           │       └── typed
+> │           │           └── testresource
+> │           │               └── v1beta1
+> │           │                   └── fake
+> │           ├── informers
+> │           │   └── externalversions
+> │           │       ├── internalinterfaces
+> │           │       └── testresource
+> │           │           └── v1beta1
+> │           └── listers
+> │               └── testresource
+> │                   └── v1beta1
+> └── code-template
+>     └── pkg
+>         └── apis
+>             └── testresource
+>                 └── v1beta1
+> ```
+
 ### Register a CRD programatically
 
 In [[the previous post]](/2020-02-11/kubernetes-custom-resource), I introduced how to create a CRD using CLI and a yaml file.
-Here, I introduce how to create a CRD *programmatically in Go* here. This is not a mandatory step and using yaml for creating a CRD is still valid for our custom controller to run.
+Here, I introduce how to create a CRD *programmatically in Go*. This is not a mandatory step and using yaml for creating a CRD is still valid for our custom controller to run.
 
 The program will be implemented with client-go and auto-generated code that you created in [[2]](#2-get-auto-generated-go-code-with-code-generator).
 
-Create a new module named `crd-generator` in `$GOPATH/src/insujang.github.io`.
+Create a new module named `crd-generator` in `$GOPATH/src/insujang.github.io/kubernetes-test-controller`.
 
-> Currently my modules look like:
-> ```shell
-> /home/insujang/go/src/insujang.github.io $ tree -d -L 1 .
-> .
-> ├── custom-controller-code-generated
-> ├── custom-controller-code-template
-> └── crd-generator
-> ```
-
-Initialize module and explicitly get `client-go`. **It is important to explicitly get specific verion of the library** since otherwise it pulls incompatible library, making our code not compilable. Also we use our local modules, so add `replace` statements in the module file.
+Initialize module and explicitly get `client-go`. **It is important to explicitly get specific verion of the library**, otherwise it pulls incompatible library, invoking build errors. Also we use our local modules, so add `replace` statements in the module file to use our generated code.
 
 ```shell
 /home/insujang/go/src/insujang.github.io $ go mod init insujang.github.io/crd-generator
 /home/insujang/go/src/insujang.github.io $ GO111MODULE=on go get k8s.io/client-go@kubernetes-1.17.3
-/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/custom-controller-code-template=../custom-controller-code-template
-/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/custom-controller-code-generated=../custom-controller-code-generated
+/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/kubernetes-test-controller/code-template=../kubernetes-test-controller/code-template
+/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/kubernetes-test-controller/code-generated=../kubernetes-test-controller/code-generated
 ```
 
 Below is the key code for CRD type generation.
@@ -658,11 +681,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
-	testresourcev1beta1 "insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1"
+	testresourcev1beta1 "insujang.github.io/kubernetes-test-controller/code-template/pkg/apis/testresource/v1beta1"
 )
 
 // Create a CRD and send it to the apiserver.
-func CreateCustomResourceDefinition(clientSet apiextensionsclientset.Interface) (*apiextensions.CustomResourceDefinition, error) {
+func CreateCustomResourceDefinition(clientSet apiextensionsclientset.Interface) {
 	klog.Infof("Creating a CRD: %s\n", testresourcev1beta1.Name)
 	
 	crd := &apiextensions.CustomResourceDefinition{
@@ -687,7 +710,7 @@ func CreateCustomResourceDefinition(clientSet apiextensionsclientset.Interface) 
 		panic(err)
 	}
 
-	return crd, nil
+	klog.Infoln("The CRD created. Need to wait whether it is confirmed.")
 }
 ```
 
@@ -701,11 +724,11 @@ import (
   "k8s.io/apimachinery/pkg/util/wait"
   apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
   apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
-  testresourcev1beta1 "insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1"
+  testresourcev1beta1 "insujang.github.io/kubernetes-test-controller/code-template/pkg/apis/testresource/v1beta1"
 )
 
 // Wait for CRD creation event.
-func WaitCustomResourceDefinition(apiClientSet apiextensionsclientset.Interface) error {
+func WaitCustomResourceDefinition(apiClientSet apiextensionsclientset.Interface) {
 	klog.Infof("Waiting for a CRD to be created: %s\n", testresourcev1beta1.Name)
 
 	err := wait.Poll(1*time.Second, 30*time.Second, func()(bool, error) {
@@ -718,6 +741,7 @@ func WaitCustomResourceDefinition(apiClientSet apiextensionsclientset.Interface)
 		for _, condition := range crd.Status.Conditions {
 			if (condition.Type == apiextensions.Established && condition.Status == apiextensions.ConditionTrue) {
 				// CRD successfully created.
+				klog.Infoln("Confirmed that the CRD successfully created.")
 				return true, err
 			} else if (condition.Type == apiextensions.NamesAccepted && condition.Status == apiextensions.ConditionFalse) {
 				klog.Fatalf("Name conflict while wait for CRD creation: %s, %v\n", condition.Reason, err)
@@ -726,8 +750,9 @@ func WaitCustomResourceDefinition(apiClientSet apiextensionsclientset.Interface)
 
 		return false, err
 	})
-
-	return err
+	if err != nil {
+		panic(err)
+	}
 }
 ```
 
@@ -742,7 +767,7 @@ import (
   testresourcev1beta1 "insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1"
 )
 
-func CreateCustomResourceDefinitionObject(clientSet testresourceclientset.Interface) error {
+func CreateCustomResourceDefinitionObject(clientSet testresourceclientset.Interface) {
 	object_name := "example-testresource"
 	klog.Infof("Creating a CRD object: %s\n", object_name)
 
@@ -760,31 +785,33 @@ func CreateCustomResourceDefinitionObject(clientSet testresourceclientset.Interf
 	}
 
 	_, err := clientSet.InsujangV1beta1().TestResources("default").Create(exampleInstance)
-	return err
+	if err != nil {
+		panic(err)
+	}
+	klog.Infoln("The CRD object is created.")
 }
 ```
 
 The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller/tree/master/crd-generator).
 
 ```shell
-/home/insujang/go/src/insujang.github.io/crd-generator $ go build main.go && ./main
-I0214 10:22:35.240497   11345 main.go:21] Creating a CRD: testresources.insujang.github.io
-I0214 10:22:35.260867   11345 main.go:50] Waiting for a CRD to be created: testresources.insujang.github.io
-I0214 10:22:36.292198   11345 main.go:125] The CRD type is created.
-I0214 10:22:36.292310   11345 main.go:76] Creating a CRD object: example-testresource
-I0214 10:22:36.320317   11345 main.go:140] A CRD object is created.
-I0214 10:22:36.320342   11345 main.go:97] Getting CRD objects.
-I0214 10:22:36.338054   11345 main.go:152] [0] Found CRD object: {
+I0214 13:11:34.380662    3968 main.go:21] Creating a CRD: testresources.insujang.github.io
+I0214 13:11:34.397488    3968 main.go:45] The CRD created. Need to wait whether it is confirmed.
+I0214 13:11:34.397513    3968 main.go:50] Waiting for a CRD to be created: testresources.insujang.github.io
+I0214 13:11:35.425634    3968 main.go:62] Confirmed that the CRD successfully created.
+I0214 13:11:35.425775    3968 main.go:78] Creating a CRD object: example-testresource
+I0214 13:11:35.453870    3968 main.go:97] The CRD object is created.
+I0214 13:11:35.460716    3968 main.go:138] [0] Found CRD object: {
   "kind": "TestResource",
   "apiVersion": "insujang.github.io/v1beta1",
   "metadata": {
     "name": "example-testresource",
     "namespace": "default",
     "selfLink": "/apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-testresource",
-    "uid": "cbb207cc-1a77-42fa-a992-be2d25b5035e",
-    "resourceVersion": "2018374",
+    "uid": "bdab6049-459b-454b-9fb9-f261ad6764bf",
+    "resourceVersion": "2040265",
     "generation": 1,
-    "creationTimestamp": "2020-02-14T01:22:36Z"
+    "creationTimestamp": "2020-02-14T04:11:35Z"
   },
   "status": {
     "Name": "Pending"
@@ -794,7 +821,6 @@ I0214 10:22:36.338054   11345 main.go:152] [0] Found CRD object: {
     "customproperty": "thisshouldmatchwiththisstring"
   }
 }
-I0214 10:22:36.338101   11345 main.go:156] Done!
 ```
 
 
