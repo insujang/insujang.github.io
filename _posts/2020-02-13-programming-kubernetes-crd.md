@@ -178,7 +178,7 @@ Unfortunately, at the time of writing this post, tutorials are not perfect [^5] 
 
 Here I create a CRD that same with the one defined in [[the previous post]](/2020-02-11/kubernetes-custom-resource/#creating-an-object-as-custom-resource-based-on-crd).
 
-> In this post, I do not follow the tutorials without any thinking. The code generator is not perfect so I encountered so many difficulties. I introduce the problems I got and understandings regarding them.
+> In this post, I tried not to post just example code with no explanations; I encountered so many problems using code-generator. I introduce them and understandings I got.
 
 ## 1. Prepare some Go files for code generation
 
@@ -191,14 +191,7 @@ $ GO111MODULE=off go get k8s.io/code-generator
 package k8s.io/code-generator: build constraints exclude all Go files in /home/insujang/go/src/k8s.io/code-generator
 $ cd $GOPATH/src/k8s.io/code-generator; git checkout kubernetes-1.17.3
 ```
-
-**It is neceesary to explicitly checkout the tag; the master branch of code-generator will not work with current deploying client-go library.
-
-**It is necessary to explicitly get k8s.io/apimachinery package as well**, unless you will stuck at an irrelevent, inscrutable error as follows during generating a code like:
-```shell
-Generating deepcopy funcs
-F0212 19:55:44.560938   16684 deepcopy.go:885] Hit an unsupported type invalid type for invalid type, from .../testresource/v1.TestResource
-```
+I explicitly change the branch of the repository to `kubernets-1.17.3`, because the master branch uses `client-go@v11.0+incompatible` library, which is not usable with the currently deploying Kubernetes cluster.
 
 > Note that GO111MODULE should be off, so `go get` pulls package sources. The sources are installed in `$GOPATH/src`.
 
@@ -342,14 +335,15 @@ My directory structure is as follows.
         └── types.go
 ```
 
-Three Go template code must be in `<resource_name>/<version>` directory. `<resource_name>` is actually not relevent to your CRD that will be registered to the apiserver, your custom controller will import the generated code which will contain that path. So it is recommended to match it with your CRD name.
+Three Go template code must be in `<resource_name>/<version>` directory. `<resource_name>` is actually not relevent to your CRD that will be registered to the apiserver, your custom controller will import the generated code which will contain this directory name. So it is recommended to match it with your CRD name.
 
-### Not recommended: using relative path for code generation
+### Wrong: using relative path for code generation
 
 > **CAUTION: This should not work so you must use a URL to generate code. Following contents are for introducing why it is failed.**
 
-The script `generate-groups.sh` **does not take absolute path** for its argument, but only takes a Git repository URL or a relative path.
-Here, I introduce why we even cannot use a relative path for code generation.
+The script `generate-groups.sh` assumes inputs are Go module URLs. At first time, I wanted to use it with Go files in my local system, but the script does not take the absolute path of the directory. **The reason the script accepts relative paths is actually a bug**; as mentioned, the input check mechanism of the script assumes inputs are Go modules URLs, but it only checks whether a dot (.) exists in the first path of the inputs (e.g. github.com contains a dot), which let relative paths be accepted as input arguments (e.g. ./this/is/a/relative/path also contains a dot in the first path).
+
+Below is my trials to make it work (failed anyway) for the purpose of archive, so do not follow it.
 
 Assume we launch the script in working directory `/home/insujang/go/src/k8s.io/code-generator`.
 As the relative path of our template from this directory is `../../../../`, you should launch the script as follows:
@@ -450,12 +444,15 @@ import (
 ...
 ```
 
-It may work if we manually fix all the path, but I do not want to do. **The code is generated but it is not usable.**
-This is why I failed trials for using local relative paths and switched to use an URL for code generation, a recommended way and all other examples are using.
 
-### Recommended: using an URL and a local module for code generation
+### Right: using Go modules for code generation
 
-Now I understand that I should use an URL, but what made me annoying is that `generate-groups.sh` keeps try to access the *remote repository* if you use `github.com` as a repository URL:
+> There are already many examples using a Go module (posted in remote repositories). Here I tried to make the code as local Go modules and use them.
+>
+> If you intend to publish your code as a library into Git remote repository, you can push the template code and use it.
+> Here I investigate how to generate code *without a remote repository*.
+
+Now I understand that I should use an URL of Go modules, but what made me annoying is that `generate-groups.sh` keeps try to access the *remote repository* if you use well-known remote repository URL such as `github.com` as a module path:
 
 ```shell
 F0213 14:35:28.447759   11832 main.go:85] Error: Failed making a parser: unable to add directory "github.com/insujang/test/apis/test/v1": unable to import "github.com/insujang/test/apis/test/v1": go/build: importGo github.com/insujang/test/apis/test/v1: exit status 1
@@ -465,10 +462,9 @@ Confirm the import path was entered correctly.
 If this is a private repository, see https://golang.org/doc/faq#git_https for additional information.
 ```
 
-> If you intend to publish your code as a library into Git remote repository, you can push the template code and use it.
-> Here I investigate how to generate code *without a remote repository, i.e. with a local module*.
 
-What I figured out is that we can use another URL for our local Go package, other than well-known remote repository such as `github.com`, then Go binaries do not try to call `git` command.
+What I figured out is that we can use another URL for our local Go modules, other than well-known remote repository, then Go binaries do not try to call `git` command.
+I use `insujang.github.io` as a URL for my Go modules.
 
 Manually create a Go package tree structure in `$GOPATH` as follows [^9]. In order to make your CRD be used by others, files are in `/pkg`, `/internal` otherwise..
 
@@ -558,7 +554,6 @@ insujang.github.io/kubernetes-custom-controller-api/
 │           └── zz_generated.deepcopy.go
 └── go.mod
 ```
-
 
 ### One more step: code division
 
