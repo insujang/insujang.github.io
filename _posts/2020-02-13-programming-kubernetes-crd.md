@@ -1,0 +1,820 @@
+---
+layout: post
+title: Programming Kubernetes CRDs
+date: 2020-02-13 10:13
+category: 
+author: Insu Jang
+tags: [kubernetes, study]
+summary: 
+---
+
+In [[previous post]](/2020-02-11/kubernetes-custom-resource/), I briefly introduced a custom resource definition and how to create it through CLI.
+In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
+
+# client-go
+
+Kubernetes provides **[[client-go]](https://github.com/kubernetes/client-go)**, which includes a set of APIs to watch objects' status from the apiserver.
+Thanks to client-go library, implementing an informer or a controller becomes easy.
+The picture velow illustrate how a controller works, and how components in client-go and our implementation divide roles.
+
+![kubernetes controller diagram](https://raw.githubusercontent.com/kubernetes/sample-controller/master/docs/images/client-go-controller-interaction.jpeg){: width="800px" .center-image}
+
+client-go watches events from the kube-apiserver (1) and passes them to informer (2, 3). The internal indexer stores data in its local thread safe cache (5).
+Then, client-go invokes user-implemented event handlers (7, 8). (9) will be discussed later.
+
+## Example: implementing an event watcher (informer)
+
+If we implement until step 7, this process will work as a event watcher (informer).
+The following Go code is a basic example that watches *Pod events* from the apiserver.
+
+> - Note that it is **an informer, not a controller**, so does not do anything when it gets events.
+> - You can see similar event handler logic in kube-scheduler (https://github.com/kubernetes/kubernetes/blob/master/pkg/scheduler/scheduler.go).
+> - I am not familiar with Go, so some comments seem ridiculous. Those are for my personal understanding.
+> - Code adopted from [^1] [^2] [^3]
+
+```go
+package main
+
+import (
+  "time"
+  "fmt"
+
+  v1 "k8s.io/api/core/v1"
+  "k8s.io/client-go/tools/clientcmd"
+  "k8s.io/client-go/informers"
+  "k8s.io/client-go/kubernetes"
+  "k8s.io/client-go/tools/cache"
+  "k8s.io/apimachinery/pkg/util/wait"
+)
+
+func main() {
+  var configFile string = "/etc/kubernetes/admin.conf"
+
+  config, err := clientcmd.BuildConfigFromFlags("", configFile)
+  if err != nil {
+    panic(err)
+  }
+
+  // Create a client set from config
+  // https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/kubernetes/clientset.go#L370
+  // func NewForConfig(c *rest.Config) (*Clientset, error)
+  // Return type: Clientset struct (https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/kubernetes/clientset.go#L115)
+  clientset, err := kubernetes.NewForConfig(config)
+  if err != nil {
+    panic(err)
+  }
+
+  // Create an informer from client
+  // https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/informers/factory.go#L97
+  // func NewSharedInformerFactory(client kubernetes.Interface, defaultResync time.Duration) SharedInformerFactory
+  // Return type: SharedInformerFactory struct (from packege k8s.io/client-go/informers)
+  informerFactory := informers.NewSharedInformerFactory(clientset, time.Second*30)
+
+  // https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/informers/factory.go#L200
+  // informerFactory.Core() returns core.Interface (from package k8s.io/client-go/informers/core)
+
+  // https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/informers/core/interface.go#L29
+  // informerFactory.Core().V1() returns v1.Interface (from package k8s.io/client-go/informers/core/v1)
+  // v1.Interface interface (https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/informers/core/v1/interface.go#L26)
+
+  // https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/informers/core/v1/interface.go#L46
+  // informerFactory.Core().V1().Pods() returns podInformer (from package k8s.io/client-go/informers/core/v1)
+  // podInformer interface (https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/informers/core/v1/pod.go#L36)
+
+  // This will inform pod information received from the apiserver.
+  podInformer := informerFactory.Core().V1().Pods()
+
+  // https://github.com/kubernetes/client-go/blob/master/tools/cache/shared_informer.go#L163
+  // podInformer.Informer() returns cache.SharedIndexInformer
+  // SharedIndexInformer interface (https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/tools/cache/shared_informer.go#L125)
+
+  // AddEventHandler takes ResourceEventHandler as its argument.
+  // ResourceEventHandler interface (https://github.com/kubernetes/client-go/blob/kubernetes-1.17.3/tools/cache/controller.go#L180)
+  // cache.ResourceEventHandlerFuncs is an adapter of REsourceEventHandler
+  // to let you easily specific as many or as few of the notification functions.
+  // In other words, you do not have to specify all three functions (AddFunc, DeleteFunc, UpdateFunc).
+  
+  // Add event handler callbacks that will be called when it receives events.
+  podInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+    AddFunc: func(object interface{}) {
+      newPod := object.(*v1.Pod)
+      fmt.Printf("new Pod added: %v.\n", newPod.GetName())
+    },
+    DeleteFunc: func(object interface{}) {
+      pod := object.(*v1.Pod)
+      fmt.Printf("Pod deleted: %v.\n", pod.GetName())
+    },
+    UpdateFunc: func(old, new interface{}) {
+      pod := old.(*v1.Pod)
+      fmt.Printf("Pod %v update.\n", pod.GetName())
+    },
+  })
+
+  // A comment from https://github.com/kubernetes/sample-controller
+  // No need to run Start methods in a separate goroutine (i.e. go informerFactory.Start(stopCh))
+  // informerFactory.Start method is non-blocking and runs all registered informers in a dedicated goroutine.
+  informerFactory.Start(wait.NeverStop)
+
+  // If it an informer, not a controller, so we do not create a controller instance here.
+  // Main thread waits forever. Goroutine worker will handle events.
+  // Later I will extend this example to a custom controller. At that time, creating a new controller will be here.
+  select {}
+}
+```
+
+```shell
+$ go mod init insujang.github.io/sample-pod-informer
+go: creating new go.mod: module insujang.github.com/sample-pod-informer
+
+$ GO111MODULE=on go get k8s.io/client-go@kubernetes-1.17.3
+go: finding k8s.io kubernetes-1.17.3
+go: finding k8s.io/client-go kubernetes-1.17.3
+go: downloading k8s.io/client-go v0.17.3
+go: extracting k8s.io/client-go v0.17.3
+
+$ go build main.go
+...
+
+$ ./main
+new Pod added: test-pod.
+Pod test-pod update.
+Pod test-pod update.
+...
+```
+
+> Note that I explicitly get client-go library with **version kubernetes-1.17.3**. To enable this we need `GO111MODULE` environment variable as `on`.
+> **This is important** that without version specification, go automatically pulls default branch (which current is v11.0.0 that is indicated as incompatible) that cannot be used with current deploying Kubernetes cluster.
+>
+> **With no version specified you will see errors as follows**:
+> ```shell
+> $ go mod init insujang.github.io/sample-pod-informer
+> $ go build main.go
+> go: finding k8s.io/api v0.17.3
+> go: finding k8s.io/client-go v11.0.0+incompatible            <- This is the problem
+> go: finding k8s.io/apimachinery v0.17.3
+> go: downloading k8s.io/api v0.17.3
+> go: downloading k8s.io/client-go v11.0.0+incompatible
+> ...
+>    k8s.io/client-go/rest
+> /root/go/pkg/mod/k8s.io/client-go@v11.0.0+incompatible/rest/request.go:598:31: not enough arguments in call to watch.NewStreamWatcher
+>         have (*versioned.Decoder)
+>         want (watch.Decoder, watch.Reporter)
+> ```
+
+# code-generator
+
+To create a **custom controller**, we need to manually implement types, informers, and other helpers, which is burdensome.
+Kubernetes team, therefore, provides **code-generator** to create CRD related Go code that can be used to implement a custom controller [^4].
+[^2] is actaully an example of code-generator, i.e., contains auto-generated code by code-generator.
+
+Hence, steps for creating a working custom controller in Go are:
+1. Prepare some Go files for code generation
+2. Get auto-generated Go code with code-generator.
+3. Implement a controller logic with the generated code and client-go library.
+
+Unfortunately, at the time of writing this post, tutorials are not perfect [^5] [^6] [^7] [^8]; so I aggregate and summarize them to make a complete example in the post.
+
+Here I create a CRD that same with the one defined in [[the previous post]](/2020-02-11/kubernetes-custom-resource/#creating-an-object-as-custom-resource-based-on-crd).
+
+> In this post, I do not follow the tutorials without any thinking. The code generator is not perfect so I encountered so many difficulties. I introduce the problems I got and understandings regarding them.
+
+## 1. Prepare some Go files for code generation
+
+### Prerequisites
+
+Install source code of Go packages with the following command.
+
+```shell
+$ GO111MODULE=off go get k8s.io/code-generator
+package k8s.io/code-generator: build constraints exclude all Go files in /home/insujang/go/src/k8s.io/code-generator
+$ cd $GOPATH/src/k8s.io/code-generator; git checkout kubernetes-1.17.3
+```
+
+**It is neceesary to explicitly checkout the tag; the master branch of code-generator will not work with current deploying client-go library.
+
+**It is necessary to explicitly get k8s.io/apimachinery package as well**, unless you will stuck at an irrelevent, inscrutable error as follows during generating a code like:
+```shell
+Generating deepcopy funcs
+F0212 19:55:44.560938   16684 deepcopy.go:885] Hit an unsupported type invalid type for invalid type, from .../testresource/v1.TestResource
+```
+
+> Note that GO111MODULE should be off, so `go get` pulls package sources. The sources are installed in `$GOPATH/src`.
+
+> I use `/home/insujang/go` as `$GOPATH` in this post.
+
+### Write template code
+
+To use code-generator, we should prepare some Go files with tags (i.e. `\\ +tag-name=value`) that indicates some information to code generator. (I do not know how to call these files.. I just call a collection of the files used for code generation as **template files** here.) For more detailed information regarding tags, visit the Openshift tutorial [^5].
+
+The script `generate-groups.sh` that is used for code generation from [[the repository]](https://github.com/kubernetes/code-generator) **requires** prewritten files (`doc.go, register.go, types.go`).
+In this substep, I only show how those files should look like; the location of files will be handled in [[step 2]](#2-get-auto-generated-go-code-with-code-generator).
+
+#### doc.go
+```go
+// +k8s:deepcopy-gen=package
+// +groupName=insujang.github.io
+
+package v1beta1
+```
+code-generator parses comments to know how to generate code.
+This example uses group name as `insujang.github.io`, which should be same as the value of `spec.group` in CRD yaml file (refer to [[the previous post]](/2020-02-11/kubernetes-custom-resource/#specifying-a-custom-resource-definition) how CRD yaml should be).
+What makes me confused is that this data are all different from example to example; so here I only specifiy minimal and basic information.
+
+If you want to specify different version, for instance, `v1`, for your CRD objects, Go files must be in `/pkg/apis/testresource/v1/` and all Go files must be in `package v1`. If not, auto-generated code would not work (not tested though :/ )
+
+This package value will be your CRD's version. Refer to [[the previous post]](/2020-02-11/kubernetes-custom-resource/#creating-an-object-as-custom-resource-based-on-crd) that we specify `apiVersion` of CRD object as `insujang.github.io/v1beta1`. If you specify version as `v1`, your object creation yaml must contain `apiVersion: insujang.github.io/v1`, not `insujang.github.io/v1beta1`.
+
+#### types.go
+```go
+package v1beta1
+
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+const (
+	GroupName    string = "insujang.github.io"
+	Kind         string = "TestResource"
+	GroupVersion string = "v1beta1"
+	Plural       string = "testresources"
+	Singular     string = "testresource"
+	Name         string = Plural + "." + GroupName
+)
+
+// TestResourceSpec specify the 'spec' in CRD yaml.
+type TestResourceSpec struct {
+	Command        string `json:"command"`
+	CustomProperty string `json:"customproperty"`
+}
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// TestResource describes a TestResource resource.
+// This will be your custom resource's name used in the generated code.
+type TestResource struct {                 
+	metav1.TypeMeta `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Status TestResourceStatus `json:"status"`
+	Spec TestResourceSpec `json:"spec"`
+}
+
+// TestResourceStatus is a TestResource resources.
+type TestResourceStatus struct {
+	Name string
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// TestResourceList is a list of TestResource resources.
+// Note that we specified "spec.listKind" in CRD yaml file.
+// The following struct refers to it.
+type TestResourceList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []TestResource `json:"items"`
+}
+```
+
+types.go defines a CRD object and the corresponding list object. Its status and spec are defined together as `TestResourceSpec` and `TestResourceStatus` struct in the code, as specified in [[the previous post](/2020-02-11/kubernetes-custom-resource/#creating-an-object-as-custom-resource-based-on-crd).
+
+Here, you should match the name of struct `TestResource` with our CRD object name `testresource`. The generated code will use this for generating URLs for communication with the apiserver later.
+
+#### register.go
+
+```go
+package v1beta1
+
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
+
+// localSchemeBuilder and AddToScheme will stay in k8s.io/kubernetes.
+var (
+	// SchemeBuilder initializes a scheme builder
+	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
+	// AddToScheme is a global function that registers this API group & version to a scheme
+	AddToScheme = SchemeBuilder.AddToScheme
+)
+
+// SchemeGroupVersion is group version used to register these objects.
+var SchemeGroupVersion = schema.GroupVersion{
+	Group: GroupName,
+	Version: GroupVersion,
+}
+
+// Adds the list of known types to api.Scheme.
+func addKnownTypes(scheme *runtime.Scheme) error {
+	scheme.AddKnownTypes(SchemeGroupVersion,
+											 &TestResource{},
+											 &TestResourceList{},
+									    )
+	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
+	return nil
+}
+```
+
+I do not understand why those variables should be defined as global. Maybe the code generator does inside with it as the comment indicates?
+
+For more detailed understanding for tags (`// +tag-name=value` such as `// +k8s:deepcopy-gen=package`), refer to [^5], [^7], and [^8].
+
+## 2. Get auto-generated Go code with code-generator
+
+My directory structure is as follows.
+```shell
+/home/insujang $ tree .
+.
+├── go                                  # gopath
+│   └── src
+│       └── k8s.io
+│           ├── apimachinery            # package source
+│           └── code-generator          # package source
+└── testresource                        # our template code
+    └── v1beta1
+        ├── doc.go
+        ├── register.go
+        └── types.go
+```
+
+Three Go template code must be in `<resource_name>/<version>` directory. `<resource_name>` is actually not relevent to your CRD that will be registered to the apiserver, your custom controller will import the generated code which will contain that path. So it is recommended to match it with your CRD name.
+
+### Not recommended: using relative path for code generation
+
+> **CAUTION: This should not work so you must use a URL to generate code. Following contents are for introducing why it is failed.**
+
+The script `generate-groups.sh` **does not take absolute path** for its argument, but only takes a Git repository URL or a relative path.
+Here, I introduce why we even cannot use a relative path for code generation.
+
+Assume we launch the script in working directory `/home/insujang/go/src/k8s.io/code-generator`.
+As the relative path of our template from this directory is `../../../../`, you should launch the script as follows:
+```shell
+/home/insujang/go/src/k8s.io/code-generator $ ./generate-groups.sh all ./output ../../../.. testresource:v1beta1
+```
+The script internally builds Go binaries (`client-gen, deepcopy-gen, defaulter-gen, informer-gen, lister-gen`) and passes the calculated arguments to them (`../../../..` + `testresource:v1beta1` -> `../../../../testresource/v1beta1`).
+Before executing Go binaries, the script changes its current working directory to the directory that the script itself exists, so the Go binaries are launched with the current working directory as `$GOPATH/src/k8s.io/code-generator` and the input argument `../../../../testresource/v1beta1` and output argument `./output`.
+
+Code files are generated in `/home/insujang/go/src/output`:
+```shell
+$ tree /home/insujang/go/src/output -d
+/home/insujang/go/src/output
+├── clientset
+│   └── versioned
+│       ├── fake
+│       ├── scheme
+│       └── typed
+│           └── testresource
+│               └── v1beta1
+│                   └── fake
+├── informers
+│   └── externalversions
+│       ├── internalinterfaces
+│       └── testresource
+│           └── v1beta1
+└── listers
+    └── testresource
+        └── v1beta1
+```
+Here is why files are stored in this directory. For `informer-gen`, for example, the passed input and output arguments are: `../../../../testrsource/v1beta` and `./output/informers`, respectively.
+In `$GOPATH/src/k8s.io/code-generator/cmd/informer-gen/main.go`, the variable `genericArgs` is defined as:
+
+```go
+import generatorargs "k8s.io/code-generator/cmd/informer-gen/args"
+
+genericArgs, customArgs := generatorargs.NewDefaults()
+```
+
+```go
+import "k8s.io/gengo/args"
+
+func NewDefaults() (*args.GeneratorArgs, *CustomArgs) {
+  genericArgs := args.Default().WithoutDefaultFlagParsing()
+  ...
+  return genericArgs, customArgs
+}
+```
+
+The type `args.GeneratorArgs` look like (code from [[gengo Github]](https://github.com/kubernetes/gengo/blob/master/args/args.go#L52)):
+```go
+type GeneratorArgs struct {
+	InputDirs []string
+	OutputBase string
+	OutputPackagePath string
+	OutputFileBaseName string
+	GoHeaderFilePath string
+	GeneratedByCommentTemplate string
+	VerifyOnly bool
+	IncludeTestFiles bool
+	GeneratedBuildTag string
+	CustomArgs interface{}
+	defaultCommandLineFlags bool
+}
+```
+where `OutputBase` is defined as `DefaultSourceTree()`, which returns `$GOPATH/src`.
+Combined with `OutputPackagePath`, `./output/informers`, for `informer-gen` binary, the output directory is `$GOPATH/src/./output/informers`.
+
+And, not all generated files are in the output directory. `deepcopy-gen` Go binary generates the code named `zz_generated.deepcopy.go` based on **the input directory**.
+Similar to `informer-gen`, it calculates the path `OutputBase/InputDirs[0]/OutputFileBaseName`, which will be `/home/insujang/go/src/../../../../testresource/v1beta1/zz_generated.deepcopy.go`, i.e., `/testresource/v1beta1/zz_generated.deepcopy.go`.
+
+To be summarized, the generated files are:
+
+- all files in `$GOPATH/src/<output-directory>` (in the above example, `$GOPATH/src/./output` -> `/home/insujang/go/src/output`)
+- `zz_generated.deepcopy.go` in `$GOPATH/src/<name>/<version>/<input-directory>` (in the above example, `$GOPATH/src/../../../../testresource/v1beta1` -> `/testresource/v1beta1`)
+
+Sadly, these generated files cannot be used, since `<input-directory` and `<output-directory>` are embedded into import paths in the generated code.
+
+For example, `output/clientset/clientset.go`:
+```go
+// Code generated by client-gen. DO NOT EDIT.
+
+package versioned
+
+import (
+  insujangv1beta1 "output/clientset/versioned/typed/testresource/v1beta1"
+)
+...
+```
+
+`output/clientset/typed/testresource_client.go`:
+```go
+package v1beta1
+
+import (
+  v1beta1 "../../../../testresource/v1beta1"
+)
+...
+```
+
+It may work if we manually fix all the path, but I do not want to do. **The code is generated but it is not usable.**
+This is why I failed trials for using local relative paths and switched to use an URL for code generation, a recommended way and all other examples are using.
+
+### Recommended: using an URL and a local module for code generation
+
+Now I understand that I should use an URL, but what made me annoying is that `generate-groups.sh` keeps try to access the *remote repository* if you use `github.com` as a repository URL:
+
+```shell
+F0213 14:35:28.447759   11832 main.go:85] Error: Failed making a parser: unable to add directory "github.com/insujang/test/apis/test/v1": unable to import "github.com/insujang/test/apis/test/v1": go/build: importGo github.com/insujang/test/apis/test/v1: exit status 1
+can't load package: package github.com/insujang/test/apis/test/v1: git ls-remote -q origin in /home/insujang/go/pkg/mod/cache/vcs/17cdf13fc91f7befb3cd95cb1700a7065b2eb64d1649d793d8948d32d578b9aa: exit status 128:
+        fatal: could not read Username for 'https://github.com': terminal prompts disabled
+Confirm the import path was entered correctly.
+If this is a private repository, see https://golang.org/doc/faq#git_https for additional information.
+```
+
+> If you intend to publish your code as a library into Git remote repository, you can push the template code and use it.
+> Here I investigate how to generate code *without a remote repository, i.e. with a local module*.
+
+What I figured out is that we can use another URL for our local Go package, other than well-known remote repository such as `github.com`, then Go binaries do not try to call `git` command.
+
+Manually create a Go package tree structure in `$GOPATH` as follows [^9]. In order to make your CRD be used by others, files are in `/pkg`, `/internal` otherwise..
+
+```shell
+/home/insujang/go/src $ tree insujang.github.io
+insujang.github.io
+└── kubernetes-custom-controller-api
+    ├── api
+    │   └── testresource
+    │       └── v1beta1
+    │           ├── doc.go
+    │           ├── register.go
+    │           └── types.go
+    └── go.mod
+```
+
+Where go.mod is created by `insujang.github.io/kubernetes-custom-controller-api $ go mod init insujang.github.io/kubernetes-custom-controller-api`.
+
+> In [[my informer example]](#example-implementing-an-event-watcher-informer), I imported corev1 from `"k8s.io/api/core/v1"`.
+> Similar to this, we can import our custom resource by importing `insujang.github.io/kubernetes-custom-controller-api/api/testresource/v1beta1`.
+> The official tutorial [^5] follows the standard Go package by putting it into `/pkg` directory, but I do not understand why `[[Kubernetes API repository]](https://github.com/kubernetes/api) does not follow this rule. So that I followed Kubernete's way.
+
+We create a local module but it is not published, we need to modify `$GOPATH/src/k8s.io/code-generator/go.mod` to make the code generator look at our local Go module [^10]. The replaced path should be match your local Go module path.
+
+```shell
+/home/insujang/go/src/k8s.io/code-generator $ go mod edit -replace=insujang.github.io/kubernetes-custom-controller-api=../../insujang.github.io/kubernetes-custom-controller-api
+```
+
+Verify whether the following line is added into its `go.mod`:
+```shell
+/home/insujang/go/src/k8s.io/code-generator $ cat go.mod
+...
+replace insujang.github.io/kubernetes-custom-controller-api => ../../insujang.github.io/kubernetes-custom-controller-api
+```
+
+Now generate the code!
+
+```shell
+/home/insujang/go/src/k8s.io/code-generator $ ./generate-groups.sh all insujang.github.io/kubernetes-custom-controller-api/client insujang.github.io/kubernetes-custom-controller-api/api testresource:v1beta1
+Generating deepcopy funcs
+Generating clientset for testresource:v1beta1 at insujang.github.io/kubernetes-custom-controller-api/client/clientset
+Generating listers for testresource:v1beta1 at insujang.github.io/kubernetes-custom-controller-api/client/listers
+Generating informers for testresource:v1beta1 at insujang.github.io/kubernetes-custom-controller-api/client/informers
+```
+
+### Playing with output directory
+
+The output directory is `insujang.github.io/kubernetes-custom-controller-api/**client**`. Don't understand why it would be **`client`** :/ Maybe it is not necessarily be... Can we just generate code at `api` diretory at all? So I changed the output directory to `insujang.github.io/kubernetes-custom-controller-api/api`.
+The generated code resides in our Go module directory as follows:
+
+```shell
+home/insujang/go/src $ tree -L 5 insujang.github.io/kubernetes-custom-controller-api/
+insujang.github.io/kubernetes-custom-controller-api/
+├── api
+│   ├── clientset
+│   │   └── versioned
+│   │       ├── clientset.go
+│   │       ├── doc.go
+│   │       ├── fake
+│   │       │   ├── clientset_generated.go
+│   │       │   ├── doc.go
+│   │       │   └── register.go
+│   │       ├── scheme
+│   │       │   ├── doc.go
+│   │       │   └── register.go
+│   │       └── typed
+│   │           └── testresource
+│   ├── informers
+│   │   └── externalversions
+│   │       ├── factory.go
+│   │       ├── generic.go
+│   │       ├── internalinterfaces
+│   │       │   └── factory_interfaces.go
+│   │       └── testresource
+│   │           ├── interface.go
+│   │           └── v1beta1
+│   ├── listers
+│   │   └── testresource
+│   │       └── v1beta1
+│   │           ├── expansion_generated.go
+│   │           └── testresource.go
+│   └── testresource
+│       └── v1beta1
+│           ├── doc.go
+│           ├── register.go
+│           ├── types.go
+│           └── zz_generated.deepcopy.go
+└── go.mod
+```
+
+
+### One more step: code division
+
+Advancing what I just figured out, now I divide the code into two parts: `insujang:github.io/custom-controller-code-template`, which contains the template code and `zz_generated_deepcopy.go` file, and `insujang.github.io/custom-controller-code-generated`, which contains generated code by code generator.
+
+This should give you *more clear understanding of the result code*.
+
+```shell
+$ cat /home/insujang/go/src/k8s.io/code-generator/go.mod
+...
+replace insujang.github.io/custom-controller-code-template => ../../insujang.github.io/custom-controller-code-template
+replace insujang.github.io/custom-controller-code-generated => ../../insujang.github.io/custom-controller-code-generated
+```
+
+My module structure before code generation:
+
+```shell
+/home/insujang/go/src/insujang.github.io $ tree .
+.
+└── custom-controller-code-template
+    ├── go.mod    # module insujang.github.io/custom-controller-code-template
+    └── pkg
+        └── apis
+            └── testresource
+                └── v1beta1
+                    ├── doc.go
+                    ├── register.go
+                    └── types.go
+```
+
+My module structure after code generation:
+
+```shell
+/home/insujang/go/src/k8s.io/code-generator $ ./generate-groups.sh all insujang.github.io/custom-controller-code-generated/pkg/client insujang.github.io/custom-controller-code-template/pkg/apis testresource:v1beta1
+...
+
+/home/insujang/go/src/insujang.github.io $ tree .
+.
+├── custom-controller-code-generated
+│   └── pkg
+│       └── client
+│           ├── clientset
+│           ├── informers
+│           └── listers
+└── custom-controller-code-template
+    ├── go.mod
+    └── pkg
+        └── apis
+            └── testresource
+                └── v1beta1
+                    ├── doc.go
+                    ├── register.go
+                    ├── types.go
+                    └── zz_generated.deepcopy.go
+```
+
+> Note that the module structure above is similar to Kubernetes':
+> - `k8s.io/apimachinery/pkg/apis/meta/v1` => `insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1`
+> - `k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset` => `insujang.github.io/custom-controller-code-generated/pkg/client/clientset/versioned`
+
+Initialize `custom-controller-code-generate` module:
+
+```shell
+/home/insujang/go/src/insujang.github.io/custom-controller-code-generated $ go mod init insujang.github.io/custom-controller-code-generated
+```
+
+These Go modules I will use for the next step.
+
+## 3. Implement a controller logic with the generated code and client-go library
+
+### Register a CRD programatically
+
+In [[the previous post]](/2020-02-11/kubernetes-custom-resource), I introduced how to create a CRD using CLI and a yaml file.
+Here, I introduce how to create a CRD *programmatically in Go* here. This is not a mandatory step and using yaml for creating a CRD is still valid for our custom controller to run.
+
+The program will be implemented with client-go and auto-generated code that you created in [[2]](#2-get-auto-generated-go-code-with-code-generator).
+
+Create a new module named `crd-generator` in `$GOPATH/src/insujang.github.io`.
+
+> Currently my modules look like:
+> ```shell
+> /home/insujang/go/src/insujang.github.io $ tree -d -L 1 .
+> .
+> ├── custom-controller-code-generated
+> ├── custom-controller-code-template
+> └── crd-generator
+> ```
+
+Initialize module and explicitly get `client-go`. **It is important to explicitly get specific verion of the library** since otherwise it pulls incompatible library, making our code not compilable. Also we use our local modules, so add `replace` statements in the module file.
+
+```shell
+/home/insujang/go/src/insujang.github.io $ go mod init insujang.github.io/crd-generator
+/home/insujang/go/src/insujang.github.io $ GO111MODULE=on go get k8s.io/client-go@kubernetes-1.17.3
+/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/custom-controller-code-template=../custom-controller-code-template
+/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/custom-controller-code-generated=../custom-controller-code-generated
+```
+
+Below is the key code for CRD type generation.
+
+```go
+import (
+	"k8s.io/klog"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+	apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+	testresourcev1beta1 "insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1"
+)
+
+// Create a CRD and send it to the apiserver.
+func CreateCustomResourceDefinition(clientSet apiextensionsclientset.Interface) (*apiextensions.CustomResourceDefinition, error) {
+	klog.Infof("Creating a CRD: %s\n", testresourcev1beta1.Name)
+	
+	crd := &apiextensions.CustomResourceDefinition{
+			ObjectMeta: metav1.ObjectMeta {
+				Name: testresourcev1beta1.Name,
+				Namespace: "default",
+			},
+			Spec: apiextensions.CustomResourceDefinitionSpec {
+				Group: testresourcev1beta1.GroupName,
+				Version: testresourcev1beta1.GroupVersion,
+				Scope: apiextensions.NamespaceScoped,
+				Names: apiextensions.CustomResourceDefinitionNames{
+					Plural: testresourcev1beta1.Plural,
+					Kind: testresourcev1beta1.Kind,
+				},
+			},
+	}
+
+	_, err := clientSet.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return crd, nil
+}
+```
+
+Also, you need to wait an event that the CRD is successfully created from the apiserver. The following code does it:
+
+```go
+import (
+  "time"
+
+  "k8s.io/klog"
+  "k8s.io/apimachinery/pkg/util/wait"
+  apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+  apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+  testresourcev1beta1 "insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1"
+)
+
+// Wait for CRD creation event.
+func WaitCustomResourceDefinition(apiClientSet apiextensionsclientset.Interface) error {
+	klog.Infof("Waiting for a CRD to be created: %s\n", testresourcev1beta1.Name)
+
+	err := wait.Poll(1*time.Second, 30*time.Second, func()(bool, error) {
+		// get CRDs by name
+		crd, err := apiClientSet.ApiextensionsV1beta1().CustomResourceDefinitions().Get(testresourcev1beta1.Name, metav1.GetOptions{})
+		if err != nil {
+			panic(err)
+		}
+
+		for _, condition := range crd.Status.Conditions {
+			if (condition.Type == apiextensions.Established && condition.Status == apiextensions.ConditionTrue) {
+				// CRD successfully created.
+				return true, err
+			} else if (condition.Type == apiextensions.NamesAccepted && condition.Status == apiextensions.ConditionFalse) {
+				klog.Fatalf("Name conflict while wait for CRD creation: %s, %v\n", condition.Reason, err)
+			}
+		}
+
+		return false, err
+	})
+
+	return err
+}
+```
+
+### Create a CRD programmatically
+
+When the CRD type is created, you can create a CRD **object**.
+
+```go
+import (
+  "k8s.io/klog"
+  testresourceclientset "insujang.github.io/custom-controller-code-generated/pkg/client/clientset/versioned"
+  testresourcev1beta1 "insujang.github.io/custom-controller-code-template/pkg/apis/testresource/v1beta1"
+)
+
+func CreateCustomResourceDefinitionObject(clientSet testresourceclientset.Interface) error {
+	object_name := "example-testresource"
+	klog.Infof("Creating a CRD object: %s\n", object_name)
+
+	exampleInstance := &testresourcev1beta1.TestResource {
+		ObjectMeta: metav1.ObjectMeta {
+			Name: object_name,
+		},
+		Spec: testresourcev1beta1.TestResourceSpec {
+			Command: "Hello Kubernetes CRD!",
+			CustomProperty: "thisshouldmatchwiththisstring",
+		},
+		Status: testresourcev1beta1.TestResourceStatus {
+			Name: "Pending",
+		},
+	}
+
+	_, err := clientSet.InsujangV1beta1().TestResources("default").Create(exampleInstance)
+	return err
+}
+```
+
+The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller/tree/master/crd-generator).
+
+```shell
+/home/insujang/go/src/insujang.github.io/crd-generator $ go build main.go && ./main
+I0214 10:22:35.240497   11345 main.go:21] Creating a CRD: testresources.insujang.github.io
+I0214 10:22:35.260867   11345 main.go:50] Waiting for a CRD to be created: testresources.insujang.github.io
+I0214 10:22:36.292198   11345 main.go:125] The CRD type is created.
+I0214 10:22:36.292310   11345 main.go:76] Creating a CRD object: example-testresource
+I0214 10:22:36.320317   11345 main.go:140] A CRD object is created.
+I0214 10:22:36.320342   11345 main.go:97] Getting CRD objects.
+I0214 10:22:36.338054   11345 main.go:152] [0] Found CRD object: {
+  "kind": "TestResource",
+  "apiVersion": "insujang.github.io/v1beta1",
+  "metadata": {
+    "name": "example-testresource",
+    "namespace": "default",
+    "selfLink": "/apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-testresource",
+    "uid": "cbb207cc-1a77-42fa-a992-be2d25b5035e",
+    "resourceVersion": "2018374",
+    "generation": 1,
+    "creationTimestamp": "2020-02-14T01:22:36Z"
+  },
+  "status": {
+    "Name": "Pending"
+  },
+  "spec": {
+    "command": "Hello Kubernetes CRD!",
+    "customproperty": "thisshouldmatchwiththisstring"
+  }
+}
+I0214 10:22:36.338101   11345 main.go:156] Done!
+```
+
+### Implement a controller
+
+TODO
+
+## 4. Test our custom controller
+
+[^1]: [client-go demo Pod informer](https://github.com/nelvadas/podinformer)
+[^2]: [Kubernetes sample-controller](https://github.com/kubernetes/sample-controller)
+[^3]: [Stay informed with Kubernetes Informers](https://www.firehydrant.io/blog/stay-informed-with-kubernetes-informers/)
+[^4]: [Kubernetes code-generator](https://github.com/kubernetes/code-generator)
+
+[^5]: [Kubernetes Deep Dive: Code Generation for CustomResources](https://blog.openshift.com/kubernetes-deep-dive-code-generation-customresources/)
+[^6]: [How to write Kubernetes custom controllers in Go](https://medium.com/speechmatics/how-to-write-kubernetes-custom-controllers-in-go-8014c4a04235)
+[^7]: [How to generate client code for Kubernetes Custom Resource Definitions (CRD)](https://itnext.io/how-to-generate-client-code-for-kubernetes-custom-resource-definitions-crd-b4b9907769ba)
+[^8]: [Extending Kubernetes: Create Controllers for Core and Custom Resources](https://medium.com/@trstringer/create-kubernetes-controllers-for-core-and-custom-resources-62fc35ad64a3)
+[^9]: [Golang Standard: Project layout](https://github.com/golang-standards/project-layout)
+[^10]: [Intro to Modules on Go - Part 1](https://dev.to/prassee/intro-to-modules-on-go-part-1-1k77)
