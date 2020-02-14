@@ -662,15 +662,15 @@ Here, I introduce how to create a CRD *programmatically in Go*. This is not a ma
 
 The program will be implemented with client-go and auto-generated code that you created in [[2]](#2-get-auto-generated-go-code-with-code-generator).
 
-Create a new module named `crd-generator` in `$GOPATH/src/insujang.github.io/kubernetes-test-controller`.
+Create a new module named `crd-operator` in `$GOPATH/src/insujang.github.io/kubernetes-test-controller`.
 
 Initialize module and explicitly get `client-go`. **It is important to explicitly get specific verion of the library**, otherwise it pulls incompatible library, invoking build errors. Also we use our local modules, so add `replace` statements in the module file to use our generated code.
 
 ```shell
-/home/insujang/go/src/insujang.github.io $ go mod init insujang.github.io/crd-generator
-/home/insujang/go/src/insujang.github.io $ GO111MODULE=on go get k8s.io/client-go@kubernetes-1.17.3
-/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/kubernetes-test-controller/code-template=../kubernetes-test-controller/code-template
-/home/insujang/go/src/insujang.github.io $ go mod edit -replace=insujang.github.io/kubernetes-test-controller/code-generated=../kubernetes-test-controller/code-generated
+/home/insujang/go/src/insujang.github.io/crd-operator $ go mod init insujang.github.io/crd-operator
+/home/insujang/go/src/insujang.github.io/crd-operator $ GO111MODULE=on go get k8s.io/client-go@kubernetes-1.17.3
+/home/insujang/go/src/insujang.github.io/crd-operator $ go mod edit -replace=insujang.github.io/kubernetes-test-controller/code-template=../kubernetes-test-controller/code-template
+/home/insujang/go/src/insujang.github.io/crd-operator $ go mod edit -replace=insujang.github.io/kubernetes-test-controller/code-generated=../kubernetes-test-controller/code-generated
 ```
 
 Below is the key code for CRD type generation.
@@ -868,7 +868,7 @@ Note that this would not be built; showing unexpected errors from the generated 
 go build main.go
   insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/listers/testresource/v1beta1
 ../code-generated/pkg/client/listers/testresource/v1beta1/testresource.go:91:34: undefined: v1beta1.Resource
-root@DESKTOP-XLTLXSS:/home/insujang/go/src/insujang.github.io/kubernetes-test-controller/crd-generator# go build main.go
+root@DESKTOP-XLTLXSS:/home/insujang/go/src/insujang.github.io/kubernetes-test-controller/crd-operator# go build main.go
   insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/listers/testresource/v1beta1
 ../code-generated/pkg/client/listers/testresource/v1beta1/testresource.go:91:34: undefined: v1beta1.Resource
 ```
@@ -891,7 +891,7 @@ func Resource(resource string) schema.GroupResource {
 
 Now we can receive events about changes of our CRD objects from the apiserver.
 
-The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller/tree/master/crd-generator).
+The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller/tree/master/crd-operator).
 
 ```shell
 I0214 13:44:58.192788   23889 main.go:27] Creating a CRD: testresources.insujang.github.io
