@@ -224,23 +224,23 @@ This package value will be your CRD's version. Refer to [[the previous post]](/2
 package v1beta1
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // This const variables are used in our CRD operator and a custom controller.
 const (
-	GroupName    string = "insujang.github.io"
-	Kind         string = "TestResource"
-	GroupVersion string = "v1beta1"
-	Plural       string = "testresources"
-	Singular     string = "testresource"
-	Name         string = Plural + "." + GroupName
+  GroupName    string = "insujang.github.io"
+  Kind         string = "TestResource"
+  GroupVersion string = "v1beta1"
+  Plural       string = "testresources"
+  Singular     string = "testresource"
+  Name         string = Plural + "." + GroupName
 )
 
 // TestResourceSpec specify the 'spec' in CRD yaml.
 type TestResourceSpec struct {
-	Command        string `json:"command"`
-	CustomProperty string `json:"customproperty"`
+  Command        string `json:"command"`
+  CustomProperty string `json:"customproperty"`
 }
 
 // +genclient
@@ -249,16 +249,16 @@ type TestResourceSpec struct {
 // TestResource describes a TestResource resource.
 // This will be your custom resource's name used in the generated code.
 type TestResource struct {                 
-	metav1.TypeMeta `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
+  metav1.TypeMeta `json:",inline"`
+  metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Status TestResourceStatus `json:"status"`
-	Spec TestResourceSpec `json:"spec"`
+  Status TestResourceStatus `json:"status"`
+  Spec TestResourceSpec `json:"spec"`
 }
 
 // TestResourceStatus is a TestResource resources.
 type TestResourceStatus struct {
-	Name string
+  Name string
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -267,10 +267,10 @@ type TestResourceStatus struct {
 // Note that we specified "spec.listKind" in CRD yaml file.
 // The following struct refers to it.
 type TestResourceList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata"`
+  metav1.TypeMeta `json:",inline"`
+  metav1.ListMeta `json:"metadata"`
 
-	Items []TestResource `json:"items"`
+  Items []TestResource `json:"items"`
 }
 ```
 
@@ -284,33 +284,33 @@ Here, you should match the name of struct `TestResource` with our CRD object nam
 package v1beta1
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  "k8s.io/apimachinery/pkg/runtime"
+  "k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 // localSchemeBuilder and AddToScheme will stay in k8s.io/kubernetes.
 var (
-	// SchemeBuilder initializes a scheme builder
-	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
-	// AddToScheme is a global function that registers this API group & version to a scheme
-	AddToScheme = SchemeBuilder.AddToScheme
+  // SchemeBuilder initializes a scheme builder
+  SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
+  // AddToScheme is a global function that registers this API group & version to a scheme
+  AddToScheme = SchemeBuilder.AddToScheme
 )
 
 // SchemeGroupVersion is group version used to register these objects.
 var SchemeGroupVersion = schema.GroupVersion{
-	Group: GroupName,
-	Version: GroupVersion,
+  Group: GroupName,
+  Version: GroupVersion,
 }
 
 // Adds the list of known types to api.Scheme.
 func addKnownTypes(scheme *runtime.Scheme) error {
-	scheme.AddKnownTypes(SchemeGroupVersion,
-											 &TestResource{},
-											 &TestResourceList{},
-									    )
-	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
-	return nil
+  scheme.AddKnownTypes(SchemeGroupVersion,
+                       &TestResource{},
+                       &TestResourceList{},
+                      )
+  metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
+  return nil
 }
 ```
 
@@ -397,17 +397,17 @@ func NewDefaults() (*args.GeneratorArgs, *CustomArgs) {
 The type `args.GeneratorArgs` look like (code from [[gengo Github]](https://github.com/kubernetes/gengo/blob/master/args/args.go#L52)):
 ```go
 type GeneratorArgs struct {
-	InputDirs []string
-	OutputBase string
-	OutputPackagePath string
-	OutputFileBaseName string
-	GoHeaderFilePath string
-	GeneratedByCommentTemplate string
-	VerifyOnly bool
-	IncludeTestFiles bool
-	GeneratedBuildTag string
-	CustomArgs interface{}
-	defaultCommandLineFlags bool
+  InputDirs []string
+  OutputBase string
+  OutputPackagePath string
+  OutputFileBaseName string
+  GoHeaderFilePath string
+  GeneratedByCommentTemplate string
+  VerifyOnly bool
+  IncludeTestFiles bool
+  GeneratedBuildTag string
+  CustomArgs interface{}
+  defaultCommandLineFlags bool
 }
 ```
 where `OutputBase` is defined as `DefaultSourceTree()`, which returns `$GOPATH/src`.
@@ -677,40 +677,40 @@ Below is the key code for CRD type generation.
 
 ```go
 import (
-	"k8s.io/klog"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
-	apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
-	testresourcev1beta1 "insujang.github.io/kubernetes-test-controller/code-template/pkg/apis/testresource/v1beta1"
+  "k8s.io/klog"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+  apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+  testresourcev1beta1 "insujang.github.io/kubernetes-test-controller/code-template/pkg/apis/testresource/v1beta1"
 )
 
 // Create a CRD and send it to the apiserver.
 func CreateCustomResourceDefinition(clientSet apiextensionsclientset.Interface) {
-	klog.Infof("Creating a CRD: %s\n", testresourcev1beta1.Name)
-	
-	crd := &apiextensions.CustomResourceDefinition{
-			ObjectMeta: metav1.ObjectMeta {
-				Name: testresourcev1beta1.Name,
-				Namespace: "default",
-			},
-			Spec: apiextensions.CustomResourceDefinitionSpec {
-				Group: testresourcev1beta1.GroupName,
-				Version: testresourcev1beta1.GroupVersion,
-				Scope: apiextensions.NamespaceScoped,
-				Names: apiextensions.CustomResourceDefinitionNames{
-					Plural: testresourcev1beta1.Plural,
-					Kind: testresourcev1beta1.Kind,
-				},
-			},
-	}
+  klog.Infof("Creating a CRD: %s\n", testresourcev1beta1.Name)
+  
+  crd := &apiextensions.CustomResourceDefinition{
+      ObjectMeta: metav1.ObjectMeta {
+        Name: testresourcev1beta1.Name,
+        Namespace: "default",
+      },
+      Spec: apiextensions.CustomResourceDefinitionSpec {
+        Group: testresourcev1beta1.GroupName,
+        Version: testresourcev1beta1.GroupVersion,
+        Scope: apiextensions.NamespaceScoped,
+        Names: apiextensions.CustomResourceDefinitionNames{
+          Plural: testresourcev1beta1.Plural,
+          Kind: testresourcev1beta1.Kind,
+        },
+      },
+  }
 
-	_, err := clientSet.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
+  _, err := clientSet.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
 
-	if err != nil {
-		panic(err)
-	}
+  if err != nil {
+    panic(err)
+  }
 
-	klog.Infoln("The CRD created. Need to wait whether it is confirmed.")
+  klog.Infoln("The CRD created. Need to wait whether it is confirmed.")
 }
 ```
 
@@ -729,30 +729,30 @@ import (
 
 // Wait for CRD creation event.
 func WaitCustomResourceDefinition(apiClientSet apiextensionsclientset.Interface) {
-	klog.Infof("Waiting for a CRD to be created: %s\n", testresourcev1beta1.Name)
+  klog.Infof("Waiting for a CRD to be created: %s\n", testresourcev1beta1.Name)
 
-	err := wait.Poll(1*time.Second, 30*time.Second, func()(bool, error) {
-		// get CRDs by name
-		crd, err := apiClientSet.ApiextensionsV1beta1().CustomResourceDefinitions().Get(testresourcev1beta1.Name, metav1.GetOptions{})
-		if err != nil {
-			panic(err)
-		}
+  err := wait.Poll(1*time.Second, 30*time.Second, func()(bool, error) {
+    // get CRDs by name
+    crd, err := apiClientSet.ApiextensionsV1beta1().CustomResourceDefinitions().Get(testresourcev1beta1.Name, metav1.GetOptions{})
+    if err != nil {
+      panic(err)
+    }
 
-		for _, condition := range crd.Status.Conditions {
-			if (condition.Type == apiextensions.Established && condition.Status == apiextensions.ConditionTrue) {
-				// CRD successfully created.
-				klog.Infoln("Confirmed that the CRD successfully created.")
-				return true, err
-			} else if (condition.Type == apiextensions.NamesAccepted && condition.Status == apiextensions.ConditionFalse) {
-				klog.Fatalf("Name conflict while wait for CRD creation: %s, %v\n", condition.Reason, err)
-			}
-		}
+    for _, condition := range crd.Status.Conditions {
+      if (condition.Type == apiextensions.Established && condition.Status == apiextensions.ConditionTrue) {
+        // CRD successfully created.
+        klog.Infoln("Confirmed that the CRD successfully created.")
+        return true, err
+      } else if (condition.Type == apiextensions.NamesAccepted && condition.Status == apiextensions.ConditionFalse) {
+        klog.Fatalf("Name conflict while wait for CRD creation: %s, %v\n", condition.Reason, err)
+      }
+    }
 
-		return false, err
-	})
-	if err != nil {
-		panic(err)
-	}
+    return false, err
+  })
+  if err != nil {
+    panic(err)
+  }
 }
 ```
 
@@ -768,50 +768,149 @@ import (
 )
 
 func CreateCustomResourceDefinitionObject(clientSet testresourceclientset.Interface) {
-	object_name := "example-testresource"
-	klog.Infof("Creating a CRD object: %s\n", object_name)
+  object_name := "example-testresource"
+  klog.Infof("Creating a CRD object: %s\n", object_name)
 
-	exampleInstance := &testresourcev1beta1.TestResource {
-		ObjectMeta: metav1.ObjectMeta {
-			Name: object_name,
-		},
-		Spec: testresourcev1beta1.TestResourceSpec {
-			Command: "Hello Kubernetes CRD!",
-			CustomProperty: "thisshouldmatchwiththisstring",
-		},
-		Status: testresourcev1beta1.TestResourceStatus {
-			Name: "Pending",
-		},
-	}
+  exampleInstance := &testresourcev1beta1.TestResource {
+    ObjectMeta: metav1.ObjectMeta {
+      Name: object_name,
+    },
+    Spec: testresourcev1beta1.TestResourceSpec {
+      Command: "Hello Kubernetes CRD!",
+      CustomProperty: "thisshouldmatchwiththisstring",
+    },
+    Status: testresourcev1beta1.TestResourceStatus {
+      Name: "Pending",
+    },
+  }
 
-	_, err := clientSet.InsujangV1beta1().TestResources("default").Create(exampleInstance)
-	if err != nil {
-		panic(err)
-	}
-	klog.Infoln("The CRD object is created.")
+  _, err := clientSet.InsujangV1beta1().TestResources("default").Create(exampleInstance)
+  if err != nil {
+    panic(err)
+  }
+  klog.Infoln("The CRD object is created.")
 }
 ```
+
+This `Create()` function is an auto-generated by code-generator, which is defined in `code-generated/pkg/client/clientset/typed/testresource.go`.
+Default CRUDs are all generated (`Create, Update, Delete, Get, List, Watch, etc`) so that we simply use them.
+
+### Get CRD objects
+
+The list of CRD objects are defined as `TestResourceList` (we defined it in `code-template/pkg/apis/testsource/v1beta1/types.go` :) )
+
+```go
+// TestResourceList is a list of TestResource resources.
+// Note that we specified "spec.listKind" in CRD yaml file.
+// The following struct refers to it.
+type TestResourceList struct {
+  metav1.TypeMeta `json:",inline"`
+  metav1.ListMeta `json:"metadata"`
+
+  Items []TestResource `json:"items"`
+}
+```
+
+Use `Get()` function to get the list of CRD objects.
+
+```go
+func ListCustomResourceDefinitionObjects(clientSet testresourceclientset.Interface) *testresourcev1beta1.TestResourceList {
+  list, err := clientSet.InsujangV1beta1().TestResources("default").List(metav1.ListOptions{})
+  if err != nil {
+    panic(err)
+  }
+  return list
+}
+```
+
+### Watch CRD objects
+
+Finally, we can implement an event watcher (informer), not for Pod, but for our custom resource.
+
+```go
+
+import (
+  "time"
+
+  "k8s.io/klog"
+  testresourcev1beta1 "insujang.github.io/kubernetes-test-controller/code-template/pkg/apis/testresource/v1beta1"
+  testresourceclientset "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/clientset/versioned"
+  testresourceinformers "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/informers/externalversions"
+  "k8s.io/client-go/tools/cache"
+)
+
+func WatchCustomResourceObjects(clientSet testresourceclientset.Interface) {
+  klog.Infoln("Adding an event handler for CRD objects.")
+  
+  informerFactory := testresourceinformers.NewSharedInformerFactory(clientSet, time.Second*30)
+  testresourceInformer := informerFactory.Insujang().V1beta1().TestResources()
+
+  testresourceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+    AddFunc: func(object interface{}) {
+      newResource := object.(*testresourcev1beta1.TestResource)
+      klog.Infof("new TestResource added: %s\n", newResource.GetName())
+    },
+    DeleteFunc: func(object interface{}) {
+      resource := object.(*testresourcev1beta1.TestResource)
+      klog.Infof("TestResource %s deleted.\n", resource.GetName())
+    },
+  })
+
+  informerFactory.Start(wait.NeverStop)
+
+  // Main thread waits forever here
+  select{}
+}
+```
+
+Note that this would not be built; showing unexpected errors from the generated code:
+```shell
+go build main.go
+  insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/listers/testresource/v1beta1
+../code-generated/pkg/client/listers/testresource/v1beta1/testresource.go:91:34: undefined: v1beta1.Resource
+root@DESKTOP-XLTLXSS:/home/insujang/go/src/insujang.github.io/kubernetes-test-controller/crd-generator# go build main.go
+  insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/listers/testresource/v1beta1
+../code-generated/pkg/client/listers/testresource/v1beta1/testresource.go:91:34: undefined: v1beta1.Resource
+```
+
+Now I understand why we have to add the definition of `Resource()` function in `code-template/pkg/apis/testresource/v1beta1/register.go` (some examples contain the function but I do not understand why it exists due to lack of explanation).
+So we add a function to `code-template/pkg/apis/testresource/v1beta1/register.go`:
+
+```go
+// Resource takes an unqualified resource and returns a Group qualified GroupResource.
+// It is used by the generated code listers.
+func Resource(resource string) schema.GroupResource {
+  return SchemeGroupVersion.WithResource(resource).GroupResource()
+}
+```
+
+```shell
+...
+0214 13:44:59.249026   23889 main.go:121] new TestResource added: example-testresource
+```
+
+Now we can receive events about changes of our CRD objects from the apiserver.
 
 The fully implemented code prints the following messages. You can see the code in [[here]](https://github.com/insujang/kubernetes-test-controller/tree/master/crd-generator).
 
 ```shell
-I0214 13:11:34.380662    3968 main.go:21] Creating a CRD: testresources.insujang.github.io
-I0214 13:11:34.397488    3968 main.go:45] The CRD created. Need to wait whether it is confirmed.
-I0214 13:11:34.397513    3968 main.go:50] Waiting for a CRD to be created: testresources.insujang.github.io
-I0214 13:11:35.425634    3968 main.go:62] Confirmed that the CRD successfully created.
-I0214 13:11:35.425775    3968 main.go:78] Creating a CRD object: example-testresource
-I0214 13:11:35.453870    3968 main.go:97] The CRD object is created.
-I0214 13:11:35.460716    3968 main.go:138] [0] Found CRD object: {
+I0214 13:44:58.192788   23889 main.go:27] Creating a CRD: testresources.insujang.github.io
+I0214 13:44:58.210999   23889 main.go:51] The CRD created. Need to wait whether it is confirmed.
+I0214 13:44:58.211013   23889 main.go:56] Waiting for a CRD to be created: testresources.insujang.github.io
+I0214 13:44:59.227611   23889 main.go:68] Confirmed that the CRD successfully created.
+I0214 13:44:59.227645   23889 main.go:84] Creating a CRD object: example-testresource
+I0214 13:44:59.240627   23889 main.go:103] The CRD object is created.
+I0214 13:44:59.246328   23889 main.go:169] [0] Found CRD object: {
   "kind": "TestResource",
   "apiVersion": "insujang.github.io/v1beta1",
   "metadata": {
     "name": "example-testresource",
     "namespace": "default",
     "selfLink": "/apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-testresource",
-    "uid": "bdab6049-459b-454b-9fb9-f261ad6764bf",
-    "resourceVersion": "2040265",
+    "uid": "9fd41f07-bb89-4bfa-b443-2557b92f7664",
+    "resourceVersion": "2044581",
     "generation": 1,
-    "creationTimestamp": "2020-02-14T04:11:35Z"
+    "creationTimestamp": "2020-02-14T04:44:59Z"
   },
   "status": {
     "Name": "Pending"
@@ -821,7 +920,9 @@ I0214 13:11:35.460716    3968 main.go:138] [0] Found CRD object: {
     "customproperty": "thisshouldmatchwiththisstring"
   }
 }
+I0214 13:44:59.249026   23889 main.go:121] new TestResource added: example-testresource
 ```
+
 
 
 ## 4. Implement a controller logic with the generated code and client-go library
