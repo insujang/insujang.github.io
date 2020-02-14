@@ -17,7 +17,7 @@ In this post, I introduce how to implement Go code that programatically specifie
 
 Kubernetes provides **[[client-go]](https://github.com/kubernetes/client-go)**, which includes a set of APIs to watch objects' status from the apiserver.
 Thanks to client-go library, implementing an informer or a controller becomes easy.
-The picture velow illustrate how a controller works, and how components in client-go and our implementation divide roles.
+The picture below illustrates how a controller works, and how components in client-go and our implementation divide roles.
 
 ![kubernetes controller diagram](/assets/images/200213/client-go-controller-interaction.jpeg){: width="800px" .center-image #diagram} [^1]
 
