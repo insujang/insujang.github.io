@@ -19,7 +19,7 @@ Kubernetes provides **[[client-go]](https://github.com/kubernetes/client-go)**, 
 Thanks to client-go library, implementing an informer or a controller becomes easy.
 The picture velow illustrate how a controller works, and how components in client-go and our implementation divide roles.
 
-![kubernetes controller diagram](/assets/images/200213/client-go-controller-interaction.jpeg){: width="800px" .center-image #diagram}
+![kubernetes controller diagram](/assets/images/200213/client-go-controller-interaction.jpeg){: width="800px" .center-image #diagram} [^1]
 
 client-go watches events from the kube-apiserver (1) and passes them to informer (2, 3). The internal indexer stores data in its local thread safe cache (5).
 Then, client-go invokes user-implemented event handlers. The example below does until this step (so no operations for step 7, 8, and 9). Those steps will be discussed [later](#4-implement-a-custom-controller-with-the-generated-code-and-client-go-library).
