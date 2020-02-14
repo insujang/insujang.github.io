@@ -408,6 +408,10 @@ body {
   margin-bottom: 3em;
   border-bottom: 1px solid #eee;
 
+  &-header {
+    text-transform: uppercase;
+  }
+
   a.footnote {
     display: none;
   }
