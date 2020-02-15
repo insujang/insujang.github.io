@@ -199,6 +199,18 @@ add_executable(test_program ${SRCS})
 target_link_libraries(test_program ibverbs)
 ```
 
+> **[Feb 15, 2020 Update]** Or, you can use more modern way to import libraries [^1]:
+>
+> ```cmake
+> add_library(ibverbs SHARED IMPORTED)
+> set_target_properties(ibverbs PROPERTIES
+>   IMPORTED_LOCATION /home/insujang/libibverbs/src/.libs/libibverbs.so
+>   INTERFACE_INCLUDE_DIRECTORIES /home/insujang/libibverbs/include)
+> 
+> add_executable(test_program ${SRCS})
+> target_link_libraries(test_program ibverbs)
+> ```
+
 ## No userspace device-specific driver. How to fix it?
 Are we done? Sadly no. When you launch a program, libibverbs prints warning messages and your program cannot find infiniband devices.
 
@@ -285,3 +297,5 @@ Now we got what we have to do.
   - I modified `/usr/local/etc/libibverbs.d/mlx5.driver` to: `driver /home/insujang/libmlx5`.
 
 The program should work.
+
+[^1]: [[How do I add a library path in cmake? Stack Overflow](https://stackoverflow.com/a/28606916)
