@@ -937,9 +937,7 @@ I0214 13:44:59.246328   23889 main.go:169] [0] Found CRD object: {
     "generation": 1,
     "creationTimestamp": "2020-02-14T04:44:59Z"
   },
-  "status": {
-    "Name": "Pending"
-  },
+  "status": "Pending",
   "spec": {
     "command": "Hello Kubernetes CRD!",
     "customproperty": "thisshouldmatchwiththisstring"
@@ -952,14 +950,265 @@ I0214 13:44:59.249026   23889 main.go:121] new TestResource added: example-testr
 
 ## 4. Implement a custom controller with the generated code and client-go library
 
-TODO
+The implementation of [sample controller](https://github.com/kubernetes/sample-controller/blob/master/controller.go) is soooo great and clearly understandable that I do not have much things to explain.
 
-<!-- 
 Let us review [[the diagram]](#diagram). We implemented a resource event handler in informer implementation, but (7), (8), and (9) are missing, which are roles of a controller.
 On top of the informer code, we need to work queue operations, objects handling operations, and indexer related operations.
+Here, the corresponding code for (7), (8), and (9) is explained.
 
-The implementation of [sample controller](https://github.com/kubernetes/sample-controller/blob/master/controller.go) is soooo great and clearly understandable that I do not have much things to explain. -->
+The structure of our custom controller looks like:
+```go
+import (
+  "k8s.io/client-go/kubernetes"
+  "k8s.io/client-go/util/workqueue"
+  "k8s.io/client-go/tools/cache"
+  "k8s.io/client-go/tools/record"
+  testresourceclientset "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/clientset/versioned"
+  testresourcelisters "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/listers/testresource/v1beta1"
+)
 
+type TestResourceController struct {
+  kubernetesClient kubernetes.Interface
+  testresourceClient testresourceclientset.Interface
+  workqueue workqueue.RateLimitingInterface
+  informer cache.SharedIndexInformer
+  lister testresourcelisters.TestResourceLister
+  recorder record.EventRecorder
+}
+```
+
+Each entry will be used and explained in each subchapter.
+
+### (7) Enqueue object key
+
+In [[the informer code]](#example-implementing-an-event-watcher-informer), we just print information that we received. In controller, instead, our event handler implementation should eneueue the object into custom controller's **queue**. For this, we have to create a queue first.
+`workqueue` (type: `workqueue.RateLimitingInterface`) in our custom controller is **the queue** that we use for this purpose.
+
+```go
+func CreateCustomController(...) *TestResourceController {
+  queue := workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
+  ...
+  return &TestResourceController {
+    ...
+    workqueue: queue,
+  }
+}
+```
+
+And the event handler adds an object key when it receives events.
+
+```go
+import (
+  "k8s.io/klog"
+  testresourceinformers "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/informers/externalversions"
+  testresourcelisters "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/listers/testresource/v1beta1"
+)
+
+func CreateCustomController(..., informerFactory testresourceinformers.SharedInformerFactory) *TestResourceController {
+  ...
+  testresourceInformer := informerFactory.Insujang().V1beta1().TestResources()
+  testresourceInformer.Informer().AddEventHandler(cache.ResourceHandlerFuncs{
+    AddFunc: func(object interface{}) {
+      // key looks like: "namespace/name"
+      key, err := cache.MetaNamespaceKeyFunc(object)
+      if err == nil {
+        // add the key to the queue.
+        klog.Infof("TestResource added: %s\n", key)
+        queue.Add(key)
+      }
+    },
+    UpdateFunc: func(oldObject, newObject interface{}) {
+      key, err := cache.MetaNamespaceKeyFunc(newObject)
+      if err == nil { 
+        klog.Infof("TestResource updated: %s\n", key)
+        queue.Add(key)
+      }
+    },
+    DeleteFunc: func(object interface{}) {
+      // DeletionHandlingMetanamespaceKeyFunc is a helper function that allows
+      // us to check the DeletedFinalSTateUnknwon existence in the event that
+      // a resource was deleted but it is still contained in the index.
+      // Source: https://github.com/trstringer/k8s-controller-core-resource/blob/master/main.go#L94
+      key, err := cache.DeletionHandlingMetaNamespaceKeyFunc(object)
+      if err != nil {
+        klog.Infof("TestResource deleted: %s\n", key)
+        queue.Add(key)
+      }
+    }
+  })
+
+  return &TestResourceController {
+    ...
+    informer: testresourceInformer.Informer(),
+    lister: testresourceInformer.Lister()
+  }
+}
+```
+
+
+
+### (8) Get key and process items and (9) Get object for key
+
+The sample controller uses workers running several threads that handle work items for efficiency. I'm not sure it is necessary, but definitely agree that it is a great approach. Hence I also follow this architecture.
+
+First implement a worker function.
+
+```go
+import (
+  "k8s.io/klog"
+  utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+)
+
+func (controller* TestResourceController) runWorker() {
+  for controller.processNextWorkItem() {}
+}
+
+func (controller* TestResourceController) processNextWorkItem() bool {
+  // This is step 8: Get a key.
+  object, shutdown := controller.workqueue.Get()
+
+  if shutdown {
+    return false
+  }
+
+  var key string
+  var ok bool
+  if key, ok = object.(string); !ok {
+    controller.workqueue.Forget(object)
+    utilruntime.HandleError(fmt.Errorf("Expected string but got %#v", object))
+    return false
+  }
+
+  err := func(key string) error {
+    // We can Done() here so the workqueue knows
+    // we have finished processing this item.
+    // Call Forget() if we do not want this work item being re-queued.
+    defer controller.workqueue.Done(key)
+
+    // Run the syncHandler.
+    if err := controller.syncHandler(key); err != nil {
+      // Put the item back on the workqueue to handle any transient errors.
+      controller.workqueue.AddRateLimited(key)
+      return fmt.Errorf("Error syncing '%s': %s, requeueing", key, err.Error())
+    }
+
+    // Finally, if no error occurs we Forget this item.
+    controller.workqueue.Forget(key)
+    klog.Infof("Successfully synced '%s'", key)
+    return nil
+  }(key)
+
+  if err != nil {
+    utilruntime.HandleError(err)
+    return true
+  }
+
+  return true
+}
+
+// syncHandler compares the actual state with the desired,
+// and attempts to converge the two.
+// It then updates the Status block of the TestResource
+// with the current status of the resource.
+func (controller *TestResourceController) syncHandler(key string) error {
+  namespace, name, err := cache.SplitMetaNamespaceKey(key)
+  if err != nil {
+    utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
+    return nil
+  }
+
+  // Get the TestResource. This is step 9.
+  testresource, err := controller.lister.TestResources(namespace).Get(name)
+  if err != nil {
+    if errors.IsNotFound(err) {
+      utilruntime.HandleError(fmt.Errorf("'%s' in work queue no longer exists", key))
+      return nil
+    }
+
+    return nil
+  }
+
+  // Do something here to change fields of the resource...
+  // e.g. create a Pod, or some another CRD object, etc.
+  // Here we only update "Status" field of the CRD object.
+  if testresource.Status == "Controlled" {
+    return nil
+  }
+  // NEVER modify objects directly (it is in read-only local cache.)
+  // We use DeepCopy() and modify this copy.
+  resourceCopy := resource.DeepCopy()
+  resourceCopy.Status = "Controlled"
+  _, err = controller.testresourceClient.InsujangV1beta1().TestResources("default").Update(resourceCopy)
+  if err != nil {
+    // https://github.com/kubernetes/client-go/blob/master/tools/record/event.go#L100
+    // argument type: runtime.Object, eventtype, reason, message
+    controller.recorder.Event(resource, corev1.EventTypeNormal, "controlled", "This is a message")
+  }
+  return err
+}
+
+func (controller* TestResourceController) Run(threadiness int, stopCh <- chan struct{}) {
+  // Called when the function reaches end.
+  defer utilruntime.HandleCrash()
+  defer controller.workqueue.ShutDown()
+
+  klog.Infoln("Waiting for informer caches to sync.")
+  if ok := cache.WaitForCacheSync(stopCh, controller.informer.HasSynced); !ok {
+    klog.Fatalln("Failed to wait for caches to sync.")
+  }
+
+  for i := 0; i < threadiness; i++ {
+    go wait.Until(controller.runWorker, time.Second*5, stopCh)
+  }
+  
+  klog.Infoln("Started TestResource controller.")	
+  <-stopCh
+  klog.Infoln("Shutting down workers.")
+}
+```
+
+First, ignore the `Event()` function call at line 89. This will be explained in the next subsection.
+
+- **`processNextWorkItem()` is called for every item in the queue by a worker** (line 101). It first checks whether the item got from the queue is a valid item (line 18~24), run `syncHandler()` that is an actual object handling function in our custom controller (line 33), and remove it from the queue (line 40, without `Forget()` call, the item will be automatically re-enqueued.).
+> Note that the workqueue works as follows:
+1. We dequeue an object by calling `object, _ := workqueue.Get()`.
+2. If we complete handling the object, we must call `workqueue.Done(object)`. Our implementation always calls it by `defer controller.workqueue.Done(object)`.
+3. The workqueue check whether `workqueue.Forget(object)` is called for the object. If not, the workqueue automatically enqueues the item.
+4. If we call `workqueue.Forget(object)` before calling `workqueue.Done(object)`, object handling for `object` is done.
+- **`syncHandler()` is an actual object handing function in our custom controller**. In this example our handler only checks whether the `status` is in our desired status: `Controlled`. And If not, change the object `Status`.
+- **`controller.testresourceClient.InsujangV1beta1().TestResources("default").Update(resourceCopy)` does update our CRD object in the etcd through the apiserver**. We modified `Status` from `Pending` to `Controlled` (line 83~85).
+`$ kubectl get testresources example-testresource` will print the output after changing the stauts:
+```shell
+$ kubectl describe testresources example-testresource
+Name:         example-testresource
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+API Version:  insujang.github.io/v1beta1
+Kind:         TestResource
+Metadata:
+  Creation Timestamp:  2020-02-17T00:49:16Z
+  Generation:          3
+  Resource Version:    2575394
+  Self Link:           /apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-testresource
+  UID:                 21478d48-d191-42a8-ad03-e4bf3bc3a2dd
+Spec:
+  Command:         Hello Kubernetes CRD!
+  Customproperty:  thisshouldmatchwiththisstring
+Status:            Controlled                            <-- This is what we changed
+Events:
+  Type    Reason      Age                From                     Message
+  ----    ------      ----               ----                     -------
+  Normal  controlled  36s                testresource-controller  This is a message <-- This is an event that we pushed at line 89.
+```
+
+for `stopCh`, an argument for `Run()` function, refer to [[this]](https://github.com/kubernetes/sample-controller/blob/master/pkg/signals/signal.go).
+
+### Another step: Post an event
+
+`$ kubectl get testresources example-testresource` prints `Events`.
+An event entry is added by our custom controller `testresource-controller` with line 89.
+This is not necessary (so that it is not illustrated in the diagram), but would be helpful for cluster managers to see what happens in this object by the custom controller.
 
 
 [^1]: [client-go demo Pod informer](https://github.com/nelvadas/podinformer)
