@@ -1211,6 +1211,53 @@ An event entry is added by our custom controller `testresource-controller` with 
 This is not necessary (so that it is not illustrated in the diagram), but would be helpful for cluster managers to see what happens in this object by the custom controller.
 
 
+### Main
+
+Resources to use the functions above can be defined as follows.
+
+```go
+import (
+  "flag"
+  "os"
+
+  "k8s.io/client-go/tools/clientcmd"
+  "k8s.io/client-go/kubernetes"
+  testresourceclientset "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/clientset/versioned"
+  testresourceinformers "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/informers/externalversions"
+)
+func main() {
+  kubeconfig := flag.String("kubeconfig", os.Getenv("KUBECONFIG"), "Path to a kubeconfig.")
+  flag.Parse()
+
+  stopCh := setupSignalHandler(threads_num)
+
+  config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+  if err != nil {
+    panic(err)
+  }
+
+  // Create variables that are necessary for controller creation.
+  testresourceClient, err := testresourceclientset.NewForConfig(config)
+  if err != nil {
+    panic(err)
+  }
+
+  kubernetesClient, err := kubernetes.NewForConfig(config)
+  if err != nil {
+    panic(err)
+  }
+
+  informerFactory := testresourceinformers.NewSharedInformerFactory(testresourceClient, time.Second*30)
+  controller := CreateCustomController(kubernetesClient, testresourceClient, informerFactory)
+  
+  informerFactory.Start(stopCh)
+  controller.Run(threads_num, stopCh)
+
+  // Main thread waits forever
+  select{}
+}
+```
+
 [^1]: [client-go demo Pod informer](https://github.com/nelvadas/podinformer)
 [^2]: [Kubernetes sample-controller](https://github.com/kubernetes/sample-controller)
 [^3]: [Stay informed with Kubernetes Informers](https://www.firehydrant.io/blog/stay-informed-with-kubernetes-informers/)
