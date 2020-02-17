@@ -1210,6 +1210,40 @@ for `stopCh`, an argument for `Run()` function, refer to [[this]](https://github
 An event entry is added by our custom controller `testresource-controller` with line 89.
 This is not necessary (so that it is not illustrated in the diagram), but would be helpful for cluster managers to see what happens in this object by the custom controller.
 
+`Recorder` is initiated as follows:
+
+```go
+import (
+  "k8s.io/klog"
+  "k8s.io/client-go/tools/record"
+  typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+  testresourceclientset "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/clientset/versioned"
+  testresourcescheme "insujang.github.io/kubernetes-test-controller/code-generated/pkg/client/clientset/versioned/scheme"
+)
+
+func CreateCustomController(kubernetesClient kubernetes.Interface, ...) *TestResourceController {
+  ...
+  // Create an event recorder.
+  // Add TestResource type to the default Kubernetes scheme
+  // so Events can be logged for our TestResource CRD types.
+  utilruntime.Must(testresourcev1beta1.AddToScheme(testresourcescheme.Scheme))
+  eventBroadcaster := record.NewBroadcaster()
+  eventBroadcaster.StartLogging(klog.Infof)
+  eventBroadcaster.StartRecordingToSink(&typedcorev1.EventSinkImpl{Interface: kubernetesClient.CoreV1().Events("")})
+  recorder := eventBroadcaster.NewRecorder(testresourcescheme.Scheme, corev1.EventSource{Component: controllerAgentName})
+
+  return &TestResourceController {
+    ...
+    recorder: recorder,
+  }
+}
+
+func (controller* TestResourceController) syncHandler(...) error {
+  ...
+  controller.recorder.Event(resource, corev1.EventTypeNormal, "controlled", "This is a message")
+}
+```
+
 
 ### Main
 
