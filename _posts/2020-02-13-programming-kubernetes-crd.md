@@ -1258,6 +1258,136 @@ func main() {
 }
 ```
 
+## Implementing OpenAPIV3Schema validation
+
+There is a difference between the CRD yaml [[in the previous post]](/2020-02-11/kubernetes-custom-resource/#specifying-a-custom-resource-definition) and the code: **validation**.
+This section explains how to implement it.
+
+I want to specify the following validations:
+
+```
+validation:
+  openAPIV3Schema:
+    spec:
+      properties:
+        command:
+          type: string
+        customProperty:
+          type: string
+          pattern: "thisshouldmatchwiththisstring"
+      required:
+      - command
+      - customProperty
+      type: object
+```
+
+We need to modify our [[CRD generation code]](#register-a-crd-programatically) as follows [^11]:
+
+```go
+crd := &apiextensions.CustomResourceDefinition{
+      ObjectMeta: metav1.ObjectMeta {
+        Name: testresourcev1beta1.Name,
+        Namespace: "default",
+      },
+      Spec: apiextensions.CustomResourceDefinitionSpec {
+        Group: testresourcev1beta1.GroupName,
+        Version: testresourcev1beta1.GroupVersion,
+        Scope: apiextensions.NamespaceScoped,
+        Names: apiextensions.CustomResourceDefinitionNames{
+          Plural: testresourcev1beta1.Plural,
+          Kind: testresourcev1beta1.Kind,
+        },
+        Validation: &apiextensions.CustomResourceValidation{
+          OpenAPIV3Schema: &apiextensions.JSONSchemaProps{
+            Type: "object",
+            Properties: map[string]apiextensions.JSONSchemaProps{
+              "spec": {
+                Type: "object",
+                Properties: map[string]apiextensions.JSONSchemaProps{
+                  "command": {Type: "string"},
+                  "customProperty": {Type: "string", Pattern: "thisshouldmatchwiththisstring"},
+                },
+                Required: []string{"command", "customProperty"},
+              },
+            },
+            Required: []string{"apiVersion", "kind", "spec"},
+          },
+        },
+      },
+    }
+```
+
+Each entity of the code above is mapped to the corresponding entities in the yaml as follows:
+![CRD entity map](/assets/images/200213/crd-validation-mapping.png)
+
+The important thing is that keys in `apiextensions.JSONSchemaProps` **must not start with an uppercase** (e.g. "spec", not "Spec").
+For my custom variables "command" and "customProperty", the same principle is applied.
+
+When you generate a CRD object, you may be curious how a JSON will be implemented with the following object generation code:
+```go
+exampleInstance := &testresourcev1beta1.TestResource {
+    ObjectMeta: metav1.ObjectMeta {
+      Name: "example-testresource",
+    },
+    Spec: testresourcev1beta1.TestResourceSpec {
+      Command: "Hello Kubernetes CRD!",                // How 'Command' will be interpreted?
+      CustomProperty: "thisshouldmatchwiththisstring", // Same here. How 'CustomProperty' will be interpreted?
+    },
+    Status: "Pending",
+  }
+```
+
+Local tags are the answer. When you generate a code with the template code, we define `TestResourceSpec` in `types.go`.
+```go
+// TestResourceSpec specify the 'spec' in CRD yaml.
+type TestResourceSpec struct {
+  Command        string `json:"command"`
+  CustomProperty string `json:"customProperty"`
+}
+```
+
+you should match the `key` in `json:"key"` with keys in CRD generation your code (both keys in `Properties` and those in `Required`). It also must not start with an uppercase, otherwise validation does not work properly.
+
+
+### Test
+
+```go
+  // This should not return error, since pattern matches the validation.
+  err = CreateCustomResourceDefinitionObject(testresourceClient,
+                                             "example-testresource",
+                                             "thisshouldmatchwiththisstring")
+  if err != nil {
+    panic(err)
+  }
+  // This should return error, since pattern does not match with the validation.
+  err = CreateCustomResourceDefinitionObject(testresourceClient,
+                                             "example-testresource2",
+                                             "thisisanotherpropertythatshouldnotbeaccepted")
+  if err == nil {
+    klog.Fatalln("Object creation with pattern violation returns nil.");
+  } else {
+    klog.Infof("Object creation with pattern violation returns error as expected:\n%s\n", err)
+  }
+```
+
+I implemented a code to test the CRD validation. First one should be accepted and the other should not. The result is as follows.
+
+```shell
+go run main.go
+I0217 18:07:39.562771   32325 main.go:27] Creating a CRD: testresources.insujang.github.io
+I0217 18:07:39.579084   32325 main.go:66] The CRD created. Need to wait whether it is confirmed.
+I0217 18:07:39.579101   32325 main.go:71] Waiting for a CRD to be created: testresources.insujang.github.io
+I0217 18:07:40.601265   32325 main.go:83] Confirmed that the CRD successfully created.
+I0217 18:07:40.601329   32325 main.go:98] Creating a CRD object: example-testresource
+I0217 18:07:40.618955   32325 main.go:116] The CRD object is created.
+I0217 18:07:40.618968   32325 main.go:98] Creating a CRD object: example-testresource2
+I0217 18:07:40.622400   32325 main.go:113] TestResource.insujang.github.io "example-testresource2" is invalid: spec.customProperty: Invalid value: "": spec.customProperty in body should match 'thisshouldmatchwiththisstring'
+I0217 18:07:40.622413   32325 main.go:189] Object creation with pattern violation returns error as expected:
+TestResource.insujang.github.io "example-testresource2" is invalid: spec.customProperty: Invalid value: "": spec.customProperty in body should match 'thisshouldmatchwiththisstring'
+```
+
+The second one returns error (validation failed) as expected.
+
 [^1]: [client-go demo Pod informer](https://github.com/nelvadas/podinformer)
 [^2]: [Kubernetes sample-controller](https://github.com/kubernetes/sample-controller)
 [^3]: [Stay informed with Kubernetes Informers](https://www.firehydrant.io/blog/stay-informed-with-kubernetes-informers/)
@@ -1269,3 +1399,4 @@ func main() {
 [^8]: [Extending Kubernetes: Create Controllers for Core and Custom Resources](https://medium.com/@trstringer/create-kubernetes-controllers-for-core-and-custom-resources-62fc35ad64a3)
 [^9]: [Golang Standard: Project layout](https://github.com/golang-standards/project-layout)
 [^10]: [Intro to Modules on Go - Part 1](https://dev.to/prassee/intro-to-modules-on-go-part-1-1k77)
+[^11]: [JSONSchemaProps: Kubernetes apiextensions-apiserver](https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apis/apiextensions/v1beta1/types_jsonschema.go)
