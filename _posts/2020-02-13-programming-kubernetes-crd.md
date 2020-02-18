@@ -4,7 +4,7 @@ title: Programming Kubernetes CRDs
 date: 2020-02-13 10:13
 category: 
 author: Insu Jang
-tags: [kubernetes, study]
+tags: [kubernetes, study, go]
 summary: 
 ---
 
@@ -144,7 +144,7 @@ Pod test-pod update.
 ...
 ```
 
-> Note that I explicitly get client-go library with **version kubernetes-1.17.3**. To enable this we need `GO111MODULE` environment variable as `on`.
+> Note that I explicitly get client-go library with **version kubernetes-1.17.3** (which version does not matter, just specify any released version). To enable this we need `GO111MODULE` environment variable as `on`.
 > **This is important** that without version specification, go automatically pulls default branch (which current is v11.0.0 that is indicated as incompatible) that cannot be used with current deploying Kubernetes cluster.
 >
 > **With no version specified you will see errors as follows**:
@@ -193,7 +193,7 @@ $ cd $GOPATH/src/k8s.io/code-generator; git checkout kubernetes-1.17.3
 ```
 I explicitly change the branch of the repository to `kubernets-1.17.3`, because the master branch uses `client-go@v11.0+incompatible` library, which is not usable with the currently deploying Kubernetes cluster.
 
-> Note that GO111MODULE should be off, so `go get` pulls package sources. The sources are installed in `$GOPATH/src`.
+> Note that `GO111MODULE` should be off, so `go get` pulls package sources. The sources are installed in `$GOPATH/src`.
 
 > I use `/home/insujang/go` as `$GOPATH` in this post.
 
@@ -952,8 +952,8 @@ I0214 13:44:59.249026   23889 main.go:121] new TestResource added: example-testr
 
 The implementation of [sample controller](https://github.com/kubernetes/sample-controller/blob/master/controller.go) is soooo great and clearly understandable that I do not have much things to explain.
 
-Let us review [[the diagram]](#diagram). We implemented a resource event handler in informer implementation, but (7), (8), and (9) are missing, which are roles of a controller.
-On top of the informer code, we need to work queue operations, objects handling operations, and indexer related operations.
+Let us review [[the diagram]](#diagram). We implemented a resource event handler in [[the informer code]](#example-implementing-an-event-watcher-informer), but (7), (8), and (9) are missing, which are roles of a controller.
+On top of the informer code, we need to implement work queue operations, objects handling operations, and indexer related operations.
 Here, the corresponding code for (7), (8), and (9) is explained.
 
 The structure of our custom controller looks like:
@@ -1049,7 +1049,7 @@ func CreateCustomController(..., informerFactory testresourceinformers.SharedInf
 
 ### (8) Get key and process items and (9) Get object for key
 
-The sample controller uses workers running several threads that handle work items for efficiency. I'm not sure it is necessary, but definitely agree that it is a great approach. Hence I also follow this architecture.
+The sample controller uses workers running in several threads that handle work items for efficiency. I'm not sure multithreading is necessary, but definitely agree that it is a great approach. Hence I also follow this architecture.
 
 First implement a worker function.
 
@@ -1169,7 +1169,7 @@ func (controller* TestResourceController) Run(threadiness int, stopCh <- chan st
 
 First, ignore the `Event()` function call at line 89. This will be explained in the next subsection.
 
-- **`processNextWorkItem()` is called for every item in the queue by a worker** (line 101). It first checks whether the item got from the queue is a valid item (line 18~24), run `syncHandler()` that is an actual object handling function in our custom controller (line 33), and remove it from the queue (line 40, without `Forget()` call, the item will be automatically re-enqueued.).
+- **`processNextWorkItem()` is called for every item in the queue by a worker** (line 101). It first checks whether the item got from the queue is a valid key item (line 18~24), run `syncHandler()` that is an actual object handling function in our custom controller (line 33), and remove it from the queue (line 40, without `Forget()` call, the item will be automatically re-enqueued.).
 > Note that the workqueue works as follows:
 1. We dequeue an object by calling `object, _ := workqueue.Get()`.
 2. If we complete handling the object, we must call `workqueue.Done(object)`. Our implementation always calls it by `defer controller.workqueue.Done(object)`.
@@ -1210,7 +1210,7 @@ for `stopCh`, an argument for `Run()` function, refer to [[this]](https://github
 An event entry is added by our custom controller `testresource-controller` with line 89.
 This is not necessary (so that it is not illustrated in the diagram), but would be helpful for cluster managers to see what happens in this object by the custom controller.
 
-`Recorder` is initiated as follows:
+`Recorder` is initialized as follows:
 
 ```go
 import (
@@ -1297,7 +1297,7 @@ func main() {
 There is a difference between the CRD yaml [[in the previous post]](/2020-02-11/kubernetes-custom-resource/#specifying-a-custom-resource-definition) and the code: **validation**.
 This section explains how to implement it.
 
-I want to specify the following validations:
+I want to specify the following validation:
 
 ```
 validation:
@@ -1315,7 +1315,11 @@ validation:
       type: object
 ```
 
-We need to modify our [[CRD generation code]](#register-a-crd-programatically) as follows [^11]:
+that
+- requires `command` property, which should be type string.
+- requires `customProperty` property, which should be type string and match "thisshouldmatchwiththisstring".
+
+We need to modify our [[CRD generation code]](#register-a-crd-programatically) as follows first . Sadly, there is no tutorial regarding this, but I figured it out by seeing the source code of apiextensios-apiserver repository :( [^11].
 
 ```go
 crd := &apiextensions.CustomResourceDefinition{
@@ -1351,7 +1355,7 @@ crd := &apiextensions.CustomResourceDefinition{
     }
 ```
 
-Each entity of the code above is mapped to the corresponding entities in the yaml as follows:
+Each entity of the code is mapped to the corresponding entities in the yaml as follows:
 ![CRD entity map](/assets/images/200213/crd-validation-mapping.png)
 
 The important thing is that keys in `apiextensions.JSONSchemaProps` **must not start with an uppercase** (e.g. "spec", not "Spec").
@@ -1382,6 +1386,8 @@ type TestResourceSpec struct {
 
 you should match the `key` in `json:"key"` with keys in CRD generation your code (both keys in `Properties` and those in `Required`). It also must not start with an uppercase, otherwise validation does not work properly.
 
+> Note that even `command` in `json:"command"` should not start with uppercase, **the Go struct field name should start with uppercase**, so that you can access them in Go :( How confusing...
+
 
 ### Test
 
@@ -1393,7 +1399,7 @@ you should match the `key` in `json:"key"` with keys in CRD generation your code
   if err != nil {
     panic(err)
   }
-  // This should return error, since pattern does not match with the validation.
+  // This should return error, since pattern does not match the validation.
   err = CreateCustomResourceDefinitionObject(testresourceClient,
                                              "example-testresource2",
                                              "thisisanotherpropertythatshouldnotbeaccepted")
@@ -1404,7 +1410,7 @@ you should match the `key` in `json:"key"` with keys in CRD generation your code
   }
 ```
 
-I implemented a code to test the CRD validation. First one should be accepted and the other should not. The result is as follows.
+I implemented a code to test the CRD validation. First one should be accepted and the second one should not (since the third argument, used for `customProperty`, does not match what specified in the CRD). The result is as follows.
 
 ```shell
 go run main.go
