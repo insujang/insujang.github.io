@@ -29,10 +29,10 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 *The International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS) 2019*, April 2019
 
 #### Extracurricular Activities
-- Vice Representative of School of Computing, [School of Computing, KAIST](https://cs.kaist.ac.kr), Mar 2016 - Jul 2016
+- Vice Student Representative of School of Computing, [School of Computing, KAIST](https://cs.kaist.ac.kr), Mar 2016 - Jul 2016
 - Research Intern, [Electronics and Telecommunications Research Institute (ETRI)](https://etri.re.kr/eng/main/main.etri), Jan 2016 - Feb 2016
 - Research Intern, [Advanced Institutes of Convergence Technology (AICT)](http://aict.snu.ac.kr/eng/), Jul 2015 - Aug 2015
-- Undergraduate Researcher, [Networking Laboratory, Sungkyunkwan University](http://monet.skku.edu/), May 2014 - Jul 2015
+- Undergraduate Research Assistant, [Networking Laboratory, Sungkyunkwan University](http://monet.skku.edu/), May 2014 - Jul 2015
 - Purdue/NIPA Capstone Project, [Purdue University](http://www.purdue.edu/), Jul 2014 - Aug 2014
 - Member, [Samsung Software Membership (Korean)](http://secmem.org/), Jan 2013 - Apr 2014
 - Student Government Member, [Sungkyunkwan University](https://www.skku.edu/eng/), Apr 2011 - Feb 2012
@@ -121,15 +121,12 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 
 
 #### Skills
-- C, **C++17**, Python
-- Android
+- C, **C++17**, Python, Go
 - KVM, QEMU
 - CUDA
 - Vivado HLS, Petalinux
 - Intel Software Guard Extensions (SGX)
-- LaTeX, matplotlib
-- Kubernetes
-- Docker
+- Kubernetes, Docker
 - Infiniband RDMA
 
 ## License
