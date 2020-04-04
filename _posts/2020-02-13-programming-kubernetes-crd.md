@@ -8,6 +8,11 @@ tags: [kubernetes, study, go]
 summary: 
 ---
 
+> **Now I am completely rewriting the post, but it will take some time.**
+>
+> **It still does work, but dirty and not fancy. It was due to lack of Go knowledge at the moment of writing. Now I have more understanding regarding this, let me share this with you.**
+
+
 In [[previous post]](/2020-02-11/kubernetes-custom-resource/), I briefly introduced a custom resource definition and how to create it through CLI.
 In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
 
