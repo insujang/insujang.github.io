@@ -100,9 +100,11 @@ For package distribution, what Go module contributed is that **Go projects are n
 
 ## Go projects were required to be in `$GOPATH` without Go module
 
+Prior to Go 1.11, All projects, not just dependent packages, must be in `$GOPATH` directory. Here I try to implement a Go project outside `$GOPATH`.
+
 ### Working Scenario: Go project with one package, outside `$GOPATH`
 
-Prior to Go 1.11, All projects, not just dependent packages, must be in `GOPATH` directory. For example, I am implementing a project named `testproject`, with one package `main` with two files `main.go` and `test_func.go` as follows:
+For example, I am implementing a project named `testproject`, with one package `main` with two files `main.go` and `test_func.go` as follows:
 
 main.go:
 ```go
@@ -125,19 +127,19 @@ func TestFunc() {
 ```
 
 ```shell
-$ GO111MODULE=off go get k8s.io/klog
-$ GO111MODULE=off go run .
+/anywhere/outside/gopath/testproject $ GO111MODULE=off go get k8s.io/klog
+/anywhere/outside/gopath/testproject $ GO111MODULE=off go run .
 I0404 14:58:55.589292    1445 test_func.go:6] Hello Go Modules!
 ```
 
-Surprisingly, it runs, even the project is **outside `$GOPATH`**. The reason all projects must be in `$GOPATH` is subpackages. One `main` package is not the case, so that it is not confined by this limitation.
+Surprisingly, it runs, even the project is **outside `$GOPATH`**. Actually, the reason all projects must be in `$GOPATH` is due to **subpackages**. One `main` package is not the case, so that it is not confined by this limitation.
 
 ### Problematic Scenario: Go project with more than one packages, outside `$GOPATH`
 Let's modify it to have one subpackage `test`:
 
 ```
-$ tree testproject
-testproject
+$ tree /anywhere/outside/gopath/testproject
+/anywhere/outside/gopath/testproject
 |-- main.go
 `-- test
     `-- func.go
@@ -165,8 +167,7 @@ func TestFunc() {
 }
 ```
 
-### Solution for Problem: Move Go project into `$GOPATH`
-Without Go module, We cannot specify our `test` package in `main` package. We cannot build this project. The only way without Go modules was to move the project into `$GOPATH`, like:
+Without Go module enabled, We cannot specify our `test` package in `main` package, so we cannot find out which should be in `"XXX"` location and cannot build this project. The only way to make it work without Go module was to move the project into `$GOPATH`, like:
 
 ```
 $ tree $GOPATH/src/insujang.github.io
@@ -176,7 +177,7 @@ $ tree $GOPATH/src/insujang.github.io
     `-- test
         `-- func.go
 ```
-Now we can specify the path of `test` package: `insujang.github.io/testproject/test`. So main.go can be modified to:
+Now we can specify the path of `test` package: `insujang.github.io/testproject/test` based on `$GOPATH/src`. So main.go can be modified to:
 
 ```go
 package main
@@ -191,7 +192,7 @@ func main() {
 which makes our project be able to run:
 
 ```shell
-$ GO111MODULE=off go run $GOPATH/src/insujang.github.io/testproject
+$GOPATH/src/insujang.github.io/testproject $ GO111MODULE=off go run .
 I0404 15:09:40.239612    2034 func.go:6] Hello Go Modules!
 ```
 
@@ -201,8 +202,8 @@ The example illustrated above shows how Go restricts the structure and location 
 
 Let's go back to the problematic scenario. Instead of moving the directory into `$GOPATH`, we now use Go module.
 ```shell
-~/testproject $ go mod init insujang.github.io/testproject
-~/testproject $ GO111MODULE=on go run .
+/anywhere/outside/gopath/testproject $ go mod init insujang.github.io/testproject
+/anywhere/outside/gopath/testproject $ GO111MODULE=on go run .
 I0404 15:18:36.553399    2303 func.go:6] Hello Go Modules!
 ```
 
@@ -217,12 +218,12 @@ func main() {
 }
 ```
 
-We initialize the project as a module named `insujang.github.io/testproject`. Even the directory is outside `$GOPATH`, `go run` command now searches `insujang.github.io/testproject/test` package in **its subdirectory, not `$GOPATH`**.
+We initialize the project as a module named `insujang.github.io/testproject`. Even the directory is outside `$GOPATH`, `go run` command now searches `insujang.github.io/testproject/test` package in **its subdirectory, not in `$GOPATH`**.
 
-> Note that with no Go module support, it returns an error:
+> Note that with no Go module support, it returns an error, same as in the problematic scenario:
 >
 > ```shell
-> ~/testproject# GO111MODULE=off go run .
+> /anywhere/outside/gopath/testproject $ GO111MODULE=off go run .
 > main.go:3:8: cannot find package "insujang.github.io/testproject/test" in any of:
 >         /usr/local/go/src/insujang.github.io/testproject/test (from $GOROOT)
 >         /go/src/insujang.github.io/testproject/test (from $GOPATH)
