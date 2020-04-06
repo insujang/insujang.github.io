@@ -15,7 +15,7 @@ permalink: /about/
 System Engineer, [TmaxOS](http://tmaxos.com)
 
 #### Education
-- M.S., Computer Science,  [KAIST](http://www.kaist.edu/html/en/index.html), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
+- M.S., Computer Science,  [KAIST](http://www.kaist.edu/en/), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
 - B.S., Computer Science and Engineering, [Sungkyunkwan University](https://www.skku.edu/eng/), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
 
 #### Research Interests
@@ -36,7 +36,6 @@ System Engineer, [TmaxOS](http://tmaxos.com)
 - Purdue/NIPA Capstone Project, [Purdue University](http://www.purdue.edu/), Jul 2014 - Aug 2014
 - Member, [Samsung Software Membership (Korean)](http://secmem.org/), Jan 2013 - Apr 2014
 - Student Government Member, [Sungkyunkwan University](https://www.skku.edu/eng/), Apr 2011 - Feb 2012
-
 
 #### Honors and Awards
 - National Scholarship for Science and Engineering, Korea Student Aid Foundation (KOSAF), 2014-2015
