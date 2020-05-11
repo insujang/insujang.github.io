@@ -72,7 +72,7 @@ static int __init test_init(void) {
   };
 
   socket = netlink_kernel_create(&init_net, NETLINK_TESTFAMILY, &config);
-  if (socket < 0) {
+  if (socket == NULL) {
     return -1;
   }
 
@@ -88,6 +88,11 @@ static void __exit test_exit(void) {
 module_init(test_init);
 module_exit(test_exit);
 ```
+
+> **Update (May 11, 2020)**
+>
+> As `netlink_kernel_create()` returns a pointer, not a file descriptor, should be checked with `== NULL`, instead of `< 0)`.
+> Thanks for pointing that, @Robert Bałdyga!
 
 This creates a kernel module that listens netlink protocol family with the number 25.
 When any process creates a netlink socket and send a message, `test_nl_receive_message()` will be called.
@@ -107,6 +112,8 @@ through `NETLINK_TESTFAMILY` family protocol.
 #include <sys/socket.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define NETLINK_TESTFAMILY 25
 #define MAX_PAYLOAD 1024
@@ -127,11 +134,11 @@ int main(int argc, char *argv[]) {
   nlh->nlmsg_flags = 0;
   strcpy((char *) NLMSG_DATA(nlh), "Hello");
 
-  struct iovec iov;
+  struct iovec iov; memset(&iov, 0, sizeof(iov));
   iov.iov_base = (void *) nlh;
   iov.iov_len = nlh->nlmsg_len;
 
-  struct msghdr msg;
+  struct msghdr msg; memset(&msg, 0, sizeof(msg));
   msg.msg_name = (void *) &addr;
   msg.msg_namelen = sizeof(addr);
   msg.msg_iov = &iov;
