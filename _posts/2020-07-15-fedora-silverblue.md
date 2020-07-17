@@ -339,7 +339,7 @@ $ lsattr /ostree/deploy/fedora/deploy
 $ echo "hello!" > /test
 $ cat /test
 hello!
-```>
+```
 
 Everything works as expected. Therefore, Fedora Silverblue depends on Linux ext filesystem flag for rootfs write protection.
 
@@ -348,9 +348,31 @@ Funny thing is that, after writing a file at `/` and setting the immutable bit b
 I now understand the immutable flag works for rootfs write protection, however, I not do not know at which point the immutable flag is set.
 Maybe libostree downloads the OS image with the enabled bit, since there is no code for setting the immutable bit for rootfs in [rpm-ostree](https://github.com/coreos/rpm-ostree) repository.
 
+
+# Flatpak [^flatpak]
+
+Flatpak is a modern linux app packaging framework.
+Legacy Linux package frameworks (e.g. dpkg, yum, dnf) shares and depends on shared libraries installed on the host system.
+This has prohibited Linux application developers from using more recent version of libraries due to possible limited compatibility.
+
+![ubuntu_core_with_snap](/assets/images/200715/canonical_ubuntucore16_diagram.jpg)
+
+Recent packaging systems (e.g. AppImage, Flatpak, snapcraft) packages packs required libraries with the application binary itself altogether into an image, running it in an isolated execution environment without any dependencies in the host (A good example of isolated execution environment is Linux container, but it seems not the only option, as Flatpak does not always use Linux containers).
+
+Fedora Silverblue, by default, runs Flatpak applications, and does not provide rpm and dnf package management system in the host.
+Note that Fedora Silverblue provides some ways to bridge the gap between traditional Linux and Fedora Silverblue; Toolbox and `rpm-ostree`, but I will not explain about these in this post.
+
+Although they should be isolated from the host environment, they still require services provided by the host, e.g., accessing devices, rendering graphics, sound, printers, etc.
+Considering container based isolation, they are not provided by default.
+
+Flatpak provides [Portals](https://docs.flatpak.org/en/latest/basic-concepts.html#portals), an interface that the process can interact with the host.
+It contains opening URIs, printing, showing notifications, power management, etc.
+For applications that does not packed with Flatpak framework many run in the isolated execution but cannot use these features.
+
 [^silverblue]: [Fedora Silverblue](https://docs.fedoraproject.org/en-US/fedora-silverblue/)
 [^fhs]: [Linux Filesystem Hierarchy Standard (FHS)](https://refspecs.linuxfoundation.org/fhs.shtml)
 [^ostree]: [libostree](https://ostree.readthedocs.io/en/latest/)
 [^androidfs]: [Android Partition Layout](https://source.android.com/devices/bootloader/system-as-root)
 [^chromeosfs]: [ChromiumOS Developer Mode: Making Changes to the Filesystem](https://chromium.googlesource.com/chromiumos/docs/+/master/developer_mode.md#disable-verity)
 [^ostree-initramfs]: [Adapting existing mainstream distributions: Booting and initramfs technology](https://ostree.readthedocs.io/en/latest/manual/adapting-existing/#booting-and-initramfs-technology)
+[^flatpak]: [Flatpak: The Future of Apps On Linux](https://flatpak.org/)
