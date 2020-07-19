@@ -15,7 +15,7 @@ permalink: /about/
 System Engineer, [TmaxOS](http://tmaxos.com)
 
 #### Education
-- M.S., Computer Science,  [KAIST](http://www.kaist.edu/en/), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
+- M.S., Computer Science,  [KAIST](https://www.kaist.ac.kr/en/), Mar 2016 - Feb 2018 (GPA: 3.99 / 4.3)
 - B.S., Computer Science and Engineering, [Sungkyunkwan University](https://www.skku.edu/eng/), Mar 2011 - Feb 2016 (GPA: 4.24 / 4.5)
 
 #### Research Interests
