@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Generate a Self-signed Certificate">
+<meta itemprop="description" content="A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
+Steps to create a certificate 3 Follow the steps to create a self-signed certificate:
+ Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key A generated certificate must be signed with the Certificate Authority&rsquo;s private key, which we are going to make here.">
+<meta itemprop="datePublished" content="2020-01-07T16:12:00+09:00" />
+<meta itemprop="dateModified" content="2020-01-07T16:12:00+09:00" />
+<meta itemprop="wordCount" content="867">
+
+
+
+<meta itemprop="keywords" content="study," />
+<meta property="og:title" content="Generate a Self-signed Certificate" />
+<meta property="og:description" content="A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
+Steps to create a certificate 3 Follow the steps to create a self-signed certificate:
+ Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key A generated certificate must be signed with the Certificate Authority&rsquo;s private key, which we are going to make here." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-01-07/self-signed-certificate/" />
+<meta property="article:published_time" content="2020-01-07T16:12:00+09:00" />
+<meta property="article:modified_time" content="2020-01-07T16:12:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Generate a Self-signed Certificate"/>
+<meta name="twitter:description" content="A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
+Steps to create a certificate 3 Follow the steps to create a self-signed certificate:
+ Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key A generated certificate must be signed with the Certificate Authority&rsquo;s private key, which we are going to make here."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Generate a Self-signed Certificate</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 7, 2020</span></div>
+				<h1>Generate a Self-signed Certificate</h1>
+			</header>
+			<div class="content">
+				<!-- raw HTML omitted -->
+<p>A self-signed certificate is a ceritificate, which is <strong>not</strong> signed by a certificate authority (CA) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
+(There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.)
+When using Kubernetes, <code>kubeadm</code> automatically genereates a self-signed Kubernetes CA before generating other certificates.</p>
+<h1 id="steps-to-create-a-certificate-3">Steps to create a certificate <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a href="#steps-to-create-a-certificate-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Follow the steps to create a self-signed certificate:</p>
+<ul>
+<li>Generate a private key</li>
+<li>Generate a Certificate Signing Request (CSR)</li>
+<li>Generate a self-signed certificate</li>
+</ul>
+<h2 id="generate-a-private-key">Generate a private key<a href="#generate-a-private-key" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>A generated certificate must be signed with the Certificate Authority&rsquo;s private key, which we are going to make here.
+Here we generate 2048bit aes256 key pair.</p>
+<pre><code>openssl genrsa -aes256 -out rootca.key 2048
+</code></pre><p>In C code: <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;openssl/evp.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;openssl/rsa.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;openssl/pem.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;openssl/x509.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="n">EVP_PKEY</span><span class="o">*</span> <span class="nf">generate_key</span><span class="p">()</span> <span class="p">{</span>
+  <span class="cm">/* EVP_PKEY structure is for storing an algorithm-independent private key in memory. */</span>
+  <span class="n">EVP_PKEY</span><span class="o">*</span> <span class="n">pkey</span> <span class="o">=</span> <span class="n">EVP_PKEY_new</span><span class="p">();</span>
+
+  <span class="cm">/* Generate a RSA key and assign it to pkey.
+</span><span class="cm">   * RSA_generate_key is deprecated.
+</span><span class="cm">   */</span>
+  <span class="n">BIGNUM</span><span class="o">*</span> <span class="n">bne</span> <span class="o">=</span> <span class="n">BN_new</span><span class="p">();</span>
+  <span class="n">BN_set_word</span><span class="p">(</span><span class="n">bne</span><span class="p">,</span> <span class="n">RSA_F4</span><span class="p">);</span>
+  <span class="n">RSA</span><span class="o">*</span> <span class="n">rsa</span> <span class="o">=</span> <span class="n">RSA_new</span><span class="p">();</span>
+  <span class="n">RSA_generate_key_ex</span><span class="p">(</span><span class="n">rsa</span><span class="p">,</span> <span class="mi">2048</span><span class="p">,</span> <span class="n">bne</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+
+  <span class="n">EVP_PKEY_assign_RSA</span><span class="p">(</span><span class="n">pkey</span><span class="p">,</span> <span class="n">rsa</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">pkey</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+<span class="n">EVP_PKEY</span><span class="o">*</span> <span class="n">pkey</span> <span class="o">=</span> <span class="n">generate_key</span><span class="p">();</span>
+<span class="n">FILE</span><span class="o">*</span> <span class="n">pkey_file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;rootca.key&#34;</span><span class="p">,</span> <span class="s">&#34;wb&#34;</span><span class="p">);</span>
+<span class="n">PEM_write_PrivateKey</span><span class="p">(</span><span class="n">pkey_file</span><span class="p">,</span> <span class="n">pkey</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+<span class="n">fclose</span><span class="p">(</span><span class="n">pkey_file</span><span class="p">);</span>
+</code></pre></div><pre><code>$ cat rootca.key
+-----BEGIN RSA PRIVATE KEY-----
+...
+-----END RSA PRIVATE KEY-----
+</code></pre><h2 id="generate-a-csr">Generate a CSR<a href="#generate-a-csr" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>The CSR is a <strong>request</strong>, which will be sent to a Certificate Authority to ask it to issue a signed certificate.
+Here, we want to generate a certificate for a Certificate Authority, we will self-sign the CSR.
+There are two ways to create a CSR: by command, and by using a configuration file.</p>
+<p>By command, some information needs to be put by manual input.</p>
+<pre><code>insujang@insujang-tmaxlinux:~/Documents/cert$ openssl req -new -key rootca.key -out rootca.csr                                                               
+Enter pass phrase for rootca.key:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:
+State or Province Name (full name) [Some-State]:
+Locality Name (eg, city) []:
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:
+Email Address []:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+</code></pre><p>The other option is to use an OpenSSL configuration file. (This configuration file can only be usable with openssl)
+microk8s seems to use this configuration file to create a certificate authority CSR: you can find it in <code>/var/snap/microk8s/current/certs/csr.conf</code>.</p>
+<blockquote>
+<p>I am not sure whether there is a guideline for this configuration format, but <a href="https://github.com/openssl/openssl/blob/master/apps/openssl.cnf">[here]</a> is an example configuration file for this.</p>
+</blockquote>
+<pre><code>$ cat csr.conf
+# OpenSSL configuration file for creating a CSR for a certificate authority
+# Run openssl req -new -config csr.conf -key rootca.key -out rootca.csr
+
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+req_extensions = req_ext
+distinguished_name = dn
+
+[dn]
+C = &quot;US&quot;
+ST = &quot;Isles of Blessed&quot;
+L = &quot;Arkadia&quot;
+O = acme
+OU = dev
+CN = 127.0.0.1
+
+[req_ext]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster
+DNS.5 = kubernetes.default.svc.cluster.local
+IP.1 = 127.0.0.1
+IP.2 = 10.96.0.0
+
+[v3_ext]
+authorityKeyIdentifier=keyid,issuer:always
+
+$ openssl req -new -config csr.conf -key rootca.key -out rootca.csr
+</code></pre><pre><code>$ cat rootca.csr
+-----BEGIN CERTIFICATE REQUEST-----
+...
+-----END CERTIFICATE REQUEST-----
+</code></pre><p>In C code, there is no need for CSR creation.</p>
+<h2 id="generate-a-self-signed-certificate">Generate a self-signed certificate<a href="#generate-a-self-signed-certificate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Generate a temporary certificate valid for 1 year.</p>
+<pre><code>openssl x509 -req -days 365 -in rootca.csr -signkey rootca.key -out rootca.crt
+</code></pre><p>In C code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">X509</span><span class="o">*</span> <span class="nf">generate_x509</span> <span class="p">(</span><span class="n">EVP_PKEY</span><span class="o">*</span> <span class="n">pkey</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">X509</span><span class="o">*</span> <span class="n">x509</span> <span class="o">=</span> <span class="n">X509_new</span><span class="p">();</span>
+
+  <span class="cm">/* set a few parameters of the certificate. */</span>
+
+  <span class="cm">/* certificate expiration date: 365 days from now (60s * 60m * 24h * 365d) */</span>
+  <span class="n">X509_gmtime_adj</span><span class="p">(</span><span class="n">X509_get_notBefore</span><span class="p">(</span><span class="n">x509</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">X509_gmtime_adj</span><span class="p">(</span><span class="n">X509_get_notAfter</span><span class="p">(</span><span class="n">x509</span><span class="p">),</span> <span class="mi">31536000L</span><span class="p">);</span>
+
+  <span class="n">X509_set_pubkey</span><span class="p">(</span><span class="n">x509</span><span class="p">,</span> <span class="n">pkey</span><span class="p">);</span>
+
+  <span class="cm">/* set the name of the issuer to the name of the subject. */</span>
+  <span class="n">X509_NAME</span><span class="o">*</span> <span class="n">name</span> <span class="o">=</span> <span class="n">X509_get_subject_name</span><span class="p">(</span><span class="n">x509</span><span class="p">);</span>
+  <span class="n">X509_NAME_add_entry_by_txt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;C&#34;</span><span class="p">,</span> <span class="n">MBSTRING_ASC</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="s">&#34;US&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">X509_NAME_add_entry_by_txt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;ST&#34;</span><span class="p">,</span> <span class="n">MBSTRING_ASC</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="s">&#34;Isles of Blessed&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">X509_NAME_add_entry_by_txt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;L&#34;</span><span class="p">,</span> <span class="n">MBSTRING_ASC</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="s">&#34;Arkadia&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">X509_NAME_add_entry_by_txt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;O&#34;</span><span class="p">,</span> <span class="n">MBSTRING_ASC</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="s">&#34;acme&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">X509_NAME_add_entry_by_txt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;OU&#34;</span><span class="p">,</span> <span class="n">MBSTRING_ASC</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="s">&#34;dev&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">X509_NAME_add_entry_by_txt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;CN&#34;</span><span class="p">,</span> <span class="n">MBSTRING_ASC</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="s">&#34;127.0.0.1&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="n">X509_set_issuer_name</span><span class="p">(</span><span class="n">x509</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+
+  <span class="cm">/* finally sign the certificate with the key. */</span>
+  <span class="n">X509_sign</span><span class="p">(</span><span class="n">x509</span><span class="p">,</span> <span class="n">pkey</span><span class="p">,</span> <span class="n">EVP_sha256</span><span class="p">());</span>
+
+  <span class="k">return</span> <span class="n">x509</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">...</span>
+<span class="n">EVP_PKEY</span><span class="o">*</span> <span class="n">pkey</span> <span class="o">=</span> <span class="n">generate_key</span><span class="p">();</span>
+<span class="n">X509</span><span class="o">*</span> <span class="n">x509</span> <span class="o">=</span> <span class="n">generate_x509</span><span class="p">(</span><span class="n">pkey</span><span class="p">);</span>
+<span class="n">FILE</span><span class="o">*</span> <span class="n">x509_file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;rootca.crt&#34;</span><span class="p">,</span> <span class="s">&#34;wb&#34;</span><span class="p">);</span>
+<span class="n">PEM_write_X509</span><span class="p">(</span><span class="n">x509_file</span><span class="p">,</span> <span class="n">x509</span><span class="p">);</span>
+<span class="n">fclose</span><span class="p">(</span><span class="n">x509_file</span><span class="p">);</span>
+</code></pre></div><h3 id="extract-information-from-crt">Extract information from CRT<a href="#extract-information-from-crt" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<pre><code>openssl x509 -in rootca.crt -text -noout
+</code></pre><h3 id="verifying-crt-in-the-code">Verifying CRT in the code<a href="#verifying-crt-in-the-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">bool</span> <span class="nf">check_certificate_valid</span><span class="p">(</span><span class="n">X509</span><span class="o">*</span> <span class="n">x509</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">X509_STORE_CTX</span><span class="o">*</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">X509_STORE_CTX_new</span><span class="p">();</span>
+  <span class="n">X509_STORE</span><span class="o">*</span> <span class="n">store</span> <span class="o">=</span> <span class="n">X509_STORE_new</span><span class="p">();</span>
+
+  <span class="n">X509_STORE_add_cert</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">x509</span><span class="p">);</span>
+  <span class="n">X509_STORE_CTX_init</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">store</span><span class="p">,</span> <span class="n">x509</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">X509_verify_cert</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="building-the-code">Building the code<a href="#building-the-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.0</span><span class="p">)</span><span class="err">
+</span><span class="err"></span><span class="nb">project</span><span class="p">(</span><span class="s">create-x509</span><span class="p">)</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="nb">find_package</span><span class="p">(</span><span class="s">OpenSSL</span> <span class="s">REQUIRED</span><span class="p">)</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">OPENSSL_INCLUDE_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">x509</span> <span class="s">x509.cpp</span><span class="p">)</span><span class="err">
+</span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">x509</span> <span class="o">${</span><span class="nv">OPENSSL_LIBRARIES</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></code></pre></div><p>Requires <code>libssl-dev</code> package to be installed.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Self-signed certificate: <a href="https://en.wikipedia.org/wiki/Self-signed_certificate">https://en.wikipedia.org/wiki/Self-signed_certificate</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>OpenSSL로 Root CA 생성 및 SSL 인증서 발급: <a href="https://www.lesstif.com/pages/viewpage.action?pageId=6979614">https://www.lesstif.com/pages/viewpage.action?pageId=6979614</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>How to create a self-signed SSL certificate: <a href="https://www.akadia.com/services/ssh_test_certificate.html">https://www.akadia.com/services/ssh_test_certificate.html</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>How to create a CSR with OpenSSL: <a href="https://www.switch.ch/pki/manage/request/csr-openssl/">https://www.switch.ch/pki/manage/request/csr-openssl/</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>Generates a self-signed x509 certificate usig OpenSSL: <a href="https://gist.github.com/nathan-osman/5041136">https://gist.github.com/nathan-osman/5041136</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p>OpenSSL을 이용한 X.509 인증서 생성/검사/변환: <a href="https://jasmine125.tistory.com/979">https://jasmine125.tistory.com/979</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

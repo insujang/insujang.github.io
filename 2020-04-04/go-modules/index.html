@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Go Modules: an Alternative to GOPATH for Package Distribution">
+<meta itemprop="description" content="This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? Go 1.11 introduces a new dependency mangement system, Go modules (That&rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what does it means specifically. Here is my explanaion.
+Importing Packages without Go Modules Go programmers can import third-party packages (i.">
+<meta itemprop="datePublished" content="2020-04-04T19:27:00+09:00" />
+<meta itemprop="dateModified" content="2020-04-04T19:27:00+09:00" />
+<meta itemprop="wordCount" content="1065">
+
+
+
+<meta itemprop="keywords" content="study,go," />
+<meta property="og:title" content="Go Modules: an Alternative to GOPATH for Package Distribution" />
+<meta property="og:description" content="This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? Go 1.11 introduces a new dependency mangement system, Go modules (That&rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what does it means specifically. Here is my explanaion.
+Importing Packages without Go Modules Go programmers can import third-party packages (i." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-04-04/go-modules/" />
+<meta property="article:published_time" content="2020-04-04T19:27:00+09:00" />
+<meta property="article:modified_time" content="2020-04-04T19:27:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go Modules: an Alternative to GOPATH for Package Distribution"/>
+<meta name="twitter:description" content="This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? Go 1.11 introduces a new dependency mangement system, Go modules (That&rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what does it means specifically. Here is my explanaion.
+Importing Packages without Go Modules Go programmers can import third-party packages (i."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Go Modules: an Alternative to GOPATH for Package Distribution</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 4, 2020</span></div>
+				<h1>Go Modules: an Alternative to GOPATH for Package Distribution</h1>
+			</header>
+			<div class="content">
+				<p>This post introduces Go modules, introduced in Go version 1.11.</p>
+<h1 id="go-modules">Go Modules?<a href="#go-modules" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Go 1.11 introduces a new dependency mangement system, <em>Go modules</em> (That&rsquo;s why Go uses the environment variable name <code>GO111MODULE</code>: indicating to use Go 1.11 module).</p>
+<p>Google introduced Go module as <em>an alternative to GOPATH for versioning and package distribution</em>. At first I did not understand what does it means specifically. Here is my explanaion.</p>
+<h1 id="importing-packages-without-go-modules">Importing Packages without Go Modules<a href="#importing-packages-without-go-modules" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Go programmers can import third-party packages (i.e. libraries in C/C++) in their programs. For example, you can use Google&rsquo;s comparison package <code>github.com/google/go-cmp/cmp</code> as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+<span class="kn">import</span> <span class="s">&#34;github.com/google/go-cmp/cmp&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Diff</span><span class="p">(</span><span class="s">&#34;Hello World&#34;</span><span class="p">,</span> <span class="s">&#34;Hello Go&#34;</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div><p>Without Go module enabled, the module <code>go-cmp</code> should be in <code>GOPATH</code>, so that Go build system knows where the imported packages are <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p><code>GOPATH</code> has a hierarchical directory structure. It is called <em>Go Workspace</em>.</p>
+<pre><code>$GOPATH
+  bin/                       # Directory where executable binaries are stored
+  src/                       # Directory where Go source files of the dependent packages are stored
+    github.com/google/go-cmp/
+      ...
+  pkg/                       # Directory where compiled Go object files are stored
+    ...
+</code></pre><p>Here is an example of GOPATH structure:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ docker run -it golang:1.13 /bin/bash
+$ <span class="nv">GO111MODULE</span><span class="o">=</span>off go get github.com/google/go-cmp/cmp
+$ tree -d -L <span class="m">5</span> <span class="nv">$GOPATH</span>   <span class="c1"># assume tree is installed</span>
+/go
+<span class="p">|</span>-- bin
+<span class="p">|</span>-- pkg/linux_amd64/github.com/google/go-cmp
+<span class="sb">`</span>-- src/github.com/google/go-cmp/cmp
+</code></pre></div><blockquote>
+<p><code>GO111MODULE=off</code> indicates Go runtime to use legacy GOPATH mode, not Go module. Hence, <code>go get</code> will download <code>github.com/google/go-cmp/cmp</code> package following the legacy GOPATH mode.
+Note: legacy versions of golang Dockerfile are being deleted from Docker hub. In the future, Go may no longer support GO111MODULE for compatibility in the future.</p>
+</blockquote>
+<h2 id="why-we-have-to-know-this-it-is-obsolete">Why we have to know this? It is obsolete.<a href="#why-we-have-to-know-this-it-is-obsolete" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>This is because you are still using GOPATH, and should know differences how we use <code>GOPATH</code> now and how we <em>used <code>GOPATH</code> for packages in the past</em>.</p>
+<p>What Google said when they released Go 1.11 is:</p>
+<blockquote>
+<p>This release adds preliminary support for a new concept called “modules,” <strong>an alternative to GOPATH</strong> with integrated support for versioning and package distribution.</p>
+<p><em><a href="https://blog.golang.org/go1.11">Go 1.11 is released.</a> August 24, 2018</em></p>
+</blockquote>
+<p>But you can find out that you are still using <code>GOPATH</code> even with Go module enabled:</p>
+<pre><code>$ GO111MODULE=on go get github.com/google/go-cmp/cmp
+$ tree -d -L 5 $GOPATH
+/go
+`-- pkg
+    |-- mod
+    |   |-- cache
+    |   |   `-- download
+    |   |       |-- github.com
+    |   |       |-- golang.org
+    |   |       `-- sumdb
+    |   `-- github.com
+    |       `-- google
+    |           `-- go-cmp@v0.4.0
+    `-- sumdb
+        `-- sum.golang.org
+</code></pre><p>The structure is different from that without Go module enabled, but Go runtime still downloads files in <code>$GOPATH</code>.</p>
+<h1 id="what-changed-exactly-for-package-management">What Changed Exactly for Package Management<a href="#what-changed-exactly-for-package-management" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>As mentioned above, Go runtime still <em>does</em> use <code>$GOPATH</code> as a download directory of Go packages. To make the Google&rsquo;s saying correct, Go module <strong>does not entirely replace</strong> <code>GOPATH</code>, but replaces <code>GOPATH</code> <strong>for version control and package distribution</strong>.</p>
+<blockquote>
+<p>Regarding version control, please refer to <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+</blockquote>
+<p>For package distribution, what Go module contributed is that <strong>Go projects are no longer confined to GOPATH</strong>, if it is a Go module.</p>
+<h2 id="go-projects-were-required-to-be-in-gopath-without-go-module">Go projects were required to be in <code>$GOPATH</code> without Go module<a href="#go-projects-were-required-to-be-in-gopath-without-go-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Prior to Go 1.11, All projects, not just dependent packages, must be in <code>$GOPATH</code> directory. Here I try to implement a Go project outside <code>$GOPATH</code>.</p>
+<h3 id="working-scenario-go-project-with-one-package-outside-gopath">Working Scenario: Go project with one package, outside <code>$GOPATH</code><a href="#working-scenario-go-project-with-one-package-outside-gopath" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>For example, I am implementing a project named <code>testproject</code>, with one package <code>main</code> with two files <code>main.go</code> and <code>test_func.go</code> as follows:</p>
+<p>main.go:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">TestFunc</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>test_func.go:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;k8s.io/klog&#34;</span>
+
+<span class="kd">func</span> <span class="nf">TestFunc</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Hello Go Modules!&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go get k8s.io/klog
+/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
+I0404 14:58:55.589292    <span class="m">1445</span> test_func.go:6<span class="o">]</span> Hello Go Modules!
+</code></pre></div><p>Surprisingly, it runs, even the project is <strong>outside <code>$GOPATH</code></strong>. Actually, the reason all projects must be in <code>$GOPATH</code> is due to <strong>subpackages</strong>. One <code>main</code> package is not the case, so that it is not confined by this limitation.</p>
+<h3 id="problematic-scenario-go-project-with-more-than-one-packages-outside-gopath">Problematic Scenario: Go project with more than one packages, outside <code>$GOPATH</code><a href="#problematic-scenario-go-project-with-more-than-one-packages-outside-gopath" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Let&rsquo;s modify it to have one subpackage <code>test</code>:</p>
+<pre><code>$ tree /anywhere/outside/gopath/testproject
+/anywhere/outside/gopath/testproject
+|-- main.go
+`-- test
+    `-- func.go
+</code></pre><p>main.go:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;XXX&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">XXX</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>test/func.go:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">test</span>
+
+<span class="kn">import</span> <span class="s">&#34;k8s.io/klog&#34;</span>
+
+<span class="kd">func</span> <span class="nf">TestFunc</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Hello Go Modules!&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>Without Go module enabled, We cannot specify our <code>test</code> package in <code>main</code> package, so we cannot find out which should be in <code>&quot;XXX&quot;</code> location and cannot build this project. The only way to make it work without Go module was to move the project into <code>$GOPATH</code>, like:</p>
+<pre><code>$ tree $GOPATH/src/insujang.github.io
+/go/src/insujang.github.io
+`-- testproject
+    |-- main.go
+    `-- test
+        `-- func.go
+</code></pre><p>Now we can specify the path of <code>test</code> package: <code>insujang.github.io/testproject/test</code> based on <code>$GOPATH/src</code>. So main.go can be modified to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;insujang.github.io/testproject/test&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">test</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>which makes our project be able to run:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">$GOPATH</span>/src/insujang.github.io/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
+I0404 15:09:40.239612    <span class="m">2034</span> func.go:6<span class="o">]</span> Hello Go Modules!
+</code></pre></div><h2 id="with-go-modules-go-projects-are-no-longer-confined-to-gopath">With Go modules, Go projects are no longer confined to <code>$GOPATH</code><a href="#with-go-modules-go-projects-are-no-longer-confined-to-gopath" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>The example illustrated above shows how Go restricts the structure and location of Go projects. Go module alleviates this constraints, enabling Go projects be outside <code>$GOPATH</code>.</p>
+<p>Let&rsquo;s go back to the problematic scenario. Instead of moving the directory into <code>$GOPATH</code>, we now use Go module.</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">/anywhere/outside/gopath/testproject $ go mod init insujang.github.io/testproject
+/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>on go run .
+I0404 15:18:36.553399    <span class="m">2303</span> func.go:6<span class="o">]</span> Hello Go Modules!
+</code></pre></div><p>main.go</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;insujang.github.io/testproject/test&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">test</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>We initialize the project as a module named <code>insujang.github.io/testproject</code>. Even the directory is outside <code>$GOPATH</code>, <code>go run</code> command now searches <code>insujang.github.io/testproject/test</code> package in <strong>its subdirectory, not in <code>$GOPATH</code></strong>.</p>
+<blockquote>
+<p>Note that with no Go module support, it returns an error, same as in the problematic scenario:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
+main.go:3:8: cannot find package <span class="s2">&#34;insujang.github.io/testproject/test&#34;</span> in any of:
+        /usr/local/go/src/insujang.github.io/testproject/test <span class="o">(</span>from <span class="nv">$GOROOT</span><span class="o">)</span>
+        /go/src/insujang.github.io/testproject/test <span class="o">(</span>from <span class="nv">$GOPATH</span><span class="o">)</span>
+</code></pre></div></blockquote>
+<p>Aside from versioning support, this is one of main advantages of using Go module.</p>
+<h1 id="go111module-behaviors">GO111MODULE: Behaviors<a href="#go111module-behaviors" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Until now, I explicitly set <code>GO111MODULE</code> environment variable for every Go operations. Without variable set, the default value of <code>GO111MODULE</code> is <code>auto</code>, which behaves as follows:</p>
+<p><img src="/assets/images/200404/go111module.png" alt="go111module">{: width=&quot;800px&rdquo;} <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p>As Go version increases, it seems Google is <em>incrementally</em> adopting Go module in default circumstance. Since Go 1.13, if the project has <code>go.mod</code> file, Go uses Go module regardless of whether it is in <code>$GOPATH</code> or not. Before that, Go used the legacy GOPATH mode if the project is in <code>$GOPATH</code>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>How to Write Go Code (with GOPATH): <a href="https://golang.org/doc/gopath_code.html">https://golang.org/doc/gopath_code.html</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>The Principles of Versioning in Go: <a href="https://research.swtch.com/vgo-principles">https://research.swtch.com/vgo-principles</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Go 1.13 Release Note: <a href="https://golang.org/doc/go1.13#modules">https://golang.org/doc/go1.13#modules</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/go">go</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

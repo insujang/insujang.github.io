@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="GPU Resource Management">
+<meta itemprop="description" content="This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).
+{: .center-image width=&quot;800px&rdquo;}
+The GPU channel is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.
+GPU channel is the only way to send GPU commands to the GPU.">
+<meta itemprop="datePublished" content="2017-06-23T10:13:09+09:00" />
+<meta itemprop="dateModified" content="2017-06-23T10:13:09+09:00" />
+<meta itemprop="wordCount" content="1046">
+
+
+
+<meta itemprop="keywords" content="research,cuda," />
+<meta property="og:title" content="GPU Resource Management" />
+<meta property="og:description" content="This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).
+{: .center-image width=&quot;800px&rdquo;}
+The GPU channel is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.
+GPU channel is the only way to send GPU commands to the GPU." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2017-06-23/gpu-resource-management/" />
+<meta property="article:published_time" content="2017-06-23T10:13:09+09:00" />
+<meta property="article:modified_time" content="2017-06-23T10:13:09+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GPU Resource Management"/>
+<meta name="twitter:description" content="This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).
+{: .center-image width=&quot;800px&rdquo;}
+The GPU channel is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.
+GPU channel is the only way to send GPU commands to the GPU."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>GPU Resource Management</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jun 23, 2017</span></div>
+				<h1>GPU Resource Management</h1>
+			</header>
+			<div class="content">
+				<p>This post is a study of the paper <em>Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011)</em>, and <em>Implementing Open-Source CUDA Runtime (Programming Symposium, 2013)</em>.</p>
+<p><img src="/assets/images/170623/gpu_commands.png" alt="Screen Shot 2017-06-22 at 10.21.08 PM">{: .center-image width=&quot;800px&rdquo;}</p>
+<p>The <strong>GPU channel</strong>  is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.<br>
+GPU channel is <strong>the only way</strong> to send GPU commands to the GPU. Hence, user programs must allocate GPU channels.</p>
+<p>The GPU channel uses two types of buffers to store GPU commands:</p>
+<ol>
+<li>GPU command buffer (also called FIFO push buffer)</li>
+<li>Ring buffer (also called indirect buffer)</li>
+</ol>
+<p>When the commands are written to the command buffer, the system writes packets, each of which is a (size, address offset) tuple to locate the corresponding GPU commands, into the indirect buffer.</p>
+<p>The GPU reads the indirect buffer instead of the command buffer and dispatches the GPU commands pointed to by the packets.</p>
+<p><img src="/assets/images/170623/gdev_context.png" alt="gdev_context">{: .center-image width=&quot;800px&rdquo;}</p>
+<p>Following codes are used to write a GPU command into the GPU command buffer.</p>
+<pre><code>lib/user/nouveau_gdev.c
+
+void __nouveau_fifo_push(struct gdev_ctx *ctx, uint64_t base, uint32_t len, int flags)
+{
+    struct nouveau_pushbuf *push = (struct nouveau_pushbuf *)ctx-&gt;pctx;
+    int dwords = len / 4;
+    int p = ctx-&gt;fifo.pb_put / 4;
+    int max = ctx-&gt;fifo.pb_size / 4;
+
+    nouveau_pushbuf_space(push, dwords, 0, 0);
+    for (;dwords &gt; 0; dwords--) {
+        *push-&gt;cur++ = ctx-&gt;fifo.pb_map[p++];
+        if (p &gt;= max) p = 0;
+    }   
+    ctx-&gt;fifo.pb_put += len;
+    ctx-&gt;fifo.pb_put &amp;= ctx-&gt;fifo.pb_mask;
+}
+
+void __nouveau_fifo_update_get(struct gdev_ctx *ctx)
+{
+    ctx-&gt;fifo.pb_get = ctx-&gt;fifo.pb_put;
+    printf(&quot;%s: pb_get = 0x%x\n&quot;, ctx-&gt;fifo.pb_get);
+}
+
+static inline void __gdev_fire_ring(struct gdev_ctx *ctx)
+{
+    if (ctx-&gt;fifo.pb_pos != ctx-&gt;fifo.pb_put) {
+        uint64_t base = ctx-&gt;fifo.pb_base + ctx-&gt;fifo.pb_put;
+        uint32_t len;
+        if (ctx-&gt;fifo.pb_pos &gt; ctx-&gt;fifo.pb_put) {
+            len = ctx-&gt;fifo.pb_pos - ctx-&gt;fifo.pb_put;
+        } else {
+            len = ctx-&gt;fifo.pb_size - ctx-&gt;fifo.pb_put;
+            ctx-&gt;fifo.push(ctx, base, len, 0);
+            ctx-&gt;fifo.pb_put = 0;
+            base = ctx-&gt;fifo.pb_base;
+            len = ctx-&gt;fifo.pb_pos;
+        }
+        if (len &gt; 0)
+            ctx-&gt;fifo.push(ctx, base, len, 0);
+
+        ctx-&gt;fifo.pb_put = ctx-&gt;fifo.pb_pos;
+        if (ctx-&gt;fifo.kick)
+            ctx-&gt;fifo.kick(ctx);
+    }
+}
+
+static inline void __gdev_out_ring(struct gdev_ctx *ctx, uint32_t word)
+{
+    while (((ctx-&gt;fifo.pb_pos + 4) &amp; ctx-&gt;fifo.pb_mask) == ctx-&gt;fifo.pb_get) {
+        uint32_t old = ctx-&gt;fifo.pb_get;
+        //__gdev_fire_ring(ctx);
+        ctx-&gt;fifo.update_get(ctx);
+        if (old == ctx-&gt;fifo.pb_get) {
+            SCHED_YIELD();
+        }
+    }
+    ctx-&gt;fifo.pb_map[ctx-&gt;fifo.pb_pos/4] = word;
+    ctx-&gt;fifo.pb_pos += 4;
+    ctx-&gt;fifo.pb_pos &amp;= ctx-&gt;fifo.pb_mask;
+}
+</code></pre><p><code>ctx-&gt;fifo.push()</code> is a function pointer pointing to <code>__nouveau_fifo_push()</code>, and so does <code>ctx-&gt;fifo.update_get</code> to <code>__nouveau_fifo_update_get()</code>.</p>
+<p>As the paper explained, when the command is written, the system also writes a packet into the indirect buffer.
+This is done by Nouveau device driver.</p>
+<pre><code>nouveau/nouveau_dma.c
+
+/* Fetch and adjust GPU GET pointer
+ *
+ * Returns:
+ *  value &gt;= 0, the adjusted GET pointer
+ *  -EINVAL if GET pointer currently outside main push buffer
+ *  -EBUSY if timeout exceeded
+ */
+static inline int
+READ_GET(struct nouveau_channel *chan, uint64_t *prev_get, int *timeout)
+{
+    uint64_t val;
+
+    val = nv_ro32(chan-&gt;object, chan-&gt;user_get);
+        if (chan-&gt;user_get_hi)
+                val |= (uint64_t)nv_ro32(chan-&gt;object, chan-&gt;user_get_hi) &lt;&lt; 32;
+
+    /* reset counter as long as GET is still advancing, this is
+     * to avoid misdetecting a GPU lockup if the GPU happens to
+     * just be processing an operation that takes a long time
+     */
+    if (val != *prev_get) {
+        *prev_get = val;
+        *timeout = 0;
+    }
+
+    if ((++*timeout &amp; 0xff) == 0) {
+        udelay(1);
+        if (*timeout &gt; 100000)
+            return -EBUSY;
+    }
+
+    if (val &lt; chan-&gt;push.vma.offset ||
+        val &gt; chan-&gt;push.vma.offset + (chan-&gt;dma.max &lt;&lt; 2))
+        return -EINVAL;
+
+    return (val - chan-&gt;push.vma.offset) &gt;&gt; 2;
+}
+
+void
+nv50_dma_push(struct nouveau_channel *chan, struct nouveau_bo *bo,
+          int delta, int length)
+{
+    struct nouveau_bo *pb = chan-&gt;push.buffer;
+    struct nouveau_vma *vma;
+    int ip = (chan-&gt;dma.ib_put * 2) + chan-&gt;dma.ib_base;
+    u64 offset;
+
+    vma = nouveau_bo_vma_find(bo, nv_client(chan-&gt;cli)-&gt;vm);
+    BUG_ON(!vma);
+    offset = vma-&gt;offset + delta;
+
+    BUG_ON(chan-&gt;dma.ib_free &lt; 1);
+
+    nouveau_bo_wr32(pb, ip++, lower_32_bits(offset));
+    nouveau_bo_wr32(pb, ip++, upper_32_bits(offset) | length &lt;&lt; 8);
+
+    chan-&gt;dma.ib_put = (chan-&gt;dma.ib_put + 1) &amp; chan-&gt;dma.ib_max;
+
+    mb();
+    /* Flush writes. */
+    nouveau_bo_rd32(pb, 0);
+
+    nv_wo32(chan-&gt;object, 0x8c, chan-&gt;dma.ib_put);
+
+    chan-&gt;dma.ib_free--;
+}
+</code></pre><p>Note that <code>nv_wo32(chan-&gt;object, 0x8c, chan-&gt;dma.ib_put)</code> writes the value <code>chan-&gt;dma.ib_put</code> to the fixed offset of base address of the channel + 0x8c.<br>
+e.g. physical address of channel = <code>0x8e020000</code>: <code>nv_wo32()</code> writes the value at <code>0x8e02008c</code>.</p>
+<p><code>nv50_dma_push()</code> is the only function that uses <code>ib_put</code> variable.</p>
+<p>Initializing indirect buffer is done by <code>nouveau_channel_init()</code> in Nouveau device driver.</p>
+<pre><code>static int
+nouveau_channel_init(struct nouveau_channel *chan, u32 vram, u32 gart)
+{
+    ...
+    /* initialise dma tracking parameters */
+    switch (nv_hclass(chan-&gt;object) &amp; 0x00ff) {
+    case 0x006b:
+    case 0x006e:
+        ...
+    default:
+        chan-&gt;user_put = 0x40;
+        chan-&gt;user_get = 0x44;
+        chan-&gt;user_get_hi = 0x60;
+        chan-&gt;dma.ib_base =  0x10000 / 4;
+        chan-&gt;dma.ib_max  = (0x02000 / 8) - 1;
+        chan-&gt;dma.ib_put  = 0;
+        chan-&gt;dma.ib_free = chan-&gt;dma.ib_max - chan-&gt;dma.ib_put;
+        chan-&gt;dma.max = chan-&gt;dma.ib_base;
+        break;
+    }
+    ...
+}
+</code></pre><p>What make me confused is that <code>struct gdev_ctx</code> has not only pb, but also ib variables, so user space API also initializes these.</p>
+<pre><code>struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas)
+{
+    struct gdev_ctx *ctx;
+    ...
+    ctx = malloc(sizeof(*ctx));
+    memset(ctx, 0, sizeof(*ctx));
+    ...
+    /* FIFO push buffer setup. */
+    ctx-&gt;fifo.pb_order = 15;
+    ctx-&gt;fifo.pb_map = push_bo-&gt;map;
+    ctx-&gt;fifo.pb_bo = push_bo;
+    ctx-&gt;fifo.pb_base = push_bo-&gt;offset;
+    ctx-&gt;fifo.pb_mask = (1 &lt;&lt; ctx-&gt;fifo.pb_order) - 1;
+    ctx-&gt;fifo.pb_size = (1 &lt;&lt; ctx-&gt;fifo.pb_order);
+    ctx-&gt;fifo.pb_pos = ctx-&gt;fifo.pb_put = ctx-&gt;fifo.pb_get = 0;
+    ctx-&gt;fifo.space = __nouveau_fifo_space;
+    ctx-&gt;fifo.push = __nouveau_fifo_push;
+    ctx-&gt;fifo.kick = __nouveau_fifo_kick;
+    ctx-&gt;fifo.update_get = __nouveau_fifo_update_get;
+
+    /* FIFO index buffer setup. */
+    ctx-&gt;fifo.ib_order = 12;
+    ctx-&gt;fifo.ib_map = NULL;
+    ctx-&gt;fifo.ib_bo = NULL;
+    ctx-&gt;fifo.ib_base = 0;
+    ctx-&gt;fifo.ib_mask = (1 &lt;&lt; ctx-&gt;fifo.ib_order) - 1;
+    ctx-&gt;fifo.ib_put = ctx-&gt;fifo.ib_get = 0;
+    ...
+}
+</code></pre><p>This variable is used by the function <code>gdev_fifo_push()</code> in gdev_nvidia_fifo.c code, but this is used when gdev is running as a kernel mode.</p>
+<pre><code>struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas)
+{
+    struct gdev_ctx *ctx;
+    ...
+    crx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+    ...
+    /* command FIFO. */
+    ctx-&gt;fifo.regs = chan.regs;
+    ctx-&gt;fifo.ib_bo = chan.ib_bo;
+    ctx-&gt;fifo.ib_map = chan.ib_map;
+    ctx-&gt;fifo.ib_order = chan.ib_order;
+    ctx-&gt;fifo.ib_base = chan.ib_base;
+    ctx-&gt;fifo.ib_mask = chan.ib_mask;
+    ctx-&gt;fifo.ib_put = 0;
+    ctx-&gt;fifo.ib_get = 0;
+    ctx-&gt;fifo.pb_bo = chan.pb_bo;
+    ctx-&gt;fifo.pb_map = chan.pb_map;
+    ctx-&gt;fifo.pb_order = chan.pb_order;
+    ctx-&gt;fifo.pb_base = chan.pb_base;
+    ctx-&gt;fifo.pb_mask = chan.pb_mask;
+    ctx-&gt;fifo.pb_size = chan.pb_size;
+    ctx-&gt;fifo.pb_pos = 0;
+    ctx-&gt;fifo.pb_put = 0;
+    ctx-&gt;fifo.pb_get = 0;
+    ctx-&gt;fifo.push = gdev_fifo_push;
+    ctx-&gt;fifo.update_get = gdev_fifo_update_get;
+    ...
+}
+</code></pre><p>Therefore, it is reasonable to say that <code>__nouveau_fifo_push()</code> is used for user space gdev, and <code>gdev_fifo_push()</code> is used for kernel space gdev.</p>
+<p>The difference is that, push buffer is allocated in user space in user space gdev, and allocated in kernel space in kernel space gdev.</p>
+<p>The same thing is that index buffer (indirect buffer) is allocated in kernel space. In case of user space gdev, indirect buffer is managed by libdrm, not Nouveau or gdev.</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/cuda">cuda</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

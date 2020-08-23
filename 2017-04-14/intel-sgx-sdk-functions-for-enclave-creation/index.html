@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Intel SGX SDK Functions for Enclave Creation">
+<meta itemprop="description" content="Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.
+This post explains how Intel Linux SGX SDK calls Intel SGX CPU instructions, to create an enclave.
+As we all know, There is an SGX instruction we use to create an enclave, EADD. This is a Intel CPU microcode instruction. However, a user program does not directly call this instruction, but calls sgx_create_enclave() SDK function.">
+<meta itemprop="datePublished" content="2017-04-14T13:58:12+09:00" />
+<meta itemprop="dateModified" content="2017-04-14T13:58:12+09:00" />
+<meta itemprop="wordCount" content="1411">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta property="og:title" content="Intel SGX SDK Functions for Enclave Creation" />
+<meta property="og:description" content="Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.
+This post explains how Intel Linux SGX SDK calls Intel SGX CPU instructions, to create an enclave.
+As we all know, There is an SGX instruction we use to create an enclave, EADD. This is a Intel CPU microcode instruction. However, a user program does not directly call this instruction, but calls sgx_create_enclave() SDK function." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/" />
+<meta property="article:published_time" content="2017-04-14T13:58:12+09:00" />
+<meta property="article:modified_time" content="2017-04-14T13:58:12+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Intel SGX SDK Functions for Enclave Creation"/>
+<meta name="twitter:description" content="Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.
+This post explains how Intel Linux SGX SDK calls Intel SGX CPU instructions, to create an enclave.
+As we all know, There is an SGX instruction we use to create an enclave, EADD. This is a Intel CPU microcode instruction. However, a user program does not directly call this instruction, but calls sgx_create_enclave() SDK function."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Intel SGX SDK Functions for Enclave Creation</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 14, 2017</span></div>
+				<h1>Intel SGX SDK Functions for Enclave Creation</h1>
+			</header>
+			<div class="content">
+				<p>Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.<br>
+This post explains how Intel <a href="https://github.com/01org/linux-sgx">Linux SGX SDK</a> calls Intel SGX CPU instructions, to create an enclave.</p>
+<p>As we all know, There is an SGX instruction we use to create an enclave, <code>EADD</code>. This is a Intel CPU microcode instruction. However, a user program does not directly call this instruction, but calls <code>sgx_create_enclave()</code> SDK function. How this function is related to <code>EADD</code>?</p>
+<h1 id="1-sgx_create_enclave">1. <code>sgx_create_enclave()</code><a href="#1-sgx_create_enclave" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>At first, we include <code>&quot;sgx_urts.h&quot;</code> to use untrusted sgx library functions when programming a SGX user program. The header is in <code>/linux-sgx/common/inc/sgx_urts.h</code>, and its implementation is in <code>linux-sgx/psw/urts/linux/urts.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">common</span><span class="o">/</span><span class="n">inc</span><span class="o">/</span><span class="n">sgx_urts</span><span class="p">.</span><span class="n">h</span>
+
+<span class="n">sgx_status_t</span> <span class="n">SGXAPI</span> <span class="n">sgx_create_enclave</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file_name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">debug</span><span class="p">,</span> <span class="n">sgx_launch_token_t</span> <span class="o">*</span><span class="n">launch_token</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">launch_token_updated</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="n">sgx_misc_attribute_t</span> <span class="o">*</span><span class="n">misc_attr</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;urts_com.h&#34;</span><span class="cp">
+</span><span class="cp"></span><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="n">sgx_status_t</span> <span class="n">sgx_create_enclave</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file_name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">debug</span><span class="p">,</span> <span class="n">sgx_launch_token_t</span> <span class="o">*</span><span class="n">launch_token</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">launch_token_updated</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="n">sgx_misc_attribute_t</span> <span class="o">*</span><span class="n">misc_attr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">sgx_status_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+    <span class="p">...</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">_create_enclave</span><span class="p">(</span><span class="o">!!</span><span class="n">debug</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">launch_token</span><span class="p">,</span> <span class="n">launch_token_updated</span><span class="p">,</span> <span class="n">enclave_id</span><span class="p">,</span> <span class="n">misc_attr</span><span class="p">);</span>
+    <span class="p">...</span>
+
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h1 id="2-_create_enclave">2. <code>_create_enclave()</code><a href="#2-_create_enclave" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>As indicated, <code>_create_enclave()</code> is declared and defined in <code>/linux-sgx-/psw/urts/urts_com.h</code>. It calls an internal function defined in the same file, <code>__create_enclave()</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">__create_enclave</span><span class="p">(</span><span class="n">BinParser</span> <span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span> <span class="n">uint8_t</span><span class="o">*</span> <span class="n">base_addr</span><span class="p">,</span> <span class="k">const</span> <span class="n">metadata_t</span> <span class="o">*</span><span class="n">metadata</span><span class="p">,</span> <span class="n">se_file_t</span><span class="o">&amp;</span> <span class="n">file</span><span class="p">,</span> <span class="k">const</span> <span class="kt">bool</span> <span class="n">debug</span><span class="p">,</span> <span class="n">SGXLaunchToken</span> <span class="o">*</span><span class="n">lc</span><span class="p">,</span> <span class="n">le_prd_css_file_t</span> <span class="o">*</span><span class="n">prd_css_file</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="n">sgx_misc_attribute_t</span> <span class="o">*</span><span class="n">misc_attr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">CEnclave</span><span class="o">*</span> <span class="n">enclave</span> <span class="o">=</span> <span class="n">new</span> <span class="n">CEnclave</span><span class="p">(</span><span class="n">loader</span><span class="p">);</span>
+
+    <span class="c1">// initialize the enclave object
+</span><span class="c1"></span>    <span class="n">ret</span> <span class="o">=</span> <span class="n">enclave</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">(</span><span class="n">file</span><span class="p">,</span>
+                              <span class="n">loader</span><span class="p">.</span><span class="n">get_enclave_id</span><span class="p">(),</span>
+                              <span class="n">const_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">loader</span><span class="p">.</span><span class="n">get_start_addr</span><span class="p">()),</span>
+                              <span class="n">metadata</span><span class="o">-&gt;</span><span class="n">enclave_size</span><span class="p">,</span>
+                              <span class="n">metadata</span><span class="o">-&gt;</span><span class="n">tcs_policy</span><span class="p">);</span>
+    <span class="p">...</span>
+
+    <span class="c1">//call trts to do some intialization
+</span><span class="c1"></span>    <span class="k">if</span><span class="p">(</span><span class="n">SGX_SUCCESS</span> <span class="o">!=</span> <span class="p">(</span><span class="n">ret</span> <span class="o">=</span> <span class="n">get_enclave_creator</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">(</span><span class="n">loader</span><span class="p">.</span><span class="n">get_enclave_id</span><span class="p">())))</span>
+    <span class="p">{</span>
+        <span class="n">sgx_status_t</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+        <span class="n">CEnclavePool</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">remove_enclave</span><span class="p">(</span><span class="n">loader</span><span class="p">.</span><span class="n">get_enclave_id</span><span class="p">(),</span> <span class="n">status</span><span class="p">);</span>
+        <span class="k">goto</span> <span class="n">fail</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><h1 id="3-get_enclave_creator">3. <code>get_enclave_creator()</code><a href="#3-get_enclave_creator" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>At the first time, I taught that <code>CEnclave</code> is an enclave created by CPU, however, it is just a container for a software. Actual enclave is not created by this function call. Instead, <code>get_enclave_creator()-&gt;initialize()</code> function makes an actual enclave.</p>
+<p><code>get_enclave_creator()</code> function is defined in <code>/linux-sgx/psw/urts/loader.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">// enclave creator instance
+</span><span class="c1"></span><span class="k">extern</span> <span class="n">EnclaveCreator</span><span class="o">*</span> <span class="n">g_enclave_creator</span><span class="p">;</span>
+
+<span class="n">EnclaveCreator</span><span class="o">*</span> <span class="nf">get_enclave_creator</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">g_enclave_creator</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h1 id="4-g_enclave_creator">4. <code>g_enclave_creator</code><a href="#4-g_enclave_creator" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>At here, a function that allocates a class instance for <code>g_enclave_creator</code> depends on SGX running mode; simulation, or hardware.</p>
+<h2 id="sgx-running-mode">SGX running mode<a href="#sgx-running-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>When we compile a sample code, we can put an option named <code>SGX_MODE</code>, the value of which is either <code>SIM</code> or <code>HW</code>. The instruction says that we can use <code>SGX_MODE=SIM</code> to run it in simulation mode, and <code>SGX_MODE=HW</code> to run it in hardware mode. Some different libraries are linked in terms of the value of the option.</p>
+<h3 id="hardware-mode">Hardware mode<a href="#hardware-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>When compiling a program with <code>SGX_MODE=HW</code>, <code>g_enclave_creator</code> is initialized in <code>linux-sgx/psw/urts/linux/enclave_creator_hw.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">EnclaveCreator</span><span class="o">*</span> <span class="n">g_enclave_creator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EnclaveCreatorHW</span><span class="p">();</span>
+<span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">g_eid</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">;</span>
+</code></pre></div><p><code>EnclaveCreatorHW</code> is a child class, inheriting <code>EnclaveCreator</code> class. <code>EnclaveCreatorHW</code> is declared in <code>/linux-sgx/psw/urts/enclave_creator_hw.h</code>.</p>
+<p>Its implementation seems to be divided into two cpp files: <code>/linux-sgx/psw/urts/enclave_creator_hw_com.cpp</code> and <code>/linux-sgx/psw/urts/linux/enclave_creator_hw.cpp</code>.<br>
+The constructor and <code>create_enclave()</code> function is defined in <code>/linux-sgx/psw/urts/linux/enclave_creator_hw.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">EnclaveCreatorHW</span><span class="o">::</span><span class="n">EnclaveCreatorHW</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">m_hdevice</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">m_sig_registered</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">se_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">m_sig_mutex</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">EnclaveCreatorHW</span><span class="o">::</span><span class="n">create_enclave</span><span class="p">(</span><span class="n">secs_t</span> <span class="o">*</span><span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">start_addr</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">ae</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>I intentionally add a <code>printf()</code> call in the constructor function, and check whether it is printed.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">EnclaveCreatorHW</span><span class="o">::</span><span class="n">EnclaveCreatorHW</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">m_hdevice</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">m_sig_registered</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Enclave Creator for HW is iniitlaized.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">se_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">m_sig_mutex</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>I used a sample user program provided by Intel, <code>SampleEnclave</code>.</p>
+<p><img src="/assets/images/170414/enclave_hw.png" alt="enclave_hw">{: .center-image}</p>
+<ul>
+<li>The result when compiling the sample enclave with <code>SGX_MODE=HW</code>.
+{: .center}</li>
+</ul>
+<p><code>prints()</code> is called when the program is compiled with the option <code>SGX_MODE=HW</code>, however, it is not called when it is compiled with the option <code>SGX_MODE=SIM</code>.</p>
+<p><img src="/assets/images/170414/enclave_hw2.png" alt="enclave_hw2">{: .center-image}</p>
+<ul>
+<li>The result when compiling the sample enclave with <code>SGX_MODE=SIM</code>.
+{: .center}</li>
+</ul>
+<h3 id="simulation-mode">Simulation mode<a href="#simulation-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>The above result means that there is another enclave creator for simulation mode.</p>
+<p>In the simulation mode, <code>g_enclave_creator</code> is initialized in <code>/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.cpp</code> as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">EnclaveCreator</span><span class="o">*</span> <span class="n">g_enclave_creator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EnclaveCreatorSim</span><span class="p">();</span>
+</code></pre></div><p><code>EnclaveCreatorSim</code> class is declared in <code>/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.h</code>, and its functions are defined in <code>/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.cpp</code>.</p>
+<p>There is no overridden constructor, so I put a <code>printf()</code> call in <code>EnclaveCreatorSim::create_enclave()</code> function.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="n">EnclaveCreatorSim</span><span class="o">::</span><span class="n">create_enclave</span><span class="p">(</span><span class="n">secs_t</span> <span class="o">*</span><span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">start_addr</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">ae</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">UNUSED</span><span class="p">(</span><span class="n">ae</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Enclave Creator for simulation is initialized.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">::</span><span class="n">create_enclave</span><span class="p">(</span><span class="n">secs</span><span class="p">,</span> <span class="n">enclave_id</span><span class="p">,</span> <span class="n">start_addr</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><img src="/assets/images/170414/enclave_sim.png" alt="enclave_sim">{: .center-image}</p>
+<ul>
+<li>The result when compiling the sample enclave with <code>SGX_MODE=SIM</code>.
+{: .center}</li>
+</ul>
+<h1 id="5-enclavecreatorhwcreate_enclave">5. <code>EnclaveCreatorHW::create_enclave()</code><a href="#5-enclavecreatorhwcreate_enclave" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>In simulation mode, Intel SGX SDK does not use any CPU&rsquo;s SGX instructions. So Let&rsquo;s see the internal function call flows of <code>EnclaveCreatorHW</code> class.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="n">EnclaveCreatorHW</span><span class="o">::</span><span class="n">create_enclave</span><span class="p">(</span><span class="n">secs_t</span> <span class="o">*</span><span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">start_addr</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">ae</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">m_hdevice</span><span class="p">,</span> <span class="n">SGX_IOC_ENCLAVE_CREATE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">param</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>It passes its control to Intel SGX driver to call <code>ECREATE</code>, which is a <code>ECLS</code> instruction the can only be called in kernel mode.</p>
+<p>This <code>ioctl()</code> call is passed through Intel SGX Linux driver, and calls the function <code>isgx_ioctl_enclave_create()</code> in <code>/linux-sgx-driver/isgx_ioctl.c</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">long</span> <span class="nf">isgx_ioctl_enclave_create</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">filep</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span>
+				      <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">__ecreate</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">pginfo</span><span class="p">,</span> <span class="n">secs_vaddr</span><span class="p">);</span>
+
+  	<span class="n">isgx_put_epc_page</span><span class="p">(</span><span class="n">secs_vaddr</span><span class="p">);</span>
+
+  	<span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+  		<span class="n">isgx_info</span><span class="p">(</span><span class="n">enclave</span><span class="p">,</span> <span class="s">&#34;ECREATE returned %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
+  		<span class="k">goto</span> <span class="n">out</span><span class="p">;</span>
+  	<span class="p">}</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p><code>__ecreate()</code> function is defined in <code>/linux-sgx-driver/isgx_arch.h</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">__ecreate</span><span class="p">(</span><span class="k">struct</span> <span class="n">page_info</span> <span class="o">*</span><span class="n">pginfo</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">secs</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="n">__encls</span><span class="p">(</span><span class="n">ECREATE</span><span class="p">,</span> <span class="n">pginfo</span><span class="p">,</span> <span class="n">secs</span><span class="p">,</span> <span class="s">&#34;d&#34;</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div><p><code>__encls</code> function is defined as a macro, with C inline assembly function as follows, in <code>/linux-sgx-driver/isgx_arch.h</code>.</p>
+<pre><code>#ifdef CONFIG_X86_64
+#define __encls(rax, rbx, rcx, rdx...)	\
+	({				\
+	int ret;			\
+	asm volatile(&quot;1: .byte 0x0f, 0x01, 0xcf;\n\t&quot;	\
+		     &quot; xor %%eax,%%eax;\n&quot;		\
+		     &quot;2: \n&quot;					\
+		     &quot;.section .fixup,\&quot;ax\&quot;\n&quot;			\
+		     &quot;3: movq $-1,%%rax\n&quot;			\
+		     &quot;   jmp 2b\n&quot;				\
+		     &quot;.previous\n&quot;				\
+		     _ASM_EXTABLE(1b, 3b)			\
+		     : &quot;=a&quot;(ret), &quot;=b&quot;(rbx), &quot;=c&quot;(rcx)		\
+		     : &quot;a&quot;(rax), &quot;b&quot;(rbx), &quot;c&quot;(rcx), rdx	\
+		     : &quot;memory&quot;);				\
+	ret;	\
+	})
+</code></pre><p>And CPU calls <code>ECREATE</code> instruction inside itself.</p>
+<h1 id="6-enclavecreatorsimcreate_enclave">6. <code>EnclaveCreatorSim::create_enclave()</code><a href="#6-enclavecreatorsimcreate_enclave" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>While simulation mode does not use CPU&rsquo;s SGX instructions, all SGX instructions are also simulated. For example, <code>ECREATE</code> is implemented in <code>/linux-sgx/sdk/simulation/uinst/u_instructions.cpp</code>.</p>
+<p>Let&rsquo;s see how this simulated instruction is called. The starting point is <code>/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="n">EnclaveCreatorSim</span><span class="o">::</span><span class="n">create_enclave</span><span class="p">(</span><span class="n">secs_t</span> <span class="o">*</span><span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">start_addr</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">ae</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">UNUSED</span><span class="p">(</span><span class="n">ae</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">::</span><span class="n">create_enclave</span><span class="p">(</span><span class="n">secs</span><span class="p">,</span> <span class="n">enclave_id</span><span class="p">,</span> <span class="n">start_addr</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>I don&rsquo;t know in detail about c++, so I cannot understand what <code>::create_enclave()</code> means. But seeing the given parameters, it seems to be the one defined in <code>/linux-sgx/sdk/simulation/drvier_api/driver_api.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="cm">/* Allocate linear address space. */</span>
+<span class="kt">int</span> <span class="nf">create_enclave</span><span class="p">(</span><span class="n">secs_t</span>           <span class="o">*</span><span class="n">secs</span><span class="p">,</span>
+                   <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span>
+                   <span class="kt">void</span>             <span class="o">**</span><span class="n">start_addr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">ce</span> <span class="o">=</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">CEnclaveSim</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">DoECREATE_SW</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pinfo</span><span class="p">));</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><h1 id="7-doecreate_sw">7. <code>DoECREATE_SW()</code><a href="#7-doecreate_sw" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p><code>DoECREATE_SW()</code> function is declared in <code>/linux-sgx/sdk/simulation/assembly/asxsim.h</code>, however, there is no definition on the name. Instead, it uses a macro to change the function name. The macro is defined in <code>/linux-sgx/sdk/simulation/assembly/linux/sw_emu.h</code></p>
+<pre><code>/* This macro is used to generate simulation functions like:
+ * DoECREATE_SW, DoEADD_SW, ...
+*/
+.macro DoSW inst
+DECLARE_LOCAL_FUNC Do\()\inst\()_SW
+    SE_PROLOG
+    \inst\()_SW
+    SE_EPILOG
+.endm
+</code></pre><p>which means <code>Do'ECREATE'_SW</code> is declared as <code>'ECREATE'_SW</code>. And <code>ECREATE_SW</code> is also declared right above.</p>
+<pre><code>.macro ECREATE_SW
+    SE0_SW SE_ECREATE
+.endm
+
+.macro EADD_SW
+    SE0_SW SE_EADD
+.endm
+
+.macro EINIT_SW
+    SE0_SW SE_EINIT
+.endm
+
+.macro EREMOVE_SW
+    SE0_SW SE_EREMOVE
+.endm
+</code></pre><p>Hence, <code>DoECREATE_SW()</code> actually calls <code>SE_ECREATE()</code> function, defined in <code>/linux-sgx/sdk/simulation/uinst/u_instructions.cpp</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">uintptr_t</span> <span class="nf">_SE0</span><span class="p">(</span><span class="n">uintptr_t</span> <span class="n">xax</span><span class="p">,</span> <span class="n">uintptr_t</span> <span class="n">xbx</span><span class="p">,</span>
+               <span class="n">uintptr_t</span> <span class="n">xcx</span><span class="p">,</span> <span class="n">uintptr_t</span> <span class="n">xdx</span><span class="p">,</span>
+               <span class="n">uintptr_t</span> <span class="n">xsi</span><span class="p">,</span> <span class="n">uintptr_t</span> <span class="n">xdi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">UNUSED</span><span class="p">(</span><span class="n">xsi</span><span class="p">),</span> <span class="n">UNUSED</span><span class="p">(</span><span class="n">xdi</span><span class="p">);</span>
+
+    <span class="k">switch</span> <span class="p">(</span><span class="n">xax</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="k">case</span> <span class="nl">SE_ECREATE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_ECREATE</span><span class="p">(</span><span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">page_info_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xbx</span><span class="p">));</span>
+    <span class="p">...</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>It seems that macros are used for simulating registers and CPU behaviors. Hence, <code>SE_ECREATE()</code> is saved in the <code>xax</code> variable and <code>_SE0</code> calls <code>_ECREATE()</code>, which is a simulated <code>ECREATE</code> function, as I explained in <a href="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/">[here]</a>.</p>
+<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>Intel SGX SDK Github repository. <a href="https://github.com/01org/linux-sgx">https://github.com/01org/linux-sgx</a></li>
+<li>Intel SGX Linux driver Github repository. <a href="https://github.com/01org/linux-sgx-driver">https://github.com/01org/linux-sgx-driver</a></li>
+</ul>
+<h1 id="license">License<a href="#license" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="intel-sgx-sdk">Intel SGX SDK<a href="#intel-sgx-sdk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Copyright (C) 2011-2017 Intel Corporation. All rights reserved.<br>
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:</p>
+<ul>
+<li>Redistributions of source code must retain the above copyright<br>
+notice, this list of conditions and the following disclaimer.</li>
+<li>Redistributions in binary form must reproduce the above copyright<br>
+notice, this list of conditions and the following disclaimer in the<br>
+documentation and/or other materials provided with the distribution.</li>
+<li>Neither the name of the <!-- raw HTML omitted --> nor the<br>
+names of its contributors may be used to endorse or promote products<br>
+derived from this software without specific prior written permission.</li>
+</ul>
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &ldquo;AS IS&rdquo; AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <!-- raw HTML omitted --> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+<h2 id="intel-sgx-linux-driver">Intel SGX Linux driver<a href="#intel-sgx-linux-driver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>(C) Copyright 2015 Intel Corporation</p>
+<p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

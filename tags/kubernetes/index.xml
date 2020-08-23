@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/kubernetes/</link>
+    <description>Recent content in kubernetes on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Thu, 13 Feb 2020 10:13:00 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Programming Kubernetes CRDs</title>
+      <link>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</link>
+      <pubDate>Thu, 13 Feb 2020 10:13:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</guid>
+      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
+Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Custom Resource Definition (CRD)</title>
+      <link>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</link>
+      <pubDate>Tue, 11 Feb 2020 17:23:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</guid>
+      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.g. ReplicaSet, etc). Main introduction in Kubernetes document is in [here].
+A major confusing point comes from ambiguous distinction between Custom Resource Definition (CRD) and Aggregated APIserver (AA). Even the document explains some differences of two types of implementation, it is not clearly understandable.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Authentication: Client Certificate</title>
+      <link>https://insujang.github.io/2019-12-18/kubernetes-authentication/</link>
+      <pubDate>Wed, 18 Dec 2019 09:26:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-12-18/kubernetes-authentication/</guid>
+      <description>1
+For access control, Kubernetes steps the procedures above for each API operation: authentication (who can access), authorization (what can be accessed), and admisssion control. This post is about Kubernetes authentication.
+All API accesses are handled by Kubernetes api server. All accesses have to be authenticated by the API server for Kubernetes operations. Kubernetes API server serve on 2 ports: one for testing, and the other for all other cases. By default, these ports are:</description>
+    </item>
+    
+    <item>
+      <title>Installing Kubernetes and cri-o in Debian</title>
+      <link>https://insujang.github.io/2019-11-21/installing-kubernetes-and-crio-in-debian/</link>
+      <pubDate>Thu, 21 Nov 2019 18:32:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-21/installing-kubernetes-and-crio-in-debian/</guid>
+      <description>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine. Tested with Debian 10 running on a VirtualBox VM.
+root@kubernetesdebian:/etc# cat os-release PRETTY_NAME=&amp;#34;Debian GNU/Linux 10 (buster)&amp;#34; NAME=&amp;#34;Debian GNU/Linux&amp;#34; VERSION_ID=&amp;#34;10&amp;#34; VERSION=&amp;#34;10 (buster)&amp;#34; VERSION_CODENAME=buster ID=debian HOME_URL=&amp;#34;https://www.debian.org/&amp;#34; SUPPORT_URL=&amp;#34;https://www.debian.org/support&amp;#34; BUG_REPORT_URL=&amp;#34;https://bugs.debian.org/&amp;#34; Installing cri-o 0. Prerequiste for using cri-o with Kubernetes Kubernetes requires the following configurations be set before using cri-o container runtime [link]:
+modprobe overlay modprobe br_netfilter cat &amp;gt; /etc/sysctl.</description>
+    </item>
+    
+    <item>
+      <title>Interactions between cri-o and conmon in Kubernetes</title>
+      <link>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</link>
+      <pubDate>Mon, 18 Nov 2019 23:07:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</guid>
+      <description>cri-o cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
+{: width=&amp;quot;1000px&amp;rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.
+Okay&amp;hellip; What are noticable differences from Docker?</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://insujang.github.io/2019-11-07/kubernetes/</link>
+      <pubDate>Thu, 07 Nov 2019 11:17:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-07/kubernetes/</guid>
+      <description>Kubernetes Kubernetes is is an container-based cluster orchestration tool, originally implemented by Google. It manages containerized workloads and services in clusters.
+ Kubernetes is really an orchestration tool?
+Kubernetes does not call itself as an orchestration system, due to its different behaviors from the technical definition of &amp;ldquo;orchestration&amp;rdquo;.
+ Orchestration (from [Wikipedia])
+Orchestration is the automated configuration, coordination, and management of computer systems and software.
+  Orchestration (from [bmc])</description>
+    </item>
+    
+  </channel>
+</rss>

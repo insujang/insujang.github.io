@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>research on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/research/</link>
+    <description>Recent content in research on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Mon, 18 Nov 2019 23:07:00 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/research/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Interactions between cri-o and conmon in Kubernetes</title>
+      <link>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</link>
+      <pubDate>Mon, 18 Nov 2019 23:07:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</guid>
+      <description>cri-o cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
+{: width=&amp;quot;1000px&amp;rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.
+Okay&amp;hellip; What are noticable differences from Docker?</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://insujang.github.io/2019-11-07/kubernetes/</link>
+      <pubDate>Thu, 07 Nov 2019 11:17:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-07/kubernetes/</guid>
+      <description>Kubernetes Kubernetes is is an container-based cluster orchestration tool, originally implemented by Google. It manages containerized workloads and services in clusters.
+ Kubernetes is really an orchestration tool?
+Kubernetes does not call itself as an orchestration system, due to its different behaviors from the technical definition of &amp;ldquo;orchestration&amp;rdquo;.
+ Orchestration (from [Wikipedia])
+Orchestration is the automated configuration, coordination, and management of computer systems and software.
+  Orchestration (from [bmc])</description>
+    </item>
+    
+    <item>
+      <title>Container Runtime</title>
+      <link>https://insujang.github.io/2019-10-31/container-runtime/</link>
+      <pubDate>Thu, 31 Oct 2019 21:36:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-10-31/container-runtime/</guid>
+      <description>From Docker to Kubernetes, these days container solutions are emerging.
+{: .center-image width=&amp;quot;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+In the era of Docker the term &amp;ldquo;Container runtime&amp;rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
+Here are very clear explanations what is container runtime exactly, written by Ian Lewis:</description>
+    </item>
+    
+    <item>
+      <title>Open Container Initiative (OCI) Standard, Image Spec</title>
+      <link>https://insujang.github.io/2019-10-10/open-container-initiative-image-spec/</link>
+      <pubDate>Thu, 10 Oct 2019 20:35:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-10-10/open-container-initiative-image-spec/</guid>
+      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&amp;rsquo;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
+    </item>
+    
+    <item>
+      <title>Implementing a New Custom Netlink Family Protocol</title>
+      <link>https://insujang.github.io/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</link>
+      <pubDate>Thu, 07 Feb 2019 17:00:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</guid>
+      <description>Netlink Protocol Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
+#include &amp;lt;asm/types.h&amp;gt;#include &amp;lt;sys/socket.h&amp;gt;#include &amp;lt;linux/netlink.h&amp;gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on.</description>
+    </item>
+    
+    <item>
+      <title>udev: Function Flow for KOBJECT_UEVENT kernel group message </title>
+      <link>https://insujang.github.io/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</link>
+      <pubDate>Wed, 28 Nov 2018 14:03:15 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</guid>
+      <description>Identifying the device {: .center-image} [source]
+When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
+linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; .</description>
+    </item>
+    
+    <item>
+      <title>udev: Device Manager for the Linux Kernel in Userspace</title>
+      <link>https://insujang.github.io/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</link>
+      <pubDate>Tue, 27 Nov 2018 10:05:14 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</guid>
+      <description>What is udev?  udev (userspace /dev) is a device manager for the Linux kernel. As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory. At the same time, udev also handls all user space events raised when hardware devices are added into the system or removed from it, including firmware loading as reuqired by certain devices.
+https://en.wikipedia.org/wiki/Udev
+ udev first appeared at Linux kernel version 2.</description>
+    </item>
+    
+    <item>
+      <title>systemd Boot Process</title>
+      <link>https://insujang.github.io/2018-11-22/systemd-boot-process/</link>
+      <pubDate>Thu, 22 Nov 2018 13:49:40 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2018-11-22/systemd-boot-process/</guid>
+      <description>What is systemd?  systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
+https://www.freedesktop.org/wiki/Software/systemd
+ systemd is now the init process running as PID 1 as indicated above. /sbin/init was the actual init process of Linux (also known as System V init boot system), it is now replaced with /usr/lib/systemd in many Linux distributions.</description>
+    </item>
+    
+    <item>
+      <title>Intel SGX Sealing</title>
+      <link>https://insujang.github.io/2017-10-09/intel-sgx-sealing/</link>
+      <pubDate>Mon, 09 Oct 2017 15:26:34 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-10-09/intel-sgx-sealing/</guid>
+      <description>There is a few information related to sealing, even no detailed explanation in the paper: Intel SGX explaned. All in this post are from Intel, with a little thought of mine.
+Sealing Sealing is a service that Intel provides with Intel SGX technology for secure data saving.
+Intel SGX provides protections data only if it is in the enclave, part of main memory. Therefore, when the enclave process exits, the enclave will be destroyed and any data that is secured whithin the enclave will be lost.</description>
+    </item>
+    
+    <item>
+      <title>NVMeDirect</title>
+      <link>https://insujang.github.io/2017-09-06/nvmedirect/</link>
+      <pubDate>Wed, 06 Sep 2017 20:40:37 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-09-06/nvmedirect/</guid>
+      <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
+In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;quot;800px&amp;rdquo;}
+As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
+    </item>
+    
+  </channel>
+</rss>

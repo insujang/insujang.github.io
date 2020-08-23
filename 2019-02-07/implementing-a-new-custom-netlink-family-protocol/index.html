@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Implementing a New Custom Netlink Family Protocol">
+<meta itemprop="description" content="Netlink Protocol Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
+#include &lt;asm/types.h&gt;#include &lt;sys/socket.h&gt;#include &lt;linux/netlink.h&gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on.">
+<meta itemprop="datePublished" content="2019-02-07T17:00:00+09:00" />
+<meta itemprop="dateModified" content="2019-02-07T17:00:00+09:00" />
+<meta itemprop="wordCount" content="880">
+
+
+
+<meta itemprop="keywords" content="research,linux," />
+<meta property="og:title" content="Implementing a New Custom Netlink Family Protocol" />
+<meta property="og:description" content="Netlink Protocol Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
+#include &lt;asm/types.h&gt;#include &lt;sys/socket.h&gt;#include &lt;linux/netlink.h&gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2019-02-07/implementing-a-new-custom-netlink-family-protocol/" />
+<meta property="article:published_time" content="2019-02-07T17:00:00+09:00" />
+<meta property="article:modified_time" content="2019-02-07T17:00:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Implementing a New Custom Netlink Family Protocol"/>
+<meta name="twitter:description" content="Netlink Protocol Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
+#include &lt;asm/types.h&gt;#include &lt;sys/socket.h&gt;#include &lt;linux/netlink.h&gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Implementing a New Custom Netlink Family Protocol</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Feb 7, 2019</span></div>
+				<h1>Implementing a New Custom Netlink Family Protocol</h1>
+			</header>
+			<div class="content">
+				<h1 id="netlink-protocol">Netlink Protocol<a href="#netlink-protocol" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Netlink is a communication protocol between kernel and userspace.
+Unlike <code>ioctl()</code>, netlink is based on socket, which enables notification from the kernel to userspace.
+With <code>ioctl()</code>, the kernel can only send a response regarding to a user request.
+With netlink socket, however, user processes can be blocked via blocking functions such as <code>recv()</code>
+to receive any messages from the kernel.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;asm/types.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/netlink.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="n">netlink_socket</span> <span class="o">=</span> <span class="n">socket</span> <span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">socket_type</span><span class="p">,</span> <span class="n">netlink_family</span><span class="p">);</span>
+</code></pre></div><p>There are some predefined famous netlink protocol family:
+for instance, <code>NETLINK_ROUTE</code> for routing and link updates,
+<code>NETLINK_KOBJECT_UEVENT</code> for device events, and so on.
+Predefined family protocols merged into Linux mainline can be found in <a href="https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/netlink.h#L9">netlink.h</a>.</p>
+<p>Without the use of generic netlink protocol, the maximum number of unique protocol families is 32: (<code>#define MAX_LINKS 32</code>).
+This is one of the main reasons that the generic netlink family was created.
+In this post, we use the existing netlink protocol (not generic netlink protocol).
+As there are 23 protocol families exist in the latest kernel, we can implement up to 9 custom protocol families (23~31) so far.</p>
+<h1 id="basic-implementation-with-custom-netlink">Basic Implementation with Custom Netlink<a href="#basic-implementation-with-custom-netlink" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="kernel-module">Kernel Module<a href="#kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>The following is a basic kernel module that creates a custom netlink protocol family, the value of which is 25, using the kernel function <code>netlink_kernel_create()</code>.
+Note that the signature of the function was changed since kernel version 2.6.
+<a href="https://elixir.bootlin.com/linux/latest/source/include/linux/netlink.h#L58">[link]</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kr">inline</span> <span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span>
+<span class="nf">netlink_kernel_create</span><span class="p">(</span><span class="k">struct</span> <span class="n">net</span> <span class="o">*</span><span class="n">net</span><span class="p">,</span> <span class="kt">int</span> <span class="n">unit</span><span class="p">,</span> <span class="k">struct</span> <span class="n">netlink_kernel_cfg</span> <span class="o">*</span><span class="n">cfg</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">__netlink_kernel_create</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">THIS_MODULE</span><span class="p">,</span> <span class="n">cfg</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;linux/module.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/kernel.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/netlink.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;net/netlink.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;net/net_namespace.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define NETLINK_TESTFAMILY 25
+</span><span class="cp"></span>
+<span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">socket</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">test_nl_receive_message</span><span class="p">(</span><span class="k">struct</span> <span class="n">sk_buff</span> <span class="o">*</span><span class="n">skb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&#34;Entering: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__FUNCTION__</span><span class="p">);</span>
+
+  <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nlh</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span> <span class="n">skb</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+  <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&#34;Received message: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span> <span class="n">nlmsg_data</span><span class="p">(</span><span class="n">nlh</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="n">__init</span> <span class="nf">test_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">netlink_kernel_cfg</span> <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">test_nl_receive_message</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="n">socket</span> <span class="o">=</span> <span class="n">netlink_kernel_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">init_net</span><span class="p">,</span> <span class="n">NETLINK_TESTFAMILY</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">socket</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">__exit</span> <span class="nf">test_exit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">socket</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">netlink_kernel_release</span><span class="p">(</span><span class="n">socket</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">module_init</span><span class="p">(</span><span class="n">test_init</span><span class="p">);</span>
+<span class="n">module_exit</span><span class="p">(</span><span class="n">test_exit</span><span class="p">);</span>
+</code></pre></div><blockquote>
+<p><strong>Update (May 11, 2020)</strong></p>
+<p>As <code>netlink_kernel_create()</code> returns a pointer, not a file descriptor, should be checked with <code>== NULL</code>, instead of <code>&lt; 0)</code>.
+Thanks for pointing that, @Robert Bałdyga!</p>
+</blockquote>
+<p>This creates a kernel module that listens netlink protocol family with the number 25.
+When any process creates a netlink socket and send a message, <code>test_nl_receive_message()</code> will be called.
+Note that netlink is aware of network namespace, so the first argument for the function <code>netlink_kernel_create()</code> is the pointer of a network namespace (type: <code>struct net *</code>).
+Linux kernel, by default, has at least one network namespace: <code>init_net</code>.
+You can use the variable for creation or your own network namespace variable.
+Also note that since netlink is aware of network namespace, netlink multicast, by default, can only be received from within the specified network namespace.
+For instance, if two network namespaces are available (namely initial netns and ns1), and the above kernel module sends a multicast message to the initial network namespace, every processes in the other network namespace ns1 will not receive the message.</p>
+<h2 id="userspace-program">Userspace Program<a href="#userspace-program" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>The below code is a userspace program that can send and receive messages with the kernel
+through <code>NETLINK_TESTFAMILY</code> family protocol.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;linux/netlink.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define NETLINK_TESTFAMILY 25
+</span><span class="cp">#define MAX_PAYLOAD 1024
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">NETLINK_TESTFAMILY</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">...</span>
+
+  <span class="k">struct</span> <span class="n">sockaddr_nl</span> <span class="n">addr</span><span class="p">;</span> <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="p">));</span>
+  <span class="n">addr</span><span class="p">.</span><span class="n">nl_family</span> <span class="o">=</span> <span class="n">AF_NETLINK</span><span class="p">;</span>
+  <span class="n">addr</span><span class="p">.</span><span class="n">nl_pid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// For Linux kernel
+</span><span class="c1"></span>  <span class="n">addr</span><span class="p">.</span><span class="n">nl_groups</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nlh</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="n">MAX_PAYLOAD</span><span class="p">));</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">nlh</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="n">MAX_PAYLOAD</span><span class="p">));</span>
+  <span class="n">nlh</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span> <span class="o">=</span> <span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="n">MAX_PAYLOAD</span><span class="p">);</span>
+  <span class="n">nlh</span><span class="o">-&gt;</span><span class="n">nlmsg_pid</span> <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+  <span class="n">nlh</span><span class="o">-&gt;</span><span class="n">nlmsg_flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">strcpy</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">nlh</span><span class="p">),</span> <span class="s">&#34;Hello&#34;</span><span class="p">);</span>
+
+  <span class="k">struct</span> <span class="n">iovec</span> <span class="n">iov</span><span class="p">;</span> <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iov</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">iov</span><span class="p">));</span>
+  <span class="n">iov</span><span class="p">.</span><span class="n">iov_base</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">nlh</span><span class="p">;</span>
+  <span class="n">iov</span><span class="p">.</span><span class="n">iov_len</span> <span class="o">=</span> <span class="n">nlh</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="n">msghdr</span> <span class="n">msg</span><span class="p">;</span> <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">msg</span><span class="p">));</span>
+  <span class="n">msg</span><span class="p">.</span><span class="n">msg_name</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">addr</span><span class="p">;</span>
+  <span class="n">msg</span><span class="p">.</span><span class="n">msg_namelen</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
+  <span class="n">msg</span><span class="p">.</span><span class="n">msg_iov</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">iov</span><span class="p">;</span>
+  <span class="n">msg</span><span class="p">.</span><span class="n">msg_iovlen</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Sending message to kernel</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">sendmsg</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div><p>When you execute the program, you should see the following message in your kernel message via <code>dmesg</code>:</p>
+<pre><code>Entering: test_nl_receive_message
+Received message: Hello
+</code></pre><h2 id="unicast-from-kernel-module">Unicast from Kernel Module<a href="#unicast-from-kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Let us make the kernel module send a response for a request.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">void</span> <span class="nf">test_nl_receive_message</span><span class="p">(</span><span class="k">struct</span> <span class="n">sk_buff</span> <span class="o">*</span><span class="n">skb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nlh</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span> <span class="n">skb</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+  <span class="n">pid_t</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">nlh</span><span class="o">-&gt;</span><span class="n">nlmsg_pid</span><span class="p">;</span> <span class="c1">// pid of the sending process
+</span><span class="c1"></span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#34;Hello from kernel unicast&#34;</span><span class="p">;</span>
+  <span class="n">size_t</span> <span class="n">message_size</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">sk_buff</span> <span class="o">*</span><span class="n">skb_out</span> <span class="o">=</span> <span class="n">nlmsg_new</span><span class="p">(</span><span class="n">message_size</span><span class="p">,</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">skb_out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_ERR</span> <span class="s">&#34;Failed to allocate a new skb</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">nlh</span> <span class="o">=</span> <span class="n">nlmsg_put</span><span class="p">(</span><span class="n">skb_out</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NLMSG_DONE</span><span class="p">,</span> <span class="n">message_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">NETLINK_CB</span><span class="p">(</span><span class="n">skb_out</span><span class="p">).</span><span class="n">dst_group</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">strncpy</span><span class="p">(</span><span class="n">nlmsg_data</span><span class="p">(</span><span class="n">nlh</span><span class="p">),</span> <span class="n">message</span><span class="p">,</span> <span class="n">message_size</span><span class="p">);</span>
+
+  <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">nlmsg_unicast</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">skb_out</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>The userspace process will receive a netlink message with <code>NLMSG_DONE</code> type.
+It seems that the newly created <code>struct sk_buffer</code> variable is deleted
+when it is sent through <code>nlmsg_unicast()</code>, hence calling <code>nlmsg_unicast()</code>
+contains the memory management <a href="https://stackoverflow.com/a/10138935">[link]</a>.
+Therefore, calling <code>nlmsg_free()</code> is forbidden, otherwise a kernel panic would be occured.</p>
+<h2 id="multicast-from-kernel-module">Multicast from Kernel Module<a href="#multicast-from-kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>The kernel module can also send a multicast netlink message, a broadcast for a specific group in netlink family.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define NETLINK_MYGROUP 2
+</span><span class="cp"></span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">test_nl_send_user</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#34;Hello from kernel multicast&#34;</span><span class="p">;</span>
+  <span class="n">size_t</span> <span class="n">message_size</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="n">sk_buffer</span> <span class="o">*</span><span class="n">skb</span> <span class="o">=</span> <span class="n">nlmsg_new</span><span class="p">(</span><span class="n">NLMSG_ALIGN</span><span class="p">(</span><span class="n">message_size</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ksb</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_ERR</span> <span class="s">&#34;Failed to allocate a new skb</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nlh</span> <span class="o">=</span> <span class="n">nlmsg_put</span><span class="p">(</span><span class="n">skb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">NLMSG_DONE</span><span class="p">,</span> <span class="n">message_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">strncpy</span><span class="p">(</span><span class="n">nlmsg_data</span><span class="p">(</span><span class="n">nlh</span><span class="p">),</span> <span class="n">message</span><span class="p">,</span> <span class="n">message_size</span><span class="p">);</span>
+
+  <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">nlmsg_multicast</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">skb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NETLINK_MYGROUP</span><span class="p">,</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

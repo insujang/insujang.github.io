@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pcie on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/pcie/</link>
+    <description>Recent content in pcie on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Wed, 06 Sep 2017 20:40:37 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/pcie/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>NVMeDirect</title>
+      <link>https://insujang.github.io/2017-09-06/nvmedirect/</link>
+      <pubDate>Wed, 06 Sep 2017 20:40:37 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-09-06/nvmedirect/</guid>
+      <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
+In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;quot;800px&amp;rdquo;}
+As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to VFIO</title>
+      <link>https://insujang.github.io/2017-04-27/introduction-to-vfio/</link>
+      <pubDate>Thu, 27 Apr 2017 13:14:24 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-04-27/introduction-to-vfio/</guid>
+      <description>Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything!  VFIO Device Filer descriptor   located in /dev/vfio
+  Each divided into regions
+ Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl.</description>
+    </item>
+    
+    <item>
+      <title>PCI Express I/O System</title>
+      <link>https://insujang.github.io/2017-04-03/pci-express-i/o-system/</link>
+      <pubDate>Mon, 03 Apr 2017 12:12:58 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-04-03/pci-express-i/o-system/</guid>
+      <description>I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.
+To encapsulate the details and oddities of different devices, the kernel of an operating system is structured to use device-driver modules.
+A device communicates with a computer system by sending signals over a cable or through the air.
+ The device communicates with the machine via a connection point, or port.</description>
+    </item>
+    
+  </channel>
+</rss>

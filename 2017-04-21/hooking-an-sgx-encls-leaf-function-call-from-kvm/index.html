@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Hooking an SGX ENCLS Leaf Function Call from KVM">
+<meta itemprop="description" content="Environment  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS   SGX Programming Reference, Section 5.2.1
+  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+  Software specifies the leaf function by setting the appropriate value in the register EAX as input.">
+<meta itemprop="datePublished" content="2017-04-21T20:36:41+09:00" />
+<meta itemprop="dateModified" content="2017-04-21T20:36:41+09:00" />
+<meta itemprop="wordCount" content="1394">
+
+
+
+<meta itemprop="keywords" content="research,sgx,linux," />
+<meta property="og:title" content="Hooking an SGX ENCLS Leaf Function Call from KVM" />
+<meta property="og:description" content="Environment  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS   SGX Programming Reference, Section 5.2.1
+  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+  Software specifies the leaf function by setting the appropriate value in the register EAX as input." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/" />
+<meta property="article:published_time" content="2017-04-21T20:36:41+09:00" />
+<meta property="article:modified_time" content="2017-04-21T20:36:41+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hooking an SGX ENCLS Leaf Function Call from KVM"/>
+<meta name="twitter:description" content="Environment  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS   SGX Programming Reference, Section 5.2.1
+  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+  Software specifies the leaf function by setting the appropriate value in the register EAX as input."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Hooking an SGX ENCLS Leaf Function Call from KVM</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 21, 2017</span></div>
+				<h1>Hooking an SGX ENCLS Leaf Function Call from KVM</h1>
+			</header>
+			<div class="content">
+				<h1 id="environment">Environment<a href="#environment" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor</li>
+<li>Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)</li>
+</ul>
+<h1 id="1-encls">1. ENCLS<a href="#1-encls" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>
+<p>SGX Programming Reference, Section 5.2.1</p>
+</li>
+<li>
+<p><code>ENCLS</code> instruction is used to execute an enclave system function (privileged) of specified leaf number.</p>
+</li>
+<li>
+<p>Software specifies the leaf function <strong>by setting the appropriate value in the register EAX as input</strong>.</p>
+<ol>
+<li>Example) Instruction = ENCLS, EAX = 0x0: ECREATE</li>
+<li>Example) Instruction = ENCLS, EAX = 0x1: EADD</li>
+</ol>
+<p>All leaf functions are defined in SGX programming reference, and linux-sgx-driver (<code>/linux-sgx-driver/isgx_arch.h</code>).</p>
+</li>
+<li>
+<p>In 64-bit mode, the instruction ignores upper 32 bits of the RAX register.</p>
+</li>
+<li>
+<p>In VMX non-root operation, execution of ENCLS is <em>unconditionally allowed</em> if the &ldquo;Enable ENCLS exiting&rdquo; VM-execution control is 0.</p>
+</li>
+<li>
+<p><strong>If the &ldquo;Enable ENCLS exiting&rdquo; VM-execution control is set, <!-- raw HTML omitted -->execution of individual leaf function of ENCLS is governed by the &ldquo;ENCLS-exiting bitmap&quot;<!-- raw HTML omitted -->.</strong> Each bit position of &ldquo;ENCLS-exiting bitmap&rdquo; corresponds to the index (EAX) of an ENCLS leaf function.<br>
+In other words, a VMM can <strong><!-- raw HTML omitted -->hook into the ENCLS instruction<!-- raw HTML omitted --> by setting the new VM-exiting control called &ldquo;enable ENCLS exiting&rdquo; (bit 15 in the secondary processor-based VM-execution controls).</strong></p>
+</li>
+</ul>
+<pre><code>...
+if (in VMX non-root operation) and (Enable_ENCLS_EXITING = 1):
+    if ((EAX &lt; 63) and (ENCLS_EXITING_Bitmap[EAX] = 1)) or ((EAX &gt; 62) and (ENCLS_EXITING_Bitmap[63] = 1)):
+        set VMCS.EXIT_REASON = ENCLS;
+        deliver VM exit;
+...
+</code></pre><h1 id="2-secondary-processor-based-vm-execution-control-ia32_vmx_procbased_ctls2">2. Secondary Processor-based VM-Execution Control (IA32_VMX_PROCBASED_CTLS2)<a href="#2-secondary-processor-based-vm-execution-control-ia32_vmx_procbased_ctls2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>Intel SDM Volume 3, Appendix A.3.3</li>
+<li>Intel SDM Volume 3, Section 24.6.2</li>
+<li>Intel SDM Volume 4, Table 2-2</li>
+<li>SGX Programming Reference, Section 6.5</li>
+<li>There are two definitions in Intel Software Developer&rsquo;s Manual: an MSR (Volume 3, Appendix A.3.3) and a field in VMCS (Volume 3, Section 24.6.2).
+<ol>
+<li>Virtual Machine Control Structure (VMCS) field encoding is 0x401E (401EH).
+<ul>
+<li>It is a field in VMCS: value can be written by <code>vmcs_write32(unsigned long field, u32 value)</code> in <code>/linux/arch/x86/kvm/vmx.c:1570</code>.</li>
+<li><strong>Bit position 15 (Enable ENCLS exiting): If this control is 1, executions of ENCLS consult the ENCLS-exiting bitmap to determine whether the instruction causes a VM exit. See Section 24.6.16 and Section 25.1.3.</strong></li>
+<li>Software <strong>should consult <!-- raw HTML omitted -->the VMX capability MSR IA32_VMX_PROCBASED_CTLS2<!-- raw HTML omitted --> to determine which bits may be set to 1.</strong> Failure to clear reserved bits causes subsequent VM entries to fail.</li>
+</ul>
+</li>
+<li>Model Specific Register (MSR) index is 0x48B (48BH). This MSR is for Intel VT.
+<ul>
+<li>It is a MSR: value can be written by <code>wrmsr(unsigne msr, unsigned low, unsigned high)</code> in <code>/linux/arch/x86/include/asm/msr.h:216</code>.</li>
+<li>Defined in <code>/linux/usr/include/asm/msr-index.h:677</code>.<br>
+<code>#define MSR_IA32_VMX_PROCBASED_CTLS2 0x0000048b</code></li>
+<li>The <code>IA32_VMX_PROCBASED_CTLS2</code> MSR exists only if bit 63 of the <code>IA32_VMX_PROCBASED_CTLS</code> MSR (=primary processor-based VM-execution control) is 1.</li>
+<li>To hook any ENCLS instruction, we first have to set bit 15 of the <code>MSR_IA32_VMX_PROCBASED_CTLS2</code> MSR 1.</li>
+<li>Bits information
+<ul>
+<li>Bits 31:0 indicates the allowed 0-settings of these controls.<br>
+These bits are always 0. This fact indicates that VM entry allows each bit of the secondary processor-based VM-execution controls to be 0.</li>
+<li>Bits 63:32 indicate the allowed 1-settings of theses controls.<br>
+VM entry allows control X (bit X of the IA32_VMX_PROCBASED_CTLS2) to be 1 if bit 32+X in the MSR is set to 1. If bit 32+X in the MSR is cleared to 0, VM entry failes if control X and the &ldquo;activate secondary controls (bit 63 of the IA32_VMX_PROCBASED_CTLS)&rdquo; are both 1.<br>
+The 1-setting is not allowed for any reserved bit.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="3-encls-exiting-bitmap">3. ENCLS-exiting Bitmap<a href="#3-encls-exiting-bitmap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>
+<p>SGX Programming Reference, Section 6.5.1</p>
+</li>
+<li>
+<p>Intel SDM Volume 3, Section 24.6.16</p>
+</li>
+<li>
+<p><strong>When bits in the &ldquo;ENCLS-exiting bitmap&rdquo; are set, <!-- raw HTML omitted -->execution of the corresponding ENCLS leaf functions in the guest results in a VM exit.<!-- raw HTML omitted --></strong></p>
+</li>
+<li>
+<p>ENCLS-exiting bitmap is a 64-bit VM-execution control field in virtual machine control structure (VMCS).</p>
+<table>
+<thead>
+<tr>
+<th>Field Name (64-bit control field)</th>
+<th align="center">Encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ENCLS-exiting bitmap (full)</td>
+<td align="center">0x0000202E</td>
+</tr>
+<tr>
+<td>ENCLS-exiting bitmap (high)</td>
+<td align="center">0x0000202F</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>These fields exist only on processors that support the 1-setting of the &ldquo;enable ENCLS exiting&rdquo; VM-execution control.</li>
+</ul>
+</li>
+<li>
+<p>For example, ECREATE is mapped EAX 0x0. If 0th index of ENCLS-exiting bitmap is set 1, ECREATE function call will result in a VM exit, with exit reason <code>ENCLS</code>.</p>
+</li>
+<li>
+<p>It is a field inside the VMCS: value can be written by <code>vmcs_write32(unsigned long field, u32 value)</code> in <code>/linux/arch/x86/kvm/vmx.c:1570</code>.</p>
+</li>
+</ul>
+<h1 id="4-implementing-a-encls-hook-on-kvm">4. Implementing A ENCLS Hook on KVM<a href="#4-implementing-a-encls-hook-on-kvm" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p><strong><code>/linux/arch/x86/kvm/vmx.c:3269 static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf)</code></strong><br>
+<strong><code>/linux/arch/x86/kvm/vmx.c:4936 static int vmx_vcpu_setup()</code></strong></p>
+<h2 id="1-in-setup_vmcs_config-linuxarchx86kvmvmxc3269">(1) In <code>setup_vmcs_config()</code> (<code>/linux/arch/x86/kvm/vmx.c:3269</code>).<a href="#1-in-setup_vmcs_config-linuxarchx86kvmvmxc3269" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>In terms of configuring secondary processor-based VM-exeuction controls MSR,</p>
+<ul>
+<li>It first checks bit position 31 of the primary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS</code>) is 1. This indicates that the secondary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS2</code>) is used.<br>
+It is set by default by KVM, as follows, hence you don&rsquo;t have to modify the following code.</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="p">...</span>
+<span class="c1">// CPU_BASED_ACTIVATE_SECONDARY_CONTROLS is defined in
+</span><span class="c1">// /linux/arch/x86/kvm/include/asm/vmx.h:54
+</span><span class="c1">// #define CPU_BASED_ACTIVATE_SECONDARY_CONTROLS 0x80000000
+</span><span class="c1"></span><span class="n">opt</span> <span class="o">=</span> <span class="n">CPU_BASED_TPR_SHADOW</span> <span class="o">|</span>
+      <span class="n">CPU_BASED_USE_MSR_BITMAPS</span> <span class="o">|</span>
+      <span class="n">CPU_BASED_ACTIVATE_SECONDARY_CONTROLS</span><span class="p">;</span>
+<span class="n">adjust_vmx_control</span><span class="p">(</span><span class="n">min</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_exec_control</span><span class="p">);</span>
+<span class="p">...</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">_</span> <span class="n">cpu_based_exec_control</span> <span class="o">&amp;</span> <span class="n">CPU_BASED_ACTIVATE_SECONDARY_CONTROLS</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>Bit position 15 of the secondary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS2</code>) is <strong>Enable ENCLS exiting</strong>. For a VMM to hook a specific ENCLS instruction called in a guest machine, this bit must be set. However, it is <strong>not</strong> set by default. Hence, set this bit as follows.</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="p">...</span>
+<span class="c1">// Set bit position 15 as 1 of the MSR_IA32_VMX_PROCBASED_CTLS2.
+</span><span class="c1"></span><span class="cp">#define SECONDARY_ENABLE_ENCLS_EXITING (1 &lt;&lt; 15)
+</span><span class="cp"></span><span class="n">opt2</span> <span class="o">=</span> <span class="n">SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESS</span> <span class="o">|</span>
+    <span class="p">...</span>
+    <span class="n">SECONDARY_EXEC_TSC_SCALING</span> <span class="o">|</span>
+    <span class="n">SECONDARY_ENABLE_ENCLS_EXITING</span><span class="p">;</span>
+<span class="n">adjust_vmx_controls</span><span class="p">(</span><span class="n">min2</span><span class="p">,</span> <span class="n">opt2</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS2</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_2nd_exec_control</span><span class="p">);</span>
+<span class="p">...</span>
+</code></pre></div><h2 id="2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939">(2) In <code>vmx_vcpu_setup()</code> (<code>/linux/arch/x86/kvm/vmx.c:4939</code>).<a href="#2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Set an ENCLS0-exiting bitmap VMCS control field (encoding <code>0x0000202E</code>). This indicates which ENCLS instruction should be hooked by a VMM. It is <strong>not</strong> set by default. Hence, set the VMCS control field as follows to hook an ENLS instruction call.</p>
+<p>Note that <em><strong><!-- raw HTML omitted -->each bit position<!-- raw HTML omitted --> of the control field represents the leaf number of ENCLS instruction</strong></em>, i.e. for EEXTEND, which has leaf number 0x06, 6th bit should be set.<br>
+Also note that ENCLS-exiting bitmap control field (<code>0x0000202E</code>) is not defined in Linux kernel by default. You also have to set it first, in <code>/linux/arch/x86/kvm/include/asm/vmx.h</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="k">asm</span><span class="o">/</span><span class="n">vmx</span><span class="p">.</span><span class="n">h</span>
+<span class="k">enum</span> <span class="n">vmcs_field</span> <span class="p">{</span>
+    <span class="n">VIRTUAL_PROCESSOR_ID</span>        <span class="o">=</span> <span class="mh">0x00000000</span><span class="p">,</span>
+    <span class="p">...</span>
+    <span class="n">XSS_EXIT_BITMAP_HIGH</span>        <span class="o">=</span> <span class="mh">0x0000202D</span><span class="p">,</span>
+    <span class="n">ENCLS_EXITING_BITMAP</span>        <span class="o">=</span> <span class="mh">0x0000202E</span><span class="p">,</span>
+    <span class="n">ENCLS_EXITING_BITMAP_HIGH</span>   <span class="o">=</span> <span class="mh">0x0000202F</span><span class="p">,</span>
+    <span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">vmx</span><span class="p">.</span><span class="n">c</span>
+<span class="p">...</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">cpu_has_secondary_exec_ctrls</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">vmcs_write32</span><span class="p">(</span><span class="n">SECONDARY_VM_EXEC_CONTROL</span><span class="p">,</span> <span class="n">vmx_secondary_exec_control</span><span class="p">(</span><span class="n">vmx</span><span class="p">));</span>
+
+    <span class="c1">// My custom ENCLS instruction has leat number 0x1A, hence set 26th bit as 1.
+</span><span class="c1"></span>    <span class="n">vmcs_write64</span><span class="p">(</span><span class="n">ENCLS_EXITING_BITMAP</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">26</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="p">...</span>
+</code></pre></div><blockquote>
+<p>If you want to hook multiple ENCLS instructions, the value passed should be a or-ed combination of several numbers.</p>
+</blockquote>
+<h2 id="3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314">(3) In <code>vmx_handle_exit()</code> (<code>/linux/arch/x86/kvm/vmx.c:8314</code>).<a href="#3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Now the KVM will hook an ENCLS instruction that is set to be hooked. However, as the exit reason <code>ENCLS</code> is not included in Linux kernel by default, it prints <code>vmx: unexpected exit reason 0x3C</code> in dmesg.</p>
+<p>Add an ENCLS exit reason in <code>/linux/arch/x86/include/uapi/asm/vmx.h</code>, as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define EXIT_REASON_EXCEPTION_NMI     0
+</span><span class="cp"></span><span class="p">...</span>
+<span class="cp">#define EXIT_REASON_INVPCID           58
+</span><span class="cp">#define EXIT_REASON_ENCLS             60
+</span><span class="cp"></span><span class="p">...</span>
+</code></pre></div><p>To see the entire list of vm exit reasons, refer to <em>Intel 64 and IA-32 Architectures Software Developer&rsquo;s Manual Volume 3, Appendix C</em>.</p>
+<p>After adding the definition of ENCLS exit reason, implement an exit reason handler in <code>/linux/arch/x86/kvm/vmx.c</code>.<br>
+The list of vmx exit handlers is defined in <code>/linux/arch/x86/kvm/vmx.c:7713</code>. Add a name of handler at the last of the list as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span> <span class="k">const</span> <span class="n">kvm_vmx_exit_handlers</span><span class="p">[])(</span><span class="k">struct</span> <span class="n">kvm_vcpu</span> <span class="o">*</span> <span class="n">vcpu</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="n">EXIT_REASON_EXCEPTION_NMI</span><span class="p">]</span>         <span class="o">=</span> <span class="n">handle_exception</span><span class="p">,</span>
+    <span class="p">...</span>
+    <span class="p">[</span><span class="n">EXIT_REASON_PCOMMIT</span><span class="p">]</span>               <span class="o">=</span> <span class="n">handle_pcommit</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">EXIT_REASON_ENCLS</span><span class="p">]</span>                 <span class="o">=</span> <span class="n">handle_encls</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div><p>And implement a handler named <code>handle_encls()</code>, as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">handle_encls</span> <span class="p">(</span><span class="k">struct</span> <span class="n">kvm_vcpu</span> <span class="o">*</span><span class="n">vcpu</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">skip_emulated_instruction</span><span class="p">(</span><span class="n">vcpu</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: handling encls exit reason from vcpu%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">),</span>
+          <span class="n">__func__</span><span class="p">,</span> <span class="n">vcpu</span><span class="o">-&gt;</span><span class="n">vcpu_id</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>As commented right above the declaration of <code>kvm_vmx_exit_handlers</code>, the exit handlers should return 1 if the exit was handled fully and guest execution may resume.<br>
+Also I added <code>skip_emulated_instruction()</code> call because <code>vmx_handle_exit()</code> is called indefinitely without this function call.<br>
+Currently I just added a simple <code>printk()</code>, but you can implement it as you want.</p>
+<p>If a guest virtual machine calls the following <code>__eabc()</code> function,</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define __encls(rax, rbx, rcx, rdx...)  \
+</span><span class="cp">    ({              \
+</span><span class="cp">    int ret;            \
+</span><span class="cp">    asm volatile(&#34;1: .byte 0x0f, 0x01, 0xcf;\n\t&#34;   \
+</span><span class="cp">             &#34; xor %%eax,%%eax;\n&#34;      \
+</span><span class="cp">             &#34;2: \n&#34;                    \
+</span><span class="cp">             &#34;.section .fixup,\&#34;ax\&#34;\n&#34;         \
+</span><span class="cp">             &#34;3: movq $-1,%%rax\n&#34;          \
+</span><span class="cp">             &#34;   jmp 2b\n&#34;              \
+</span><span class="cp">             &#34;.previous\n&#34;              \
+</span><span class="cp">             _ASM_EXTABLE(1b, 3b)           \
+</span><span class="cp">             : &#34;=a&#34;(ret), &#34;=b&#34;(rbx), &#34;=c&#34;(rcx)      \
+</span><span class="cp">             : &#34;a&#34;(rax), &#34;b&#34;(rbx), &#34;c&#34;(rcx), rdx    \
+</span><span class="cp">             : &#34;memory&#34;);               \
+</span><span class="cp">    ret;    \
+</span><span class="cp">    })
+</span><span class="cp"></span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">__eabc</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rbx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rcs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// The value of the RAX register will be 0x1A, the leaf number of a custom ENCLS isntruction EABC.
+</span><span class="c1"></span>    <span class="k">return</span> <span class="n">__encls</span><span class="p">(</span><span class="mh">0x1A</span><span class="p">,</span> <span class="n">rbx</span><span class="p">,</span> <span class="n">rcx</span><span class="p">,</span> <span class="s">&#34;d&#34;</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div><p>The result from the VMM dmesg is as follows.<br>
+<img src="/assets/images/170421/handle_exit_reason_encls.png" alt="handle_exit_reason_encls">{: .center-image}</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>Intel Corporation. <em>Intel Software Guard Extensions Programming Reference</em>. <a href="https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf">[Online]</a>. Oct. 2014</li>
+<li>Intel Corporation. <em>Intel 64 and IA-32 Architectures Software Developer&rsquo;s Manual Volume 3</em>. <a href="https://software.intel.com/sites/default/files/managed/a4/60/325384-sdm-vol-3abcd.pdf">[Online]</a>. Mar. 2017</li>
+</ul>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/sgx">sgx</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

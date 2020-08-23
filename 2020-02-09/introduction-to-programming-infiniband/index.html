@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Introduction to Programming Infiniband RDMA">
+<meta itemprop="description" content="This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.">
+<meta itemprop="datePublished" content="2020-02-09T19:58:00+09:00" />
+<meta itemprop="dateModified" content="2020-02-09T19:58:00+09:00" />
+<meta itemprop="wordCount" content="2234">
+
+
+
+<meta itemprop="keywords" content="mellanox,rdma,linux,study," />
+<meta property="og:title" content="Introduction to Programming Infiniband RDMA" />
+<meta property="og:description" content="This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/" />
+<meta property="article:published_time" content="2020-02-09T19:58:00+09:00" />
+<meta property="article:modified_time" content="2020-02-09T19:58:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Introduction to Programming Infiniband RDMA"/>
+<meta name="twitter:description" content="This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Introduction to Programming Infiniband RDMA</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Feb 9, 2020</span></div>
+				<h1>Introduction to Programming Infiniband RDMA</h1>
+			</header>
+			<div class="content">
+				<p>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples.
+It was hard to understand how it works, and here I summarize what I got.</p>
+<h1 id="backgrounds">Backgrounds<a href="#backgrounds" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h3 id="channel-adapter-ca">Channel Adapter (CA)<a href="#channel-adapter-ca" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Channel adapter refers <strong>an end node</strong> in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p><img src="/assets/images/200209/hca.png" alt="hca">
+These Infiniband network interface cards are called <strong>a (host) channel adapters (HCAs)</strong> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<h3 id="queue-pair-qp-a-set-of-a-send-queue-sq-a-receive-queue-rq-and-a-completion-queue-cq">Queue Pair (QP), a set of a Send Queue (SQ), a Receive Queue (RQ), and a Completion Queue (CQ)<a href="#queue-pair-qp-a-set-of-a-send-queue-sq-a-receive-queue-rq-and-a-completion-queue-cq" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>HCAs communicate with each other using <strong>work queues</strong>. Three types of the queues are: (1) send queue (SQ), (2) receive queue (RQ), and (3) a completion queue.
+SQ and RQ are always grouped and managed as a queue pair (QP).</p>
+<p><img src="/assets/images/200209/queue_pair.png" alt="qp"> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p>We can <strong>post a work request (WR) by generating a work queue entry (WRE) into the work queue</strong>,
+e.g. (1) posting a send work request into the SQ to send some data to a remote node, (2) posting a receive work request into the RQ to receive data from a remote node, etc.
+Posted work requests are directly handled by hardware (HCA) <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
+Once a request is completed, the hardware posts a Work Completion (WC) into a completion queue (CQ). Programming Interface provides flexibility that we can specify distinct completion queues to the SQ and the RQ,
+or use one CQ for the entire QP.</p>
+<blockquote>
+<p>In short, programming RDMA program is roughly easy: <strong>generate a QP and a CQ (and other required data structures for this operation, which will be introduced later), connect the QP to the remote node, and generate a work request (WR) and post it into the QP</strong>.</p>
+<p>Then the HCA transfers your orders to the connected counterpart.</p>
+</blockquote>
+<h1 id="libibverbs-apis">libibverbs APIs<a href="#libibverbs-apis" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p><code>libibverbs</code> library provides high level userspace APIs to use Infiniband HCAs <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
+With the APIs, the program runs as the following simplified description:</p>
+<ol>
+<li><strong>Create an Infiniband context</strong> (<code>struct ibv_context* ibv_open_device()</code>)</li>
+<li>Create a protection domain (<code>struct ibv_pd* ibv_alloc_pd()</code>)</li>
+<li>Create a completion queue (<code>struct ibv_cq* ibv_create_cq()</code>)</li>
+<li><strong>Create a queue pair</strong> (<code>struct ibv_qp* ibv_create_qp()</code>)</li>
+<li>Exchange identifier information to establish connection</li>
+<li><strong>Change the queue pair state</strong> (<code>ibv_modify_qp()</code>): change the state of the queue pair from RESET to INIT, RTR (Ready to Receive), and finally RTS (Ready to Send) <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup></li>
+<li>Register a memory region (<code>ibv_reg_mr()</code>)</li>
+<li>Exchange memory region information to handle operations</li>
+<li><strong>Perform data communication</strong></li>
+</ol>
+<blockquote>
+<p>In <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, [4], and many example codes, <em>6: memory region registration</em> is illustrated as a part of initialization (somewhere between step 2~6).
+However, <strong>there is no problem for lazy registration</strong> and memory regions can dynamically be registered and deregistered at any time before posting a work request (after step 6).</p>
+<p>More specifically, <strong>I want to divide the program flow to two groups: step 1~6 as an initialization phase, step 7~9 as a runtime phase.</strong>
+We will discuss more about this in step 7.</p>
+</blockquote>
+<p>Note that <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> listed and grouped related functions well.
+I only show how the sequence of those function calls should be.</p>
+<h2 id="1-create-an-infiniband-context">1. Create an Infiniband context<a href="#1-create-an-infiniband-context" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Open the HCA and generate a userspace device context.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="nf">createContext</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">device_name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="cm">/* There is no way to directly open the device with its name; we should get the list of devices first. */</span>
+  <span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">num_devices</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="nc">ibv_device</span><span class="o">**</span> <span class="n">device_list</span> <span class="o">=</span> <span class="n">ibv_get_device_list</span><span class="p">(</span><span class="o">&amp;</span><span class="n">num_devices</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_devices</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="cm">/* match device name. open the device and return it */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">device_name</span><span class="p">.</span><span class="n">compare</span><span class="p">(</span><span class="n">ibv_get_device_name</span><span class="p">(</span><span class="n">device_list</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">context</span> <span class="o">=</span> <span class="n">ibv_open_device</span><span class="p">(</span><span class="n">device_list</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* it is important to free the device list; otherwise memory will be leaked. */</span>
+  <span class="n">ibv_free_device_list</span><span class="p">(</span><span class="n">device_list</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">context</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Unable to find the device &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">device_name</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">context</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="2-create-a-protection-domain">2. Create a protection domain<a href="#2-create-a-protection-domain" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Literally create a protection domain, protecting resources from arbitrary accesses from the remote.
+Components that can be registered to a protection domain is</p>
+<ul>
+<li>memory regions (MRs)</li>
+<li>memory windows (MWs)</li>
+<li>queue pairs (QPs)</li>
+<li>shared receive queues (SRQs)</li>
+<li>address handles (AH) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</li>
+</ul>
+<blockquote>
+<p>Note that completion queues (CQs) are not in protection domains <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+</blockquote>
+<blockquote>
+<p>e.g. Registering a memory region requires a pointer to a protection domain, indicating that this memory region will be registered to the protection domain.</p>
+<p><code>struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, ...);</code> <a href="https://linux.die.net/man/3/ibv_reg_mr">[manual page]</a></p>
+</blockquote>
+<p>As explained, memory regions are not necessarily to be registered right after creating a protection domain.
+As queue pairs are also registered to the protection domain, creating a protection domain is in an early initialization step.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="n">createContext</span><span class="p">(</span><span class="cm">/* device name */</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">protection_domain</span> <span class="o">=</span> <span class="n">ibv_alloc_pd</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+</code></pre></div><h2 id="3-create-a-completion-queue">3. Create a completion queue<a href="#3-create-a-completion-queue" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>It is a prerequisite step to create a queue pair, like step 2.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="n">createContext</span><span class="p">(</span><span class="cm">/* device name */</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="n">cq_size</span> <span class="o">=</span> <span class="mh">0x10</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">completion_queue</span> <span class="o">=</span> <span class="n">ibv_create_cq</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">cq_size</span><span class="p">,</span> <span class="k">nullptr</span><span class="p">,</span> <span class="k">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div><blockquote>
+<p>Function signature for <code>ibv_create_cq</code> is: <code>struct ibv_cq *ibv_create_cq(struct ibv_context *context, int cqe, void *cq_context, struct ibv_comp_channel *channel, int comp_vector);</code>. <a href="https://linux.die.net/man/3/ibv_create_cq">[manual page]</a></p>
+<p>All examples that I saw pass <code>nullptr</code> to both <code>cq_context</code> and <code>channel</code> and worked well, so I do not understand what they exactly do.</p>
+</blockquote>
+<h2 id="4-create-a-queue-pair">4. Create a queue pair<a href="#4-create-a-queue-pair" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Now we are ready to create a queue pair.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="nf">createQueuePair</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">cq</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="nc">ibv_qp_init_attr</span> <span class="n">queue_pair_init_attr</span><span class="p">;</span>
+  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">queue_pair_init_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">queue_pair_init_attr</span><span class="p">));</span>
+  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">qp_type</span> <span class="o">=</span> <span class="n">IBV_QPT_RC</span><span class="p">;</span>
+  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">sq_sig_all</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>       <span class="c1">// if not set 0, all work requests submitted to SQ will always generate a Work Completion.
+</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">send_cq</span> <span class="o">=</span> <span class="n">cq</span><span class="p">;</span>         <span class="c1">// completion queue can be shared or you can use distinct completion queues.
+</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">recv_cq</span> <span class="o">=</span> <span class="n">cq</span><span class="p">;</span>         <span class="c1">// completion queue can be shared or you can use distinct completion queues.
+</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_send_wr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// increase if you want to keep more send work requests in the SQ.
+</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_recv_wr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// increase if you want to keep more receive work requests in the RQ.
+</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_send_sge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// increase if you allow send work requests to have multiple scatter gather entry (SGE).
+</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_recv_sge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// increase if you allow receive work requests to have multiple scatter gather entry (SGE).
+</span><span class="c1"></span>
+  <span class="k">return</span> <span class="n">ibv_create_qp</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue_pair_init_attr</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><blockquote>
+<p><code>qp_type</code> indiciates the type of this queue pair. There are three types of queue pairs: (1) Reliable Connection (RC), (2) Unreliable Connection (UC), and (3) Unreliable Datagram (UD).
+Refer to <em>Chapter 2.2 Transport Modes</em> in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> for more details.</p>
+</blockquote>
+<h2 id="5-exchange-identifier-information-to-establish-connection-and-6-change-the-queue-pair-state">5. Exchange identifier information to establish connection and 6. change the queue pair state<a href="#5-exchange-identifier-information-to-establish-connection-and-6-change-the-queue-pair-state" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Right after created, the queue pair has a state <code>RESET</code>. With this state the queue pair does not work. We have to establish queue pair connection with another queue pair to make it work.
+The queue pair state machine diagram is as follows.</p>
+<p><img src="/assets/images/200209/qp_state_machine.png" alt="qp state machine"> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></p>
+<p>In order to have a working queue pair, we need to modify the queue pair&rsquo;s state to either <strong>RTR (Ready to Receive) or RTS(Ready to Send)</strong>, by using <code>ibv_modfiy_qp()</code>.</p>
+<blockquote>
+<p><code>int ibv_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask);</code> <a href="https://linux.die.net/man/3/ibv_modify_qp">[manual page]</a></p>
+</blockquote>
+<p>Following the state machine diagram, we first should change the state to <code>INIT</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToInit</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">init_attr</span><span class="p">;</span>
+  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">init_attr</span><span class="p">));</span>
+  <span class="n">init_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_INIT</span><span class="p">;</span>
+  <span class="n">init_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">device_port_</span><span class="p">;</span>
+  <span class="n">init_attr</span><span class="p">.</span><span class="n">pkey_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">init_attr</span><span class="p">.</span><span class="n">qp_access_flags</span> <span class="o">=</span> <span class="n">IBV_ACCESS_LOCAL_WRITE</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_READ</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_WRITE</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_PKEY_INDEX</span> <span class="o">|</span> <span class="n">IBV_QP_PORT</span> <span class="o">|</span> <span class="n">IBV_QP_ACCESS_FLAGS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Then change the state to <code>RTR</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTR</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">destination_qp_number</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">destination_local_id</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rtr_attr</span><span class="p">;</span>
+  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rtr_attr</span><span class="p">));</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTR</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">path_mtu</span> <span class="o">=</span> <span class="n">ibv_mtu</span><span class="o">::</span><span class="n">IBV_MTU_1024</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">rq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">max_dest_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">min_rnr_timer</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">is_global</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">src_path_bits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">ib_port</span><span class="p">;</span>
+  
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">dest_qp_num</span> <span class="o">=</span> <span class="n">destination_qp_number</span><span class="p">;</span>
+  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">dlid</span> <span class="o">=</span> <span class="n">destination_local_id</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_AV</span> <span class="o">|</span> <span class="n">IBV_QP_PATH_MTU</span> <span class="o">|</span> <span class="n">IBV_QP_DEST_QPN</span> <span class="o">|</span> <span class="n">IBV_QP_RQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">|</span> <span class="n">IBV_QP_MIN_RNR_TIMER</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Note that several arguments are taken.</p>
+<h3 id="ib_port">ib_port<a href="#ib_port" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><code>ib_port</code> is a port number that this queue pair uses in the host. You can easily see how many ports the device supports and their numbers with <code>ibstat</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ ibstat
+CA <span class="s1">&#39;mlx5_0&#39;</span>
+        CA type: MT4115
+        Number of ports: <span class="m">1</span>
+        Firmware version: 12.23.1020
+        Hardware version: <span class="m">0</span>
+        Node GUID: /* omitted */
+        System image GUID: /* omitted */
+        Port 1:
+                State: Active
+                Physical state: LinkUp
+                Rate: <span class="m">56</span>
+                Base lid: <span class="m">13</span>
+                LMC: <span class="m">0</span>
+                SM lid: <span class="m">9</span>
+                Capability mask: /* omitted */
+                Port GUID: /* omitted */
+                Link layer: InfiniBand
+</code></pre></div><blockquote>
+<p>Install <code>infiniband-diags</code> if you want to use <code>ibstat</code> command.</p>
+</blockquote>
+<p>My CA has one port and its number is 1. You can manually pass this information when you launch a program.</p>
+<h3 id="destination_qp_number-and-destination_local_id">destination_qp_number and destination_local_id<a href="#destination_qp_number-and-destination_local_id" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>For the queue pair to connect the other queue pair and be ready to receive, it has to know information about the peer QP.
+<code>destination_qp_number</code> and <code>destination_local_id</code> are the ones.</p>
+<ul>
+<li><code>destination_local_id</code>: it works as a <strong>local identifier</strong> in the subnet where the HCA is assigned to. this is assigned to each ports by the subnet manager and <strong>unique within its subnet</strong>.
+For communications over the subnet, we can use GID (Global ID), but it will not be covered in this post.
+To find a local id, you can use the following function.</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">uint16_t</span> <span class="nf">getLocalId</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ibv_port_attr</span> <span class="n">port_attr</span><span class="p">;</span>
+  <span class="n">ibv_query_port</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ib_port</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">port_attr</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">port_attr</span><span class="p">.</span><span class="n">lid</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li><code>destination_qp_number</code>: a queue pair is at least <em>created</em>, so the unique identifier for the queue pair is already assigned.</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">uint32_t</span> <span class="nf">getQueuePairNumber</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">qp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">qp</span><span class="o">-&gt;</span><span class="n">qp_num</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><blockquote>
+<p>Note that these return <strong>its local information, not a destination information (information of the opposite node)</strong>. It means these functions must be called in each side and they exchange information to know each other&rsquo;s destination information.</p>
+<p><strong>For this purpose, all examples that I referred use a TCP socket.</strong> Before processing RDMA operations, a server and a client establish a TCP connection and exchange their local ID and QP number.
+This is why step 5 includes <em>exchange</em> identifier information.</p>
+<p>The TCP connection is also used in step 8, to let the counterpart know about its memory regions.</p>
+</blockquote>
+<p>After calling <code>changeQueuePairStateToRTR()</code>, the queue pair is not able to <em>receive data</em> by posting receive work requests. If you want to make it able to send data, the state should be further changed to RTS.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTS</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rts_attr</span><span class="p">;</span>
+  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rts_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rts_attr</span><span class="p">));</span>
+  <span class="n">rts_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTS</span><span class="p">;</span>
+  <span class="n">rts_attr</span><span class="p">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
+  <span class="n">rts_attr</span><span class="p">.</span><span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+  <span class="n">rts_attr</span><span class="p">.</span><span class="n">rnr_retry</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+  <span class="n">rts_attr</span><span class="p">.</span><span class="n">sq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">rts_attr</span><span class="p">.</span><span class="n">max_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_TIMEOUT</span> <span class="o">|</span> <span class="n">IBV_QP_RETRY_CNT</span> <span class="o">|</span> <span class="n">IBV_QP_RNR_RETRY</span> <span class="o">|</span> <span class="n">IBV_QP_SQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_QP_RD_ATOMIC</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>As peer information is already stored at RTR step, changing the state to RTS does not require any further peer information.</p>
+<h2 id="7-register-a-memory-region">7. Register a memory region<a href="#7-register-a-memory-region" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Until step 6, it is an <strong>initialization phase</strong>. After step 6 the queue pair is <em>able to communicate</em> each other; a posted work request is forwarded to the opposite node, the HCA of which will consume it.
+Of course, this will be rejected due to permission error <em>since there is no memory regions registered</em>; work requests are unable to read or write anything from or to any space of the peer node.</p>
+<p>In other words, it is okay to register memory regions <em>before</em> the peer node posts a work request.</p>
+<p>Before discussing it further, let us dig into types of operations that Infiniband supports (Refer to *Section 2.1 in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>):</p>
+<ul>
+<li>Send/Send with Immediate: [RTS state required] send data to a remote QP&rsquo;s receive queue.</li>
+<li>Receive: [RTR/RTS state required] corresponding operation to a send operation; the host is notified when a data buffer has been received.</li>
+<li>RDMA Read: [RTS state required] read data from the remote memory. The remote side <strong>is not aware of</strong> this operation being done.</li>
+<li>RDMA Write/RDMA Write with Immediate: [RTS state required] write data to the remote memory. The remote side <strong>is not aware of</strong> this operation being done.</li>
+<li>Atomic Fetch and Swap / Atomic Compare and Swap: Refer to *Section 2.1.4 in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></li>
+</ul>
+<p><img src="/assets/images/200209/operation_diagram_send.png" alt="operation diagram: send"></p>
+<p><img src="/assets/images/200209/operation_diagram_rdma_read.png" alt="operation diagram: rdma read"></p>
+<p><img src="/assets/images/200209/operation_diagram_rdma_write.png" alt="operation diagram: rdma write"></p>
+<ul>
+<li>Those sequence diagrams are refined images illustrated in <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</li>
+</ul>
+<p>Personally thinking, the main reason memory region registration is mostly in <em>initialization phase</em> is due to RDMA operations.
+Different from receive operation, where the remote side actively post a receive work request so that it is able to decide the moment that a memory region is registered (just before posting a receive work request),
+<strong>RDMA read and RDMA write can be done without any operations in the remote node, requiring the memory region to be registered in advance</strong>.</p>
+<p>Again, in operation, there is no problem <em>initializing</em> a queue pair without registering memory regions. It is <em>a runtime problem</em> that the HCA cannot read or write data from or to the remote node&rsquo;s memory.</p>
+<p>To register a memory region, use <code>ibv_reg_mr()</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">registerMemoryRegion</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">ibv_reg_mr</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">IBV_ACCESS_LOCAL_WRITE</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_READ</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_WRITE</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><blockquote>
+<p>Note that we can specify the range of remote access in this memory region. Five flags are provided <a href="https://linux.die.net/man/3/ibv_reg_mr">[manual page]</a>:</p>
+<ul>
+<li><code>IBV_ACCESS_LOCAL_WRITE</code>: enable local write access</li>
+<li><code>IBV_ACCESS_REMOTE_WRITE</code>: enable remote write access</li>
+<li><code>IBV_ACCESS_REMOTE_READ</code>: enable remote read access</li>
+<li><code>IBV_ACCESS_REMOTE_ATOMIC</code>: enable remote atomic operation access</li>
+<li><code>IBV_ACCESS_MW_BIND</code>: enable memory window binding</li>
+</ul>
+<p>If <code>IBV_ACCESS_REMOTE_WRITE</code> or <code>IBV_ACCESS_REMOTE_ATOMIC</code> is set, then <code>IBV_ACCESS_LOCAL_WRITE</code> must be set too.</p>
+</blockquote>
+<h2 id="8-exchange-memory-region-information-to-handle-operations-and-9-perform-data-communication">8. Exchange memory region information to handle operations and 9. Perform data communication<a href="#8-exchange-memory-region-information-to-handle-operations-and-9-perform-data-communication" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>TODO</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Programming_user_manual.pdf">RDMA Aware Programming User Manual</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.mellanox.com/related-docs/products/IB_Adapter_card_brochure.pdf">Infiniband Adapter Card Brochure</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://blog.zhaw.ch/icclab/infiniband-an-introduction-simple-ib-verbs-program-with-rdma-write/">InfiniBand: An Introduction + Simple IB verbs program with RDMA Write</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.csm.ornl.gov/workshops/openshmem2013/documents/presentations_and_tutorials/Tutorials/Verbs%20programming%20tutorial-final.pdf">Verbs Programming Tutorial</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://www.rdmamojo.com/2012/05/05/qp-state-machine/">QP State Machine</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://www.openfabrics.org/images/eventpresos/2017presentations/102_Buildingblock_JSonar.pdf">Building a block storage application on OFED - Challenges</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/mellanox">mellanox</a></span><span class="tag"><a href="https://insujang.github.io/tags/rdma">rdma</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

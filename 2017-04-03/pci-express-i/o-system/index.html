@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="PCI Express I/O System">
+<meta itemprop="description" content="I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.
+To encapsulate the details and oddities of different devices, the kernel of an operating system is structured to use device-driver modules.
+A device communicates with a computer system by sending signals over a cable or through the air.
+ The device communicates with the machine via a connection point, or port.">
+<meta itemprop="datePublished" content="2017-04-03T12:12:58+09:00" />
+<meta itemprop="dateModified" content="2017-04-03T12:12:58+09:00" />
+<meta itemprop="wordCount" content="522">
+
+
+
+<meta itemprop="keywords" content="research,pcie,cuda," />
+<meta property="og:title" content="PCI Express I/O System" />
+<meta property="og:description" content="I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.
+To encapsulate the details and oddities of different devices, the kernel of an operating system is structured to use device-driver modules.
+A device communicates with a computer system by sending signals over a cable or through the air.
+ The device communicates with the machine via a connection point, or port." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2017-04-03/pci-express-i/o-system/" />
+<meta property="article:published_time" content="2017-04-03T12:12:58+09:00" />
+<meta property="article:modified_time" content="2017-04-03T12:12:58+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PCI Express I/O System"/>
+<meta name="twitter:description" content="I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.
+To encapsulate the details and oddities of different devices, the kernel of an operating system is structured to use device-driver modules.
+A device communicates with a computer system by sending signals over a cable or through the air.
+ The device communicates with the machine via a connection point, or port."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>PCI Express I/O System</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 3, 2017</span></div>
+				<h1>PCI Express I/O System</h1>
+			</header>
+			<div class="content">
+				<h1 id="io-hardware-overview">I/O Hardware Overview<a href="#io-hardware-overview" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>The basic I/O hardware elements, such as <em><strong>ports, buses, and device controllers</strong></em>,
+accomodate a wide variety of I/O devices.</p>
+<p>To encapsulate the details and oddities of different devices, the kernel of an
+operating system is structured to use device-driver modules.</p>
+<p>A device communicates with a computer system by sending signals over a cable or through the air.</p>
+<ul>
+<li>The device communicates with the machine via a connection point, or <strong>port</strong>.</li>
+<li>If devices share a common set of wires, the connection is called a <strong>bus</strong>. (e.g. PCI bus)</li>
+<li><strong>A controller</strong> is a collection of electronics that can operate a port, a bus, or a device.</li>
+</ul>
+<p>How can the processor give commands and data to a controller to accomplish an I/O transfer?
+The short answer is that the controlelr has one or more registers for data and control signals.</p>
+<p>Two ways in which this communiation can occur:</p>
+<ol>
+<li>Use of <strong>special I/O instructions</strong> that specify the transfer of a byte or word to an I/O port address.
+The I/O instruction triggers bus lines to select the proper device and to move bits into or out of a device register.</li>
+<li>Using <strong>memory-mapped I/O</strong>. The device-control registers are mapped into the address space
+of the processor.
+The CPU executes I/O requests using the standard data-transfer instructions to read and write the device-control registers at their mapped locations in physical memory.</li>
+</ol>
+<h1 id="nvidia-gpu-on-pci-express">NVIDIA GPU on PCI Express<a href="#nvidia-gpu-on-pci-express" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>The current form of the GPU is a PCI express device. The NVIDIA GPU exposes the following base address registers (BARs) to the system through PCI in addition to the PCI configuration space and VGA-compatible I/O ports.</p>
+<dl>
+<dt>BAR0</dt>
+<dd>Memory-mapped I/O (MMIO) registers</dd>
+<dt>BAR1</dt>
+<dd>Device memory windows.</dd>
+<dt>BAR2/3</dt>
+<dd>Complementary space of BAR1.</dd>
+<dt>BAR5</dt>
+<dd>I/O port.</dd>
+<dt>BAR6</dt>
+<dd>PCI ROM.</dd>
+</dl>
+<ul>
+<li>This information is from <em>&lsquo;Implementing open-source CUDA runtime&rsquo;</em>. I don&rsquo;t understand why they used BAR numbers 0~3, 5, and 6. Typically the BAR numbers are from 0 to 5 (total 6 BARs).</li>
+<li>I think PCI ROM address is not saved in the base address registers. Will be explained later.</li>
+</ul>
+<p>BARs are standard registers and specified in PCI express configuration space header (type 0) as follows. Each BAR is 32-bit wide registers (BAR0: <code>10h~14h</code>, BAR1: <code>14h~18h</code>, etc).</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Pci-config-space.svg/1280px-Pci-config-space.svg.png" alt="PCIe configuration space header">{: width=&quot;400px&rdquo; .center-image}
+<em>Figure: PCIe configuration space header for type 0</em>
+{: .center}</p>
+<p>The most significant area is the BAR0 presenting MMIO registers.
+This is the main control space of the GPU, through which <strong>all hardware engines are controlled</strong>.</p>
+<p>Here is the GPU information provided by <code>lspci</code> command that I am using.
+<img src="/assets/images/170403/gpu_lspci.png" alt="gpu_lspci"></p>
+<p>BAR0: <code>0xde000000</code> (MMIO registers)<br>
+BAR1 and BAR2: <code>0xd0000000</code> (device memory windows? 64-bit memory-map uses two adjacent BARs)<br>
+BAR3 and BAR4: <code>0xd8000000</code> (device memory windows? 64-bit memory map)<br>
+BAR5: <code>0xe000</code> (I/O ports)</p>
+<p>PCI Expansion ROM address <code>0xdf000000</code> is saved in <code>30h~34h</code> (Expansion ROM Base Address) in configuration space header, not BAR 6, as explained in <em>&lsquo;Implementing open-source CUDA runtime&rsquo;</em>.</p>
+<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>Silberschatz A, Galbin P.B, Gagne G, Operating System Concepts, Wiley, 2012, ISBN:9781118063330</li>
+<li>PCI SIG, PCI Express Base Specification Revision 3.0, 2010</li>
+<li>Root Complex, Wikipedia [Online] <a href="https://en.wikipedia.org/wiki/Root_complex">https://en.wikipedia.org/wiki/Root_complex</a></li>
+<li>PCI configuration space, Wikipedia [Online] <a href="https://en.wikipedia.org/wiki/PCI_configuration_space">https://en.wikipedia.org/wiki/PCI_configuration_space</a></li>
+<li>Kato S, Implementing open-source CUDA runtime, In Proceedings of the 54-th Programming Symposium, 2013</li>
+</ul>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/pcie">pcie</a></span><span class="tag"><a href="https://insujang.github.io/tags/cuda">cuda</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

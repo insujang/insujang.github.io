@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>io on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/io/</link>
+    <description>Recent content in io on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Mon, 09 Oct 2017 15:26:34 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Intel SGX Sealing</title>
+      <link>https://insujang.github.io/2017-10-09/intel-sgx-sealing/</link>
+      <pubDate>Mon, 09 Oct 2017 15:26:34 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-10-09/intel-sgx-sealing/</guid>
+      <description>There is a few information related to sealing, even no detailed explanation in the paper: Intel SGX explaned. All in this post are from Intel, with a little thought of mine.
+Sealing Sealing is a service that Intel provides with Intel SGX technology for secure data saving.
+Intel SGX provides protections data only if it is in the enclave, part of main memory. Therefore, when the enclave process exits, the enclave will be destroyed and any data that is secured whithin the enclave will be lost.</description>
+    </item>
+    
+    <item>
+      <title>NVMeDirect</title>
+      <link>https://insujang.github.io/2017-09-06/nvmedirect/</link>
+      <pubDate>Wed, 06 Sep 2017 20:40:37 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2017-09-06/nvmedirect/</guid>
+      <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
+In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;quot;800px&amp;rdquo;}
+As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Introduction to Fedora Silverblue">
+<meta itemprop="description" content="Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:
+ libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.">
+<meta itemprop="datePublished" content="2020-07-15T12:35:00+09:00" />
+<meta itemprop="dateModified" content="2020-07-15T12:35:00+09:00" />
+<meta itemprop="wordCount" content="2302">
+
+
+
+<meta itemprop="keywords" content="linux,study," />
+<meta property="og:title" content="Introduction to Fedora Silverblue" />
+<meta property="og:description" content="Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:
+ libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-07-15/fedora-silverblue/" />
+<meta property="article:published_time" content="2020-07-15T12:35:00+09:00" />
+<meta property="article:modified_time" content="2020-07-15T12:35:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Introduction to Fedora Silverblue"/>
+<meta name="twitter:description" content="Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:
+ libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Introduction to Fedora Silverblue</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 15, 2020</span></div>
+				<h1>Introduction to Fedora Silverblue</h1>
+			</header>
+			<div class="content">
+				<h1 id="fedora-silverblue">Fedora Silverblue<a href="#fedora-silverblue" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p><img src="https://docs.fedoraproject.org/en-US/fedora-silverblue/_images/silverblue-logo.svg" alt="silverblue"></p>
+<p>Fedora Silverblue <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is an <em>immutable</em> desktop operating system based on Fedora Linux distribution.
+What <em>immutable</em> does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment.
+It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).</p>
+<p>For this purpose, Fedora Silverblue adopted two technologies:</p>
+<ol>
+<li>libostree (OSTree)</li>
+<li>Flatpak</li>
+</ol>
+<h1 id="libostree-ostree"><code>libostree</code> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><a href="#libostree-ostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.
+By using libostree, a filesystem commit (image) can be used to boot Linux, making it easy to upgrade, rollback, and manage the filesystem.
+To make it feasible, the filesystem is required to be always clean (without users&rsquo; configurations, etc); hence most directories are mounted as read-only.</p>
+<p>However, according to Linux Filesystem Hierarchy Standard (FHS) <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, toe rootfs must have:</p>
+<ul>
+<li><code>/bin</code>: essential command binaries</li>
+<li><code>/boot</code>: static files of the boot loader</li>
+<li><code>/dev</code>: device files</li>
+<li><code>/etc</code>: host-specific system configuration</li>
+<li><code>/lib</code>: essential shared libraries and kernel modules</li>
+<li><code>/media</code>: mount point for removable media</li>
+<li><code>/mnt</code>: mount point for mounting a filesystem temporarily</li>
+<li><code>/opt</code>: add-oin application software packages</li>
+<li><code>/run</code>: data relevant to running processes</li>
+<li><code>/sbin</code>: essential system binary</li>
+<li><code>/srv</code>: data for services provided by this system</li>
+<li><code>/tmp</code>: temporary files</li>
+<li><code>/usr</code>: secondary hierarchy</li>
+<li><code>/var</code>: variable data</li>
+<li><code>/bome</code>: user home directories (optional)</li>
+<li><code>/lib&lt;qual&gt;</code>: alternate format essential shared libraries (e.g. <code>/lib64</code>, optional)</li>
+<li><code>/root</code>: home directory for the root user (optional)</li>
+</ul>
+<p>some of which can be modified by legacy packages (deb, rpm).
+To satisfy the FHS while keep the rootfs clean, Fedora Silverblue makes symbolic links for writable directories, such as <code>/home</code> to <code>/var/home</code>.</p>
+<p>In Fedora Silverblue, the filesystem is immutable and <em>stateless</em>, and all runtime state is written and stored in <code>/var</code>:</p>
+<ul>
+<li><code>/home</code> -&gt; <code>/var/home</code></li>
+<li><code>/opt</code> -&gt; <code>/var/opt</code></li>
+<li><code>/root</code> -&gt; <code>/var/roothome</code></li>
+<li><code>/usr/local</code> -&gt; <code>/var/usrlocal</code></li>
+<li><code>/mnt</code> -&gt; <code>/var/mnt</code></li>
+<li><code>/tmp</code> -&gt; <code>/sysroot/tmp</code></li>
+</ul>
+<p>and so on.</p>
+<p>This approach (making the rootfs read-only) is not new; Android <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>, ChromeOS <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> have also been deployed with read-only rootfs.
+They also uses Linux as their base system, however, Fedora Silverblue is one of the first Linux distributions that provides Linux desktop environment with read-only rootfs (another one is EndlessOS).</p>
+<p>Note that Fedora Silverblue uses <code>rpm-ostree</code>, a modified version of libostree, but in this post I will say the fundamental properties of libostree only.</p>
+<h2 id="mouting-the-specified-rootfs-image-by-libostree">Mouting the specified rootfs image by libostree<a href="#mouting-the-specified-rootfs-image-by-libostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>So, how libostree mounts the rootfs read-only when booting the Linux kernel? libostree&rsquo;s customized initramfs parses kernel command line arguments <code>ostree=</code>, and mounts the specified rootfs image to the rootfs.</p>
+<p>You can find the current kernel command line argument by <code>rpm-ostree</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ rpm-ostree kargs
+<span class="nv">resume</span><span class="o">=</span>/dev/mapper/fedora-swap rd.lvm.lv<span class="o">=</span>fedora/root rd.lvm.lv<span class="o">=</span>fedora/swap rhgb quiet <span class="nv">root</span><span class="o">=</span>/dev/mapper/fedora-root <span class="nv">ostree</span><span class="o">=</span>/ostree/boot.0/fedora/&lt;image-commit-id&gt;/0
+</code></pre></div><p>The way libostree mounts the specified path into <code>/</code> is well documented in <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>:</p>
+<ul>
+<li>Parse the <code>ostree=</code> kernel command line argument in the initramfs</li>
+<li>Set up a read-only bind mount on <code>/usr</code></li>
+<li>Bind mount the deployment&rsquo;s <code>/sysroot</code> to the physical <code>/</code></li>
+<li>Use <code>mount(MS_MOVE)</code> to make the deployment root appear to be the root filesystem</li>
+</ul>
+<p>With the result <code>rpm-ostree kargs</code> above, the root (<code>root=</code>) is <code>/dev/mapper/fedora-root</code>, the physical <code>/</code> of which will be mounted as <code>/sysroot</code> by initramfs.
+Currently <code>/</code> is initramfs, and not mounted by actual device filesystem yet (step 1).</p>
+<p>An then, initramfs uses <code>ostree=</code> argument to find actual path for rootfs from the device (in my case, <code>/ostree/boot.0/fedora/&lt;image-commit-id&gt;/0</code>, at this moment it can be accessed as <code>/sysroot/ostree/boot.0/fedora/&lt;image-commit-id&gt;/0</code>) and bind mounts it to the logical <code>/</code> (step 3).</p>
+<p>The result is as follows (note that <code>/ostree/boot.0/fedora/&lt;image-commit-id&gt;/0</code> is a symbolic link to <code>/ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;/0</code>).</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ findmnt
+TARGET                        SOURCE                                                         FSTYPE          OPTIONS
+/                             /dev/mapper/fedora-root<span class="o">[</span>/ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;.0<span class="o">]</span>
+│                                                                                            ext4            rw,relatime,seclabel
+├─/sys                        sysfs                                                          sysfs           rw,nosuid,nodev,noexec,relatime,seclabel
+...
+├─/tmp                        tmpfs                                                          tmpfs           rw,nosuid,nodev,seclabel
+├─/sysroot                    /dev/mapper/fedora-root                                        ext4            rw,relatime,seclabel
+├─/usr                        /dev/mapper/fedora-root<span class="o">[</span>/ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;.0/usr<span class="o">]</span>
+│                                                                                            ext4            ro,relatime,seclabel
+├─/var                        /dev/mapper/fedora-root<span class="o">[</span>/ostree/deploy/fedora/var<span class="o">]</span>             ext4            rw,relatime,seclabel
+│ ├─/var/home                 /dev/mapper/fedora-home                                        ext4            rw,relatime,seclabel
+│ └─/var/lib/nfs/rpc_pipefs   sunrpc                                                         rpc_pipefs      rw,relatime
+...
+</code></pre></div><p>It is executed by <code>ostree/src/switchroot/ostree-prepare-root.c</code> [<a href="https://github.com/ostreedev/ostree/blob/master/src/switchroot/ostree-prepare-root.c">src</a>]:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* -*- c-file-style: &#34;gnu&#34; -*-
+</span><span class="cm"> * Switch to new root directory and start init.
+</span><span class="cm"> *
+</span><span class="cm"> * Copyright 2011,2012,2013 Colin Walters &lt;walters@verbum.org&gt;
+</span><span class="cm"> *
+</span><span class="cm"> * Based on code from util-linux/sys-utils/switch_root.c,
+</span><span class="cm"> * Copyright 2002-2009 Red Hat, Inc.  All rights reserved.
+</span><span class="cm"> * Authors:
+</span><span class="cm"> *  Peter Jones &lt;pjones@redhat.com&gt;
+</span><span class="cm"> *  Jeremy Katz &lt;katzj@redhat.com&gt;
+</span><span class="cm"> *
+</span><span class="cm"> * Relicensed with permission to LGPLv2+.
+</span><span class="cm"> *
+</span><span class="cm"> * SPDX-License-Identifier: LGPL-2.0+
+</span><span class="cm"> *
+</span><span class="cm"> * This library is free software; you can redistribute it and/or
+</span><span class="cm"> * modify it under the terms of the GNU Lesser General Public
+</span><span class="cm"> * License as published by the Free Software Foundation; either
+</span><span class="cm"> * version 2 of the License, or (at your option) any later version.
+</span><span class="cm"> *
+</span><span class="cm"> * This library is distributed in the hope that it will be useful,
+</span><span class="cm"> * but WITHOUT ANY WARRANTY; without even the implied warranty of
+</span><span class="cm"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+</span><span class="cm"> * Lesser General Public License for more details.
+</span><span class="cm"> *
+</span><span class="cm"> * You should have received a copy of the GNU Lesser General Public
+</span><span class="cm"> * License along with this library; if not, write to the
+</span><span class="cm"> * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+</span><span class="cm"> * Boston, MA 02111-1307, USA.
+</span><span class="cm"> */</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="p">...</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">root_mountpoint</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* pivot_root rotates two mount points around.  In this instance . (the
+</span><span class="cm">     * deploy location) becomes / and the existing / becomes /sysroot.  We
+</span><span class="cm">     * have to use pivot_root rather than mount --move in this instance
+</span><span class="cm">     * because our deploy location is mounted as a subdirectory of the real
+</span><span class="cm">     * sysroot, so moving sysroot would also move the deploy location.   In
+</span><span class="cm">     * reality attempting mount --move would fail with EBUSY. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">pivot_root</span> <span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">,</span> <span class="s">&#34;sysroot&#34;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;failed to pivot_root to deployment&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="cm">/* In this instance typically we have our ready made-up up root at
+</span><span class="cm">     * /sysroot/ostree/deploy/.../ (deploy_path) and the real rootfs at
+</span><span class="cm">     * /sysroot (root_mountpoint).  We want to end up with our made-up root at
+</span><span class="cm">     * /sysroot/ and the real rootfs under /sysroot/sysroot as systemd will be
+</span><span class="cm">     * responsible for moving /sysroot to /.
+</span><span class="cm">     *
+</span><span class="cm">     * We need to do this in 3 moves to avoid trying to move /sysroot under
+</span><span class="cm">     * itself:
+</span><span class="cm">     *
+</span><span class="cm">     * 1. /sysroot/ostree/deploy/... -&gt; /sysroot.tmp
+</span><span class="cm">     * 2. /sysroot -&gt; /sysroot.tmp/sysroot
+</span><span class="cm">     * 3. /sysroot.tmp -&gt; /sysroot
+</span><span class="cm">     */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mkdir</span> <span class="p">(</span><span class="s">&#34;/sysroot.tmp&#34;</span><span class="p">,</span> <span class="mo">0755</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;couldn&#39;t create temporary sysroot /sysroot.tmp&#34;</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">mount</span> <span class="p">(</span><span class="n">deploy_path</span><span class="p">,</span> <span class="s">&#34;/sysroot.tmp&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">MS_MOVE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;failed to MS_MOVE &#39;%s&#39; to &#39;/sysroot.tmp&#39;&#34;</span><span class="p">,</span> <span class="n">deploy_path</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">mount</span> <span class="p">(</span><span class="n">root_mountpoint</span><span class="p">,</span> <span class="s">&#34;sysroot&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">MS_MOVE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;failed to MS_MOVE &#39;%s&#39; to &#39;sysroot&#39;&#34;</span><span class="p">,</span> <span class="n">root_mountpoint</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">mount</span> <span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">,</span> <span class="n">root_mountpoint</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">MS_MOVE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;failed to MS_MOVE %s to %s&#34;</span><span class="p">,</span> <span class="n">deploy_path</span><span class="p">,</span> <span class="n">root_mountpoint</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">rmdir</span> <span class="p">(</span><span class="s">&#34;/sysroot.tmp&#34;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;couldn&#39;t remove temporary sysroot /sysroot.tmp&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="p">...</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">running_as_pid1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">execl</span> <span class="p">(</span><span class="s">&#34;/sbin/init&#34;</span><span class="p">,</span> <span class="s">&#34;/sbin/init&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">err</span> <span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&#34;failed to exec init inside ostree&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">exit</span> <span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>which is in ostree initramfs [<a href="https://github.com/ostreedev/ostree/blob/master/src/boot/mkinitcpio/ostree">src</a>]:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span>
+build<span class="o">()</span> <span class="o">{</span>
+    add_binary /usr/lib/ostree/ostree-prepare-root
+    add_binary /usr/lib/ostree/ostree-remount
+
+    add_file /usr/lib/systemd/system/ostree-prepare-root.service
+    add_symlink /usr/lib/systemd/system/initrd-switch-root.target.wants/ostree-prepare-root.service <span class="se">\
+</span><span class="se"></span>        /usr/lib/systemd/system/ostree-prepare-root.service
+<span class="o">}</span>
+</code></pre></div><p>and ostree-prepare-root is executed by systemd and logged in journal:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ jorunalctl
+...
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Starting dracut pre-mount hook...
+Jul <span class="m">08</span> 03:57:29 localhost kernel: audit: <span class="nv">type</span><span class="o">=</span><span class="m">1130</span> audit<span class="o">(</span>1594195049.283:10<span class="o">)</span>: <span class="nv">pid</span><span class="o">=</span><span class="m">1</span> <span class="nv">uid</span><span class="o">=</span><span class="m">0</span> <span class="nv">auid</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">ses</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">subj</span><span class="o">=</span>kernel <span class="nv">msg</span><span class="o">=</span><span class="s1">&#39;unit=dracut-initqueue comm=&#34;systemd&#34; exe=&#34;/usr/lib/systemd/systemd&#34; hostname=? addr=? terminal=? res=success&#39;</span>
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Finished dracut pre-mount hook. 
+Jul <span class="m">08</span> 03:57:29 localhost audit<span class="o">[</span>1<span class="o">]</span>: SERVICE_START <span class="nv">pid</span><span class="o">=</span><span class="m">1</span> <span class="nv">uid</span><span class="o">=</span><span class="m">0</span> <span class="nv">auid</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">ses</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">subj</span><span class="o">=</span>kernel <span class="nv">msg</span><span class="o">=</span><span class="s1">&#39;unit=dracut-pre-mount comm=&#34;systemd&#34; exe=&#34;/usr/lib/systemd/systemd&#34; hostname=? addr=? terminal=? res=success&#39;</span>
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Starting File System Check on /dev/mapper/fedora-root...
+Jul <span class="m">08</span> 03:57:29 localhost systemd-fsck<span class="o">[</span>670<span class="o">]</span>: /dev/mapper/fedora-root: clean, 199520/4587520 files, 2002583/18350080 blocks
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Finished File System Check on /dev/mapper/fedora-root.
+Jul <span class="m">08</span> 03:57:29 localhost audit<span class="o">[</span>1<span class="o">]</span>: SERVICE_START <span class="nv">pid</span><span class="o">=</span><span class="m">1</span> <span class="nv">uid</span><span class="o">=</span><span class="m">0</span> <span class="nv">auid</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">ses</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">subj</span><span class="o">=</span>kernel <span class="nv">msg</span><span class="o">=</span><span class="s1">&#39;unit=systemd-fsck-root comm=&#34;systemd&#34; exe=&#34;/usr/lib/systemd/systemd&#34; hostname=? addr=? terminal=? res=success&#39;</span>
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Mounting /sysroot...
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Mounted /sysroot.
+Jul <span class="m">08</span> 03:57:29 localhost kernel: EXT4-fs <span class="o">(</span>dm-0<span class="o">)</span>: mounted filesystem with ordered data mode. Opts: <span class="o">(</span>null<span class="o">)</span>
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Starting OSTree Prepare OS/...
+Jul <span class="m">08</span> 03:57:29 localhost ostree-prepare-root<span class="o">[</span>676<span class="o">]</span>: Resolved OSTree target to: /sysroot/ostree/deploy/fedora/deploy/b03f449af099faf5f6702e330d45b9b395cea3f286fe63e799d0a4dda9ce3e5d.0
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: sysroot-ostree-deploy-fedora-deploy-b03f449af099faf5f6702e330d45b9b395cea3f286fe63e799d0a4dda9ce3e5d.0-usr.mount: Succeeded.
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: sysroot-ostree-deploy-fedora-deploy-b03f449af099faf5f6702e330d45b9b395cea3f286fe63e799d0a4dda9ce3e5d.0.mount: Succeeded.
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Finished OSTree Prepare OS/.
+Jul <span class="m">08</span> 03:57:29 localhost audit<span class="o">[</span>1<span class="o">]</span>: SERVICE_START <span class="nv">pid</span><span class="o">=</span><span class="m">1</span> <span class="nv">uid</span><span class="o">=</span><span class="m">0</span> <span class="nv">auid</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">ses</span><span class="o">=</span><span class="m">4294967295</span> <span class="nv">subj</span><span class="o">=</span>kernel <span class="nv">msg</span><span class="o">=</span><span class="s1">&#39;unit=ostree-prepare-root comm=&#34;systemd&#34; exe=&#34;/usr/lib/systemd/systemd&#34; hostname=? addr=? terminal=? res=success&#39;</span>
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Reached target Initrd Root File System.
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Starting Reload Configuration from the Real Root...
+Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Reloading.
+</code></pre></div><h2 id="making-the-rootfs-read-only-by-libostree">Making the rootfs read-only by libostree<a href="#making-the-rootfs-read-only-by-libostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>OK. now we know that how libostree mounts the specified rootfs image into real <code>/</code>. But, although the document says the root is mouted read-only, actual mount result shows it is mounted writable:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ findmnt
+TARGET                        SOURCE                                                         FSTYPE          OPTIONS
+/                             /dev/mapper/fedora-root<span class="o">[</span>/ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;.0<span class="o">]</span>
+│                                                                                            ext4            rw,relatime,seclabel
+...
+</code></pre></div><p>But, I am not able to write any content in <code>/</code>. What happened?</p>
+<p>At first, I thought it is controlled by SELinux, since Fedora Silverblue enables SELinux by default.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ seenforce <span class="m">0</span>
+$ sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   permissive   &lt;----
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Memory protection checking:     actual <span class="o">(</span>secure<span class="o">)</span>
+Max kernel policy version:      <span class="m">32</span>
+</code></pre></div><p>But have no luck. No audit log appended in <code>/var/log/audit/audit.log</code> as well (even with <code>semodule -DB</code>; <code>-D</code> indicates ignoring <code>dontaudit</code> flag).</p>
+<p>Instead, I found a hint from issues in ostree repository:
+<a href="https://github.com/ostreedev/ostree/issues/1265">https://github.com/ostreedev/ostree/issues/1265</a> -&gt;
+<a href="https://github.com/coreos/coreos-assembler/pull/736">https://github.com/coreos/coreos-assembler/pull/736</a></p>
+<p>the latter of which is mentioned in <a href="https://github.com/coreos/coreos-assembler/pull/737">[the pull request]</a>:</p>
+<blockquote>
+<p>cgwalters commented on Sep 5, 2019</p>
+<p>Add the immutable bit to the physical root; we don&rsquo;t
+expect people to be creating anything there. A use case for
+OSTree in general is to support installing inside the existing
+root of a deployed OS, so OSTree doesn&rsquo;t do this by default, but
+we have no reason not to enable it here. Administrators should
+generally expect that state data is in /etc and /var; if anything
+else is in /sysroot it&rsquo;s probably by accident.</p>
+<p>I just happened to think of this while working on
+#736</p>
+</blockquote>
+<p>that contains a commit to add a line into the script creating a coreos disk:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Finally, add the immutable bit to the physical root; we don&#39;t</span>
+<span class="c1"># expect people to be creating anything there.  A use case for</span>
+<span class="c1"># OSTree in general is to support installing *inside* the existing</span>
+<span class="c1"># root of a deployed OS, so OSTree doesn&#39;t do this by default, but</span>
+<span class="c1"># we have no reason not to enable it here.  Administrators should</span>
+<span class="c1"># generally expect that state data is in /etc and /var; if anything</span>
+<span class="c1"># else is in /sysroot it&#39;s probably by accident.</span>
+chattr +i rootfs
+</code></pre></div><blockquote>
+<p>chattr - change file attributes on a Linux file system</p>
+<p>attributes</p>
+<p>&hellip;</p>
+<p>i: A file with the &lsquo;i&rsquo; attributes cannot be modified: it cannot be deleted or renamed, no link can be created to this file, most of the file&rsquo;s metadata can not be modified, and the file can not be opened in write mode. Only the superuser or a process possessing the CAP_LINUX_IMMUTABLE capability can set or clear this attribute.</p>
+</blockquote>
+<p>Here I got a hint: they use the immutable bit of Linux extended (ext2) filesystem feature.
+To prove whether it solely protects the rootfs, I check whether the flag is set.
+As the source of <code>/</code> is <code>/ostree/deploy/fedora/deploy&lt;image-commit-id&gt;</code>,</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ lsattr /ostree/deploy/fedora/deploy
+----i---------e----- /ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;
+--------------e----- /ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;.origin
+</code></pre></div><p>Got it! the rootfs directory is set the <strong>immutable bit</strong>.
+Now I check whether I, as the root user, have <code>CAP_LINUX_IMMUTABLE</code> capability:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ capsh --print
+Current: <span class="o">=</span> cap_chown,...,cap_linux_immutable,...
+Bounding <span class="nb">set</span> <span class="o">=</span> cap_chown,...,cap_linux_immutable,...
+</code></pre></div><p>Great, it seems I am able to clear the bit. Let&rsquo;s erase it and try to write a new file on rootfs.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ chattr -i &lt;image-commit-id&gt;
+$ lsattr /ostree/deploy/fedora/deploy
+--------------e----- /ostree/deploy/fedora/deploy/&lt;image-commit-id&gt;
+$ <span class="nb">echo</span> <span class="s2">&#34;hello!&#34;</span> &gt; /test
+$ cat /test
+hello!
+</code></pre></div><p>Everything works as expected. Therefore, Fedora Silverblue depends on Linux ext filesystem flag for rootfs write protection.</p>
+<p>Funny thing is that, after writing a file at <code>/</code> and setting the immutable bit back on, you cannot remove the <code>/test</code> file either.</p>
+<p>I now understand the immutable flag works for rootfs write protection, however, I not do not know at which point the immutable flag is set.
+Maybe libostree downloads the OS image with the enabled bit, since there is no code for setting the immutable bit for rootfs in <a href="https://github.com/coreos/rpm-ostree">rpm-ostree</a> repository.</p>
+<h1 id="flatpak-flatpak">Flatpak <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup><a href="#flatpak-flatpak" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Flatpak is a modern linux app packaging framework.
+Legacy Linux package frameworks (e.g. dpkg, yum, dnf) shares and depends on shared libraries installed on the host system.
+This has prohibited Linux application developers from using more recent version of libraries due to possible limited compatibility.</p>
+<p><img src="/assets/images/200715/canonical_ubuntucore16_diagram.jpg" alt="ubuntu_core_with_snap"></p>
+<p>Recent packaging systems (e.g. AppImage, Flatpak, snapcraft) packages packs required libraries with the application binary itself altogether into an image, running it in an isolated execution environment without any dependencies in the host (A good example of isolated execution environment is Linux container, but it seems not the only option, as Flatpak does not always use Linux containers).</p>
+<p>Fedora Silverblue, by default, runs Flatpak applications, and does not provide rpm and dnf package management system in the host.
+Note that Fedora Silverblue provides some ways to bridge the gap between traditional Linux and Fedora Silverblue; Toolbox and <code>rpm-ostree</code>, but I will not explain about these in this post.</p>
+<p>Although they should be isolated from the host environment, they still require services provided by the host, e.g., accessing devices, rendering graphics, sound, printers, etc.
+Considering container based isolation, they are not provided by default.</p>
+<p>Flatpak provides <a href="https://docs.flatpak.org/en/latest/basic-concepts.html#portals">Portals</a>, an interface that the process can interact with the host.
+It contains opening URIs, printing, showing notifications, power management, etc.
+For applications that does not packed with Flatpak framework many run in the isolated execution but cannot use these features.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://docs.fedoraproject.org/en-US/fedora-silverblue/">Fedora Silverblue</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://ostree.readthedocs.io/en/latest/">libostree</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://refspecs.linuxfoundation.org/fhs.shtml">Linux Filesystem Hierarchy Standard (FHS)</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://source.android.com/devices/bootloader/system-as-root">Android Partition Layout</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://chromium.googlesource.com/chromiumos/docs/+/master/developer_mode.md#disable-verity">ChromiumOS Developer Mode: Making Changes to the Filesystem</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://ostree.readthedocs.io/en/latest/manual/adapting-existing/#booting-and-initramfs-technology">Adapting existing mainstream distributions: Booting and initramfs technology</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://flatpak.org/">Flatpak: The Future of Apps On Linux</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

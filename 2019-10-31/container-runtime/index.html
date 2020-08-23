@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Container Runtime">
+<meta itemprop="description" content="From Docker to Kubernetes, these days container solutions are emerging.
+{: .center-image width=&quot;1000px&rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+In the era of Docker the term &ldquo;Container runtime&rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
+Here are very clear explanations what is container runtime exactly, written by Ian Lewis:">
+<meta itemprop="datePublished" content="2019-10-31T21:36:00+09:00" />
+<meta itemprop="dateModified" content="2019-10-31T21:36:00+09:00" />
+<meta itemprop="wordCount" content="1086">
+
+
+
+<meta itemprop="keywords" content="container,research," />
+<meta property="og:title" content="Container Runtime" />
+<meta property="og:description" content="From Docker to Kubernetes, these days container solutions are emerging.
+{: .center-image width=&quot;1000px&rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+In the era of Docker the term &ldquo;Container runtime&rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
+Here are very clear explanations what is container runtime exactly, written by Ian Lewis:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2019-10-31/container-runtime/" />
+<meta property="article:published_time" content="2019-10-31T21:36:00+09:00" />
+<meta property="article:modified_time" content="2019-10-31T21:36:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Container Runtime"/>
+<meta name="twitter:description" content="From Docker to Kubernetes, these days container solutions are emerging.
+{: .center-image width=&quot;1000px&rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+In the era of Docker the term &ldquo;Container runtime&rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
+Here are very clear explanations what is container runtime exactly, written by Ian Lewis:"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Container Runtime</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 31, 2019</span></div>
+				<h1>Container Runtime</h1>
+			</header>
+			<div class="content">
+				<p>From Docker to Kubernetes, these days container solutions are emerging.</p>
+<p><img src="/assets/images/191031/docker.png" alt="docker">{: .center-image width=&quot;1000px&rdquo;}
+<em>Why Docker? source: <a href="https://www.docker.com/products/container-runtime">https://www.docker.com</a>. They clear state that Docker is a Container Runtime.</em></p>
+<p>In the era of Docker the term &ldquo;Container runtime&rdquo; was quite clear; <strong>the software that runs and manages containers</strong>.
+but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.</p>
+<p>Here are very clear explanations what is container runtime exactly, written by <a href="https://www.ianlewis.org">Ian Lewis</a>:</p>
+<ul>
+<li><a href="https://www.ianlewis.org/en/container-runtimes-part-1-introduction-container-r">Container Runtimes Part 1: An Introduction to Container Runtimes</a></li>
+<li><a href="https://www.ianlewis.org/en/container-runtimes-part-2-anatomy-low-level-contai">Container Runtimes Part 2: Anatomy of a Low-Level Container Runtime</a></li>
+<li><a href="https://www.ianlewis.org/en/container-runtimes-part-3-high-level-runtimes">Container Runtimes Part 3: High-Level Runtimes</a></li>
+<li><a href="https://www.ianlewis.org/en/container-runtimes-part-4-kubernetes-container-run">Container Runtimes Part 4: Kubernetes Container Runtimes &amp; CRI</a></li>
+</ul>
+<p>Remaining parts of this post is a summary of those four posts and supplements for better understanding.</p>
+<h1 id="why-the-definition-becomes-unclear">Why the definition becomes unclear?<a href="#why-the-definition-becomes-unclear" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Here is a quote from Part 1.</p>
+<blockquote>
+<p>When you run a Docker container, these are the steps Docker actually goes through:</p>
+<ol>
+<li>Download the image</li>
+<li>Unpack the image into a &ldquo;bundle&rdquo;. This flattens the layers into a single filesystem.</li>
+<li>Run the container from the bundle</li>
+</ol>
+<p>What docker standardized was only #3. Until that was clarified, <strong>everyone thought of a container runtime as supporting all of the features Docker supported.</strong>
+Eventually, Docker folks clarified that the original spec stated that <strong>only the running the container part that made up the runtime.</strong>
+This is a disconnect that continues even today, and makes &ldquo;container runtimes&rdquo; such a confusing topic.</p>
+<p><em>Container Runtimes Part 1: An Introduction to Container Runtime</em></p>
+</blockquote>
+<p><img src="/assets/images/191031/docker_dockersfmeetup.jpg" alt="docker_sf">{: width=&quot;1000px&rdquo;}
+<em>Docker Internal Architecture since 1.11. Source: <a href="https://www.slideshare.net/Docker/docker-111-docker-sf-meetup">Docker SF meetup 2016</a></em></p>
+<p>&ldquo;Disconnection&rdquo; is like this:</p>
+<p>Hmm. Okay. Following the revised definition, runc should be a container runtime, because it actually spwans and runs containers!</p>
+<p><img src="/assets/images/191031/docker.png" alt="docker">{: width=&quot;800px&rdquo;}
+<img src="/assets/images/191031/containerd.png" alt="containerd">{: width=&quot;800px&rdquo;}
+<img src="/assets/images/191031/runc.png" alt="runc">{: width=&quot;800px&rdquo;}</p>
+<p>No it&rsquo;s not. So container runtime does <em>NOT</em> specify the framework that directly run containers.
+Here comes definitions <strong>low-level runtimes</strong> and <strong>high-level runtimes</strong>.</p>
+<blockquote>
+<p>Some, like containerd and cri-o, actually use runc to run the container but implement image management and APIs on top.
+You can think of these features &ndash; which include image transport, image management, image unpacking, and APIs &ndash; as high-level features as compared to runc&rsquo;s low-level implementation.</p>
+<p>Each runtime covers different parts of this low-level to high-level spectrum.</p>
+<p><img src="/assets/images/191031/runtimes.png" alt="diagram">{: .center-image width=&quot;700px&rdquo;}</p>
+<p>Actual container runtimes that focus on just running containers are usually referred to as &ldquo;low-level container runtimes&rdquo;.
+Low-level runtimes support using these operating system features[namespaces and cgroups].</p>
+<p>Runtimes that support more high-level features, like image management and gRPC/Web APIs, are usually referred to as &ldquo;high-level container runtimes&rdquo; or usually just &ldquo;container runtimes&rdquo;.</p>
+<p><em>Container Runtimes Part 1: An Introduction to Container Runtime</em></p>
+</blockquote>
+<p>For this reason, containerd or docker call themselves as just &ldquo;container runtimes&rdquo;.
+Therefore from figure Docker Internal Architecture,</p>
+<ul>
+<li>Docker Engine (dockerd) may be a (high-level) container runtime due to the existence of their drivers; storage driver, networking driver, etc. Honestly, I am not sure whether docker engine itself, without containerd, should be regarded as a container runtime.</li>
+<li>Containerd is a (high-level) container runtime, as it manages images and roles as a centralized daemon for container management.</li>
+<li>runc is a low-level container runtime, as it directly uses namespace and cgroups to create containers.</li>
+</ul>
+<blockquote>
+<p>runc was originally developed as part of Docker and was later extracted out as a separate tool and library.</p>
+<p><em>Container Runtimes Part 2: Anatomy of a Low-Level Container Runtime</em></p>
+</blockquote>
+<p><img src="/assets/images/191031/runtime-architecture.png" alt="runtime_architecture"></p>
+<ul>
+<li>A conceptual diagram how the components fit together. Source: Container Runtimes Part 3: High-Level Runtimes*</li>
+</ul>
+<h1 id="cri-o-and-podman">CRI-O and Podman<a href="#cri-o-and-podman" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>This wonder actually comes from the relationship between Kubernetes and Podman; what is Podman? What are differences between Podman and CRI-O, which is a container runtime for Kubenetes?</p>
+<p><img src="/assets/images/191031/kubernetes.png" alt="kubernetes">
+<img src="/assets/images/191031/podman.png" alt="podman"></p>
+<p>The origin of Podman was CRI-O; a container runtime for Kubernetes. Kubenetes, at first, uses Docker as its container runtime and manages cluster nodes running Docker. As more runtimes users have requested to support in Kubernetes, the team implements an interface connecting Kubelet and container runtime; Container Runtime Interface (CRI). But Docker does not understand CRI calls, <code>dockershim</code>, a layer for CRI translation is added between kubelet and Docker.</p>
+<p>First let&rsquo;s see how CRI-O is born for Kubernetes.</p>
+<p>As Docker uses containerd for container management, Kubernetes started to use containerd directly for container management, with cri-containerd plugin.</p>
+<h2 id="cri-containerdassetsimages191031cri-containerdpng"><img src="/assets/images/191031/cri-containerd.png" alt="cri-containerd"><a href="#cri-containerdassetsimages191031cri-containerdpng" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><img src="/assets/images/191031/cri-containerd2.png" alt="cri-containerd2"></p>
+<ul>
+<li>Kubernetes Architecture changes. Communication hopes are reduced as architecture evolves. <a href="https://kubernetes.io/blog/2018/05/24/kubernetes-containerd-integration-goes-ga/">[image source]</a>*</li>
+</ul>
+<p>Now Red Hat created a new Kubernetes container runtime, cri-o, more tightly coupled with Kubernetes and CRI architecture: Leaving just as a plugin for containerd, cri-o directly manages containers and OCI-compatible images, and provides CRI interface as well.</p>
+<p><img src="/assets/images/191031/cri-o.png" alt="cri-o">
+<em><a href="https://www.hwchiu.com/kubernetes-runtime-crio.html">[image source]</a></em></p>
+<p>As CRI-O is tightly integrated with Kubernetes (Configuration files are generated by Kubelet, a node agent of Kubernetes and cannot run stand-alone), Red Hat extracts container and image management to another Container Runtime, <a href="https://podman.io">Podman</a>, in order to replace Docker itself. (Note that Kubernetes is a competitor of Docker-Swarm, as an orchestration tool, not Docker itself.)</p>
+<p>A good not from Red Hat blog why they are implementing them seperately: <a href="https://www.redhat.com/en/blog/why-red-hat-investing-cri-o-and-podman">[link]</a></p>
+<blockquote>
+<p>We realized that the tooling for building and running Linux containers was only part of the picture.
+We needed to focus on <strong>container orchestration</strong> as well. We looked to find the best way to develop container tools for single hosts and in clusters, standardizing on Kubernetes.</p>
+<p>We heard from customers that small modular tools which <strong>allowed for quicker experimentation and development of features like rootless were priorities</strong>, and decided that investing in CRI-O and Podman were the best way to meet these needs for customers and the community.</p>
+<p>Red Hat decided to invest in Podman because it’s an easy change for anyone used to the Docker command line, but doesn’t require a daemon to be running when one isn’t needed.</p>
+</blockquote>
+<p>Another blog post from Red Hat Openshift explains subtle differences: <a href="https://blog.openshift.com/crictl-vs-podman/">[link]</a></p>
+<blockquote>
+<p>This is not one or the other — these tools are complementary, and this article attempts to explain the tools and examine when it is best to use each of these tools.</p>
+<p>Podman is a tool designed for managing pods and containers without requiring a container daemon.
+<strong>Podman does NOT speak CRI. It does not communicate directly with CRI-O.</strong>  However Podman, like Buildah, shares the same backend datastores as CRI-O.</p>
+<p>Podman is fully independent of CRI-O but can manage CRI-O’s storage back end. Eventually it will be able to work fully with CRI-O data and be able to manage the content behind the scenes.</p>
+</blockquote>
+<p>Although Podman and CRI-O share the same backend structures and definitions (such as Pod), they are complementary; for container runtime with Kubernetes (hence use CRI), use CRI-O. For stand-alone container runtime, use Podman.</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/container">container</a></span><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

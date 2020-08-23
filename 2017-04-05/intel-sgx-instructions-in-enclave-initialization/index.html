@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Intel SGX Instructions in Enclave Initialization">
+<meta itemprop="description" content="1. ECREATE  [Intel SGX Explained p63] Section 5.3.1. Creation [Programming References p21] Section 5.3. ECREATE  An enclave is born when the system software issues the ECREATE instruction, which turns a free EPC page into the SECS for the new enclave.
+ECREATE copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.
+Software sets the following fields in the source structure: SECS:BASEADDR, SECS:SIZE, and ATTRIBUTES.">
+<meta itemprop="datePublished" content="2017-04-05T22:13:25+09:00" />
+<meta itemprop="dateModified" content="2017-04-05T22:13:25+09:00" />
+<meta itemprop="wordCount" content="2183">
+
+
+
+<meta itemprop="keywords" content="research,sgx," />
+<meta property="og:title" content="Intel SGX Instructions in Enclave Initialization" />
+<meta property="og:description" content="1. ECREATE  [Intel SGX Explained p63] Section 5.3.1. Creation [Programming References p21] Section 5.3. ECREATE  An enclave is born when the system software issues the ECREATE instruction, which turns a free EPC page into the SECS for the new enclave.
+ECREATE copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.
+Software sets the following fields in the source structure: SECS:BASEADDR, SECS:SIZE, and ATTRIBUTES." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2017-04-05/intel-sgx-instructions-in-enclave-initialization/" />
+<meta property="article:published_time" content="2017-04-05T22:13:25+09:00" />
+<meta property="article:modified_time" content="2017-04-05T22:13:25+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Intel SGX Instructions in Enclave Initialization"/>
+<meta name="twitter:description" content="1. ECREATE  [Intel SGX Explained p63] Section 5.3.1. Creation [Programming References p21] Section 5.3. ECREATE  An enclave is born when the system software issues the ECREATE instruction, which turns a free EPC page into the SECS for the new enclave.
+ECREATE copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.
+Software sets the following fields in the source structure: SECS:BASEADDR, SECS:SIZE, and ATTRIBUTES."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Intel SGX Instructions in Enclave Initialization</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.62edc8aea60602e24f215da91a89687f84be6c49677aabc38d54075574498d0f.css" integrity="sha256-Yu3IrqYGAuJPIV2pGolof4S+bElneqvDjVQHVXRJjQ8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 5, 2017</span></div>
+				<h1>Intel SGX Instructions in Enclave Initialization</h1>
+			</header>
+			<div class="content">
+				<h1 id="1-ecreate">1. ECREATE<a href="#1-ecreate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>[Intel SGX Explained p63] Section 5.3.1. Creation</li>
+<li>[Programming References p21] Section 5.3. ECREATE</li>
+</ul>
+<p>An enclave is born when the system software issues the <code>ECREATE</code> instruction, which turns a free EPC page into the SECS for the new enclave.</p>
+<p><code>ECREATE</code> copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.<br>
+Software sets the following fields in the source structure: <code>SECS:BASEADDR</code>, <code>SECS:SIZE</code>, and <code>ATTRIBUTES</code>.</p>
+<p><code>ECREATE</code> validates the information used to initialize the SECS, and results in a page fault (#PF) or general protection fault (#PF) if the information is not valid.<br>
+<code>ECREATE</code> will also fault if SECS target page is in use; already valid; outside the EPC; adresses are not aligned; unused PAGEINFO fields are not zero.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">sdk</span><span class="o">/</span><span class="n">simulation</span><span class="o">/</span><span class="n">uinst</span><span class="o">/</span><span class="n">u_instructions</span><span class="p">.</span><span class="n">cpp</span>
+
+<span class="c1">// Returns the pointer to the Enclave instance on success.
+</span><span class="c1"></span><span class="n">uintptr_t</span> <span class="n">_ECREATE</span><span class="p">(</span><span class="n">page_info_t</span><span class="o">*</span> <span class="n">pi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">secs_t</span><span class="o">*</span> <span class="n">secs</span> <span class="o">=</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">secs_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pi</span><span class="o">-&gt;</span><span class="n">src_page</span><span class="p">);</span>
+
+    <span class="c1">// Enclave size must be at least 2 pages and a power of 2.
+</span><span class="c1"></span>    <span class="n">GP_ON</span><span class="p">(</span><span class="o">!</span><span class="n">is_power_of_two</span><span class="p">((</span><span class="n">size_t</span><span class="p">)</span><span class="n">secs</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">));</span>
+    <span class="n">GP_ON</span><span class="p">(</span><span class="n">secs</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">SE_PAGE_SIZE</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+
+    <span class="n">CEnclaveSim</span><span class="o">*</span> <span class="n">ce</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CEnclaveSim</span><span class="p">(</span><span class="n">secs</span><span class="p">);</span>
+    <span class="kt">void</span><span class="o">*</span>   <span class="n">addr</span><span class="p">;</span>
+
+    <span class="c1">// &#39;ce&#39; is not checked against NULL, since it is not
+</span><span class="c1"></span>    <span class="c1">// allocated with new(std::no_throw).
+</span><span class="c1"></span>    <span class="n">addr</span> <span class="o">=</span> <span class="n">se_virtual_alloc</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="p">(</span><span class="n">size_t</span><span class="p">)</span><span class="n">secs</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span> <span class="n">MEM_COMMIT</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">addr</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">delete</span> <span class="n">ce</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>   
+
+    <span class="c1">// Mark all the memory inaccessible.
+</span><span class="c1"></span>    <span class="n">se_virtual_protect</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="p">(</span><span class="n">size_t</span><span class="p">)</span><span class="n">secs</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span> <span class="n">SGX_PROT_NONE</span><span class="p">);</span>
+    <span class="n">ce</span><span class="o">-&gt;</span><span class="n">get_secs</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">base</span> <span class="o">=</span> <span class="n">addr</span><span class="p">;</span>
+
+    <span class="n">CEnclaveMngr</span><span class="o">::</span><span class="n">get_instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">add</span><span class="p">(</span><span class="n">ce</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">uintptr_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ce</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><h1 id="2-eadd">2. EADD<a href="#2-eadd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>[Intel SGX Explained p64] Section 5.3.2. Loading</li>
+<li>[Programming References p11] Section 5.3. EADD</li>
+</ul>
+<p>The system software can use <code>EADD</code> instructions <!-- raw HTML omitted -->to load the initial code and data<!-- raw HTML omitted --> into the enclave. <code>EADD</code> is used to create both TCS pages and regular pages.<br>
+This function copies a source page from non-enclave memory into the EPC, associates the EPC page with an SECS page residing in the EPC, and stores the linear address and security attributes in EPCM.</p>
+<p><code>EADD</code> reads its input data from a <em>Page Information (PAGEINFO)</em> structure.</p>
+<p>The PAGEINFO structure contains</p>
+<ul>
+<li>The virtual address of the EPC page (<code>LINADDR</code>)</li>
+<li>The virtual address of the non-EPC page whose contents will be copied into the newly allocated EPC page (<code>SRCPGE</code>)</li>
+<li>A virtual address that resolves to the SECS of the enclave that will own the page (<code>SECS</code>).</li>
+<li>The virtual address, pointing to a Security Information (SECINFO) structure, which contains the newly allocated EPC page&rsquo;s access permissions (R, W, X) and its EPCM page type (<code>RT_REG</code> or <code>PT_TCS</code>).</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">common</span><span class="o">/</span><span class="n">inc</span><span class="o">/</span><span class="n">internal</span><span class="o">/</span><span class="n">arch</span><span class="p">.</span><span class="n">h</span>
+
+<span class="k">typedef</span> <span class="k">struct</span> <span class="nc">_page_info_t</span>
+<span class="p">{</span>
+    <span class="n">PADDED_POINTER</span><span class="p">(</span><span class="kt">void</span><span class="p">,</span>        <span class="n">lin_addr</span><span class="p">);</span>      <span class="c1">// Enclave linear address
+</span><span class="c1"></span>    <span class="n">PADDED_POINTER</span><span class="p">(</span><span class="kt">void</span><span class="p">,</span>        <span class="n">src_page</span><span class="p">);</span>      <span class="c1">// Linear address of the page where contents are located
+</span><span class="c1"></span>    <span class="n">PADDED_POINTER</span><span class="p">(</span><span class="n">sec_info_t</span><span class="p">,</span>  <span class="n">sec_info</span><span class="p">);</span>      <span class="c1">// Linear address of the SEC_INFO structure for the page
+</span><span class="c1"></span>    <span class="n">PADDED_POINTER</span><span class="p">(</span><span class="kt">void</span><span class="p">,</span>        <span class="n">secs</span><span class="p">);</span>          <span class="c1">// Linear address of EPC slot that contains SECS for this enclave
+</span><span class="c1"></span><span class="p">}</span> <span class="n">page_info_t</span><span class="p">;</span>
+</code></pre></div><p><img src="/assets/images/170405/pageinfo.png" alt="pageinfo">{: .center-image}</p>
+<p><code>EADD</code> validates its inputs, and modifies the newly allocated EPC page and its EPCM entry.</p>
+<p><code>EADD</code> ensures</p>
+<ul>
+<li>The EPC page is not allocated to another enclave.</li>
+<li>The page&rsquo;s virtual address falls within the enclave&rsquo;s ELRANGE.</li>
+<li>All the reserved fields in SECINFO are set to zero.</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">sdk</span><span class="o">/</span><span class="n">simulation</span><span class="o">/</span><span class="n">uinst</span><span class="o">/</span><span class="n">u_instructions</span><span class="p">.</span><span class="n">cpp</span>
+
+<span class="n">uintptr_t</span> <span class="n">_EADD</span><span class="p">(</span><span class="n">page_info_t</span><span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">epc_lin_addr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">void</span>     <span class="o">*</span> <span class="n">src_page</span> <span class="o">=</span> <span class="n">pi</span><span class="o">-&gt;</span><span class="n">src_page</span><span class="p">;</span>
+    <span class="n">CEnclaveMngr</span> <span class="o">*</span> <span class="n">mngr</span> <span class="o">=</span> <span class="n">CEnclaveMngr</span><span class="o">::</span><span class="n">get_instance</span><span class="p">();</span>
+    <span class="n">CEnclaveSim</span>    <span class="o">*</span> <span class="n">ce</span> <span class="o">=</span> <span class="n">mngr</span><span class="o">-&gt;</span><span class="n">get_enclave</span><span class="p">(</span><span class="n">pi</span><span class="o">-&gt;</span><span class="n">lin_addr</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ce</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">SE_TRACE</span><span class="p">(</span><span class="n">SE_TRACE_DEBUG</span><span class="p">,</span> <span class="s">&#34;failed to get enclave instance</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">SGX_ERROR_UNEXPECTED</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">GP_ON</span><span class="p">(</span><span class="o">!</span><span class="n">IS_PAGE_ALIGNED</span><span class="p">(</span><span class="n">epc_lin_addr</span><span class="p">));</span>
+    <span class="n">GP_ON</span><span class="p">((</span><span class="n">ce</span><span class="o">-&gt;</span><span class="n">get_secs</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">attributes</span><span class="p">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SGX_FLAGS_INITTED</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="c1">// Make the page writable before doing memcpy()
+</span><span class="c1"></span>    <span class="n">se_virtual_protect</span><span class="p">(</span><span class="n">epc_lin_addr</span><span class="p">,</span> <span class="n">SE_PAGE_SIZE</span><span class="p">,</span> <span class="n">SI_FLAGS_RW</span><span class="p">);</span>
+
+    <span class="c1">// Memory copy from non-EPC page into EPC page.
+</span><span class="c1"></span>    <span class="n">mcp_same_size</span><span class="p">(</span><span class="n">epc_lin_addr</span><span class="p">,</span> <span class="n">src_page</span><span class="p">,</span> <span class="n">SE_PAGE_SIZE</span><span class="p">);</span>
+
+    <span class="n">se_virtual_protect</span><span class="p">(</span><span class="n">epc_lin_addr</span><span class="p">,</span> <span class="n">SE_PAGE_SIZE</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">pi</span><span class="o">-&gt;</span><span class="n">sec_info</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">);</span>
+
+    <span class="n">GP_ON</span><span class="p">(</span><span class="o">!</span><span class="n">ce</span><span class="o">-&gt;</span><span class="n">add_page</span><span class="p">(</span><span class="n">pi</span><span class="o">-&gt;</span><span class="n">lin_addr</span><span class="p">,</span> <span class="n">pi</span><span class="o">-&gt;</span><span class="n">sec_info</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">));</span>
+    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="2-1-how-a-free-epc-page-is-selected-in-sgx-simulation-mode">2-1. How a free EPC page is selected in SGX simulation mode?<a href="#2-1-how-a-free-epc-page-is-selected-in-sgx-simulation-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Simulation implementation might be different from hardware implementation. In simulation mode, <code>ECREATE</code> allocates all EPC pages via <code>mmap()</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">sdk</span><span class="o">/</span><span class="n">simulation</span><span class="o">/</span><span class="n">uinst</span><span class="o">/</span><span class="n">u_instructions</span><span class="p">.</span><span class="n">cpp</span>
+
+<span class="n">uintptr_t</span> <span class="n">_ECREATE</span><span class="p">(</span><span class="n">page_info_t</span><span class="o">*</span> <span class="n">pi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">secs_t</span><span class="o">*</span> <span class="n">secs</span> <span class="o">=</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">secs_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pi</span><span class="o">-&gt;</span><span class="n">src_page</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="n">CEnclaveSim</span><span class="o">*</span> <span class="n">ce</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CEnclaveSim</span><span class="p">(</span><span class="n">secs</span><span class="p">);</span>
+    <span class="kt">void</span><span class="o">*</span>   <span class="n">addr</span><span class="p">;</span>
+    <span class="n">addr</span> <span class="o">=</span> <span class="n">se_virtual_alloc</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="p">(</span><span class="n">size_t</span><span class="p">)</span><span class="n">secs</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span> <span class="n">MEM_COMMIT</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">common</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">se_memory</span><span class="p">.</span><span class="n">c</span>
+
+<span class="kt">void</span><span class="o">*</span> <span class="n">se_virtual_alloc</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">address</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">type</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">UNUSED</span><span class="p">(</span><span class="n">type</span><span class="p">);</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">pRet</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span> <span class="o">|</span>  <span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">MAP_FAILED</span> <span class="o">==</span> <span class="n">pRet</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">pRet</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>As SGX simulation simulates SGX behavior by software, it copies EPC page data with <strong>virtual address</strong>. Hence <code>_EADD()</code> does not have detailed information about picking a physical EPC page.</p>
+<h2 id="22-how-system-software-selects-a-epc-page-in-sgx-hardware-mode">2.2. How system software selects a EPC page in SGX hardware mode?<a href="#22-how-system-software-selects-a-epc-page-in-sgx-hardware-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>SGX simulation code can&rsquo;t tell EPC page allocation in detail, as it is also a software, so it cannot use the physical address.</p>
+<p>To understand actual implementation, I first tried to understand <em>Intel SGX Programming Reference</em> deeply. There is a table explaining inputs for the instruction.</p>
+<p><em>Table. Instruction Operand Encoding</em>
+{: .center}</p>
+<table>
+<thead>
+<tr>
+<th align="center">Op/En</th>
+<th align="center">EAX</th>
+<th align="center">RBX</th>
+<th align="center">RCX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">IR</td>
+<td align="center">EADD (in)</td>
+<td align="center">Address of PAGEINFO (in)</td>
+<td align="center">Address of the destination EPC page (in)</td>
+</tr>
+</tbody>
+</table>
+<p>As you see the above table, addresses of PAGEINFO and target EPC page should be saved in the register <code>RBX</code> and <code>RCX</code>, respectively. The target EPC page is already determined, which means system software is responsible for selecting one. This is also explained in ISCA &lsquo;15 tutorial slide. <a href="https://software.intel.com/sites/default/files/332680-002.pdf">[link]</a></p>
+<p><img src="/assets/images/170405/eadd_selecting_free_epc_page.png" alt="eadd_selecting_free_epc_page">{: .center-image width=&quot;600px&rdquo;}</p>
+<p>Then this means I need to search a code that calls <code>EADD</code> instruction.</p>
+<p>Simulation function which calls <code>EADD</code> instruction is <code>add_enclave_page()</code> in <code>sdk/simulation/driver_api/driver_api.cpp</code>. This is a simulation code because it is in <code>simulation</code> directory.<br>
+Then there should be a function with the same name for hardware?</p>
+<p>And yes. There is.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">psw</span><span class="o">/</span><span class="n">urts</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">enclave_creator_hw</span><span class="p">.</span><span class="n">cpp</span>
+
+<span class="kt">int</span> <span class="n">EnclaveCreatorHW</span><span class="o">::</span><span class="n">add_enclave_page</span><span class="p">(</span><span class="n">sgx_enclave_id_t</span> <span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">src</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">rva</span><span class="p">,</span> <span class="k">const</span> <span class="n">sec_info_t</span> <span class="o">&amp;</span><span class="n">sinfo</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">attr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sgx_enclave_add_page</span> <span class="n">addp</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+
+    <span class="n">addp</span><span class="p">.</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">__</span> <span class="n">u64</span><span class="p">)</span><span class="n">enclave_id</span> <span class="o">+</span> <span class="p">(</span><span class="n">__</span> <span class="n">u64</span><span class="p">)</span><span class="n">rva</span><span class="p">;</span>
+    <span class="n">addp</span><span class="p">.</span><span class="n">src</span> <span class="o">=</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">uintptr_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+    <span class="n">addp</span><span class="p">.</span><span class="n">secinfo</span> <span class="o">=</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">uintptr_t</span><span class="o">&gt;</span><span class="p">(</span><span class="k">const_cast</span><span class="o">&lt;</span><span class="n">sec_info_t</span><span class="o">*</span> <span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sinfo</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(((</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">DoEEXTEND</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">attr</span><span class="p">))</span>
+        <span class="n">addp</span><span class="p">.</span><span class="n">mrmask</span> <span class="o">|=</span> <span class="mh">0xFFFF</span><span class="p">;</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">m_hdevice</span><span class="p">,</span> <span class="n">SGX_IOC_ENCLAVE_ADD_PAGE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addp</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">SE_TRACE</span><span class="p">(</span><span class="n">SE_TRACE_WARNING</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">Add Page - %p to %p... FAIL</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">rva</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nf">error_driver2urts</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Note that PSW (Platform SoftWare) is for actual hardware. It calls <code>ioctl()</code>, which calls <code>sgx_ioctl_enclave_add_page()</code> in linux-sgx-driver. linux-sgx-driver is separately provided in <a href="https://github.com.01org/linux-sgx-driver">[here]</a>.</p>
+<p>In <code>linux-sgx-driver/isgx_ioctl.c</code>,</p>
+<p><code>ioctl()</code> from <code>enclave_creator_hw.cpp</code></p>
+<ul>
+<li>calls <code>isgx_ioctl_enclave_add_page()</code> at <code>linux-sgx-driver/isgx_ioctl.c:548</code></li>
+<li>calls <code>__enclave_add_page()</code> at <code>linux-sgx-driver/isgx_ioctl.c:440</code></li>
+<li>calls <code>construct_enclave_page</code> at <code>linux-sgx-driver/isgx_ioctl.c:122</code></li>
+<li>calls <code>isgx_alloc_epc_page()</code> at <code>linux-sgx-driver/isgx_page_cache.c:429</code></li>
+<li>calls <code>isgx_alloc_epc_page_fast()</code> at <code>linux-sgx-driver/isgx_page_cache.c:411</code><br>
+which picks the first entry from driver&rsquo;s EPC page list.</li>
+</ul>
+<p>isgx Linux SGX driver manages EPC page instances by using the linked list(<code>static LIST_HEAD(isgx_free_list)</code> at <code>isgx_page_cache.c:25</code>) and the number of free EPC pages(<code>unsigned int isgx_nr_free_epc_pages</code> at <code>isgx_page_cache.c:31</code>).</p>
+<p>The type of EPC pages is <code>struct isgx_epc_page</code>, defined as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">-</span><span class="n">driver</span><span class="o">/</span><span class="n">isgx</span><span class="p">.</span><span class="n">h</span>
+
+<span class="k">struct</span> <span class="n">isgx_epc_page</span> <span class="p">{</span>
+	<span class="n">resource_size_t</span>		<span class="n">pa</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">list_head</span>	<span class="n">free_list</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div><p>Here, <code>pa</code> is the physical address for the EPC page. How <code>pa</code> is determined?</p>
+<p>Each EPC page that is put into free list is allocated in the function <code>isgx_page_cache_init()</code> at <code>linux-sgx-driver/isgx_page_cache.c:360</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">-</span><span class="n">driver</span><span class="o">/</span><span class="n">isgx_page_cache</span><span class="p">.</span><span class="n">c</span>
+
+<span class="kt">int</span> <span class="n">isgx_page_cache_init</span><span class="p">(</span><span class="n">resource_size_t</span> <span class="n">start</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">isgx_epc_page</span> <span class="o">*</span> <span class="n">new_epc_page</span><span class="p">,</span> <span class="o">*</span> <span class="n">entry</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span> <span class="n">parser</span><span class="p">,</span> <span class="o">*</span> <span class="n">temp</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="n">PAGE_SIZE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">new_epc_page</span> <span class="o">=</span> <span class="n">kzalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">isgx_epc_page</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">new_epc_page</span><span class="p">)</span>
+            <span class="k">goto</span> <span class="n">err_freelist</span><span class="p">;</span>
+        <span class="n">new_epc_page</span><span class="o">-&gt;</span><span class="n">pa</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+        <span class="p">...</span>
+</code></pre></div><p>Each EPC page has the physical address as <code>start + i</code>. <code>start</code> is the first parameter of the function.</p>
+<p>The function <code>isgx_page_cache_init()</code> is called in <code>isgx_init()</code> at <code>linux-sgx-driver/isgx_main.c:190</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">-</span><span class="n">driver</span><span class="o">/</span><span class="n">isgx_main</span><span class="p">.</span><span class="n">c</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">isgx_page_cache_init</span><span class="p">(</span><span class="n">isgx_epc_base</span><span class="p">,</span> <span class="n">isgx_epc_size</span><span class="p">);</span>
+</code></pre></div><p>As shown above, <code>start</code> is the value of <code>isgx_epc_base</code> variable.<br>
+<code>isgx_epc_base</code> is initialized by the function <code>isgx_init_platform()</code> at <code>linux-sgx-driver/isgx_main.c:133</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">-</span><span class="n">driver</span><span class="o">/</span><span class="n">isgx_main</span><span class="p">.</span><span class="n">c</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="n">isgx_init_platform</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">isgx_epc_base</span> <span class="o">=</span> <span class="p">(((</span><span class="n">u64</span><span class="p">)</span> <span class="p">(</span><span class="n">ebx</span> <span class="o">&amp;</span> <span class="mh">0xfffff</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">+</span>
+      <span class="p">(</span><span class="n">u64</span><span class="p">)</span> <span class="p">(</span><span class="n">eax</span> <span class="o">&amp;</span> <span class="mh">0xfffff000</span><span class="p">);</span>
+  <span class="n">isgx_epc_size</span> <span class="o">=</span> <span class="p">(((</span><span class="n">u64</span><span class="p">)</span> <span class="p">(</span><span class="n">edx</span> <span class="o">&amp;</span> <span class="mh">0xfffff</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">+</span>
+      <span class="p">(</span><span class="n">u64</span><span class="p">)</span> <span class="p">(</span><span class="n">ecx</span> <span class="o">&amp;</span> <span class="mh">0xfffff000</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>You can see what <code>isgx_epc_base</code> value is in your machine, as SGX driver prints it in kernel message buffer by default.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="n">__</span> <span class="n">init</span> <span class="nf">isgx_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">ret</span> <span class="o">=</span> <span class="n">isgx_init_platform</span><span class="p">();</span>
+  <span class="n">pr_info</span><span class="p">(</span><span class="s">&#34;isgx: EPC memory range 0x%Lx-0x%Lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">isgx_epc_base</span><span class="p">,</span>
+      <span class="n">isgx_epc_base</span> <span class="o">+</span> <span class="n">isgx_epc_size</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p><img src="/assets/images/170405/sgx_epc_memory_range_ubuntu.png" alt="sgx_epc_memory_range_ubuntu">{: .center-image}</p>
+<p>My machine tells that 32MiB of EPC is allocated with the physical base memory address <code>0x80000000</code>.</p>
+<p>All EPC page instance <code>struct isgx_epc_page</code> has a <code>pa</code> variable, which contains the physical address of the EPC page, and is initialized as EPC base address + offset.</p>
+<p>And, managing page mapping table is also a responsibility of system software. Linux SGX driver insert PTE via calling <code>vm_insert_pfn()</code> at <code>linux-sgx-driver/isgx_util.c:67</code> by using <code>epc_page-&gt;pa</code> and expected virtual address <code>enclave_page-&gt;addr</code> as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">-</span><span class="n">driver</span><span class="o">/</span><span class="n">isgx_util</span><span class="p">.</span><span class="n">c</span>
+
+<span class="kt">void</span> <span class="n">isgx_insert_pte</span><span class="p">(</span><span class="k">struct</span> <span class="n">isgx_enclave</span> <span class="o">*</span> <span class="n">enclave</span><span class="p">,</span>
+             <span class="k">struct</span> <span class="n">isgx_enclave_page</span> <span class="o">*</span> <span class="n">enclave_page</span><span class="p">,</span>
+             <span class="k">struct</span> <span class="n">isgx_epc_page</span> <span class="o">*</span> <span class="n">epc_page</span><span class="p">,</span>
+             <span class="k">struct</span> <span class="n">vm_area_struct</span> <span class="o">*</span> <span class="n">vma</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">vm_insert_pfn</span><span class="p">(</span><span class="n">vma</span><span class="p">,</span> <span class="n">enclave_page</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">,</span> <span class="n">PFN_DOWN</span><span class="p">(</span><span class="n">epc_page</span><span class="o">-&gt;</span><span class="n">pa</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">isgx_err</span><span class="p">(</span><span class="n">enclave</span><span class="p">,</span> <span class="s">&#34;vm_insert_pfn() returned %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+        <span class="n">BUG</span><span class="p">();</span>
+    <span class="p">}</span>   
+<span class="p">}</span>
+</code></pre></div><p><em><strong>To be concluded, when a SGX platform is initialized, several EPC page instances (<code>struct isgx_epc_page</code>) are allocated to represent all EPC pages. System software manages them as a linked list, called <code>isgx_free_list</code>. When <code>EADD</code> is called, system software picks a free EPC page instance from the list, and create a page table entry, pointing the physical address that is saved in <code>epc_page-&gt;pa</code>, with the expected virtual address <code>enclave_page-&gt;addr</code>, a part of user enclave&rsquo;s ELRANGE.</strong></em></p>
+<h1 id="3-eextend">3. EEXTEND<a href="#3-eextend" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>[Intel SGX Explained p64] Section 5.3.2. Loading</li>
+<li>[Programming References p31] Section 5.3. EEXTEND</li>
+</ul>
+<p>While loading an enclave, the system software will also use the <code>EEXTEND</code> instruction, which updates the enclave&rsquo;s measurement used in the software attestation process.<br>
+It updates the MRENCLAVE measurement register of an SECS with the measurement of an EXTEND string compromising of &ldquo;EEXTEND&rdquo; || ENCLAVEOFFSET || PADDING || 256 bytes of the enclave page.</p>
+<p>RCX register contains the effective address of the 256 byte region of an EPC page to be measured.</p>
+<blockquote>
+<p>From Intel 64 and IA-32 Architectures Software Developer&rsquo;s Manual, Volume 3D, Part 4:
+Section 39.1.2. EADD and EEXTEND Interaction</p>
+<p>Software can measure a 256 byte region as determined by the by the developer by invoking EEXTEND. Thus to measure an entire 4KB page, system software must execute EEXTEND 16 times. Each invocation of EEXTEND adds to the cryptographic log information about which region is being measured and the measurement of the section.</p>
+</blockquote>
+<pre><code>No simulation code
+</code></pre><h1 id="4-einit">4. EINIT<a href="#4-einit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>[Intel SGX Explained p64] Section 5.3.3. Initialization</li>
+<li>[Programming References p34] Section 5.3. EINIT</li>
+</ul>
+<p>This function is the final instruction executed in the enclave build process. After EINIT, the MRENCLAVE measurement is cimplete, and the enclave is ready to start user code execution using EENTER instruction.</p>
+<p>When <code>EINIT</code> completes successfully, it sets the enclave&rsquo;s INIT attribute to true. This opens the way for ring 3 application software to execute the enclave&rsquo;s code, using the SGX instructions.</p>
+<p>On the other hand, once INIT is set to true, <code>EADD</code> <strong>cannot be invoked on that enclave anymore</strong>, so the system software must load all the pages that make up the enclave&rsquo;s initial state before executing the <code>EINIT</code> instruction.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">intel</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">sdk</span><span class="o">/</span><span class="n">simulation</span><span class="o">/</span><span class="n">uinst</span><span class="o">/</span><span class="n">u_instructions</span><span class="p">.</span><span class="n">cpp</span>
+
+<span class="n">uintptr_t</span> <span class="n">_EINIT</span><span class="p">(</span><span class="n">secs_t</span><span class="o">*</span> <span class="n">secs</span><span class="p">,</span> <span class="n">enclave_css_t</span><span class="o">*</span> <span class="n">css</span><span class="p">,</span> <span class="n">token_t</span><span class="o">*</span> <span class="n">launch</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">CEnclaveMngr</span><span class="o">*</span> <span class="n">mngr</span> <span class="o">=</span> <span class="n">CEnclaveMngr</span><span class="o">::</span><span class="n">get_instance</span><span class="p">();</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">mngr</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="n">CEnclaveSim</span><span class="o">*</span> <span class="n">ce</span> <span class="o">=</span> <span class="n">mngr</span><span class="o">-&gt;</span><span class="n">get_enclave</span><span class="p">(</span><span class="n">secs</span><span class="p">);</span>
+    <span class="n">GP_ON</span><span class="p">(</span><span class="n">ce</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="n">GP_ON</span><span class="p">((</span><span class="n">ce</span><span class="o">-&gt;</span><span class="n">get_secs</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">attributes</span><span class="p">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SGX_FLAGS_INITTED</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="c1">// Fill MREnclave, MRSigner, ISVPRODID, ISVSVN
+</span><span class="c1"></span>    <span class="n">secs_t</span><span class="o">*</span> <span class="n">this_secs</span> <span class="o">=</span> <span class="n">ce</span><span class="o">-&gt;</span><span class="n">get_secs</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">css</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Check signature
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">((</span><span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attribute_mask</span><span class="p">.</span><span class="n">xfrm</span> <span class="o">&amp;</span> <span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">attributes</span><span class="p">.</span><span class="n">xfrm</span><span class="p">)</span>
+            <span class="o">!=</span> <span class="p">(</span><span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attribute_mask</span><span class="p">.</span><span class="n">xfrm</span> <span class="o">&amp;</span> <span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attributes</span><span class="p">.</span><span class="n">xfrm</span><span class="p">))</span>
+        <span class="p">{</span>   
+            <span class="n">SE_TRACE</span><span class="p">(</span><span class="n">SE_TRACE_DEBUG</span><span class="p">,</span>
+                <span class="s">&#34;SECS attributes.xfrm does NOT match signature attributes.xfrm</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">SGX_ERROR_INVALID_ATTRIBUTE</span><span class="p">;</span>
+        <span class="p">}</span>   
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attribute_mask</span><span class="p">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">attributes</span><span class="p">.</span><span class="n">flags</span><span class="p">)</span>
+            <span class="o">!=</span> <span class="p">(</span><span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attribute_mask</span><span class="p">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attributes</span><span class="p">.</span><span class="n">flags</span><span class="p">))</span>
+        <span class="p">{</span>   
+            <span class="n">SE_TRACE</span><span class="p">(</span><span class="n">SE_TRACE_DEBUG</span><span class="p">,</span>
+                <span class="s">&#34;SECS attributes.flag does NOT match signature attributes.flag</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">SGX_ERROR_INVALID_ATTRIBUTE</span><span class="p">;</span>
+        <span class="p">}</span>   
+
+        <span class="n">mcp_same_size</span><span class="p">(</span><span class="o">&amp;</span><span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">mr_enclave</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">enclave_hash</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">sgx_measurement_t</span><span class="p">));</span>
+        <span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">isv_prod_id</span> <span class="o">=</span> <span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">isv_prod_id</span><span class="p">;</span>
+        <span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">isv_svn</span> <span class="o">=</span> <span class="n">css</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">isv_svn</span><span class="p">;</span>
+
+        <span class="n">ippsHashMessage</span><span class="p">(</span><span class="n">css</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">.</span><span class="n">modulus</span><span class="p">,</span> <span class="n">SE_KEY_SIZE</span><span class="p">,</span> <span class="p">(</span><span class="n">Ipp8u</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">mr_signer</span><span class="p">,</span> <span class="n">IPP_ALG_HASH_SHA256</span><span class="p">);</span>
+    <span class="p">}</span>   
+
+    <span class="c1">// Check launch token
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">launch</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">launch</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">valid</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">memcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">launch</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">.</span><span class="n">attributes</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">attributes</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">sgx_attributes_t</span><span class="p">)))</span>
+        <span class="p">{</span>   
+            <span class="n">SE_TRACE</span><span class="p">(</span><span class="n">SE_TRACE_DEBUG</span><span class="p">,</span>
+                <span class="s">&#34;SECS attributes does NOT match launch token attribuets</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">SGX_ERROR_INVALID_ATTRIBUTE</span><span class="p">;</span>
+        <span class="p">}</span>   
+    <span class="p">}</span>   
+
+    <span class="c1">// Mark it initialized
+</span><span class="c1"></span>    <span class="n">this_secs</span><span class="o">-&gt;</span><span class="n">attributes</span><span class="p">.</span><span class="n">flags</span> <span class="o">|=</span> <span class="n">SGX_FLAGS_INITTED</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>Intel Software Guard Extensions Programming Reference. <a href="https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf">[link]</a></li>
+<li>Intel SGX Explained. <a href="https://eprint.iacr.org/2016/086.pdf">[link]</a></li>
+<li>Intel SGX Tutorial Slide presented in ISCA 2015.
+<a href="https://software.intel.com/sites/default/files/332680-002.pdf">[link]</a></li>
+<li>Intel SGX SDK Github Repository. <a href="https://github.com/01org/linux-sgx">[link]</a></li>
+<li>Intel SGX Linux Driver Github Repository.
+<a href="https://github.com/01org/linux-sgx-driver">[link]</a></li>
+</ul>
+<h1 id="license">License<a href="#license" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>All source codes are from Intel SGX SDK Github repository and Intel SGX Linux driver Github repository, released under BSD License 2.0 and GNU General Public License 2.0, respectively.</p>
+<h2 id="intel-sgx-sdk">Intel SGX SDK<a href="#intel-sgx-sdk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Copyright (C) 2011-2017 Intel Corporation. All rights reserved.<br>
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:</p>
+<ul>
+<li>Redistributions of source code must retain the above copyright<br>
+notice, this list of conditions and the following disclaimer.</li>
+<li>Redistributions in binary form must reproduce the above copyright<br>
+notice, this list of conditions and the following disclaimer in the<br>
+documentation and/or other materials provided with the distribution.</li>
+<li>Neither the name of the <!-- raw HTML omitted --> nor the<br>
+names of its contributors may be used to endorse or promote products<br>
+derived from this software without specific prior written permission.</li>
+</ul>
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &ldquo;AS IS&rdquo; AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <!-- raw HTML omitted --> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+<h2 id="intel-sgx-linux-driver">Intel SGX Linux driver<a href="#intel-sgx-linux-driver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>(C) Copyright 2015 Intel Corporation</p>
+<p>Authors:</p>
+<ul>
+<li>Jarkko Sakkinen <a href="mailto:jarkko.sakkinen@intel.com">jarkko.sakkinen@intel.com</a></li>
+<li>Suresh Siddha <a href="mailto:suresh.b.siddha@intel.com">suresh.b.siddha@intel.com</a></li>
+<li>Serge Ayoun <a href="mailto:serge.ayoun@intel.com">serge.ayoun@intel.com</a></li>
+<li>Shay Katz-zamir <a href="mailto:shay.katz-zamir@intel.com">shay.katz-zamir@intel.com</a></li>
+</ul>
+<p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/sgx">sgx</a></span>
+				</p>
+			</footer>
+		</article>
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2e24265edba47d60da4bb4fef35e38708918d960187d195a295d27e2adff8b34.js" integrity="sha256-LiQmXtukfWDaS7T+8144cIkY2WAYfRlaKV0n4q3/izQ=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

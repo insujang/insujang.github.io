@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/linux/</link>
+    <description>Recent content in linux on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Wed, 15 Jul 2020 12:35:00 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Introduction to Fedora Silverblue</title>
+      <link>https://insujang.github.io/2020-07-15/fedora-silverblue/</link>
+      <pubDate>Wed, 15 Jul 2020 12:35:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-07-15/fedora-silverblue/</guid>
+      <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:
+ libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Programming Infiniband RDMA</title>
+      <link>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</link>
+      <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</guid>
+      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
+    </item>
+    
+    <item>
+      <title>Building Mellanox OFED from source code</title>
+      <link>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</link>
+      <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</guid>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
+Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
+When you untar the archive, you can see SOURCES directory, which contains the following another archives.</description>
+    </item>
+    
+    <item>
+      <title>Installing Kubernetes and cri-o in Debian</title>
+      <link>https://insujang.github.io/2019-11-21/installing-kubernetes-and-crio-in-debian/</link>
+      <pubDate>Thu, 21 Nov 2019 18:32:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-21/installing-kubernetes-and-crio-in-debian/</guid>
+      <description>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine. Tested with Debian 10 running on a VirtualBox VM.
+root@kubernetesdebian:/etc# cat os-release PRETTY_NAME=&amp;#34;Debian GNU/Linux 10 (buster)&amp;#34; NAME=&amp;#34;Debian GNU/Linux&amp;#34; VERSION_ID=&amp;#34;10&amp;#34; VERSION=&amp;#34;10 (buster)&amp;#34; VERSION_CODENAME=buster ID=debian HOME_URL=&amp;#34;https://www.debian.org/&amp;#34; SUPPORT_URL=&amp;#34;https://www.debian.org/support&amp;#34; BUG_REPORT_URL=&amp;#34;https://bugs.debian.org/&amp;#34; Installing cri-o 0. Prerequiste for using cri-o with Kubernetes Kubernetes requires the following configurations be set before using cri-o container runtime [link]:
+modprobe overlay modprobe br_netfilter cat &amp;gt; /etc/sysctl.</description>
+    </item>
+    
+    <item>
+      <title>Code Server: Using vscode via Web Browsers</title>
+      <link>https://insujang.github.io/2019-11-10/code-server/</link>
+      <pubDate>Sun, 10 Nov 2019 14:05:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-10/code-server/</guid>
+      <description>vscode running as a standalone app (lower right), and vscode frontend UI running in Safari web browser (upper left). Their looks are nearly identical except for menu, etc.
+Visual Studio Code Visual Studio Code, implemented and managed by Microsoft, is one of the best open-source code editors over the world. I&amp;rsquo;am using this too for almost every works; programming codes, writing Markdowns, writing Latex, etc. With tremendous number of plugins, its functionality is nearly limitless.</description>
+    </item>
+    
+    <item>
+      <title>Open Container Initiative (OCI) Standard, Image Spec</title>
+      <link>https://insujang.github.io/2019-10-10/open-container-initiative-image-spec/</link>
+      <pubDate>Thu, 10 Oct 2019 20:35:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-10-10/open-container-initiative-image-spec/</guid>
+      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&amp;rsquo;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
+    </item>
+    
+    <item>
+      <title>Implementing a New Custom Netlink Family Protocol</title>
+      <link>https://insujang.github.io/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</link>
+      <pubDate>Thu, 07 Feb 2019 17:00:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</guid>
+      <description>Netlink Protocol Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
+#include &amp;lt;asm/types.h&amp;gt;#include &amp;lt;sys/socket.h&amp;gt;#include &amp;lt;linux/netlink.h&amp;gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on.</description>
+    </item>
+    
+    <item>
+      <title>udev: Function Flow for KOBJECT_UEVENT kernel group message </title>
+      <link>https://insujang.github.io/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</link>
+      <pubDate>Wed, 28 Nov 2018 14:03:15 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</guid>
+      <description>Identifying the device {: .center-image} [source]
+When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
+linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; .</description>
+    </item>
+    
+    <item>
+      <title>udev: Device Manager for the Linux Kernel in Userspace</title>
+      <link>https://insujang.github.io/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</link>
+      <pubDate>Tue, 27 Nov 2018 10:05:14 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</guid>
+      <description>What is udev?  udev (userspace /dev) is a device manager for the Linux kernel. As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory. At the same time, udev also handls all user space events raised when hardware devices are added into the system or removed from it, including firmware loading as reuqired by certain devices.
+https://en.wikipedia.org/wiki/Udev
+ udev first appeared at Linux kernel version 2.</description>
+    </item>
+    
+    <item>
+      <title>systemd Boot Process</title>
+      <link>https://insujang.github.io/2018-11-22/systemd-boot-process/</link>
+      <pubDate>Thu, 22 Nov 2018 13:49:40 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2018-11-22/systemd-boot-process/</guid>
+      <description>What is systemd?  systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
+https://www.freedesktop.org/wiki/Software/systemd
+ systemd is now the init process running as PID 1 as indicated above. /sbin/init was the actual init process of Linux (also known as System V init boot system), it is now replaced with /usr/lib/systemd in many Linux distributions.</description>
+    </item>
+    
+  </channel>
+</rss>

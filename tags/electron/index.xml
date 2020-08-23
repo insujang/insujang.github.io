@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>electron on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/electron/</link>
+    <description>Recent content in electron on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 10 Nov 2019 14:05:00 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/electron/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Code Server: Using vscode via Web Browsers</title>
+      <link>https://insujang.github.io/2019-11-10/code-server/</link>
+      <pubDate>Sun, 10 Nov 2019 14:05:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2019-11-10/code-server/</guid>
+      <description>vscode running as a standalone app (lower right), and vscode frontend UI running in Safari web browser (upper left). Their looks are nearly identical except for menu, etc.
+Visual Studio Code Visual Studio Code, implemented and managed by Microsoft, is one of the best open-source code editors over the world. I&amp;rsquo;am using this too for almost every works; programming codes, writing Markdowns, writing Latex, etc. With tremendous number of plugins, its functionality is nearly limitless.</description>
+    </item>
+    
+  </channel>
+</rss>
