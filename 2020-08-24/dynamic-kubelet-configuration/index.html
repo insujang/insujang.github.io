@@ -13,7 +13,7 @@ Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors it
 Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:">
 <meta itemprop="datePublished" content="2020-08-24T09:21:00+09:00" />
 <meta itemprop="dateModified" content="2020-08-24T09:21:00+09:00" />
-<meta itemprop="wordCount" content="915">
+<meta itemprop="wordCount" content="1081">
 
 
 
@@ -99,6 +99,7 @@ Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not ena
         <li><a href="#verifying-dynamic-kubelet-configuration">Verifying Dynamic Kubelet Configuration</a></li>
       </ul>
     </li>
+    <li><a href="#authentication-and-authorization">Authentication and Authorization</a></li>
   </ul>
 </nav>
 				<hr class="d-block d-xl-none">
@@ -279,7 +280,25 @@ Aug <span class="m">24</span> 13:16:04 localhost.worker kubelet<span class="o">[
 </span><span class="w">        </span><span class="k">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
 </span><span class="w">        </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>8023408Ki<span class="w">
 </span><span class="w">        </span><span class="k">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
-</span></code></pre></div><section class="footnotes" role="doc-endnotes">
+</span></code></pre></div><h2 id="authentication-and-authorization">Authentication and Authorization<a href="#authentication-and-authorization" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>During the setup, the Kubelet queries a ConfigMap object from the apiserver, which requires authentication.
+According to <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, the node authorizer now <em>automatically</em> configures an RBAC rules so that there is nothing to do.</p>
+<blockquote>
+<p>Previously, you were required to manually create RBAC rules to allow Nodes to access their assigned ConfigMaps. The Node Authorizer now automatically configures these rules.</p>
+</blockquote>
+<p>Node authorizor means that default authorization mode contains <code>Node</code> ^[node-auth]:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">ps -ef <span class="p">|</span> grep kube-apiserver
+root       <span class="m">91113</span>   <span class="m">91100</span>  <span class="m">2</span> Aug19 ?        02:29:37 kube-apiserver ... --authorization-mode<span class="o">=</span>Node,RBAC
+</code></pre></div><p>so that any users in the <code>system:nodes</code> group (username <code>system:node:&lt;nodeName&gt;</code>) are allowed to:</p>
+<ol>
+<li>read services, endpoints, nodes, pods, secrets, configmaps, and persistent volumes (bound to the Kubelet&rsquo;s node)</li>
+<li>write nodes (+status), pods (+status), and events.</li>
+</ol>
+<p>Dynamic Kubelet configuration requires permission for (1) read configmaps, and (2) write node status.</p>
+<blockquote>
+<p>Note that getting an object and listing objects are different. <code>kubectl get configmaps node-config</code> should be allowed, while <code>kubectl get configmaps</code> (get all configmaps, which means listing configmaps) are still denied.</p>
+</blockquote>
+<section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
