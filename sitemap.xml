@@ -4,7 +4,32 @@
   
   <url>
     <loc>https://insujang.github.io/</loc>
-    <lastmod>2020-07-15T12:35:00+09:00</lastmod>
+    <lastmod>2020-08-24T09:21:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/2020-08-24/dynamic-kubelet-configuration/</loc>
+    <lastmod>2020-08-24T09:21:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/kubernetes/</loc>
+    <lastmod>2020-08-24T09:21:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/posts/</loc>
+    <lastmod>2020-08-24T09:21:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/study/</loc>
+    <lastmod>2020-08-24T09:21:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/</loc>
+    <lastmod>2020-08-24T09:21:00+09:00</lastmod>
   </url>
   
   <url>
@@ -18,21 +43,6 @@
   </url>
   
   <url>
-    <loc>https://insujang.github.io/posts/</loc>
-    <lastmod>2020-07-15T12:35:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/study/</loc>
-    <lastmod>2020-07-15T12:35:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/</loc>
-    <lastmod>2020-07-15T12:35:00+09:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://insujang.github.io/tags/go/</loc>
     <lastmod>2020-04-04T19:27:00+09:00</lastmod>
   </url>
@@ -40,11 +50,6 @@
   <url>
     <loc>https://insujang.github.io/2020-04-04/go-modules/</loc>
     <lastmod>2020-04-04T19:27:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/kubernetes/</loc>
-    <lastmod>2020-02-13T10:13:00+09:00</lastmod>
   </url>
   
   <url>

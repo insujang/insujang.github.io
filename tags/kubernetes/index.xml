@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 13 Feb 2020 10:13:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 24 Aug 2020 09:21:00 +0900</lastBuildDate>
     
 	<atom:link href="https://insujang.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dynamic Kubelet Configuration</title>
+      <link>https://insujang.github.io/2020-08-24/dynamic-kubelet-configuration/</link>
+      <pubDate>Mon, 24 Aug 2020 09:21:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-08-24/dynamic-kubelet-configuration/</guid>
+      <description>Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
+Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
+Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:</description>
+    </item>
     
     <item>
       <title>Programming Kubernetes CRDs</title>
