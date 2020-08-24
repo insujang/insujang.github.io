@@ -40,7 +40,7 @@ modprobe overlay modprobe br_netfilter cat &gt; /etc/sysctl."/>
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Installing Kubernetes and cri-o in Debian</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.8948d1bbb1c8befceaed160109f1424134fe93eb736b7321000da6ab27fbeeb3.css" integrity="sha256-iUjRu7HIvvzq7RYBCfFCQTT+k+tza3MhAA2mqyf77rM=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.5f9f3264092b368967084fae7b7c7cab61f3d7e9d3dc616910f303b1d2939157.css" integrity="sha256-X58yZAkrNolnCE+ue3x8q2Hz1+nT3GFpEPMDsdKTkVc=" crossorigin="anonymous">
 	
 </head>
 
@@ -73,12 +73,42 @@ modprobe overlay modprobe br_netfilter cat &gt; /etc/sysctl."/>
 
 
 	<main class="site-main container-lg animated fadeIn faster">
-		<article>
-			<header class="post-header">
+		<header class="post-header row">
+			<div class="col-12 col-xl-3"></div>
+			<div class="col-12 col-xl-9">
 				<div class="post-meta"><span>Nov 21, 2019</span></div>
 				<h1>Installing Kubernetes and cri-o in Debian</h1>
-			</header>
-			<div class="content">
+			</div>
+		</header>
+		<article class="row">
+			<div id="toc-aside" class="col-12 col-xl-3">
+				<hr class="d-block d-xl-none">
+				<div class="toc-title">What&#39;s on this Post</div>
+				<nav id="TableOfContents">
+  <ul>
+    <li><a href="#installing-cri-o">Installing cri-o</a>
+      <ul>
+        <li><a href="#0-prerequiste-for-using-cri-o-with-kubernetes">0. Prerequiste for using cri-o with Kubernetes</a></li>
+        <li><a href="#1-adding-ppa">1. Adding PPA</a></li>
+        <li><a href="#2-installing-cri-o">2. Installing cri-o</a></li>
+        <li><a href="#3-configuring-cri-o">3. Configuring cri-o</a></li>
+        <li><a href="#4-confiuring-container-networking-interface-cni-2">4. Confiuring Container Networking Interface (CNI) </a></li>
+      </ul>
+    </li>
+    <li><a href="#installing-kubernetes">Installing Kubernetes</a>
+      <ul>
+        <li><a href="#1-add-ppa-and-installing-packages">1. Add PPA and installing packages</a></li>
+        <li><a href="#2-configuring-kubelet">2. Configuring kubelet</a></li>
+        <li><a href="#3-configuring-kubernetes">3. Configuring Kubernetes</a></li>
+      </ul>
+    </li>
+    <li><a href="#some-test-with-a-single-node-cluster">Some test with a single node cluster</a></li>
+  </ul>
+</nav>
+				<hr class="d-block d-xl-none">
+			</div>
+
+			<div class="content col-12 col-xl-9">
 				<p>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine.
 Tested with Debian 10 running on a VirtualBox VM.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">root@kubernetesdebian:/etc# cat os-release 
@@ -410,39 +440,15 @@ Conditions:
 </section>
 
 			</div>
-			<hr class="post-end">
-			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-				<p>
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/kubernetes">kubernetes</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span>
-				</p>
-			</footer>
 		</article>
-		
-		<aside id="toc">
-			<div class="toc-title">Table of Contents</div>
-			<nav id="TableOfContents">
-  <ul>
-    <li><a href="#installing-cri-o">Installing cri-o</a>
-      <ul>
-        <li><a href="#0-prerequiste-for-using-cri-o-with-kubernetes">0. Prerequiste for using cri-o with Kubernetes</a></li>
-        <li><a href="#1-adding-ppa">1. Adding PPA</a></li>
-        <li><a href="#2-installing-cri-o">2. Installing cri-o</a></li>
-        <li><a href="#3-configuring-cri-o">3. Configuring cri-o</a></li>
-        <li><a href="#4-confiuring-container-networking-interface-cni-2">4. Confiuring Container Networking Interface (CNI) </a></li>
-      </ul>
-    </li>
-    <li><a href="#installing-kubernetes">Installing Kubernetes</a>
-      <ul>
-        <li><a href="#1-add-ppa-and-installing-packages">1. Add PPA and installing packages</a></li>
-        <li><a href="#2-configuring-kubelet">2. Configuring kubelet</a></li>
-        <li><a href="#3-configuring-kubernetes">3. Configuring Kubernetes</a></li>
-      </ul>
-    </li>
-    <li><a href="#some-test-with-a-single-node-cluster">Some test with a single node cluster</a></li>
-  </ul>
-</nav>
-		</aside>
+
+		<hr class="post-end">
+		<footer class="post-info">
+			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+			<p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/kubernetes">kubernetes</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span>
+			</p>
+		</footer>
 		
 		<div id="comments" class="thin">
 
@@ -475,7 +481,7 @@ Conditions:
 
 
 
-	<script src="https://insujang.github.io/js/bundle.min.b22ab0190da84729c4570868f5f4953823950440efb2f8b475fa2a509a72f84f.js" integrity="sha256-siqwGQ2oRynEVwho9fSVOCOVBEDvsvi0dfoqUJpy+E8=" crossorigin="anonymous"></script>
+	<script src="https://insujang.github.io/js/bundle.min.f6024818011e5a95618146d9d7cfc59722bfd0d124b51bfc66da25fddce1f41e.js" integrity="sha256-9gJIGAEeWpVhgUbZ18/FlyK/0NEktRv8Ztol/dzh9B4=" crossorigin="anonymous"></script>
 	
 <script type="application/javascript">
 var doNotTrack = false;
