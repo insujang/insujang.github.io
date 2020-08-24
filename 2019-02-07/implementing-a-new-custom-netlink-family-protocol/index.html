@@ -76,7 +76,7 @@
 				<h1>Implementing a New Custom Netlink Family Protocol</h1>
 			</header>
 			<div class="content">
-				<h1 id="netlink-protocol">Netlink Protocol<a href="#netlink-protocol" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="netlink-protocol">Netlink Protocol<a href="#netlink-protocol" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Netlink is a communication protocol between kernel and userspace.
 Unlike <code>ioctl()</code>, netlink is based on socket, which enables notification from the kernel to userspace.
 With <code>ioctl()</code>, the kernel can only send a response regarding to a user request.
@@ -95,8 +95,8 @@ Predefined family protocols merged into Linux mainline can be found in <a href="
 This is one of the main reasons that the generic netlink family was created.
 In this post, we use the existing netlink protocol (not generic netlink protocol).
 As there are 23 protocol families exist in the latest kernel, we can implement up to 9 custom protocol families (23~31) so far.</p>
-<h1 id="basic-implementation-with-custom-netlink">Basic Implementation with Custom Netlink<a href="#basic-implementation-with-custom-netlink" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-<h2 id="kernel-module">Kernel Module<a href="#kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="basic-implementation-with-custom-netlink">Basic Implementation with Custom Netlink<a href="#basic-implementation-with-custom-netlink" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="kernel-module">Kernel Module<a href="#kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>The following is a basic kernel module that creates a custom netlink protocol family, the value of which is 25, using the kernel function <code>netlink_kernel_create()</code>.
 Note that the signature of the function was changed since kernel version 2.6.
 <a href="https://elixir.bootlin.com/linux/latest/source/include/linux/netlink.h#L58">[link]</a></p>
@@ -155,7 +155,7 @@ Linux kernel, by default, has at least one network namespace: <code>init_net</co
 You can use the variable for creation or your own network namespace variable.
 Also note that since netlink is aware of network namespace, netlink multicast, by default, can only be received from within the specified network namespace.
 For instance, if two network namespaces are available (namely initial netns and ns1), and the above kernel module sends a multicast message to the initial network namespace, every processes in the other network namespace ns1 will not receive the message.</p>
-<h2 id="userspace-program">Userspace Program<a href="#userspace-program" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="userspace-program">Userspace Program<a href="#userspace-program" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>The below code is a userspace program that can send and receive messages with the kernel
 through <code>NETLINK_TESTFAMILY</code> family protocol.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;linux/netlink.h&gt;</span><span class="cp">
@@ -203,7 +203,7 @@ through <code>NETLINK_TESTFAMILY</code> family protocol.</p>
 </code></pre></div><p>When you execute the program, you should see the following message in your kernel message via <code>dmesg</code>:</p>
 <pre><code>Entering: test_nl_receive_message
 Received message: Hello
-</code></pre><h2 id="unicast-from-kernel-module">Unicast from Kernel Module<a href="#unicast-from-kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="unicast-from-kernel-module">Unicast from Kernel Module<a href="#unicast-from-kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Let us make the kernel module send a response for a request.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">void</span> <span class="nf">test_nl_receive_message</span><span class="p">(</span><span class="k">struct</span> <span class="n">sk_buff</span> <span class="o">*</span><span class="n">skb</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nlh</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span> <span class="n">skb</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
@@ -228,7 +228,7 @@ It seems that the newly created <code>struct sk_buffer</code> variable is delete
 when it is sent through <code>nlmsg_unicast()</code>, hence calling <code>nlmsg_unicast()</code>
 contains the memory management <a href="https://stackoverflow.com/a/10138935">[link]</a>.
 Therefore, calling <code>nlmsg_free()</code> is forbidden, otherwise a kernel panic would be occured.</p>
-<h2 id="multicast-from-kernel-module">Multicast from Kernel Module<a href="#multicast-from-kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="multicast-from-kernel-module">Multicast from Kernel Module<a href="#multicast-from-kernel-module" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>The kernel module can also send a multicast netlink message, a broadcast for a specific group in netlink family.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define NETLINK_MYGROUP 2
 </span><span class="cp"></span>

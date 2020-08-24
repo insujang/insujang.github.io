@@ -79,7 +79,7 @@
 				<h1>Introduction to VFIO</h1>
 			</header>
 			<div class="content">
-				<h1 id="virtual-function-io-vfio">Virtual Function I/O (VFIO)<a href="#virtual-function-io-vfio" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="virtual-function-io-vfio">Virtual Function I/O (VFIO)<a href="#virtual-function-io-vfio" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Introduced to replace the old-fashioned KVM PCI device assignment (virtio).</li>
 <li>Userspace driver interface</li>
@@ -87,7 +87,7 @@
 <li>Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support</li>
 <li>Take <strong>an abstract view of a device</strong>: to support anything!</li>
 </ul>
-<h2 id="vfio-device-filer-descriptor">VFIO Device Filer descriptor<a href="#vfio-device-filer-descriptor" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="vfio-device-filer-descriptor">VFIO Device Filer descriptor<a href="#vfio-device-filer-descriptor" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <ul>
 <li>
 <p>located in /dev/vfio</p>
@@ -121,7 +121,7 @@ Properties that can be discovered via ioctl are:
 </ul>
 </li>
 </ul>
-<h2 id="vfio-pci-device-driver-structure">VFIO-PCI Device Driver Structure<a href="#vfio-pci-device-driver-structure" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="vfio-pci-device-driver-structure">VFIO-PCI Device Driver Structure<a href="#vfio-pci-device-driver-structure" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <ul>
 <li>
 <p>Mainly focus on <strong><code>vfio-pci</code></strong></p>
@@ -200,7 +200,7 @@ These functions are wrappers of <code>vfio_pci_rw()</code> (<code>/linux/drivers
 </ul>
 </li>
 </ul>
-<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Alex Williamson. <em>An Introduction to PCI Device Assignment with VFIO</em>. <a href="http://events.linuxfoundation.org/sites/events/files/slides/An%20Introduction%20to%20PCI%20Device%20Assignment%20with%20VFIO%20-%20Williamson%20-%202016-08-30_0.pdf">[Online]</a>. Aug 2016.</li>
 <li>Alex Williamson. <em>VFIO: PCI device assignment breaks free of KVM</em>. <a href="http://www.linux-kvm.org/images/d/d1/2011-forum-VFIO.pdf">[Online]</a>. 2011.</li>

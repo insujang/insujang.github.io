@@ -83,14 +83,14 @@ Steps to create a certificate 3 Follow the steps to create a self-signed certifi
 <p>A self-signed certificate is a ceritificate, which is <strong>not</strong> signed by a certificate authority (CA) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
 (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.)
 When using Kubernetes, <code>kubeadm</code> automatically genereates a self-signed Kubernetes CA before generating other certificates.</p>
-<h1 id="steps-to-create-a-certificate-3">Steps to create a certificate <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a href="#steps-to-create-a-certificate-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="steps-to-create-a-certificate-3">Steps to create a certificate <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a href="#steps-to-create-a-certificate-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Follow the steps to create a self-signed certificate:</p>
 <ul>
 <li>Generate a private key</li>
 <li>Generate a Certificate Signing Request (CSR)</li>
 <li>Generate a self-signed certificate</li>
 </ul>
-<h2 id="generate-a-private-key">Generate a private key<a href="#generate-a-private-key" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="generate-a-private-key">Generate a private key<a href="#generate-a-private-key" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>A generated certificate must be signed with the Certificate Authority&rsquo;s private key, which we are going to make here.
 Here we generate 2048bit aes256 key pair.</p>
 <pre><code>openssl genrsa -aes256 -out rootca.key 2048
@@ -126,7 +126,7 @@ Here we generate 2048bit aes256 key pair.</p>
 -----BEGIN RSA PRIVATE KEY-----
 ...
 -----END RSA PRIVATE KEY-----
-</code></pre><h2 id="generate-a-csr">Generate a CSR<a href="#generate-a-csr" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="generate-a-csr">Generate a CSR<a href="#generate-a-csr" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>The CSR is a <strong>request</strong>, which will be sent to a Certificate Authority to ask it to issue a signed certificate.
 Here, we want to generate a certificate for a Certificate Authority, we will self-sign the CSR.
 There are two ways to create a CSR: by command, and by using a configuration file.</p>
@@ -158,8 +158,8 @@ microk8s seems to use this configuration file to create a certificate authority 
 <p>I am not sure whether there is a guideline for this configuration format, but <a href="https://github.com/openssl/openssl/blob/master/apps/openssl.cnf">[here]</a> is an example configuration file for this.</p>
 </blockquote>
 <pre><code>$ cat csr.conf
-# OpenSSL configuration file for creating a CSR for a certificate authority
-# Run openssl req -new -config csr.conf -key rootca.key -out rootca.csr
+## OpenSSL configuration file for creating a CSR for a certificate authority
+## Run openssl req -new -config csr.conf -key rootca.key -out rootca.csr
 
 [req]
 default_bits = 2048
@@ -197,7 +197,7 @@ $ openssl req -new -config csr.conf -key rootca.key -out rootca.csr
 ...
 -----END CERTIFICATE REQUEST-----
 </code></pre><p>In C code, there is no need for CSR creation.</p>
-<h2 id="generate-a-self-signed-certificate">Generate a self-signed certificate<a href="#generate-a-self-signed-certificate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="generate-a-self-signed-certificate">Generate a self-signed certificate<a href="#generate-a-self-signed-certificate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Generate a temporary certificate valid for 1 year.</p>
 <pre><code>openssl x509 -req -days 365 -in rootca.csr -signkey rootca.key -out rootca.crt
 </code></pre><p>In C code:</p>
@@ -234,9 +234,9 @@ $ openssl req -new -config csr.conf -key rootca.key -out rootca.csr
 <span class="n">FILE</span><span class="o">*</span> <span class="n">x509_file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;rootca.crt&#34;</span><span class="p">,</span> <span class="s">&#34;wb&#34;</span><span class="p">);</span>
 <span class="n">PEM_write_X509</span><span class="p">(</span><span class="n">x509_file</span><span class="p">,</span> <span class="n">x509</span><span class="p">);</span>
 <span class="n">fclose</span><span class="p">(</span><span class="n">x509_file</span><span class="p">);</span>
-</code></pre></div><h3 id="extract-information-from-crt">Extract information from CRT<a href="#extract-information-from-crt" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre></div><h4 id="extract-information-from-crt">Extract information from CRT<a href="#extract-information-from-crt" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <pre><code>openssl x509 -in rootca.crt -text -noout
-</code></pre><h3 id="verifying-crt-in-the-code">Verifying CRT in the code<a href="#verifying-crt-in-the-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre><h4 id="verifying-crt-in-the-code">Verifying CRT in the code<a href="#verifying-crt-in-the-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">bool</span> <span class="nf">check_certificate_valid</span><span class="p">(</span><span class="n">X509</span><span class="o">*</span> <span class="n">x509</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">X509_STORE_CTX</span><span class="o">*</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">X509_STORE_CTX_new</span><span class="p">();</span>
   <span class="n">X509_STORE</span><span class="o">*</span> <span class="n">store</span> <span class="o">=</span> <span class="n">X509_STORE_new</span><span class="p">();</span>
@@ -246,7 +246,7 @@ $ openssl req -new -config csr.conf -key rootca.key -out rootca.csr
 
   <span class="k">return</span> <span class="n">X509_verify_cert</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div><h2 id="building-the-code">Building the code<a href="#building-the-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="building-the-code">Building the code<a href="#building-the-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.0</span><span class="p">)</span><span class="err">
 </span><span class="err"></span><span class="nb">project</span><span class="p">(</span><span class="s">create-x509</span><span class="p">)</span><span class="err">
 </span><span class="err">

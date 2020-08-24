@@ -91,8 +91,8 @@ Tested with Debian 10 running on a VirtualBox VM.</p>
 <span class="nv">HOME_URL</span><span class="o">=</span><span class="s2">&#34;https://www.debian.org/&#34;</span>
 <span class="nv">SUPPORT_URL</span><span class="o">=</span><span class="s2">&#34;https://www.debian.org/support&#34;</span>
 <span class="nv">BUG_REPORT_URL</span><span class="o">=</span><span class="s2">&#34;https://bugs.debian.org/&#34;</span>
-</code></pre></div><h1 id="installing-cri-o">Installing cri-o<a href="#installing-cri-o" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-<h2 id="0-prerequiste-for-using-cri-o-with-kubernetes">0. Prerequiste for using cri-o with Kubernetes<a href="#0-prerequiste-for-using-cri-o-with-kubernetes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h2 id="installing-cri-o">Installing cri-o<a href="#installing-cri-o" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="0-prerequiste-for-using-cri-o-with-kubernetes">0. Prerequiste for using cri-o with Kubernetes<a href="#0-prerequiste-for-using-cri-o-with-kubernetes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Kubernetes requires the following configurations be set before using cri-o container runtime <a href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cri-o">[link]</a>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">modprobe overlay
 modprobe br_netfilter
@@ -104,7 +104,7 @@ cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span class="s">&lt;&lt;EOF
 </span><span class="s">EOF</span>
 
 sysctl --system
-</code></pre></div><h2 id="1-adding-ppa">1. Adding PPA<a href="#1-adding-ppa" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="1-adding-ppa">1. Adding PPA<a href="#1-adding-ppa" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>There are not cri-o related packages in default apt repository; we should add Project Atomic Personal Package Archives (PPA) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
 But you will show errors when using <code>add-apt-repository ppa:projectatomic/ppa</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ add-apt-repository ppa:projectatomic/ppa -y <span class="o">&amp;&amp;</span> apt update
@@ -159,11 +159,11 @@ Reading package lists... Done
 Building dependency tree       
 Reading state information... Done
 All packages are up to date.
-</code></pre></div><h2 id="2-installing-cri-o">2. Installing cri-o<a href="#2-installing-cri-o" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="2-installing-cri-o">2. Installing cri-o<a href="#2-installing-cri-o" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Now you can install cri-o with apt. Currently the latest version of in apt repository is cri-o is 1.15.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ apt install cri-o-1.15 -y
 ...
-</code></pre></div><h2 id="3-configuring-cri-o">3. Configuring cri-o<a href="#3-configuring-cri-o" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="3-configuring-cri-o">3. Configuring cri-o<a href="#3-configuring-cri-o" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>By default, cri-o finds conmon in <code>/usr/libexec/crio</code>, which does not exist. Hence, when you start cri-o, it says it could not find conmon.
 Change the configuration file of cri-o <code>/etc/crio/crio.conf</code>:</p>
 <pre><code># Path to the conmon binary, used for monitoring the OCI runtime.
@@ -189,7 +189,7 @@ registries = ['docker.io', 'registry.fedoraproject.org', 'registry.access.redhat
 
 Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Starting Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>...
 Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Started Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>.
-</code></pre></div><h2 id="4-confiuring-container-networking-interface-cni-2">4. Confiuring Container Networking Interface (CNI) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><a href="#4-confiuring-container-networking-interface-cni-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="4-confiuring-container-networking-interface-cni-2">4. Confiuring Container Networking Interface (CNI) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><a href="#4-confiuring-container-networking-interface-cni-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>crio suggests to install <code>containernetworking-plugins</code> package together, however, it will be deleted by apt when you install Kubernetes (specifically, <code>kubernetes-cni</code> package).
 <code>containernetworking-plugins</code> package copies some files for CNI networking in <code>/etc/cni/net.d</code>, which is necessary for container networking.</p>
 <p>You can easily install it before installing Kubernetes, however, you can also make network configruations manually in <code>/etc/cni/net.d</code>.</p>
@@ -215,9 +215,9 @@ Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[
     &quot;type&quot;: &quot;loopback&quot; 
 }
 </code></pre><p>Don&rsquo;t know details yet. Have to dig more.</p>
-<h1 id="installing-kubernetes">Installing Kubernetes<a href="#installing-kubernetes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="installing-kubernetes">Installing Kubernetes<a href="#installing-kubernetes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Installing Kubernetes in Debian is quite explained well<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
-<h2 id="1-add-ppa-and-installing-packages">1. Add PPA and installing packages<a href="#1-add-ppa-and-installing-packages" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="1-add-ppa-and-installing-packages">1. Add PPA and installing packages<a href="#1-add-ppa-and-installing-packages" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>At first add a public key for Kubernetes.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ apt install curl -y <span class="o">&amp;&amp;</span> curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg <span class="p">|</span> sudo apt-key add -
 ...
@@ -226,7 +226,7 @@ Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[
 </code></pre><p>And then install packages.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ apt update <span class="o">&amp;&amp;</span> apt install kubelet kubeadm kubectl -y
 ...
-</code></pre></div><h2 id="2-configuring-kubelet">2. Configuring kubelet<a href="#2-configuring-kubelet" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="2-configuring-kubelet">2. Configuring kubelet<a href="#2-configuring-kubelet" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Kubelet automatically starts, however, it repeatedly fails due to lack of configurations.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ systemctl status kubelet
 ...
@@ -240,7 +240,7 @@ Nov <span class="m">21</span> 18:06:03 kubernetesdebian systemd<span class="o">[
 <blockquote>
 <p>Note that, using &ndash;cgroup-driver is deprecated. We have to pass the information with &ndash;config argument. Here, we just use it for simplicity.</p>
 </blockquote>
-<h2 id="3-configuring-kubernetes">3. Configuring Kubernetes<a href="#3-configuring-kubernetes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="3-configuring-kubernetes">3. Configuring Kubernetes<a href="#3-configuring-kubernetes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Now initialize a control-plane node by <code>kubeadm init</code>, with proper arguments as you want<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
 <blockquote>
 <p>Note that crio is running, so kubeadm detects crio as its container runtime.
@@ -328,7 +328,7 @@ System Info:
  Kubelet Version:            v1.16.3
  Kube-Proxy Version:         v1.16.3
 ...
-</code></pre></div><h1 id="some-test-with-a-single-node-cluster">Some test with a single node cluster<a href="#some-test-with-a-single-node-cluster" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre></div><h2 id="some-test-with-a-single-node-cluster">Some test with a single node cluster<a href="#some-test-with-a-single-node-cluster" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>By default, any control-plane nodes pods are not schedulable; therefore, when you try to schedule a pod, it should be in pending status.
 Following command will make Kubernetes be able to schedule pods in control-plane nodes as well<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl taint nodes &lt;node_name&gt; node-role.kubernetes.io/master-

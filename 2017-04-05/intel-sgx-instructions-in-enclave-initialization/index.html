@@ -79,7 +79,7 @@ Software sets the following fields in the source structure: SECS:BASEADDR, SECS:
 				<h1>Intel SGX Instructions in Enclave Initialization</h1>
 			</header>
 			<div class="content">
-				<h1 id="1-ecreate">1. ECREATE<a href="#1-ecreate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="1-ecreate">1. ECREATE<a href="#1-ecreate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>[Intel SGX Explained p63] Section 5.3.1. Creation</li>
 <li>[Programming References p21] Section 5.3. ECREATE</li>
@@ -118,7 +118,7 @@ Software sets the following fields in the source structure: <code>SECS:BASEADDR<
     <span class="n">CEnclaveMngr</span><span class="o">::</span><span class="n">get_instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">add</span><span class="p">(</span><span class="n">ce</span><span class="p">);</span>
     <span class="k">return</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">uintptr_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ce</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre></div><h1 id="2-eadd">2. EADD<a href="#2-eadd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre></div><h2 id="2-eadd">2. EADD<a href="#2-eadd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>[Intel SGX Explained p64] Section 5.3.2. Loading</li>
 <li>[Programming References p11] Section 5.3. EADD</li>
@@ -179,7 +179,7 @@ This function copies a source page from non-enclave memory into the EPC, associa
 <span class="p">}</span>
 </code></pre></div><!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
-<h2 id="2-1-how-a-free-epc-page-is-selected-in-sgx-simulation-mode">2-1. How a free EPC page is selected in SGX simulation mode?<a href="#2-1-how-a-free-epc-page-is-selected-in-sgx-simulation-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="2-1-how-a-free-epc-page-is-selected-in-sgx-simulation-mode">2-1. How a free EPC page is selected in SGX simulation mode?<a href="#2-1-how-a-free-epc-page-is-selected-in-sgx-simulation-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Simulation implementation might be different from hardware implementation. In simulation mode, <code>ECREATE</code> allocates all EPC pages via <code>mmap()</code>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">linux</span><span class="o">-</span><span class="n">sgx</span><span class="o">/</span><span class="n">sdk</span><span class="o">/</span><span class="n">simulation</span><span class="o">/</span><span class="n">uinst</span><span class="o">/</span><span class="n">u_instructions</span><span class="p">.</span><span class="n">cpp</span>
 
@@ -203,7 +203,7 @@ This function copies a source page from non-enclave memory into the EPC, associa
     <span class="k">return</span> <span class="n">pRet</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div><p>As SGX simulation simulates SGX behavior by software, it copies EPC page data with <strong>virtual address</strong>. Hence <code>_EADD()</code> does not have detailed information about picking a physical EPC page.</p>
-<h2 id="22-how-system-software-selects-a-epc-page-in-sgx-hardware-mode">2.2. How system software selects a EPC page in SGX hardware mode?<a href="#22-how-system-software-selects-a-epc-page-in-sgx-hardware-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="22-how-system-software-selects-a-epc-page-in-sgx-hardware-mode">2.2. How system software selects a EPC page in SGX hardware mode?<a href="#22-how-system-software-selects-a-epc-page-in-sgx-hardware-mode" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>SGX simulation code can&rsquo;t tell EPC page allocation in detail, as it is also a software, so it cannot use the physical address.</p>
 <p>To understand actual implementation, I first tried to understand <em>Intel SGX Programming Reference</em> deeply. There is a table explaining inputs for the instruction.</p>
 <p><em>Table. Instruction Operand Encoding</em>
@@ -333,7 +333,7 @@ which picks the first entry from driver&rsquo;s EPC page list.</li>
     <span class="p">}</span>   
 <span class="p">}</span>
 </code></pre></div><p><em><strong>To be concluded, when a SGX platform is initialized, several EPC page instances (<code>struct isgx_epc_page</code>) are allocated to represent all EPC pages. System software manages them as a linked list, called <code>isgx_free_list</code>. When <code>EADD</code> is called, system software picks a free EPC page instance from the list, and create a page table entry, pointing the physical address that is saved in <code>epc_page-&gt;pa</code>, with the expected virtual address <code>enclave_page-&gt;addr</code>, a part of user enclave&rsquo;s ELRANGE.</strong></em></p>
-<h1 id="3-eextend">3. EEXTEND<a href="#3-eextend" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="3-eextend">3. EEXTEND<a href="#3-eextend" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>[Intel SGX Explained p64] Section 5.3.2. Loading</li>
 <li>[Programming References p31] Section 5.3. EEXTEND</li>
@@ -347,7 +347,7 @@ Section 39.1.2. EADD and EEXTEND Interaction</p>
 <p>Software can measure a 256 byte region as determined by the by the developer by invoking EEXTEND. Thus to measure an entire 4KB page, system software must execute EEXTEND 16 times. Each invocation of EEXTEND adds to the cryptographic log information about which region is being measured and the measurement of the section.</p>
 </blockquote>
 <pre><code>No simulation code
-</code></pre><h1 id="4-einit">4. EINIT<a href="#4-einit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre><h2 id="4-einit">4. EINIT<a href="#4-einit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>[Intel SGX Explained p64] Section 5.3.3. Initialization</li>
 <li>[Programming References p34] Section 5.3. EINIT</li>
@@ -409,7 +409,7 @@ Section 39.1.2. EADD and EEXTEND Interaction</p>
 
     <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div><h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre></div><h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Intel Software Guard Extensions Programming Reference. <a href="https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf">[link]</a></li>
 <li>Intel SGX Explained. <a href="https://eprint.iacr.org/2016/086.pdf">[link]</a></li>
@@ -419,9 +419,9 @@ Section 39.1.2. EADD and EEXTEND Interaction</p>
 <li>Intel SGX Linux Driver Github Repository.
 <a href="https://github.com/01org/linux-sgx-driver">[link]</a></li>
 </ul>
-<h1 id="license">License<a href="#license" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="license">License<a href="#license" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>All source codes are from Intel SGX SDK Github repository and Intel SGX Linux driver Github repository, released under BSD License 2.0 and GNU General Public License 2.0, respectively.</p>
-<h2 id="intel-sgx-sdk">Intel SGX SDK<a href="#intel-sgx-sdk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="intel-sgx-sdk">Intel SGX SDK<a href="#intel-sgx-sdk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Copyright (C) 2011-2017 Intel Corporation. All rights reserved.<br>
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:</p>
@@ -445,7 +445,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
-<h2 id="intel-sgx-linux-driver">Intel SGX Linux driver<a href="#intel-sgx-linux-driver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="intel-sgx-linux-driver">Intel SGX Linux driver<a href="#intel-sgx-linux-driver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>(C) Copyright 2015 Intel Corporation</p>
 <p>Authors:</p>
 <ul>

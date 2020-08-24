@@ -79,7 +79,7 @@ For this purpose, Fedora Silverblue adopted two technologies:
 				<h1>Introduction to Fedora Silverblue</h1>
 			</header>
 			<div class="content">
-				<h1 id="fedora-silverblue">Fedora Silverblue<a href="#fedora-silverblue" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="fedora-silverblue">Fedora Silverblue<a href="#fedora-silverblue" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><img src="https://docs.fedoraproject.org/en-US/fedora-silverblue/_images/silverblue-logo.svg" alt="silverblue"></p>
 <p>Fedora Silverblue <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is an <em>immutable</em> desktop operating system based on Fedora Linux distribution.
 What <em>immutable</em> does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment.
@@ -89,7 +89,7 @@ It is a part of Atomic Host project, and share the same underlying system with F
 <li>libostree (OSTree)</li>
 <li>Flatpak</li>
 </ol>
-<h1 id="libostree-ostree"><code>libostree</code> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><a href="#libostree-ostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="libostree-ostree"><code>libostree</code> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><a href="#libostree-ostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.
 By using libostree, a filesystem commit (image) can be used to boot Linux, making it easy to upgrade, rollback, and manage the filesystem.
 To make it feasible, the filesystem is required to be always clean (without users&rsquo; configurations, etc); hence most directories are mounted as read-only.</p>
@@ -128,7 +128,7 @@ To satisfy the FHS while keep the rootfs clean, Fedora Silverblue makes symbolic
 <p>This approach (making the rootfs read-only) is not new; Android <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>, ChromeOS <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> have also been deployed with read-only rootfs.
 They also uses Linux as their base system, however, Fedora Silverblue is one of the first Linux distributions that provides Linux desktop environment with read-only rootfs (another one is EndlessOS).</p>
 <p>Note that Fedora Silverblue uses <code>rpm-ostree</code>, a modified version of libostree, but in this post I will say the fundamental properties of libostree only.</p>
-<h2 id="mouting-the-specified-rootfs-image-by-libostree">Mouting the specified rootfs image by libostree<a href="#mouting-the-specified-rootfs-image-by-libostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="mouting-the-specified-rootfs-image-by-libostree">Mouting the specified rootfs image by libostree<a href="#mouting-the-specified-rootfs-image-by-libostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>So, how libostree mounts the rootfs read-only when booting the Linux kernel? libostree&rsquo;s customized initramfs parses kernel command line arguments <code>ostree=</code>, and mounts the specified rootfs image to the rootfs.</p>
 <p>You can find the current kernel command line argument by <code>rpm-ostree</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ rpm-ostree kargs
@@ -277,7 +277,7 @@ Jul <span class="m">08</span> 03:57:29 localhost audit<span class="o">[</span>1<
 Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Reached target Initrd Root File System.
 Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Starting Reload Configuration from the Real Root...
 Jul <span class="m">08</span> 03:57:29 localhost systemd<span class="o">[</span>1<span class="o">]</span>: Reloading.
-</code></pre></div><h2 id="making-the-rootfs-read-only-by-libostree">Making the rootfs read-only by libostree<a href="#making-the-rootfs-read-only-by-libostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="making-the-rootfs-read-only-by-libostree">Making the rootfs read-only by libostree<a href="#making-the-rootfs-read-only-by-libostree" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>OK. now we know that how libostree mounts the specified rootfs image into real <code>/</code>. But, although the document says the root is mouted read-only, actual mount result shows it is mounted writable:</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ findmnt
 TARGET                        SOURCE                                                         FSTYPE          OPTIONS
@@ -316,13 +316,13 @@ else is in /sysroot it&rsquo;s probably by accident.</p>
 #736</p>
 </blockquote>
 <p>that contains a commit to add a line into the script creating a coreos disk:</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Finally, add the immutable bit to the physical root; we don&#39;t</span>
-<span class="c1"># expect people to be creating anything there.  A use case for</span>
-<span class="c1"># OSTree in general is to support installing *inside* the existing</span>
-<span class="c1"># root of a deployed OS, so OSTree doesn&#39;t do this by default, but</span>
-<span class="c1"># we have no reason not to enable it here.  Administrators should</span>
-<span class="c1"># generally expect that state data is in /etc and /var; if anything</span>
-<span class="c1"># else is in /sysroot it&#39;s probably by accident.</span>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">## Finally, add the immutable bit to the physical root; we don&#39;t</span>
+<span class="c1">## expect people to be creating anything there.  A use case for</span>
+<span class="c1">## OSTree in general is to support installing *inside* the existing</span>
+<span class="c1">## root of a deployed OS, so OSTree doesn&#39;t do this by default, but</span>
+<span class="c1">## we have no reason not to enable it here.  Administrators should</span>
+<span class="c1">## generally expect that state data is in /etc and /var; if anything</span>
+<span class="c1">## else is in /sysroot it&#39;s probably by accident.</span>
 chattr +i rootfs
 </code></pre></div><blockquote>
 <p>chattr - change file attributes on a Linux file system</p>
@@ -352,7 +352,7 @@ hello!
 <p>Funny thing is that, after writing a file at <code>/</code> and setting the immutable bit back on, you cannot remove the <code>/test</code> file either.</p>
 <p>I now understand the immutable flag works for rootfs write protection, however, I not do not know at which point the immutable flag is set.
 Maybe libostree downloads the OS image with the enabled bit, since there is no code for setting the immutable bit for rootfs in <a href="https://github.com/coreos/rpm-ostree">rpm-ostree</a> repository.</p>
-<h1 id="flatpak-flatpak">Flatpak <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup><a href="#flatpak-flatpak" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="flatpak-flatpak">Flatpak <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup><a href="#flatpak-flatpak" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Flatpak is a modern linux app packaging framework.
 Legacy Linux package frameworks (e.g. dpkg, yum, dnf) shares and depends on shared libraries installed on the host system.
 This has prohibited Linux application developers from using more recent version of libraries due to possible limited compatibility.</p>

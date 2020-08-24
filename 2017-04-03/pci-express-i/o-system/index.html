@@ -82,7 +82,7 @@ A device communicates with a computer system by sending signals over a cable or 
 				<h1>PCI Express I/O System</h1>
 			</header>
 			<div class="content">
-				<h1 id="io-hardware-overview">I/O Hardware Overview<a href="#io-hardware-overview" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="io-hardware-overview">I/O Hardware Overview<a href="#io-hardware-overview" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>The basic I/O hardware elements, such as <em><strong>ports, buses, and device controllers</strong></em>,
 accomodate a wide variety of I/O devices.</p>
 <p>To encapsulate the details and oddities of different devices, the kernel of an
@@ -103,7 +103,7 @@ The I/O instruction triggers bus lines to select the proper device and to move b
 of the processor.
 The CPU executes I/O requests using the standard data-transfer instructions to read and write the device-control registers at their mapped locations in physical memory.</li>
 </ol>
-<h1 id="nvidia-gpu-on-pci-express">NVIDIA GPU on PCI Express<a href="#nvidia-gpu-on-pci-express" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="nvidia-gpu-on-pci-express">NVIDIA GPU on PCI Express<a href="#nvidia-gpu-on-pci-express" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>The current form of the GPU is a PCI express device. The NVIDIA GPU exposes the following base address registers (BARs) to the system through PCI in addition to the PCI configuration space and VGA-compatible I/O ports.</p>
 <dl>
 <dt>BAR0</dt>
@@ -134,7 +134,7 @@ BAR1 and BAR2: <code>0xd0000000</code> (device memory windows? 64-bit memory-map
 BAR3 and BAR4: <code>0xd8000000</code> (device memory windows? 64-bit memory map)<br>
 BAR5: <code>0xe000</code> (I/O ports)</p>
 <p>PCI Expansion ROM address <code>0xdf000000</code> is saved in <code>30h~34h</code> (Expansion ROM Base Address) in configuration space header, not BAR 6, as explained in <em>&lsquo;Implementing open-source CUDA runtime&rsquo;</em>.</p>
-<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Silberschatz A, Galbin P.B, Gagne G, Operating System Concepts, Wiley, 2012, ISBN:9781118063330</li>
 <li>PCI SIG, PCI Express Base Specification Revision 3.0, 2010</li>

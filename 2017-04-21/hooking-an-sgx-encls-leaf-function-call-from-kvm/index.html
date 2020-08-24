@@ -79,12 +79,12 @@
 				<h1>Hooking an SGX ENCLS Leaf Function Call from KVM</h1>
 			</header>
 			<div class="content">
-				<h1 id="environment">Environment<a href="#environment" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="environment">Environment<a href="#environment" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor</li>
 <li>Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)</li>
 </ul>
-<h1 id="1-encls">1. ENCLS<a href="#1-encls" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="1-encls">1. ENCLS<a href="#1-encls" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>
 <p>SGX Programming Reference, Section 5.2.1</p>
@@ -117,7 +117,7 @@ if (in VMX non-root operation) and (Enable_ENCLS_EXITING = 1):
         set VMCS.EXIT_REASON = ENCLS;
         deliver VM exit;
 ...
-</code></pre><h1 id="2-secondary-processor-based-vm-execution-control-ia32_vmx_procbased_ctls2">2. Secondary Processor-based VM-Execution Control (IA32_VMX_PROCBASED_CTLS2)<a href="#2-secondary-processor-based-vm-execution-control-ia32_vmx_procbased_ctls2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre><h2 id="2-secondary-processor-based-vm-execution-control-ia32_vmx_procbased_ctls2">2. Secondary Processor-based VM-Execution Control (IA32_VMX_PROCBASED_CTLS2)<a href="#2-secondary-processor-based-vm-execution-control-ia32_vmx_procbased_ctls2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Intel SDM Volume 3, Appendix A.3.3</li>
 <li>Intel SDM Volume 3, Section 24.6.2</li>
@@ -153,7 +153,7 @@ The 1-setting is not allowed for any reserved bit.</li>
 </ol>
 </li>
 </ul>
-<h1 id="3-encls-exiting-bitmap">3. ENCLS-exiting Bitmap<a href="#3-encls-exiting-bitmap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="3-encls-exiting-bitmap">3. ENCLS-exiting Bitmap<a href="#3-encls-exiting-bitmap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>
 <p>SGX Programming Reference, Section 6.5.1</p>
@@ -195,10 +195,10 @@ The 1-setting is not allowed for any reserved bit.</li>
 <p>It is a field inside the VMCS: value can be written by <code>vmcs_write32(unsigned long field, u32 value)</code> in <code>/linux/arch/x86/kvm/vmx.c:1570</code>.</p>
 </li>
 </ul>
-<h1 id="4-implementing-a-encls-hook-on-kvm">4. Implementing A ENCLS Hook on KVM<a href="#4-implementing-a-encls-hook-on-kvm" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="4-implementing-a-encls-hook-on-kvm">4. Implementing A ENCLS Hook on KVM<a href="#4-implementing-a-encls-hook-on-kvm" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><strong><code>/linux/arch/x86/kvm/vmx.c:3269 static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf)</code></strong><br>
 <strong><code>/linux/arch/x86/kvm/vmx.c:4936 static int vmx_vcpu_setup()</code></strong></p>
-<h2 id="1-in-setup_vmcs_config-linuxarchx86kvmvmxc3269">(1) In <code>setup_vmcs_config()</code> (<code>/linux/arch/x86/kvm/vmx.c:3269</code>).<a href="#1-in-setup_vmcs_config-linuxarchx86kvmvmxc3269" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="1-in-setup_vmcs_config-linuxarchx86kvmvmxc3269">(1) In <code>setup_vmcs_config()</code> (<code>/linux/arch/x86/kvm/vmx.c:3269</code>).<a href="#1-in-setup_vmcs_config-linuxarchx86kvmvmxc3269" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>In terms of configuring secondary processor-based VM-exeuction controls MSR,</p>
 <ul>
 <li>It first checks bit position 31 of the primary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS</code>) is 1. This indicates that the secondary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS2</code>) is used.<br>
@@ -228,7 +228,7 @@ It is set by default by KVM, as follows, hence you don&rsquo;t have to modify th
     <span class="n">SECONDARY_ENABLE_ENCLS_EXITING</span><span class="p">;</span>
 <span class="n">adjust_vmx_controls</span><span class="p">(</span><span class="n">min2</span><span class="p">,</span> <span class="n">opt2</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS2</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_2nd_exec_control</span><span class="p">);</span>
 <span class="p">...</span>
-</code></pre></div><h2 id="2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939">(2) In <code>vmx_vcpu_setup()</code> (<code>/linux/arch/x86/kvm/vmx.c:4939</code>).<a href="#2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939">(2) In <code>vmx_vcpu_setup()</code> (<code>/linux/arch/x86/kvm/vmx.c:4939</code>).<a href="#2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Set an ENCLS0-exiting bitmap VMCS control field (encoding <code>0x0000202E</code>). This indicates which ENCLS instruction should be hooked by a VMM. It is <strong>not</strong> set by default. Hence, set the VMCS control field as follows to hook an ENLS instruction call.</p>
 <p>Note that <em><strong><!-- raw HTML omitted -->each bit position<!-- raw HTML omitted --> of the control field represents the leaf number of ENCLS instruction</strong></em>, i.e. for EEXTEND, which has leaf number 0x06, 6th bit should be set.<br>
 Also note that ENCLS-exiting bitmap control field (<code>0x0000202E</code>) is not defined in Linux kernel by default. You also have to set it first, in <code>/linux/arch/x86/kvm/include/asm/vmx.h</code>.</p>
@@ -253,7 +253,7 @@ Also note that ENCLS-exiting bitmap control field (<code>0x0000202E</code>) is n
 </code></pre></div><blockquote>
 <p>If you want to hook multiple ENCLS instructions, the value passed should be a or-ed combination of several numbers.</p>
 </blockquote>
-<h2 id="3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314">(3) In <code>vmx_handle_exit()</code> (<code>/linux/arch/x86/kvm/vmx.c:8314</code>).<a href="#3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314">(3) In <code>vmx_handle_exit()</code> (<code>/linux/arch/x86/kvm/vmx.c:8314</code>).<a href="#3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Now the KVM will hook an ENCLS instruction that is set to be hooked. However, as the exit reason <code>ENCLS</code> is not included in Linux kernel by default, it prints <code>vmx: unexpected exit reason 0x3C</code> in dmesg.</p>
 <p>Add an ENCLS exit reason in <code>/linux/arch/x86/include/uapi/asm/vmx.h</code>, as follows.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define EXIT_REASON_EXCEPTION_NMI     0
@@ -308,7 +308,7 @@ Currently I just added a simple <code>printk()</code>, but you can implement it 
 <img src="/assets/images/170421/handle_exit_reason_encls.png" alt="handle_exit_reason_encls">{: .center-image}</p>
 <!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
-<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li>Intel Corporation. <em>Intel Software Guard Extensions Programming Reference</em>. <a href="https://software.intel.com/sites/default/files/managed/48/88/329298-002.pdf">[Online]</a>. Oct. 2014</li>
 <li>Intel Corporation. <em>Intel 64 and IA-32 Architectures Software Developer&rsquo;s Manual Volume 3</em>. <a href="https://software.intel.com/sites/default/files/managed/a4/60/325384-sdm-vol-3abcd.pdf">[Online]</a>. Mar. 2017</li>

@@ -9,7 +9,7 @@
 	<meta name="msapplication-TileColor" content="#494f5c">
 <meta itemprop="name" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library">
 <meta itemprop="description" content="Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} # as c-shared library go build -buildmode=c-shared -o libtest.so test.go # as c-archive(static) library go build -buildmode=c-archive -o libtest.">
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest.">
 <meta itemprop="datePublished" content="2019-11-28T21:09:00+09:00" />
 <meta itemprop="dateModified" content="2019-11-28T21:09:00+09:00" />
 <meta itemprop="wordCount" content="1057">
@@ -19,7 +19,7 @@ package main	// buildmode=[c-archive|c-shared] requires exactly one main package
 <meta itemprop="keywords" content="study,go," />
 <meta property="og:title" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library" />
 <meta property="og:description" content="Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} # as c-shared library go build -buildmode=c-shared -o libtest.so test.go # as c-archive(static) library go build -buildmode=c-archive -o libtest." />
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://insujang.github.io/2019-11-28/implementing-kubernetes-cpp-client-library/" />
 <meta property="article:published_time" content="2019-11-28T21:09:00+09:00" />
@@ -27,7 +27,7 @@ package main	// buildmode=[c-archive|c-shared] requires exactly one main package
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library"/>
 <meta name="twitter:description" content="Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} # as c-shared library go build -buildmode=c-shared -o libtest.so test.go # as c-archive(static) library go build -buildmode=c-archive -o libtest."/>
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -76,7 +76,7 @@ package main	// buildmode=[c-archive|c-shared] requires exactly one main package
 				<h1>Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</h1>
 			</header>
 			<div class="content">
-				<h1 id="linking-go-and-c">Linking Go and C<a href="#linking-go-and-c" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="linking-go-and-c">Linking Go and C<a href="#linking-go-and-c" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>	<span class="c1">// buildmode=[c-archive|c-shared] requires exactly one main package
 </span><span class="c1"></span>
@@ -89,9 +89,9 @@ package main	// buildmode=[c-archive|c-shared] requires exactly one main package
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{}</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># as c-shared library</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">## as c-shared library</span>
 go build -buildmode<span class="o">=</span>c-shared -o libtest.so test.go
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># as c-archive(static) library</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">## as c-archive(static) library</span>
 go build -buildmode<span class="o">=</span>c-archive -o libtest.a test.go
 </code></pre></div><p>With the command above, <a href="https://golang.org/cmd/cgo/">cgo</a> automatically generates a header file and a library file:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ ls
@@ -114,7 +114,7 @@ libtest.a  libtest.h  test.go
 <pre><code>$ ./test 
 This is a cpp application calling a Go function.
 Hello from Go, insu!
-</code></pre><h1 id="incorporating-with-cmake">Incorporating with CMake<a href="#incorporating-with-cmake" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre><h2 id="incorporating-with-cmake">Incorporating with CMake<a href="#incorporating-with-cmake" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Using CMake and Go is quite wired; Go build system supports out-of-source build and cross-platform build that CMake would also aims. Here, I would like to use CMake to make a build system for a program implemented by <em>both</em> Go and C++. Luckily, we do not have to take care of Go workspace hierarchy since we only use <code>go build</code> command.</p>
 <blockquote>
 <p>To understand how go build system works, refer to this <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
@@ -187,7 +187,7 @@ Scanning dependencies of target test.out
 $ ./test.out
 This is a cpp application calling a Go <span class="k">function</span>.
 Hello from Go, insu!
-</code></pre></div><h1 id="implement-c-shim-layer-with-kubernetes-go-library">Implement C++ Shim Layer with Kubernetes Go Library<a href="#implement-c-shim-layer-with-kubernetes-go-library" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre></div><h2 id="implement-c-shim-layer-with-kubernetes-go-library">Implement C++ Shim Layer with Kubernetes Go Library<a href="#implement-c-shim-layer-with-kubernetes-go-library" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Now the basic step is done. Let&rsquo;s move into Kubernetes area.</p>
 <p>For a test, clone Client-go library and execute it<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <blockquote>

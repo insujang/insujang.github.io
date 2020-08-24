@@ -82,7 +82,7 @@ When you untar the archive, you can see SOURCES directory, which contains the fo
 				<p>Mellanox is a manufacturer of networking products based on <strong>infiniband</strong>, which in these days are used for Remote DMA (RDMA).
 Though their documents are explained and managed well in their <a href="https://www.mellanox.com">[website]</a>,
 I cannot find how to build an infiniband device driver from source code they provide.</p>
-<h1 id="building-mellanox-ofed-source-code-inside-install-script">Building Mellanox OFED source code: inside install script<a href="#building-mellanox-ofed-source-code-inside-install-script" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="building-mellanox-ofed-source-code-inside-install-script">Building Mellanox OFED source code: inside install script<a href="#building-mellanox-ofed-source-code-inside-install-script" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Source code can be downloaded in <a href="https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed">[here]</a>.
 Currently the latest version of MLNX_OFED is <a href="http://www.mellanox.com/downloads/ofed/MLNX_OFED-4.7-3.2.9.0/MLNX_OFED_SRC-debian-4.7-3.2.9.0.tgz">4.7-3.2.9.0</a>.</p>
 <p>When you untar the archive, you can see <code>SOURCES</code> directory, which contains the following another archives.</p>
@@ -127,12 +127,12 @@ is_module_in_deb: core is in /home/insujang/MLNX_OFED_SRC-4.7-3.2.9.0/DEBS/ubunt
 &lt;omit duplicated&gt;
 Installing mlnx-ofed-kernel-dkms-4.7...
 Running /usr/bin/dpkg -i --force-confnew --force-confmiss /home/insujang/MLNX_OFED_SRC-4.7-3.2.9.0/DEBS/ubuntu18.04/x86_64/COMMON/mlnx-ofed-kernel-dkms_4.7-OFED.4.7.3.2.9.1.g457f064_all.deb
-</code></pre><h1 id="compiling-modified-code-using-dpkg-buildpackage">Compiling modified code: using dpkg-buildpackage<a href="#compiling-modified-code-using-dpkg-buildpackage" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre><h2 id="compiling-modified-code-using-dpkg-buildpackage">Compiling modified code: using dpkg-buildpackage<a href="#compiling-modified-code-using-dpkg-buildpackage" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>So, we can modify the source code with manual debian package build for customization.</p>
 <pre><code>$ mkdir -p ~/Documents/mlnx-ofed-kernel
 $ cp mlnx-ofed-kernel_4.7.orig.tar.gz ~/Documents/mlnx-ofed-kernel
 $ tar xvf ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel_4.7.orig.tar.gz # The root path of untared source code: ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel-4.7
-</code></pre><h2 id="adding-code">Adding code<a href="#adding-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="adding-code">Adding code<a href="#adding-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Add some modifications to the code. I added a simple <code>printk()</code> function call into <code>drivers/net/ethernet/mellanox/mlx5/core/main.c:static int __init init(void)</code>, the function that is called when the kernel module is loaded.</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">drivers</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ethernet</span><span class="o">/</span><span class="n">mellanox</span><span class="o">/</span><span class="n">mlx5</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">main</span><span class="p">.</span><span class="n">c</span>
 <span class="p">...</span>
@@ -144,7 +144,7 @@ $ tar xvf ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel_4.7.orig.tar.gz # The ro
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="p">...</span>
-</code></pre></div><h2 id="building-a-package">building a package<a href="#building-a-package" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre></div><h3 id="building-a-package">building a package<a href="#building-a-package" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>When you try to build a deb package (<code>dpkg-buildpackage -us -uc</code>), it says:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">dpkg-source: info: <span class="nb">local</span> changes detected, the modified files are:
  mlnx-ofed-kernel-4.7/drivers/net/ethernet/mellanox/mlx5/core/main.c
@@ -172,7 +172,7 @@ dpkg-buildpackage: info: source distribution unstable
 dpkg-genchanges: info: including full source code in upload
  dpkg-source --after-build mlnx-ofed-kernel-4.7
 dpkg-buildpackage: info: full upload (original source is included)
-</code></pre><h2 id="installing-a-package">Installing a package<a href="#installing-a-package" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="installing-a-package">Installing a package<a href="#installing-a-package" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Install the package:</p>
 <pre><code>$ sudo dpkg -i mlnx-ofed-kernel-dkms-4.7-OFED.4.7.3.2.9.1.g457f064_all.deb
 ...
@@ -184,7 +184,7 @@ Making new initrd.img-4.15.0-74-generic
 update-initramfs.........
 
 DKMS: install completed.
-</code></pre><h2 id="test">Test<a href="#test" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="test">Test<a href="#test" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Reload the kernel module.</p>
 <pre><code>$ sudo /etc/init.d/openibd restart
 Unloading HCA driver:                                      [  OK  ]
@@ -199,10 +199,10 @@ $ dmesg
 [360773.384107] mlx5_ib: Mellanox Connect-IB Infiniband driver v4.7-3.2.9
 [360773.791522] mlx5_core 0000:18:00.0: MLX5E: StrdRq(0) RqSz(1024) StrdSz(256) RxCqeCmprss(0)
 </code></pre><p>Changed source code are applied in the kernel module: <code>mlx5_core</code>.</p>
-<h1 id="compiling-modified-code-using-makefile-libibverbs">Compiling modified code: using Makefile (libibverbs)<a href="#compiling-modified-code-using-makefile-libibverbs" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="compiling-modified-code-using-makefile-libibverbs">Compiling modified code: using Makefile (libibverbs)<a href="#compiling-modified-code-using-makefile-libibverbs" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>However, this work is too burdensome to test our customized code; commit the changes that might have bugs to test whether there is a bug.
 Many components are userspace drivers, so we can just build it.</p>
-<h2 id="compiling-with-makefile">Compiling with Makefile<a href="#compiling-with-makefile" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="compiling-with-makefile">Compiling with Makefile<a href="#compiling-with-makefile" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>For example, let us build <code>libibverbs</code>, a verb API library that we use for RDMA programming.
 <code>libibverbs</code> adopted <code>autogen</code> system for cross-domain build.</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nb">cd</span> libibverbs
@@ -235,7 +235,7 @@ lrwxrwxrwx <span class="m">1</span> insujang insujang      <span class="m">19</s
 </span><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">test_program</span> <span class="o">${</span><span class="nv">SRCS</span><span class="o">}</span><span class="p">)</span><span class="err">
 </span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_program</span> <span class="s">ibverbs</span><span class="p">)</span><span class="err">
 </span></code></pre></div></blockquote>
-<h2 id="no-userspace-device-specific-driver-how-to-fix-it">No userspace device-specific driver. How to fix it?<a href="#no-userspace-device-specific-driver-how-to-fix-it" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="no-userspace-device-specific-driver-how-to-fix-it">No userspace device-specific driver. How to fix it?<a href="#no-userspace-device-specific-driver-how-to-fix-it" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Are we done? Sadly no. When you launch a program, libibverbs prints warning messages and your program cannot find infiniband devices.</p>
 <pre><code>libibverbs: Warning: couldn't open config directory '/usr/local/etc/libibverbs.d'.
 libibverbs: Warning: no userspace device-specific driver found for /sys/class/infiniband_verbs/uverbs1

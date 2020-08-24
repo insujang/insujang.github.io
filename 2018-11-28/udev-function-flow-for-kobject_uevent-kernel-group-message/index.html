@@ -79,7 +79,7 @@ linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... 
 				<h1>udev: Function Flow for KOBJECT_UEVENT kernel group message </h1>
 			</header>
 			<div class="content">
-				<h1 id="identifying-the-device">Identifying the device<a href="#identifying-the-device" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="identifying-the-device">Identifying the device<a href="#identifying-the-device" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><img src="/assets/images/181127/usb_subsystem_linux.png" alt="USB subsystem in Linux">{: .center-image}
 <a href="https://opensourceforu.com/2011/10/usb-drivers-in-linux-1/">[source]</a></p>
 <p>When a USB device is inserted to system, the very first initialization function to be started is <code>drivers/usb/core/usb.c:usb_init()</code>, written in <a href="https://www.technovelty.org/linux/what-actually-happens-when-you-plug-in-a-usb-device.html">[here]</a>.

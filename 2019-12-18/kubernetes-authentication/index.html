@@ -90,14 +90,14 @@ By default, these ports are:</p>
 <li><code>https://&lt;ip&gt;:6443</code>: use TLS (and certificate), <code>&lt;ip&gt;</code> is the first non-localhost network interface, request are handled by authentication and authorization modules</li>
 </ul>
 <p>The HTTP request moves to the authentication step when users access to the API server through the port 6443 and establishes a TLS connection.</p>
-<h1 id="kubernetes-authentication-strategies-23">Kubernetes authentication strategies <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a href="#kubernetes-authentication-strategies-23" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="kubernetes-authentication-strategies-23">Kubernetes authentication strategies <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a href="#kubernetes-authentication-strategies-23" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Kubernetes provides the following modules for authentication.</p>
 <ul>
 <li>client certificates (default)</li>
 <li>bearer tokens (authentication proxy)</li>
 <li>HTTP basic auth</li>
 </ul>
-<h2 id="client-certificate">Client certificate<a href="#client-certificate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="client-certificate">Client certificate<a href="#client-certificate" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>By default, Kubernetes set by <code>kubeadm</code> uses X509 based client certificate for authentication.</p>
 <p>Official documentation<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> says:</p>
 <blockquote>
@@ -117,14 +117,14 @@ By default, these ports are:</p>
 <p>Let&rsquo;s see how thiese configurations are set by default.</p>
 <p><code>kubeadm</code> initialize kubelet as a systemd service:</p>
 <pre><code>$ cat /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
-# Note: This dropin only works with kubeadm and kubelet v1.11+
+## Note: This dropin only works with kubeadm and kubelet v1.11+
 [Service]
 Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf&quot;
 Environment=&quot;KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml&quot;
-# This is a file that &quot;kubeadm init&quot; and &quot;kubeadm join&quot; generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically
+## This is a file that &quot;kubeadm init&quot; and &quot;kubeadm join&quot; generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically
 EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
-# This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
-# the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
+## This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
+## the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
 EnvironmentFile=-/etc/default/kubelet
 ExecStart=
 ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
@@ -157,7 +157,7 @@ Containers:
       --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt
       --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key
       ...
-</code></pre><h2 id="kubectl-access">kubectl access<a href="#kubectl-access" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="kubectl-access">kubectl access<a href="#kubectl-access" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>When we use <code>kubectl</code>, everything works fine. This does not mean <code>kubectl</code> is special, nor bypasses authentication module.
 With <code>KUBECONFIG</code> environment variable, <code>kubectl</code> automatically loads a configuration file with certificate information before accessing the api server.
 With higher level of verbose, you can see this flow.</p>

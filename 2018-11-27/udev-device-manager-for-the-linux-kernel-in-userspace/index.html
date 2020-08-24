@@ -79,7 +79,7 @@ https://en.wikipedia.org/wiki/Udev
 				<h1>udev: Device Manager for the Linux Kernel in Userspace</h1>
 			</header>
 			<div class="content">
-				<h1 id="what-is-udev">What is udev?<a href="#what-is-udev" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="what-is-udev">What is udev?<a href="#what-is-udev" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>udev (userspace /dev) is a device manager for the Linux kernel.
 As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory.
@@ -92,7 +92,7 @@ including firmware loading as reuqired by certain devices.</p>
 udev was developed by <a href="https://en.wikipedia.org/wiki/Greg_Kroah-Hartman">Greg Kroah-Hartman</a> and <a href="https://en.wikipedia.org/wiki/Kay_Sievers">Kay Sievers</a>, for the purpose of replacing devfs (device file system).
 Greg Kroah-Hartman published <strong><a href="https://landley.net/kdocs/ols/2003/ols2003-pages-249-257.pdf">the paper</a></strong> regarding to udev,
 which is worth reading.</p>
-<h1 id="why-was-udev-developed">Why was udev developed?<a href="#why-was-udev-developed" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="why-was-udev-developed">Why was udev developed?<a href="#why-was-udev-developed" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><code>/dev</code> directory is where all device files for the system are loaded (note that everything in Linux is files, so are devices).
 This directory had been managed by <code>devfs</code> filesystem until Linux kernel version 2.5.
 The introduction of <code>devfs</code> solved some problem, however, still many problems remained. For those problems, please refer to Section 2 in <a href="https://landley.net/kdocs/ols/2003/ols2003-pages-249-257.pdf">the paper</a>.</p>
@@ -103,8 +103,8 @@ The introduction of <code>devfs</code> solved some problem, however, still many 
 <li>Provide consistent device naming (e.g. <code>eth0</code> -&gt; <code>enp2s0</code>), and</li>
 <li>Provide a userspace API to access info about current system devices.</li>
 </ul>
-<h1 id="udev-internals">udev Internals<a href="#udev-internals" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-<h2 id="kobject_uevent">kobject_uevent<a href="#kobject_uevent" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="udev-internals">udev Internals<a href="#udev-internals" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="kobject_uevent">kobject_uevent<a href="#kobject_uevent" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Though udev runs in userspace, it is highly entangled with the Linux kernel.
 The first entry that recognizes device insertion/deletion events is surely the Linux kernel.
 While there were no mechanisms for the Linux kernel to <em>push notifications</em> to userspace processes
@@ -142,7 +142,7 @@ PHYSDEVBUS=usb\0       // bus
 PHYSDEVDRIVER=usbhid\0 // driver
 MAJOR=13\0             // major number
 MINOR=34\0&quot;,           // minor number
-</code></pre><h2 id="libudev-and-kobject_uevent-message-groups">libudev and kobject_uevent message groups<a href="#libudev-and-kobject_uevent-message-groups" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre><h3 id="libudev-and-kobject_uevent-message-groups">libudev and kobject_uevent message groups<a href="#libudev-and-kobject_uevent-message-groups" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>We should note that the other userspace processes except udevd <strong>must not</strong> receive netlink messages from the kernel directly
 by using the above netlink socket.
 Then how our program can receive device notification? The answer is <code>libudev</code>.
@@ -163,7 +163,7 @@ udevd, once the device initialization is finished, broadcasts device ready notif
 Therefore, <code>GROUP_KERNEL</code> is used only by udevd, and <code>GROUP_UDEV</code> is used by libudev and all the other processes waiting for the device notifications from udevd.</p>
 <p>Both message groups are sent from the kernel to user space, the actual origin of the message group <code>GROUP_UDEV</code> is udevd, not the kernel.
 Although <a href="http://man7.org/linux/man-pages/man7/netlink.7.html">netlink</a> is the IPC mechanism between the kernel and the userspace processes, it can also be used to communicate between two userspace processes, if we have a bit of code in the kernel for the support <a href="https://stackoverflow.com/a/44274783">[cite]</a>.</p>
-<h2 id="example-case-usb-device-hotplugged">Example case: USB device hotplugged<a href="#example-case-usb-device-hotplugged" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="example-case-usb-device-hotplugged">Example case: USB device hotplugged<a href="#example-case-usb-device-hotplugged" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p><img src="/assets/images/181127/udev_summary.png" alt="udev summary">{: .center-image width=&quot;700px&rdquo;}</p>
 <p>A very simple operation flow of udev device notification is as above.
 The uevent that udevd receives from the kernel driver is actually a <code>GROUP_KERNEL</code> message,
@@ -173,7 +173,7 @@ and the notification to userspace programs in the box <code>/lib/udev programs o
 <li><a href="/2018-11-28/udev-function-flow-for-kobjectuevent-kernel-group-message/">[GROUP_KERNEL kernel function call flow]</a></li>
 <li><a href="/#">[GROUP_UDEV function call flow]</a></li>
 </ul>
-<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://www.iredale.net/p/by-title/introduction-to-udev/udev-introduction-latest.pdf">udev: An Introduction To Linux&rsquo;s udev</a></li>
 <li><a href="https://landley.net/kdocs/ols/2003/ols2003-pages-249-257.pdf">udev - A Userspace Implementation of devfs</a></li>

@@ -79,22 +79,22 @@ To checkout a remote branch into the existing git local repository, use the foll
 				<h1>Git Basics</h1>
 			</header>
 			<div class="content">
-				<h1 id="1-initialize-a-git-repository">1. Initialize a Git Repository<a href="#1-initialize-a-git-repository" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="1-initialize-a-git-repository">1. Initialize a Git Repository<a href="#1-initialize-a-git-repository" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <pre><code>$ git init
 </code></pre><p>This will create <code>.git</code> directory to store all information for version control.</p>
-<h1 id="2-checking-out-a-remote-repository">2. Checking out a Remote Repository<a href="#2-checking-out-a-remote-repository" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="2-checking-out-a-remote-repository">2. Checking out a Remote Repository<a href="#2-checking-out-a-remote-repository" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <pre><code>$ git checkout https://github.com/username/abc.git
 $ git checkout https://github.com/username/abc.git branch_name
 </code></pre><p>The last <code>.git</code> can be omitted. This will copy files in the remote repository. You can directly checkout a branch by adding <code>branch_name</code> to the tail of the command.</p>
 <p>To checkout a remote branch into the existing git local repository, use the following:</p>
 <pre><code>$ git fetch
 $ git checkout branch_name
-</code></pre><h1 id="3-commit--push">3. Commit / Push<a href="#3-commit--push" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+</code></pre><h2 id="3-commit--push">3. Commit / Push<a href="#3-commit--push" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <pre><code>$ git commit -m &quot;commit message&quot;
 $ git push origin branch_name  (e.g. git push origin master)
 </code></pre><p>Unlike SVN, git has two steps to apply changes to a remote repository. First is <code>commit</code>, record a checkpoint in <strong>local repository</strong>, and the next is <code>push</code>, transfer it into <strong>remote repository</strong>.</p>
 <p><code>origin</code> in push command means the remote repository you checked out.</p>
-<h1 id="4-git-branch_name">4. Git branch_name<a href="#4-git-branch_name" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="4-git-branch_name">4. Git branch_name<a href="#4-git-branch_name" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Branch is a beauty of git. You can work with coworkers without any interference with them.</p>
 <ul>
 <li>

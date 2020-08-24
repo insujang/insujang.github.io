@@ -79,7 +79,7 @@ https://www.freedesktop.org/wiki/Software/systemd
 				<h1>systemd Boot Process</h1>
 			</header>
 			<div class="content">
-				<h1 id="what-is-systemd">What is systemd?<a href="#what-is-systemd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+				<h2 id="what-is-systemd">What is systemd?<a href="#what-is-systemd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.</p>
 <p><a href="https://www.freedesktop.org/wiki/Software/systemd">https://www.freedesktop.org/wiki/Software/systemd</a></p>
@@ -93,7 +93,7 @@ This post only handles in-systemd details.</p>
 <p>systemd provides parallelized boot, uses sockets and d-bus activation for starting services, offers on-demand daemon launch, etc.
 We can easily attach our own daemons to systemd by creating service scripts in either <code>/lib/systemd/system</code> or <code>/etc/systemd/system</code> directories.
 For the daemons to be automatically and normally launched, we need to acknowledge the systemd launch process, which this post will investigate more.</p>
-<h1 id="systemd-boot-process-in-linux">systemd boot process in Linux<a href="#systemd-boot-process-in-linux" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="systemd-boot-process-in-linux">systemd boot process in Linux<a href="#systemd-boot-process-in-linux" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>The following chart is a structural overview of well-known systemd units and their position in the boot-up logic,
 according to freedesktop.
 The chart comes from <a href="https://www.freedesktop.org/software/systemd/man/bootup.html">here</a>.</p>
@@ -130,7 +130,7 @@ Therefore, all <code>udev.service</code>, <code>systemd-udevd-control.socket</co
 <p>There are <a href="https://www.freedesktop.org/software/systemd/man/systemd.special.html#">more special systemd units</a>,
 such like <code>network.target</code> or <code>network-online.target</code>,
 by default freedesktop does not show which position those targets sit in.</p>
-<h1 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://www.freedesktop.org/software/systemd/man/bootup.html">bootup - System bootup process</a></li>
 <li><a href="https://linoxide.com/linux-how-to/systemd-boot-process/">Systemd Boot Process a Close Look in Linux</a></li>

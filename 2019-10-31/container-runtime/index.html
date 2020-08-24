@@ -95,7 +95,7 @@ but as the internal architecture is being complicated and various container fram
 <li><a href="https://www.ianlewis.org/en/container-runtimes-part-4-kubernetes-container-run">Container Runtimes Part 4: Kubernetes Container Runtimes &amp; CRI</a></li>
 </ul>
 <p>Remaining parts of this post is a summary of those four posts and supplements for better understanding.</p>
-<h1 id="why-the-definition-becomes-unclear">Why the definition becomes unclear?<a href="#why-the-definition-becomes-unclear" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="why-the-definition-becomes-unclear">Why the definition becomes unclear?<a href="#why-the-definition-becomes-unclear" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Here is a quote from Part 1.</p>
 <blockquote>
 <p>When you run a Docker container, these are the steps Docker actually goes through:</p>
@@ -143,7 +143,7 @@ Therefore from figure Docker Internal Architecture,</p>
 <ul>
 <li>A conceptual diagram how the components fit together. Source: Container Runtimes Part 3: High-Level Runtimes*</li>
 </ul>
-<h1 id="cri-o-and-podman">CRI-O and Podman<a href="#cri-o-and-podman" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="cri-o-and-podman">CRI-O and Podman<a href="#cri-o-and-podman" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>This wonder actually comes from the relationship between Kubernetes and Podman; what is Podman? What are differences between Podman and CRI-O, which is a container runtime for Kubenetes?</p>
 <p><img src="/assets/images/191031/kubernetes.png" alt="kubernetes">
 <img src="/assets/images/191031/podman.png" alt="podman"></p>

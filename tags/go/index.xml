@@ -52,7 +52,7 @@ cmake_minimum_required(VERSION 3.0)project(test)set(TARGET_OUT test.out)set(TARG
       
       <guid>https://insujang.github.io/2019-11-28/implementing-kubernetes-cpp-client-library/</guid>
       <description>Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &amp;#34;C&amp;#34; import &amp;#34;fmt&amp;#34; //export hello func hello(name string) { fmt.Printf(&amp;#34;Hello from Go, %s!\n&amp;#34;, name); } func main() {} # as c-shared library go build -buildmode=c-shared -o libtest.so test.go # as c-archive(static) library go build -buildmode=c-archive -o libtest.</description>
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &amp;#34;C&amp;#34; import &amp;#34;fmt&amp;#34; //export hello func hello(name string) { fmt.Printf(&amp;#34;Hello from Go, %s!\n&amp;#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest.</description>
     </item>
     
   </channel>
