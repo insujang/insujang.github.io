@@ -13,7 +13,7 @@ Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors it
 Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:">
 <meta itemprop="datePublished" content="2020-08-24T09:21:00+09:00" />
 <meta itemprop="dateModified" content="2020-08-24T09:21:00+09:00" />
-<meta itemprop="wordCount" content="1081">
+<meta itemprop="wordCount" content="1520">
 
 
 
@@ -192,10 +192,75 @@ Available Kubelet configuration key/value can be investigated in [<a href="https
 </span><span class="w">                </span><span class="k">&#34;cpu&#34;: </span><span class="s2">&#34;1&#34;</span><span class="p">,</span><span class="w">
 </span><span class="w">                </span><span class="k">&#34;memory&#34;: </span><span class="s2">&#34;1Gi&#34;</span><span class="w">
 </span><span class="w">            </span>}<span class="p">,</span><span class="w">
-</span><span class="w">            </span>systemReservedCgroup<span class="s2">&#34;: &#34;</span>/system-reserved<span class="s2">&#34;,
-</span><span class="s2">            kubeReservedCgroup&#34;</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/kube-reserved&#34;</span><span class="w">
+</span><span class="w">            </span><span class="k">&#34;systemReservedCgroup&#34;: </span><span class="s2">&#34;/system.slice&#34;</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="k">&#34;kubeReservedCgroup&#34;: </span><span class="s2">&#34;/kubepods.slice&#34;</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="k">&#34;cgroupPerQOS&#34;: </span><span class="kc">true</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="k">&#34;enforceNodeAllocatable&#34;: </span><span class="p">[</span><span class="s2">&#34;pods&#34;</span><span class="p">],</span><span class="w">
 </span><span class="w">        </span>}<span class="w">
-</span></code></pre></div><h3 id="specifying-node-to-use-the-configmap">Specifying Node to use the ConfigMap<a href="#specifying-node-to-use-the-configmap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</span></code></pre></div><blockquote>
+<p>Note that <code>cgroupPerQOS</code> should be true for resource restriction on Kubernetes Pods, and <code>enforceNodeAllocatable</code> must not contain neither <code>system-reserved</code> nore <code>kube-reserved</code> string elements, otherwise you will see the following wierd error in the Kubelet log.
+I am not sure whether it is a bug.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">Aug <span class="m">26</span> 16:55:47 localhost.worker kubelet<span class="o">[</span>388430<span class="o">]</span>: F0826 16:55:47.291827  <span class="m">388430</span> kubelet.go:1384<span class="o">]</span> Failed to start ContainerManager Failed to enforce System Reserved Cgroup Limits on <span class="s2">&#34;/system.slice&#34;</span>: <span class="o">[</span><span class="s2">&#34;system&#34;</span><span class="o">]</span> cgroup does not exist      
+</code></pre></div></blockquote>
+<p>You can see Kubelet method that creates <code>/kubepods.slice</code> cgroup in <a href="https://github.com/kubernetes/kubernetes/blob/v1.18.8/pkg/kubelet/cm/node_container_manager_linux.go#L64">[here]</a>, or as follows.</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// enforceNodeAllocatableCgroups enforce Node Allocatable Cgroup settings.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">cm</span> <span class="o">*</span><span class="nx">containerManagerImpl</span><span class="p">)</span> <span class="nf">enforceNodeAllocatableCgroups</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="nx">nc</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">NodeConfig</span><span class="p">.</span><span class="nx">NodeAllocatableConfig</span>
+
+    <span class="c1">// We need to update limits on node allocatable cgroup no matter what because
+</span><span class="c1"></span>    <span class="c1">// default cpu shares on cgroups are low and can cause cpu starvation.
+</span><span class="c1"></span>    <span class="nx">nodeAllocatable</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">internalCapacity</span>
+    <span class="c1">// Use Node Allocatable limits instead of capacity if the user requested enforcing node allocatable.
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">CgroupsPerQOS</span> <span class="o">&amp;&amp;</span> <span class="nx">nc</span><span class="p">.</span><span class="nx">EnforceNodeAllocatable</span><span class="p">.</span><span class="nf">Has</span><span class="p">(</span><span class="nx">kubetypes</span><span class="p">.</span><span class="nx">NodeAllocatableEnforcementKey</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">nodeAllocatable</span> <span class="p">=</span> <span class="nx">cm</span><span class="p">.</span><span class="nf">getNodeAllocatableInternalAbsolute</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Attempting to enforce Node Allocatable with config: %+v&#34;</span><span class="p">,</span> <span class="nx">nc</span><span class="p">)</span>
+
+    <span class="nx">cgroupConfig</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">CgroupConfig</span><span class="p">{</span>
+        <span class="nx">Name</span><span class="p">:</span>               <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span>
+        <span class="nx">ResourceParameters</span><span class="p">:</span> <span class="nf">getCgroupConfig</span><span class="p">(</span><span class="nx">nodeAllocatable</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Using ObjectReference for events as the node maybe not cached; refer to #42701 for detail.
+</span><span class="c1"></span>    <span class="nx">nodeRef</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">v1</span><span class="p">.</span><span class="nx">ObjectReference</span><span class="p">{</span>
+        <span class="nx">Kind</span><span class="p">:</span>      <span class="s">&#34;Node&#34;</span><span class="p">,</span>
+        <span class="nx">Name</span><span class="p">:</span>      <span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+        <span class="nx">UID</span><span class="p">:</span>       <span class="nx">types</span><span class="p">.</span><span class="nf">UID</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">),</span>
+        <span class="nx">Namespace</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1">// If Node Allocatable is enforced on a node that has not been drained or is updated on an existing node to a lower value,
+</span><span class="c1"></span>    <span class="c1">// existing memory usage across pods might be higher than current Node Allocatable Memory Limits.
+</span><span class="c1"></span>    <span class="c1">// Pod Evictions are expected to bring down memory usage to below Node Allocatable limits.
+</span><span class="c1"></span>    <span class="c1">// Until evictions happen retry cgroup updates.
+</span><span class="c1"></span>    <span class="c1">// Update limits on non root cgroup-root to be safe since the default limits for CPU can be too low.
+</span><span class="c1"></span>    <span class="c1">// Check if cgroupRoot is set to a non-empty value (empty would be the root container)
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">{</span>
+                <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupManager</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="nx">cgroupConfig</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+                    <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">SuccessfulNodeAllocatableEnforcement</span><span class="p">,</span> <span class="s">&#34;Updated Node Allocatable limit across pods&#34;</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="p">}</span>
+                <span class="nx">message</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;Failed to update Node Allocatable Limits %q: %v&#34;</span><span class="p">,</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">FailedNodeAllocatableEnforcement</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span>
+                <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}()</span>
+    <span class="p">}</span>
+
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div><p>If <code>cm.cgroupManager.Update(cgroupConfig)</code> returns <code>nil</code>, the following event is logged in the target node:</p>
+<pre><code>$ kubectl describe nodes k8s-worker16
+...
+  Normal   KubeletConfigChanged              33m   kubelet, k8s-worker16  Kubelet restarting to use /api/v1/namespaces/default/configmaps/node-config, UID: a8b4da9d-0b6e-478d-9e35-4a3696f5778c, ResourceVersion: 1464790, KubeletConfigKey: kubelet
+  Normal   Starting                          32m   kubelet, k8s-worker16  Starting kubelet.
+  Normal   NodeAllocatableEnforced           32m   kubelet, k8s-worker16  Updated Node Allocatable limit across pods
+
+</code></pre><h3 id="specifying-node-to-use-the-configmap">Specifying Node to use the ConfigMap<a href="#specifying-node-to-use-the-configmap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>One more thing to do is to add <code>spec</code> to Kubernetes Node object to indicate which ConfigMap object should be used for dynamic Kubelet configuration for which node.</p>
 <p>Oen an editor with the following command to specify it:</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl edit node <span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
@@ -280,13 +345,18 @@ Aug <span class="m">24</span> 13:16:04 localhost.worker kubelet<span class="o">[
 </span><span class="w">        </span><span class="k">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
 </span><span class="w">        </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>8023408Ki<span class="w">
 </span><span class="w">        </span><span class="k">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
-</span></code></pre></div><h2 id="authentication-and-authorization">Authentication and Authorization<a href="#authentication-and-authorization" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</span></code></pre></div><p>In my configuration, I restricted CPU and memory resource, so be sure to check whether it actually is applied to Linux cgroup:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">/sys/fs/cgroup/memory/kubepods.slice $ cat memory.limit_in_bytes
+<span class="m">4994744320</span> // Similar to allocatable memory 4775280Ki
+
+</code></pre></div><h2 id="authentication-and-authorization">Authentication and Authorization<a href="#authentication-and-authorization" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>During the setup, the Kubelet queries a ConfigMap object from the apiserver, which requires authentication.
 According to <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, the node authorizer now <em>automatically</em> configures an RBAC rules so that there is nothing to do.</p>
 <blockquote>
 <p>Previously, you were required to manually create RBAC rules to allow Nodes to access their assigned ConfigMaps. The Node Authorizer now automatically configures these rules.</p>
 </blockquote>
-<p>Node authorizor means that default authorization mode contains <code>Node</code> ^[node-auth]:</p>
+<p>Node authorizor means that default authorization mode contains <code>Node</code> ^[node-auth]:
+SystemReservedEnforcementKey</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">ps -ef <span class="p">|</span> grep kube-apiserver
 root       <span class="m">91113</span>   <span class="m">91100</span>  <span class="m">2</span> Aug19 ?        02:29:37 kube-apiserver ... --authorization-mode<span class="o">=</span>Node,RBAC
 </code></pre></div><p>so that any users in the <code>system:nodes</code> group (username <code>system:node:&lt;nodeName&gt;</code>) are allowed to:</p>
