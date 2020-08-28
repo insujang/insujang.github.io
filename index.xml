@@ -7,10 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 24 Aug 2020 09:21:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2020 17:22:00 +0900</lastBuildDate>
     
 	<atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Flatpak</title>
+      <link>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</link>
+      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</guid>
+      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1. Although Snap is the most famous one, I think the internal architecture of Flatpak is more reliable.
+Fedora Silverblue and EndlessOS provide software installation primarily via Flathub, a central repository of Flatpak based applications 2 3.
+This post briefly summarizes how to use Flatpak in terms of implementing a sample applications.
+Installing Flatpak In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.</description>
+    </item>
     
     <item>
       <title>Dynamic Kubelet Configuration</title>
@@ -107,17 +119,6 @@ Steps to create a certificate 3 Follow the steps to create a self-signed certifi
       <description>1
 For access control, Kubernetes steps the procedures above for each API operation: authentication (who can access), authorization (what can be accessed), and admisssion control. This post is about Kubernetes authentication.
 All API accesses are handled by Kubernetes api server. All accesses have to be authenticated by the API server for Kubernetes operations. Kubernetes API server serve on 2 ports: one for testing, and the other for all other cases. By default, these ports are:</description>
-    </item>
-    
-    <item>
-      <title>Cmake for Custom Library Build System in Go</title>
-      <link>https://insujang.github.io/2019-12-10/cmake-for-custom-library-build-system-in-go/</link>
-      <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2019-12-10/cmake-for-custom-library-build-system-in-go/</guid>
-      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities. This post dives a little bit deeper into CMake build system for this interaction.
-The following CMakeLists.txt provides a binary compilation altogether with compiling Go based static library.
-cmake_minimum_required(VERSION 3.0)project(test)set(TARGET_OUT test.out)set(TARGET_LIB test.lib)# Go configurations set(GO_SRCS test.go)set(GO_LIBNAME libtest.a)# Custom command for &amp;#39;go build -buildmode=c-archive ...&amp;#39; # to create a library from Go codes. add_custom_command(OUTPUT ${GO_LIBNAME} DEPENDS ${GO_SRCS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMMAND env go build -buildmode=c-archive -o &amp;#34;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&amp;#34; ${CMAKE_GO_FLAGS} ${GO_SRCS} COMMENT &amp;#34;Building Go library&amp;#34;)# Add a custom target for the library.</description>
     </item>
     
   </channel>

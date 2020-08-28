@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>flatpak on Better Tomorrow with Computer Science</title>
+    <link>https://insujang.github.io/tags/flatpak/</link>
+    <description>Recent content in flatpak on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Thu, 27 Aug 2020 17:22:00 +0900</lastBuildDate>
+    
+	<atom:link href="https://insujang.github.io/tags/flatpak/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Introduction to Flatpak</title>
+      <link>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</link>
+      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</guid>
+      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1. Although Snap is the most famous one, I think the internal architecture of Flatpak is more reliable.
+Fedora Silverblue and EndlessOS provide software installation primarily via Flathub, a central repository of Flatpak based applications 2 3.
+This post briefly summarizes how to use Flatpak in terms of implementing a sample applications.
+Installing Flatpak In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.</description>
+    </item>
+    
+  </channel>
+</rss>

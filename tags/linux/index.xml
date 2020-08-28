@@ -7,10 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 15 Jul 2020 12:35:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2020 17:22:00 +0900</lastBuildDate>
     
 	<atom:link href="https://insujang.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Flatpak</title>
+      <link>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</link>
+      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</guid>
+      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1. Although Snap is the most famous one, I think the internal architecture of Flatpak is more reliable.
+Fedora Silverblue and EndlessOS provide software installation primarily via Flathub, a central repository of Flatpak based applications 2 3.
+This post briefly summarizes how to use Flatpak in terms of implementing a sample applications.
+Installing Flatpak In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.</description>
+    </item>
     
     <item>
       <title>Introduction to Fedora Silverblue</title>
@@ -104,17 +116,6 @@ linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... 
       <description>What is udev?  udev (userspace /dev) is a device manager for the Linux kernel. As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory. At the same time, udev also handls all user space events raised when hardware devices are added into the system or removed from it, including firmware loading as reuqired by certain devices.
 https://en.wikipedia.org/wiki/Udev
  udev first appeared at Linux kernel version 2.</description>
-    </item>
-    
-    <item>
-      <title>systemd Boot Process</title>
-      <link>https://insujang.github.io/2018-11-22/systemd-boot-process/</link>
-      <pubDate>Thu, 22 Nov 2018 13:49:40 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2018-11-22/systemd-boot-process/</guid>
-      <description>What is systemd?  systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
-https://www.freedesktop.org/wiki/Software/systemd
- systemd is now the init process running as PID 1 as indicated above. /sbin/init was the actual init process of Linux (also known as System V init boot system), it is now replaced with /usr/lib/systemd in many Linux distributions.</description>
     </item>
     
   </channel>

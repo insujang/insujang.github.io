@@ -7,10 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 24 Aug 2020 09:21:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2020 17:22:00 +0900</lastBuildDate>
     
 	<atom:link href="https://insujang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>flatpak</title>
+      <link>https://insujang.github.io/tags/flatpak/</link>
+      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/tags/flatpak/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://insujang.github.io/tags/linux/</link>
+      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>study</title>
+      <link>https://insujang.github.io/tags/study/</link>
+      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/tags/study/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>kubernetes</title>
@@ -18,24 +45,6 @@
       <pubDate>Mon, 24 Aug 2020 09:21:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/tags/kubernetes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>study</title>
-      <link>https://insujang.github.io/tags/study/</link>
-      <pubDate>Mon, 24 Aug 2020 09:21:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/tags/study/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>https://insujang.github.io/tags/linux/</link>
-      <pubDate>Wed, 15 Jul 2020 12:35:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/tags/linux/</guid>
       <description></description>
     </item>
     
@@ -90,15 +99,6 @@
       <pubDate>Sun, 10 Nov 2019 14:05:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/tags/electron/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>container</title>
-      <link>https://insujang.github.io/tags/container/</link>
-      <pubDate>Thu, 31 Oct 2019 21:36:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/tags/container/</guid>
       <description></description>
     </item>
     
