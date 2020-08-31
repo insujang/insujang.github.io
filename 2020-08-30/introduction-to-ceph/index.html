@@ -16,7 +16,7 @@
  Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.">
 <meta itemprop="datePublished" content="2020-08-30T14:16:00+09:00" />
 <meta itemprop="dateModified" content="2020-08-30T14:16:00+09:00" />
-<meta itemprop="wordCount" content="923">
+<meta itemprop="wordCount" content="946">
 
 
 
@@ -103,8 +103,6 @@
     <li><a href="#2-ceph-storage-cluster-architecture">2. Ceph Storage Cluster Architecture</a>
       <ul>
         <li><a href="#ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd">Ceph Object Storage Daemons (OSDs) (<a href="https://github.com/ceph/ceph/tree/master/src/osd"><code>/src/osd</code></a>)</a></li>
-        <li><a href="#backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore</a></li>
-        <li><a href="#bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat">BlueStore (<a href="https://github.com/ceph/ceph/tree/master/src/os/bluestore"><code>/src/os/bluestore</code></a>) </a></li>
         <li><a href="#ceph-monitors-mons-srcmonhttpsgithubcomcephcephtreemastersrcmon">Ceph Monitors (MONs) (<a href="https://github.com/ceph/ceph/tree/master/src/mon"><code>/src/mon</code></a>)</a></li>
       </ul>
     </li>
@@ -176,6 +174,9 @@ It mainly focuses on scale-out file system including storage distribution and av
 </ul>
 <h2 id="2-ceph-storage-cluster-architecture">2. Ceph Storage Cluster Architecture<a href="#2-ceph-storage-cluster-architecture" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>The nodes are managed by two types of daemons: (1) Ceph Object Storage Daemons (<code>ceph-osd</code>), (2) Ceph Monitors (<code>ceph-mon</code>), and (3) Ceph Managers (<code>ceph-mgr</code>).</p>
+<blockquote>
+<p>Note that <em>A Ceph Metadata Server</em> (<code>ceph-mds</code>) is used as well, but only if the client uses CephFS (neither for RBD nor RADOSGW).</p>
+</blockquote>
 <h3 id="ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd">Ceph Object Storage Daemons (OSDs) (<a href="https://github.com/ceph/ceph/tree/master/src/osd"><code>/src/osd</code></a>)<a href="#ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>OSDs are reponsible for storing objects on a local file system on behalf of Ceph clients.
 Also, Ceph OSDs use the CPU, memory, and networking of Ceph cluster nodes for data replication, erasure coding, recovery, monitoring and reporting functions <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
@@ -188,7 +189,7 @@ Also, Ceph OSDs use the CPU, memory, and networking of Ceph cluster nodes for da
 
 <p>Hence is main responsibility is to handle clients&rsquo; read/write requests.
 User data is stored as objects (it seems not the same with frontend object storage RADOSGW) in a backend object store.</p>
-<h3 id="backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore<a href="#backend-object-store-filestore-vs-bluestore" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore<a href="#backend-object-store-filestore-vs-bluestore" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>Initially Ceph utilized Filestore, but now it has been replaced by more efficient object store Bluestore.</p>
 <figure>
     <img src="/assets/images/200830/ceph-object-store.png"
@@ -199,7 +200,7 @@ User data is stored as objects (it seems not the same with frontend object stora
 
 <p>In filestore, objects are written to a file system (xfs, ext4, btrfs).
 Unlike the filestore, Bluestore stores objects directly on the block devices without any file system interface, and manages metadata with RocksDB. Direct access to block devices reduces software overheads coming from Linux kernel file system software stack, hence increases performance. Detailed benchmark results can be seen in <a href="https://www.redhat.com/en/blog/red-hat-openstack-platform-red-hat-ceph-storage-radosbench-baseline-performance-evaluation">[here]</a>.</p>
-<h3 id="bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat">BlueStore (<a href="https://github.com/ceph/ceph/tree/master/src/os/bluestore"><code>/src/os/bluestore</code></a>) <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup><a href="#bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat">BlueStore (<a href="https://github.com/ceph/ceph/tree/master/src/os/bluestore"><code>/src/os/bluestore</code></a>) <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup><a href="#bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>In order to step up on top of the current implementation, I further investigate bluestore.
 The term BlueStore means <strong>Bl</strong>ock + N<strong>ewStore</strong>.</p>
 <ul>
