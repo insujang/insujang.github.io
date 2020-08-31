@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Introduction to Ceph">
+<meta itemprop="description" content="Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+  Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.">
+<meta itemprop="datePublished" content="2020-08-30T14:16:00+09:00" />
+<meta itemprop="dateModified" content="2020-08-30T14:16:00+09:00" />
+<meta itemprop="wordCount" content="923">
+
+
+
+<meta itemprop="keywords" content="study,distributed,storage," />
+<meta property="og:title" content="Introduction to Ceph" />
+<meta property="og:description" content="Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+  Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-08-30/introduction-to-ceph/" />
+<meta property="article:published_time" content="2020-08-30T14:16:00+09:00" />
+<meta property="article:modified_time" content="2020-08-30T14:16:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Introduction to Ceph"/>
+<meta name="twitter:description" content="Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+  Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Introduction to Ceph</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.d9ef5bf3f42a4f594518cf4aec7d28184f061e03a5776eff303dd3aeb7f4f3dc.css" integrity="sha256-2e9b8/QqT1lFGM9K7H0oGE8GHgOld27/MD3Trrf089w=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper container-lg">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav d-md-inline d-none">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main container-lg animated fadeIn faster">
+		<header class="post-header row">
+			<div class="col-12 col-xl-3"></div>
+			<div class="col-12 col-xl-9">
+				<div class="post-meta"><span>Aug 30, 2020</span></div>
+				<h1>Introduction to Ceph</h1>
+			</div>
+		</header>
+		<article class="row">
+			<div id="toc-aside" class="col-12 col-xl-3">
+				<hr class="d-block d-xl-none">
+				<div class="toc-title">What&#39;s on this Post</div>
+				<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-ceph-client-architecture">1. Ceph Client Architecture</a>
+      <ul>
+        <li><a href="#object-storage-vs-block-storage-vs-file-storage">Object storage vs block storage vs file storage</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-ceph-storage-cluster-architecture">2. Ceph Storage Cluster Architecture</a>
+      <ul>
+        <li><a href="#ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd">Ceph Object Storage Daemons (OSDs) (<a href="https://github.com/ceph/ceph/tree/master/src/osd"><code>/src/osd</code></a>)</a></li>
+        <li><a href="#backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore</a></li>
+        <li><a href="#bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat">BlueStore (<a href="https://github.com/ceph/ceph/tree/master/src/os/bluestore"><code>/src/os/bluestore</code></a>) </a></li>
+        <li><a href="#ceph-monitors-mons-srcmonhttpsgithubcomcephcephtreemastersrcmon">Ceph Monitors (MONs) (<a href="https://github.com/ceph/ceph/tree/master/src/mon"><code>/src/mon</code></a>)</a></li>
+      </ul>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ul>
+</nav>
+				<hr class="d-block d-xl-none">
+			</div>
+
+			<div class="content col-12 col-xl-9">
+				<p>Ceph is an open-source distributed software platform <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
+It mainly focuses on scale-out file system including storage distribution and availability.</p>
+<figure>
+    <img src="/assets/images/200830/ceph-overview.jpg"
+         alt="image"/> <figcaption>
+            <p>Ceph Cluster Overview. <a href="https://www.slideshare.net/LarryCover/ceph-open-source-storage-software-optimizations-on-intel-architecture-for-cloud-workloads">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/assets/images/200830/ceph-overview2.png"
+         alt="image"/> <figcaption>
+            <p>Ceph Cluster Overview. <a href="https://medium.com/@pk0752/ceph-the-next-generation-store-67f7c51780d3">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/assets/images/200830/ceph-components.png"
+         alt="image"/> <figcaption>
+            <p>Ceph Cluster Overview. <a href="https://en.wikipedia.org/wiki/Ceph_(software)">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>A ceph storage cluster roughly consists of three components:</p>
+<ul>
+<li>Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or <code>ceph-osd</code>), Ceph Monitors (<code>ceph-mon</code>), and Ceph Managers (<code>ceph-mgr</code>) manage them. More details are in <a href="#1-ceph-storage-cluster-architecture">Ceph Storage Cluster Architecture section</a>.</li>
+<li>Ceph Clients: I at first had no idea what &ldquo;client servers&rdquo; in the figure above means; I thought that client servers are a gateway to Ceph storage cluster, but it is not the case. Those are <strong>clients</strong> and runs parts of Ceph libraries to access the Ceph storage cluster. Ceph provides three interfaces to access the cluster: RADOSGW (object storage), RBD (block storage), and CephFS (file storage). More details are in <a href="#2-ceph-client-architecture">Ceph Client Architecture section</a>.</li>
+<li>Ceph protocols: communication procotols between the nodes and clients.</li>
+</ul>
+<h2 id="1-ceph-client-architecture">1. Ceph Client Architecture<a href="#1-ceph-client-architecture" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<figure>
+    <img src="/assets/images/200830/ceph-stack.png"
+         alt="image"/> <figcaption>
+            <p>Ceph client library architecture. <a href="https://docs.ceph.com/docs/master/architecture/">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Ceph clients can be categorized into three types (apps, host/VM, and clients), and four ways of accessing a Ceph storage cluster are provided: libRADOS, RADOSGW (object storage), RBD (block storage), or CephFS (file storage).</p>
+<h3 id="object-storage-vs-block-storage-vs-file-storage">Object storage vs block storage vs file storage<a href="#object-storage-vs-block-storage-vs-file-storage" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>I am not clear how to distinguish those terms, so here is my summarized thought and references for understanding.</p>
+<figure>
+    <img src="/assets/images/200830/storage-interface-type.jpg"
+         alt="image"/> <figcaption>
+            <p>Explaining three different storage interface type. <a href="https://blogs.saphana.com/2015/03/10/cloud-infrastructure-2-enterprise-grade-storage-cloud-spod/">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>File storage: clients <strong>mount</strong> the remote storage through network and access the stored file. The storage is already formatted with proper network file system.</li>
+<li>Block storage: VMs use passthroughed <strong>block device</strong> and use it. Differently from file storages, it does not need to be formatted with a network file system.</li>
+<li>Object storage: Data are stored as objects. I think inode in ext file system is also one of object types that it refers to, but it seems a difference from file storage is to use network for data query, without kernel&rsquo;s help for file systems (e.g. VFS).</li>
+</ul>
+<p>So three types of accessing methods in Ceph can be explained:</p>
+<ul>
+<li><a href="https://docs.ceph.com/docs/master/man/8/radosgw/">RADOSGW (RADOS Rest Gateway, or Ceph object gateway)</a> (<a href="https://github.com/ceph/ceph/tree/master/src/rgw"><code>src/rgw</code></a>): it provides a RESTful gateway to Ceph Storage Clusters. it supports two interfaces: Amazon S3 API compatible, or OpenStack Swift API compatible. Clients send a RESTful request (e.g. <code>GET /path/to/object</code>) and RADOSGW will return results will be file <strong>objects</strong>.</li>
+<li><a href="https://docs.ceph.com/docs/master/rbd/">RBD (RADOS Block Device)</a> (<a href="https://github.com/ceph/ceph/tree/master/src/rbd_fuse"><code>src/rbd_fuse</code></a>, <a href="https://github.com/ceph/ceph/tree/master/src/librbd"><code>src/librbd</code></a>?): it provides a Ceph storage cluster as a block device, so that clients can access the cluster as they access to a <code>/dev/sda*</code> device.</li>
+<li><a href="https://docs.ceph.com/docs/master/cephfs/">CephFS</a> (<a href="https://github.com/ceph/ceph/blob/master/src/libcephfs.cc"><code>src/libcephfs.cc</code></a>?): Similarly to the existing file systems, clients can access the cluster through POSIX interface, like they access local file systems (e.g. using <code>open()</code>).</li>
+<li>libRADOS (<code>src/librados</code>)</li>
+</ul>
+<h2 id="2-ceph-storage-cluster-architecture">2. Ceph Storage Cluster Architecture<a href="#2-ceph-storage-cluster-architecture" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>The nodes are managed by two types of daemons: (1) Ceph Object Storage Daemons (<code>ceph-osd</code>), (2) Ceph Monitors (<code>ceph-mon</code>), and (3) Ceph Managers (<code>ceph-mgr</code>).</p>
+<h3 id="ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd">Ceph Object Storage Daemons (OSDs) (<a href="https://github.com/ceph/ceph/tree/master/src/osd"><code>/src/osd</code></a>)<a href="#ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>OSDs are reponsible for storing objects on a local file system on behalf of Ceph clients.
+Also, Ceph OSDs use the CPU, memory, and networking of Ceph cluster nodes for data replication, erasure coding, recovery, monitoring and reporting functions <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
+<figure>
+    <img src="/assets/images/200830/ceph-readwrite-flow.jpg"
+         alt="image"/> <figcaption>
+            <p>Ceph read-write flow. RADOS layer in the client nodes sends data to the primary OSD. <a href="https://www.slideshare.net/LarryCover/ceph-open-source-storage-software-optimizations-on-intel-architecture-for-cloud-workloads">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Hence is main responsibility is to handle clients&rsquo; read/write requests.
+User data is stored as objects (it seems not the same with frontend object storage RADOSGW) in a backend object store.</p>
+<h3 id="backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore<a href="#backend-object-store-filestore-vs-bluestore" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Initially Ceph utilized Filestore, but now it has been replaced by more efficient object store Bluestore.</p>
+<figure>
+    <img src="/assets/images/200830/ceph-object-store.png"
+         alt="image"/> <figcaption>
+            <p>Two types of Ceph object stores. <a href="https://ceph.io/community/bluestore-default-vs-tuned-performance-comparison/">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>In filestore, objects are written to a file system (xfs, ext4, btrfs).
+Unlike the filestore, Bluestore stores objects directly on the block devices without any file system interface, and manages metadata with RocksDB. Direct access to block devices reduces software overheads coming from Linux kernel file system software stack, hence increases performance. Detailed benchmark results can be seen in <a href="https://www.redhat.com/en/blog/red-hat-openstack-platform-red-hat-ceph-storage-radosbench-baseline-performance-evaluation">[here]</a>.</p>
+<h3 id="bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat">BlueStore (<a href="https://github.com/ceph/ceph/tree/master/src/os/bluestore"><code>/src/os/bluestore</code></a>) <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup><a href="#bluestore-srcosbluestorehttpsgithubcomcephcephtreemastersrcosbluestore-bluestore-redhat" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>In order to step up on top of the current implementation, I further investigate bluestore.
+The term BlueStore means <strong>Bl</strong>ock + N<strong>ewStore</strong>.</p>
+<ul>
+<li>Objects can be called as a set of byte stream data plus metadata. Instead of storing the infromation through a file system, BlueStore stores data directly to the raw block devices, and metadata to RocksDB key/value store and BlueFS.</li>
+<li>BlueFS implements a minimal file system to allow RocksDB to store files on it, and it shares raw device with BlueStore <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>.</li>
+</ul>
+<h3 id="ceph-monitors-mons-srcmonhttpsgithubcomcephcephtreemastersrcmon">Ceph Monitors (MONs) (<a href="https://github.com/ceph/ceph/tree/master/src/mon"><code>/src/mon</code></a>)<a href="#ceph-monitors-mons-srcmonhttpsgithubcomcephcephtreemastersrcmon" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><code>ceph-mon</code> is the cluster monitor daemon, forming <a href="https://medium.com/designing-distributed-systems/paxos-a-distributed-consensus-algorithm-41946d5d7d9">a Paxos</a> part-time parliament cluster.
+It maintains maps of the cluster state, including the monitor map, manager map, the OSD map, and the CRUSH map <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>.</p>
+<h2 id="summary">Summary<a href="#summary" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li>Ceph is a framework for distributed storage cluster. It consists of the frontend client framework, including several RADOS-based file access interfaces, the backend storage framework, including daemons (OSDs, MONs, managers) and backend object stores.</li>
+<li>Frontend client framework is based on RADOS (Reliable Autonomic Distributed Object Store). Clients can directly access to Ceph storage clusters with librados, but also can use RADOSGW (object storage), RBD (block storage), and CephFS (file storage).</li>
+<li>Backend server framework consists of several daemons that manage nodes, and backend object store to store users&rsquo; actual data.</li>
+</ul>
+<p>In the next posts, I would like to explore more details of each parts.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://ceph.io">Ceph</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://github.com/ceph/ceph">Github: Ceph</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/architecture_guide/index">Red Hat: Red Hat Ceph Architecture (v3)</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.snia.org/sites/default/files/SDC/2017/presentations/General_Session/Weil_Sage%20_Red_Hat_Goodbye_XFS_Building_a_new_faster_storage_backend_for_Ceph.pdf">Goodbye, XFS: Building a new, faster storage backend for Ceph</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://www.oddeye.co/blog/ceph-why-to-use-bluestore/">OddEye - Ceph: Why to Use BlueStore</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://docs.ceph.com/docs/mimic/start/intro/">Intro to Ceph</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+		</article>
+
+		<hr class="post-end">
+		<footer class="post-info">
+			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+			<p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/distributed">distributed</a></span><span class="tag"><a href="https://insujang.github.io/tags/storage">storage</a></span>
+			</p>
+		</footer>
+		
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

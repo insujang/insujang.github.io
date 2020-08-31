@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 27 Aug 2020 17:22:00 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 30 Aug 2020 14:16:00 +0900</lastBuildDate>
     
 	<atom:link href="https://insujang.github.io/tags/study/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Ceph</title>
+      <link>https://insujang.github.io/2020-08-30/introduction-to-ceph/</link>
+      <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-08-30/introduction-to-ceph/</guid>
+      <description>Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+  Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+    Ceph Cluster Overview. [Source]
+  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.</description>
+    </item>
     
     <item>
       <title>Introduction to Flatpak</title>
@@ -108,17 +122,6 @@ When you untar the archive, you can see SOURCES directory, which contains the fo
       <description>A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
 Steps to create a certificate 3 Follow the steps to create a self-signed certificate:
  Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key A generated certificate must be signed with the Certificate Authority&amp;rsquo;s private key, which we are going to make here.</description>
-    </item>
-    
-    <item>
-      <title>Kubernetes Authentication: Client Certificate</title>
-      <link>https://insujang.github.io/2019-12-18/kubernetes-authentication/</link>
-      <pubDate>Wed, 18 Dec 2019 09:26:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2019-12-18/kubernetes-authentication/</guid>
-      <description>1
-For access control, Kubernetes steps the procedures above for each API operation: authentication (who can access), authorization (what can be accessed), and admisssion control. This post is about Kubernetes authentication.
-All API accesses are handled by Kubernetes api server. All accesses have to be authenticated by the API server for Kubernetes operations. Kubernetes API server serve on 2 ports: one for testing, and the other for all other cases. By default, these ports are:</description>
     </item>
     
   </channel>

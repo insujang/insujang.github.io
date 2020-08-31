@@ -4,7 +4,37 @@
   
   <url>
     <loc>https://insujang.github.io/</loc>
-    <lastmod>2020-08-27T17:22:00+09:00</lastmod>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/distributed/</loc>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/2020-08-30/introduction-to-ceph/</loc>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/posts/</loc>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/storage/</loc>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/study/</loc>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/</loc>
+    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
   </url>
   
   <url>
@@ -19,21 +49,6 @@
   
   <url>
     <loc>https://insujang.github.io/tags/linux/</loc>
-    <lastmod>2020-08-27T17:22:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/posts/</loc>
-    <lastmod>2020-08-27T17:22:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/study/</loc>
-    <lastmod>2020-08-27T17:22:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/</loc>
     <lastmod>2020-08-27T17:22:00+09:00</lastmod>
   </url>
   
