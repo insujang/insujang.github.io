@@ -5,8 +5,8 @@
 % Source : https://github.com/sb2nov/resume
 %------------------------
 
-\documentclass[letterpaper,oneside,12pt]{article}
-\usepackage[left=0.5in, right=1.5in, top=0.3in, bottom=1in, includefoot, heightrounded]{geometry}
+\documentclass[letterpaper,oneside,11pt]{article}
+\usepackage[left=1in, right=2in, top=1in, bottom=2in, heightrounded]{geometry}
 
 \usepackage{latexsym}
 \usepackage[T1]{fontenc}
@@ -39,7 +39,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: July 20, 2020}}
+\fancyfoot[R]{\footnotesize{Last updated: September 20, 2020}}
 
 
 \urlstyle{same}
@@ -71,16 +71,16 @@
     \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{#1} & #2 \\
       \textit{\small#3} & \small #4 \\
-    \end{tabular*}\vspace{-5pt}
+    \end{tabular*}\vspace{-6pt}
 }
 
 \newcommand{\resumeSubSubheading}[2]{
     \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
       \textit{\small#1} & \textit{\small #2} \\
-    \end{tabular*}\vspace{-5pt}
+    \end{tabular*}\vspace{-6pt}
 }
 
-\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-5pt}}
 
 \renewcommand{\labelitemii}{$\circ$}
 
@@ -97,8 +97,8 @@
 
 %----------HEADING-----------------
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
-  \textbf{{\Large Insu Jang}} & Email : insu\_jang@tmax.co.kr\\
-  \href{https://insujang.github.io}{https://insujang.github.io} & Mobile : +82-10-2578-8375 \\
+  \textbf{{\Large Insu Jang}} & insujang@casys.kaist.co.kr\\
+  & \href{https://insujang.github.io}{https://insujang.github.io} \\
 \end{tabular*}
 
 
@@ -113,12 +113,12 @@ Computer Architecture, Distributed Systems, Parallel Computing, Heterogeneous Co
         \textbf{Korea Advanced Institute of Science and Technology (KAIST)} & Daejeon, Republic of Korea \\
         \textit{\small Master of Science in Computer Science (GPA: 3.98 / 4.30)} & \small Mar 2016 -- Feb 2018 \\
         \small Advisor: Dr. Jaehyuk Huh  \\
-        \multicolumn{2}{X}{\small Thesis: \footnotesize Secure I/O Architecture for Isolated Heterogeneous Computing with Hardware Assisted Trusted Execution Environment} \\
+        \multicolumn{2}{X}{\small Thesis: Secure I/O Architecture for Isolated Heterogeneous Computing with Hardware Assisted Trusted Execution Environment} \\
     \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{Sungkyunkwan University (SKKU)} & Suwon, Republic of Korea \\
-        \textit{\small Bachelor of Science in Computer Science and Engineering (GPA: 4.24 / 4.50)} & \small Mar 2011 -- Feb 2016 \\
+        \textit{\small Bachelor of Science in Computer Engineering (GPA: 4.24 / 4.50)} & \small Mar 2011 -- Feb 2016 \\
     \end{tabularx}\vspace{-5pt}
   \resumeSubHeadingListEnd
 
@@ -136,14 +136,14 @@ Computer Architecture, Distributed Systems, Parallel Computing, Heterogeneous Co
       {Research Assistant (Advisor: Dr. Youngjin Kwon)}{Jan 2020 -- Jul 2020}
       \resumeItemListStart
         \resumeItem{Infiniband RDMA}
-          {Hyperloop is an Infiniband RDMA framework that optimizes performance of transactions in replicated storage systems published in SIGCOMM'18. Worked on studying RDMA and reproducing Hyperloop.}
+          {Worked on studying RDMA and reproducing Hyperloop, an Infiniband RDMA framework that optimizes replicated transactions published in SIGCOMM'18.}
       \resumeItemListEnd
     \resumeSubheading
       {Computer Architecture and Systems Lab, KAIST}{Daejeon, Republic of Korea}
       {Graduate Research Assistant (Advisor: Dr. Jaehyuk Huh)}{Mar 2016 -- Feb 2018}
       \resumeItemListStart
         \resumeItem{Trusted Heterogeneous Execution Environment}
-          {Intel SGX is a CPU hardware based technology that provides trusted execution environment. Worked on extending the protection scope of trusted execution environment to heterogeneous devices connected to the system via PCI Express architecture, i.e. GPUs.}
+          {Worked on extending the protection of Intel SGX to heterogeneous devices connected to the system via PCIe architecture.}
         \resumeItem{Accelerating Machine Learning}
           {Worked on studying hardware architecture for machine learning.}
       \resumeItemListEnd
@@ -175,11 +175,12 @@ Computer Architecture, Distributed Systems, Parallel Computing, Heterogeneous Co
     {System Software Engineer}{Feb 2018 -- Present}
     \resumeItemListStart
       \resumeItem{Kubernetes}
-        {TmaxOS is a cloud-based operating system that provides unified user experience wherever it runs on, i.e. on a laptop or in a cloud.
-        Worked on implementing TmaxOS container system based on Kubernetes.}
+        {Worked on implementing TmaxOS container system based on Kubernetes.}
       \resumeItem{Linux}
         {Worked on implementing TmaxOS APIs based on Linux low-level features, e.g. udev, netlink, etc.}
     \resumeItemListEnd
+
+    \resumeSubheading{KAIST}{Daejeon, Republic of Korea}{Teaching Assistant (CS230 System Programming)}{}
 
     \resumeSubheading{Electronics and Telecommunications Research Institute (ETRI)}{Daejeon, Republic of Korea}
     {Research Intern}{Jan 2016 -- Feb 2016}
@@ -231,9 +232,16 @@ Computer Architecture, Distributed Systems, Parallel Computing, Heterogeneous Co
 \section{Technical Skills}
  \resumeSubHeadingListStart
   \resumeItem{Languages}{C, C++14, Python, Go}
-  \resumeItem{Frameworks}{CUDA, Intel SGX, Kubernetes, Infiniband RDMA, Android, Linux, QEMU, KVM}
-  \resumeItem{Tools}{Vivado HLS, Docker, Markdown, LaTeX}
+  \resumeItem{Frameworks}{CUDA, Intel SGX, Kubernetes, RDMA, Android, Linux, QEMU, KVM}
+  \resumeItem{Tools}{Vivado HLS, Docker, Markdown, \LaTeX}
  \resumeSubHeadingListEnd
 
 %-------------------------------------------
+
+\section{References}
+  \resumeSubHeadingListStart
+    \resumeItem{Jaehyuk Huh}{Professor at KAIST, jhhuh@kaist.ac.kr}
+    \resumeItem{Youngjin Kwon}{Assistant Professor at KAIST, yjkwon@kaist.ac.kr}
+  \resumeSubHeadingListEnd
+
 \end{document}
