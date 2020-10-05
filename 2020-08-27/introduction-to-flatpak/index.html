@@ -14,7 +14,7 @@ This post briefly summarizes how to use Flatpak in terms of implementing a sampl
 Installing Flatpak In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.">
 <meta itemprop="datePublished" content="2020-08-27T17:22:00+09:00" />
 <meta itemprop="dateModified" content="2020-08-27T17:22:00+09:00" />
-<meta itemprop="wordCount" content="892">
+<meta itemprop="wordCount" content="910">
 
 
 
@@ -43,7 +43,7 @@ Installing Flatpak In Ubuntu distributions, there is no Flatpak preinstalled, wh
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Introduction to Flatpak</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.d9ef5bf3f42a4f594518cf4aec7d28184f061e03a5776eff303dd3aeb7f4f3dc.css" integrity="sha256-2e9b8/QqT1lFGM9K7H0oGE8GHgOld27/MD3Trrf089w=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
 	
 </head>
 
@@ -191,42 +191,42 @@ Choose submodules among the subdirectories in the repository, and specify it in 
     <span class="err">...</span>
 <span class="p">]</span>
 </code></pre></div><p>or in YAML:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">modules</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- shared-modules/libsecret/libsecret.json<span class="w">
-</span><span class="w">  </span>...<span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">modules</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="l">shared-modules/libsecret/libsecret.json</span><span class="w">
+</span><span class="w">  </span><span class="l">...</span><span class="w">
 </span></code></pre></div><h3 id="sources-and-build-commands">Sources and Build Commands<a href="#sources-and-build-commands" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>So the only required file is the manifest. It should also contain how to build an application: <code>build-commands</code> is for this purpose.
 Also the source files are required; insteading of packaging them together in a repository, Flatpak requires to specify them as <code>sources</code> in the manifest.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">modules</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- shared-modules/libsecret/libsecret.json<span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">modules</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">shared-modules/libsecret/libsecret.json</span><span class="w">
 </span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>vscode<span class="w">
-</span><span class="w">      </span><span class="k">buildsystem</span><span class="p">:</span><span class="w"> </span>simple<span class="w">
-</span><span class="w">      </span><span class="k">build-commands</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- install<span class="w"> </span>-D<span class="w"> </span>code.sh<span class="w"> </span>/app/bin/code<span class="w">
-</span><span class="w">        </span>- install<span class="w"> </span>-Dm644<span class="w"> </span>vscode_64.png<span class="w"> </span>/app/share/icons/hicolor/64x64/apps/com.visualstudio.code.png<span class="w">
-</span><span class="w">        </span>...<span class="w">
-</span><span class="w">      </span><span class="k">sources</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">type</span><span class="p">:</span><span class="w"> </span>script<span class="w">
-</span><span class="w">        </span><span class="k">dest-filename</span><span class="p">:</span><span class="w"> </span>apply_extra<span class="w">
-</span><span class="w">        </span><span class="k">commands</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span>- ar<span class="w"> </span>x<span class="w"> </span>code.deb<span class="w">
-</span><span class="w">          </span>- tar<span class="w"> </span>xf<span class="w"> </span>data.tar.xz<span class="w">
-</span><span class="w">          </span>- mv<span class="w"> </span>usr/share/code<span class="w"> </span>vscode<span class="w">
-</span><span class="w">          </span>- rm<span class="w"> </span>-r<span class="w"> </span>code.deb<span class="w"> </span>control.tar.gz<span class="w"> </span>data.tar.xz<span class="w"> </span>debian-binary<span class="w"> </span>usr<span class="w">
-</span><span class="w">      </span>- <span class="k">type</span><span class="p">:</span><span class="w"> </span>file<span class="w">
-</span><span class="w">        </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>code.sh<span class="w">
-</span><span class="w">      </span>- <span class="k">type</span><span class="p">:</span><span class="w"> </span>file<span class="w">
-</span><span class="w">        </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>flatpak-warning.txt<span class="w">
-</span><span class="w">      </span>...<span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vscode</span><span class="w">
+</span><span class="w">      </span><span class="nt">buildsystem</span><span class="p">:</span><span class="w"> </span><span class="l">simple</span><span class="w">
+</span><span class="w">      </span><span class="nt">build-commands</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="l">install -D code.sh /app/bin/code</span><span class="w">
+</span><span class="w">        </span>- <span class="l">install -Dm644 vscode_64.png /app/share/icons/hicolor/64x64/apps/com.visualstudio.code.png</span><span class="w">
+</span><span class="w">        </span><span class="l">...</span><span class="w">
+</span><span class="w">      </span><span class="nt">sources</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">script</span><span class="w">
+</span><span class="w">        </span><span class="nt">dest-filename</span><span class="p">:</span><span class="w"> </span><span class="l">apply_extra</span><span class="w">
+</span><span class="w">        </span><span class="nt">commands</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span>- <span class="l">ar x code.deb</span><span class="w">
+</span><span class="w">          </span>- <span class="l">tar xf data.tar.xz</span><span class="w">
+</span><span class="w">          </span>- <span class="l">mv usr/share/code vscode</span><span class="w">
+</span><span class="w">          </span>- <span class="l">rm -r code.deb control.tar.gz data.tar.xz debian-binary usr</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">file</span><span class="w">
+</span><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">code.sh</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">file</span><span class="w">
+</span><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">flatpak-warning.txt</span><span class="w">
+</span><span class="w">      </span><span class="l">...</span><span class="w">
 </span></code></pre></div><p>Please refer to <a href="https://docs.flatpak.org/en/latest/manifests.html#modules">[here]</a> for more details about how to add modules.</p>
 <h3 id="runtime-and-sdk">Runtime and SDK<a href="#runtime-and-sdk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Flatpak packs commonly used packages into runtime and SDK, so that they do not have to unnecessarily be duplicated.
 All applications depend on a runtime.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">runtime</span><span class="p">:</span><span class="w"> </span>org.freedesktop.Sdk<span class="w">
-</span><span class="w"></span><span class="k">runtime-version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;19.08&#39;</span><span class="w">
-</span><span class="w"></span><span class="k">sdk</span><span class="p">:</span><span class="w"> </span>org.freedesktop.Sdk<span class="w">
-</span><span class="w"></span>...<span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">runtime</span><span class="p">:</span><span class="w"> </span><span class="l">org.freedesktop.Sdk</span><span class="w">
+</span><span class="w"></span><span class="nt">runtime-version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;19.08&#39;</span><span class="w">
+</span><span class="w"></span><span class="nt">sdk</span><span class="p">:</span><span class="w"> </span><span class="l">org.freedesktop.Sdk</span><span class="w">
+</span><span class="w"></span><span class="nn">...</span><span class="w">
 </span></code></pre></div><p>Available runtimes are listed in <a href="https://docs.flatpak.org/en/latest/available-runtimes.html">[here]</a>
 I am figuring out how to build a custom runtime, and will upload another post regarding it later.</p>
 <h2 id="exploring-container-inside">Exploring Container Inside<a href="#exploring-container-inside" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>

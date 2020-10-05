@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 10 Dec 2019 15:04:00 +0900</lastBuildDate>
-    
-	<atom:link href="https://insujang.github.io/tags/cmake/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 10 Dec 2019 15:04:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/cmake/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cmake for Custom Library Build System in Go</title>
       <link>https://insujang.github.io/2019-12-10/cmake-for-custom-library-build-system-in-go/</link>

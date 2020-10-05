@@ -40,7 +40,7 @@ Glossary  PMH: Page Miss Handler. MMU: Memory Management Unit. TLB: Translation 
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Intel SGX Protection Mechanism</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.d9ef5bf3f42a4f594518cf4aec7d28184f061e03a5776eff303dd3aeb7f4f3dc.css" integrity="sha256-2e9b8/QqT1lFGM9K7H0oGE8GHgOld27/MD3Trrf089w=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
 	
 </head>
 
@@ -132,7 +132,7 @@ Glossary  PMH: Page Miss Handler. MMU: Memory Management Unit. TLB: Translation 
 </ul>
 <p>The mapping between virtual and physical addresses is defined by <em>page tables</em>, which are managed by the system software.
 The translation process is carried out by dedicated hardware in the CPU, which is referred to as the <strong>address translation unit</strong> or <strong>memory management unit (MMU)</strong>.</p>
-<p><img src="/assets/images/170403/address_translation_concept.png" alt="address_translation_concept">{: width=&quot;700px&rdquo; .center-image}
+<p><img src="/assets/images/170403/address_translation_concept.png" alt="address_translation_concept">{: width=&ldquo;700px&rdquo; .center-image}
 <em>Figure 10. Address translation concept</em>
 {: .center}</p>
 <h3 id="address-translation-cache">Address Translation Cache<a href="#address-translation-cache" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
@@ -167,7 +167,7 @@ developed by Intel Corporation.</p>
 <p>Section 5.2.1 The Enclave Linear Address Range (ELRANGE)</p>
 </blockquote>
 <p>Each enclave designates an area in its virtual address space, called the <em>enclave linear address range (ELRANGE)</em>, which is used to map the code and the sensitive data stored in the enclave&rsquo;s EPC pages. The virtual address space outside ELRANGE is mapped to access non-EPC memory via the same virtual addresses as the enclave&rsquo;s host process.</p>
-<p><img src="/assets/images/170403/sgx_elrange.png" alt="sgx_elrange">{: width=&quot;600px&rdquo; .center-image}
+<p><img src="/assets/images/170403/sgx_elrange.png" alt="sgx_elrange">{: width=&ldquo;600px&rdquo; .center-image}
 <em>Figure 61. An enclave&rsquo;s EPC pages are accessed using a dedicated region in the enclave&rsquo;s virtual address space, called ELRANGE</em>
 {: .center}</p>
 <p>Enclaves must store all their code and private data inside ELRANGE, and must consider the memory outside ELRANGE to be an untrusted interface to outside world.</p>
@@ -180,7 +180,7 @@ developed by Intel Corporation.</p>
 <!-- raw HTML omitted -->
 <p>Virtual address allocation is system software&rsquo;s responsibility in SGX&rsquo;s model. So CPU cannot ask for system software to allocate a page in a specific virtual address.</p>
 <p>In SGX1 model, only static memory allocation is supported. Hence, all EPC pages must be allocated to an enclave <strong>before</strong> initialization phase is finished.</p>
-<p><img src="/assets/images/170403/enclave_life_cycle.png" alt="enclave_life_cycle">{: width=&quot;600px&rdquo; .center-image}
+<p><img src="/assets/images/170403/enclave_life_cycle.png" alt="enclave_life_cycle">{: width=&ldquo;600px&rdquo; .center-image}
 <em>Figure 63. Enclave state transition diagram</em>
 {: .center}</p>
 <p>As you can see in Figure 63, EADD instruction, which is used for EPC page allocation, can only be called when the enclave is <em>uninitialized</em>.</p>
@@ -202,7 +202,7 @@ developed by Intel Corporation.</p>
 </blockquote>
 <p>To make it short, ELRANGE is defined by system software, but recorded by SGX at the time an enclave is created. All following EPC pages should have continuous virtual address from ELRANGE.</p>
 <p>Here is a sample enclave&rsquo;s virtual address space in the paper.</p>
-<p><img src="/assets/images/170403/enclave_virtual_address_sample.png" alt="enclave_virtual_address_sample">{: width=&quot;500px&rdquo; .center-image}
+<p><img src="/assets/images/170403/enclave_virtual_address_sample.png" alt="enclave_virtual_address_sample">{: width=&ldquo;500px&rdquo; .center-image}
 <em>Figure 62. A possible layout of an enclave&rsquo;s virtual address space</em>
 {: .center}</p>
 <p>You can see that ADDRESS fields of EPC pages are continuous from BASEADDR (ELRANGE base address).</p>
@@ -211,7 +211,7 @@ developed by Intel Corporation.</p>
 <p>Section 6.2.1 Functional Description</p>
 </blockquote>
 <p>SGX adds the access control logic to the PMH. SGX&rsquo;s security checks are performed after SGX&rsquo;s access control log has access to the physical address produced by the page walker FSM.</p>
-<p><img src="/assets/images/170403/sgx_protection.png" alt="sgx_protection">{: width=&quot;500px&rdquo; .center-image}
+<p><img src="/assets/images/170403/sgx_protection.png" alt="sgx_protection">{: width=&ldquo;500px&rdquo; .center-image}
 <em>Figure 86. Security checks performed by the PMH.</em>
 {: .center}</p>
 <ul>

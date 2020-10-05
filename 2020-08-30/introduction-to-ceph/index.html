@@ -49,7 +49,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Introduction to Ceph</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.d9ef5bf3f42a4f594518cf4aec7d28184f061e03a5776eff303dd3aeb7f4f3dc.css" integrity="sha256-2e9b8/QqT1lFGM9K7H0oGE8GHgOld27/MD3Trrf089w=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
 	
 </head>
 
@@ -186,7 +186,7 @@ Also, Ceph OSDs use the CPU, memory, and networking of Ceph cluster nodes for da
         </figcaption>
 </figure>
 
-<p>Hence is main responsibility is to handle clients&rsquo; read/write requests.
+<p>Hence is main responsibility is to handle clients' read/write requests.
 User data is stored as objects (it seems not the same with frontend object storage RADOSGW) in a backend object store.</p>
 <h3 id="backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore<a href="#backend-object-store-filestore-vs-bluestore" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Initially Ceph utilized Filestore, but now it has been replaced by more efficient object store Bluestore.</p>
@@ -213,7 +213,7 @@ It maintains maps of the cluster state, including the monitor map, manager map, 
 <ul>
 <li>Ceph is a framework for distributed storage cluster. It consists of the frontend client framework, including several RADOS-based file access interfaces, the backend storage framework, including daemons (OSDs, MONs, managers) and backend object stores.</li>
 <li>Frontend client framework is based on RADOS (Reliable Autonomic Distributed Object Store). Clients can directly access to Ceph storage clusters with librados, but also can use RADOSGW (object storage), RBD (block storage), and CephFS (file storage).</li>
-<li>Backend server framework consists of several daemons that manage nodes, and backend object store to store users&rsquo; actual data.</li>
+<li>Backend server framework consists of several daemons that manage nodes, and backend object store to store users' actual data.</li>
 </ul>
 <p>In the next posts, I would like to explore more details of each parts.</p>
 <section class="footnotes" role="doc-endnotes">

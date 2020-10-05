@@ -40,7 +40,7 @@ https://www.freedesktop.org/wiki/Software/systemd
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>systemd Boot Process</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.d9ef5bf3f42a4f594518cf4aec7d28184f061e03a5776eff303dd3aeb7f4f3dc.css" integrity="sha256-2e9b8/QqT1lFGM9K7H0oGE8GHgOld27/MD3Trrf089w=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
 	
 </head>
 
@@ -113,7 +113,7 @@ For the daemons to be automatically and normally launched, we need to acknowledg
 <p>The following chart is a structural overview of well-known systemd units and their position in the boot-up logic,
 according to freedesktop.
 The chart comes from <a href="https://www.freedesktop.org/software/systemd/man/bootup.html">here</a>.</p>
-<p><img src="/assets/images/181126/systemd_boot.png" alt="systemd-boot">{: .center-image width=&quot;900px&rdquo;}</p>
+<p><img src="/assets/images/181126/systemd_boot.png" alt="systemd-boot">{: .center-image width=&ldquo;900px&rdquo;}</p>
 <p>The first target of systemd to be launched is <code>default.target</code>, which is typically a symbolically linked to <code>graphical.target</code> or <code>multi-user.target</code>
 (depending on whether system is configured for a GUI or only a text console).
 If you want to add your own system service into systemd hierarchy, it would be usally be added <code>multi-user.target</code>, like for example:</p>

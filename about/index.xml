@@ -6,10 +6,6 @@
     <description>Recent content on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    
-	<atom:link href="https://insujang.github.io/about/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://insujang.github.io/about/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

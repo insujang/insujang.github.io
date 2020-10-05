@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sun, 30 Aug 2020 14:16:00 +0900</lastBuildDate>
-    
-	<atom:link href="https://insujang.github.io/tags/storage/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 30 Aug 2020 14:16:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/storage/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduction to Ceph</title>
       <link>https://insujang.github.io/2020-08-30/introduction-to-ceph/</link>

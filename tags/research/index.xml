@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 18 Nov 2019 23:07:00 +0900</lastBuildDate>
-    
-	<atom:link href="https://insujang.github.io/tags/research/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 18 Nov 2019 23:07:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/research/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Interactions between cri-o and conmon in Kubernetes</title>
       <link>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</link>
@@ -19,7 +15,7 @@
       
       <guid>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</guid>
       <description>cri-o cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
-{: width=&amp;quot;1000px&amp;rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.
+{: width=&amp;ldquo;1000px&amp;rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.
 Okay&amp;hellip; What are noticable differences from Docker?</description>
     </item>
     
@@ -44,7 +40,7 @@ Orchestration is the automated configuration, coordination, and management of co
       
       <guid>https://insujang.github.io/2019-10-31/container-runtime/</guid>
       <description>From Docker to Kubernetes, these days container solutions are emerging.
-{: .center-image width=&amp;quot;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+{: .center-image width=&amp;ldquo;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
 In the era of Docker the term &amp;ldquo;Container runtime&amp;rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
 Here are very clear explanations what is container runtime exactly, written by Ian Lewis:</description>
     </item>
@@ -55,7 +51,7 @@ Here are very clear explanations what is container runtime exactly, written by I
       <pubDate>Thu, 10 Oct 2019 20:35:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/2019-10-10/open-container-initiative-image-spec/</guid>
-      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&amp;rsquo;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
+      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&#39;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
     </item>
     
     <item>
@@ -119,7 +115,7 @@ Intel SGX provides protections data only if it is in the enclave, part of main m
       
       <guid>https://insujang.github.io/2017-09-06/nvmedirect/</guid>
       <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
-In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;quot;800px&amp;rdquo;}
+In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
 As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
     </item>
     

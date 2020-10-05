@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 09 Oct 2017 15:26:34 +0900</lastBuildDate>
-    
-	<atom:link href="https://insujang.github.io/tags/io/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 09 Oct 2017 15:26:34 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Intel SGX Sealing</title>
       <link>https://insujang.github.io/2017-10-09/intel-sgx-sealing/</link>
@@ -30,7 +26,7 @@ Intel SGX provides protections data only if it is in the enclave, part of main m
       
       <guid>https://insujang.github.io/2017-09-06/nvmedirect/</guid>
       <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
-In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;quot;800px&amp;rdquo;}
+In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
 As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
     </item>
     

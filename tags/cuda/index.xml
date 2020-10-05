@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 23 Jun 2017 10:13:09 +0900</lastBuildDate>
-    
-	<atom:link href="https://insujang.github.io/tags/cuda/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 23 Jun 2017 10:13:09 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/cuda/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GPU Resource Management</title>
       <link>https://insujang.github.io/2017-06-23/gpu-resource-management/</link>
@@ -19,7 +15,7 @@
       
       <guid>https://insujang.github.io/2017-06-23/gpu-resource-management/</guid>
       <description>This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).
-{: .center-image width=&amp;quot;800px&amp;rdquo;}
+{: .center-image width=&amp;ldquo;800px&amp;rdquo;}
 The GPU channel is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.
 GPU channel is the only way to send GPU commands to the GPU.</description>
     </item>
