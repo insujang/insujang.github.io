@@ -124,7 +124,7 @@ $ mkdir ceph-ccache
 <p><code>ceph-dev-docker</code> provides a script <code>setup.sh</code> to get a container.
 All required packages will be installed in this container, Ceph will be compiled here, and run in here as well.</p>
 <p>As indicated in <code>README.md</code> in the repository, it takes several variables. If your environment (the location or the name of directories) are different from mine, read it carefully for proper container initialization.</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">~/ceph-dev-docker $ <span class="nv">NAME</span><span class="o">=</span>ceph-dev <span class="nv">CCACHE</span><span class="o">=</span>/root/ceph-ccache <span class="nv">CEPH</span><span class="o">=</span>/root/ceph ./start.sh
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">~/ceph-dev-docker $ <span class="nv">NAME</span><span class="o">=</span>ceph-dev <span class="nv">CCACHE</span><span class="o">=</span>/root/ceph-ccache <span class="nv">CEPH</span><span class="o">=</span>/root/ceph ./setup.sh
 </code></pre></div><p>The shell script builds a Docker container image with <code>docker build</code>, and run it.</p>
 <p>Once completed, you are in ther container with <code>zsh</code>. Check whether <code>/ceph</code> is properly mounted.
 There are several pre-implemented scripts in <code>/shared/bin</code> in the container for Ceph deployment.</p>
