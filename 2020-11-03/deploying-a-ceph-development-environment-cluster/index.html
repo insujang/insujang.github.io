@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Deploying a Ceph Development Environment Cluster">
+<meta itemprop="description" content="This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
+ 1. Prerequisites Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.">
+<meta itemprop="datePublished" content="2020-11-03T13:09:00+09:00" />
+<meta itemprop="dateModified" content="2020-11-03T13:09:00+09:00" />
+<meta itemprop="wordCount" content="556">
+
+
+
+<meta itemprop="keywords" content="study,ceph," />
+<meta property="og:title" content="Deploying a Ceph Development Environment Cluster" />
+<meta property="og:description" content="This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
+ 1. Prerequisites Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+<meta property="article:published_time" content="2020-11-03T13:09:00+09:00" />
+<meta property="article:modified_time" content="2020-11-03T13:09:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Deploying a Ceph Development Environment Cluster"/>
+<meta name="twitter:description" content="This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
+ 1. Prerequisites Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Deploying a Ceph Development Environment Cluster</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper container-lg">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav d-md-inline d-none">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main container-lg animated fadeIn faster">
+		<header class="post-header row">
+			<div class="col-12 col-xl-3"></div>
+			<div class="col-12 col-xl-9">
+				<div class="post-meta"><span>Nov 3, 2020</span></div>
+				<h1>Deploying a Ceph Development Environment Cluster</h1>
+			</div>
+		</header>
+		<article class="row">
+			<div id="toc-aside" class="col-12 col-xl-3">
+				<hr class="d-block d-xl-none">
+				<div class="toc-title">What&#39;s on this Post</div>
+				<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-prerequisites">1. Prerequisites</a></li>
+    <li><a href="#2-running-a-docker-container">2. Running a Docker Container</a></li>
+    <li><a href="#3-building-and-running-ceph">3. Building and Running Ceph</a></li>
+    <li><a href="#4-ceph-dashboard">4. Ceph Dashboard</a></li>
+  </ul>
+</nav>
+				<hr class="d-block d-xl-none">
+			</div>
+
+			<div class="content col-12 col-xl-9">
+				<p>This post explains how we can deploy a Ceph development cluster from Ceph source code.</p>
+<blockquote>
+<p>I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.</p>
+</blockquote>
+<h2 id="1-prerequisites">1. Prerequisites<a href="#1-prerequisites" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Two Github repositores are necessary: <a href="https://github.com/ceph/ceph"><code>Ceph</code></a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> and <a href="https://github.com/ricardoasmarques/ceph-dev-docker"><code>Ceph-dev-docker</code></a> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster.
+It users Docker container to deploy the local development of Ceph. Therefore, Docker is also required. Refer to <a href="https://docs.docker.com/get-docker/">[this]</a> for Docker installation.</p>
+<p>Ceph repository is bound into a container and compiled inside the container.
+It requires substantial amount of time to be fully built. However, after finishing the first build, Ceph stores a compiler cache (<a href="https://ccache.dev/">ccache</a>) and uses them for further incremental build, which significantly reduce build time.
+For this, make an empty directory anywhere with any name.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ git clone https://github.com/ceph/ceph
+$ git clone https://github.com/ricardoasmarques/ceph-dev-docker
+$ mkdir ceph-ccache
+</code></pre></div><figure>
+    <img src="/assets/images/201103/cephdev-1.png"
+         alt="image"/> <figcaption>
+            <p>Required directories. ceph: cloned ceph repository, ceph-ccache: an empty directory for ccache, and ceph-dev-docker: cloned ceph-dev-docker repository. You can freely specify the name of directories and the location.</p>
+        </figcaption>
+</figure>
+
+<h2 id="2-running-a-docker-container">2. Running a Docker Container<a href="#2-running-a-docker-container" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><code>ceph-dev-docker</code> provides a script <code>setup.sh</code> to get a container.
+All required packages will be installed in this container, Ceph will be compiled here, and run in here as well.</p>
+<p>As indicated in <code>README.md</code> in the repository, it takes several variables. If your environment (the location or the name of directories) are different from mine, read it carefully for proper container initialization.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">~/ceph-dev-docker $ <span class="nv">NAME</span><span class="o">=</span>ceph-dev <span class="nv">CCACHE</span><span class="o">=</span>/root/ceph-ccache <span class="nv">CEPH</span><span class="o">=</span>/root/ceph ./start.sh
+</code></pre></div><p>The shell script builds a Docker container image with <code>docker build</code>, and run it.</p>
+<p>Once completed, you are in ther container with <code>zsh</code>. Check whether <code>/ceph</code> is properly mounted.
+There are several pre-implemented scripts in <code>/shared/bin</code> in the container for Ceph deployment.</p>
+<figure>
+    <img src="/assets/images/201103/cephdev-2.png"
+         alt="image"/> <figcaption>
+            <p>Environment in the container. You will use the script in <code>/shared/bin</code> to deploy a Ceph cluster.</p>
+        </figcaption>
+</figure>
+
+<h2 id="3-building-and-running-ceph">3. Building and Running Ceph<a href="#3-building-and-running-ceph" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Although Ceph provides <a href="https://docs.ceph.com/en/latest/install/build-ceph/">[a manual]</a> to build Ceph, <code>ceph-dev-docker</code> provides a more convenient way for this.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">/ceph $ setup-ceph.sh
+</code></pre></div><p>This script installs all the required packages, and build Ceph from source.
+I prefer this way since I do not have to install packages in the host machine that are not used by others.</p>
+<blockquote>
+<p>It must be run in <code>/ceph</code> directory. The container is implemented assuming that Ceph root directory is <code>/ceph</code>.</p>
+</blockquote>
+<p>Running Ceph is also wrapped in a sciprt: <code>start-ceph.sh</code>. It uses <code>vstart.sh</code>, a Ceph utility that deploys fake local cluster for development purpose <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. Once you are accustomed with the Ceph internal architecture, you can manually run <code>vstart.sh</code> for deployment.</p>
+<p>The script runs **3 OSDs, 3 monitors, 3 metadata servers (MDSs), 1 manager, and 1 RADOS gateway (RGW).
+You can manipulate the number of daemons with <code>OSD,MDS,MON,RGW</code> enviornment variables as specified in <a href="https://docs.ceph.com/en/latest/dev/dev_cluster_deployement/">[the manual]</a>. The <code>start-ceph.sh</code> overrode the number of RGW from 0 to 1 <a href="https://github.com/ceph/ceph/blob/master/src/vstart.sh#L117">[src]</a>.</p>
+<figure>
+    <img src="/assets/images/201103/cephdev-3.png"
+         alt="image"/> <figcaption>
+            <p>Running Ceph cluster.</p>
+        </figcaption>
+</figure>
+
+<h2 id="4-ceph-dashboard">4. Ceph Dashboard<a href="#4-ceph-dashboard" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><code>ceph-dev-docker</code> also provides Ceph dashboard by default with <code>npm-start.sh</code> script.
+By running the script, you can access the Ceph dashboard through <code>https://localhost:4200</code>.
+For Ceph dashboard features, refer to <a href="https://docs.ceph.com/en/latest/mgr/dashboard/">[this manual]</a>.</p>
+<blockquote>
+<p>If you are using WSL, proper network configuration is required.
+Docker network is isolated from the host. hence you cannot directly access to Docker network namespace even if you are using <code>--net=host</code> container configuration.
+Refer to <a href="https://github.com/docker/for-win/issues/6736">[this]</a>.</p>
+</blockquote>
+<figure>
+    <img src="/assets/images/201103/cephdev-4.png"
+         alt="image"/> <figcaption>
+            <p>Ceph dashboard.</p>
+        </figcaption>
+</figure>
+
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://github.com/ceph/ceph">Ceph</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://github.com/ricardoasmarques/ceph-dev-docker">ceph-dev-docker</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/dev/dev_cluster_deployement/">Ceph: Deploying a Development Cluster</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+		</article>
+
+		<hr class="post-end">
+		<footer class="post-info">
+			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+			<p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/ceph">ceph</a></span>
+			</p>
+		</footer>
+		
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

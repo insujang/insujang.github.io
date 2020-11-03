@@ -4,7 +4,32 @@
   
   <url>
     <loc>https://insujang.github.io/</loc>
-    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
+    <lastmod>2020-11-03T13:09:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/ceph/</loc>
+    <lastmod>2020-11-03T13:09:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</loc>
+    <lastmod>2020-11-03T13:09:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/posts/</loc>
+    <lastmod>2020-11-03T13:09:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/study/</loc>
+    <lastmod>2020-11-03T13:09:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://insujang.github.io/tags/</loc>
+    <lastmod>2020-11-03T13:09:00+09:00</lastmod>
   </url>
   
   <url>
@@ -18,22 +43,7 @@
   </url>
   
   <url>
-    <loc>https://insujang.github.io/posts/</loc>
-    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://insujang.github.io/tags/storage/</loc>
-    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/study/</loc>
-    <lastmod>2020-08-30T14:16:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://insujang.github.io/tags/</loc>
     <lastmod>2020-08-30T14:16:00+09:00</lastmod>
   </url>
   

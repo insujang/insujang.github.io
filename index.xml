@@ -7,7 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sun, 30 Aug 2020 14:16:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Nov 2020 13:09:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deploying a Ceph Development Environment Cluster</title>
+      <link>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</link>
+      <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
+      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.
+ 1. Prerequisites Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.</description>
+    </item>
+    
     <item>
       <title>Introduction to Ceph</title>
       <link>https://insujang.github.io/2020-08-30/introduction-to-ceph/</link>
@@ -107,17 +119,6 @@ Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infin
       <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
 Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
 When you untar the archive, you can see SOURCES directory, which contains the following another archives.</description>
-    </item>
-    
-    <item>
-      <title>Generate a Self-signed Certificate</title>
-      <link>https://insujang.github.io/2020-01-07/self-signed-certificate/</link>
-      <pubDate>Tue, 07 Jan 2020 16:12:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-01-07/self-signed-certificate/</guid>
-      <description>A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
-Steps to create a certificate 3 Follow the steps to create a self-signed certificate:
- Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key A generated certificate must be signed with the Certificate Authority&amp;rsquo;s private key, which we are going to make here.</description>
     </item>
     
   </channel>
