@@ -14,7 +14,7 @@
 Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.">
 <meta itemprop="datePublished" content="2020-11-03T13:09:00+09:00" />
 <meta itemprop="dateModified" content="2020-11-03T13:09:00+09:00" />
-<meta itemprop="wordCount" content="556">
+<meta itemprop="wordCount" content="681">
 
 
 
@@ -93,6 +93,7 @@ Ceph dev docker is a kind of wrapper that automates all required steps for deloy
     <li><a href="#2-running-a-docker-container">2. Running a Docker Container</a></li>
     <li><a href="#3-building-and-running-ceph">3. Building and Running Ceph</a></li>
     <li><a href="#4-ceph-dashboard">4. Ceph Dashboard</a></li>
+    <li><a href="#5-integrating-vscode-cmake">5. Integrating VSCode CMake</a></li>
   </ul>
 </nav>
 				<hr class="d-block d-xl-none">
@@ -169,6 +170,43 @@ Refer to <a href="https://github.com/docker/for-win/issues/6736">[this]</a>.</p>
         </figcaption>
 </figure>
 
+<h2 id="5-integrating-vscode-cmake">5. Integrating VSCode CMake<a href="#5-integrating-vscode-cmake" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Since Ceph uses Cmake as its build system, it can be integrated into VSCode CMake extension.
+I personally use <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools">Microsoft CMake Tool</a>.</p>
+<p>Even <code>ceph-dev-docker</code> uses a script to build Ceph, it is simple to understand.
+<code>setup-ceph.sh</code> looks like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nv">ARGS</span><span class="o">=</span><span class="s2">&#34;-DENABLE_GIT_VERSION=OFF -DWITH_TESTS=ON -DWITH_CCACHE=ON </span><span class="nv">$ARGS</span><span class="s2">&#34;</span>
+<span class="nv">ARGS</span><span class="o">=</span><span class="s2">&#34;-DWITH_PYTHON3=3 -DWITH_RADOSGW_AMQP_ENDPOINT=OFF -DWITH_RADOSGW_KAFKA_ENDPOINT=OFF </span><span class="nv">$ARGS</span><span class="s2">&#34;</span>
+
+...
+
+<span class="k">if</span> <span class="o">[</span> -d <span class="s2">&#34;build&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    git submodule update --init --recursive
+    <span class="nb">cd</span> build
+    cmake <span class="nv">$ARGS</span> ..
+<span class="k">else</span>
+    ./do_cmake.sh <span class="nv">$ARGS</span>
+    <span class="nb">cd</span> build
+<span class="k">fi</span>
+
+ccache make -j
+</code></pre></div><p>where configuration arguments are given to CMake.
+Similarly, we can put the arguments into VSCode Cmake tool configuration:</p>
+<figure>
+    <img src="/assets/images/201103/cephdev-5.png"
+         alt="image"/> <figcaption>
+            <p>CMake tool configuration arguments to build Ceph.</p>
+        </figcaption>
+</figure>
+
+<p>For ccache usage, I add one more argument: <code>-DCMAKE_CXX_COMPILER_LAUNCHER=ccache</code>.
+Refer to <a href="https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/">this post</a> for more details.</p>
+<figure>
+    <img src="/assets/images/201103/cephdev-6.png"
+         alt="image"/> 
+</figure>
+
+<p>Now I can directly build Ceph in VSCode!</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
