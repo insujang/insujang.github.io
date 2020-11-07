@@ -7,20 +7,29 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 03 Nov 2020 13:09:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 07 Nov 2020 19:07:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ceph</title>
       <link>https://insujang.github.io/tags/ceph/</link>
-      <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
+      <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/tags/ceph/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>rpm</title>
+      <link>https://insujang.github.io/tags/rpm/</link>
+      <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/tags/rpm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>study</title>
       <link>https://insujang.github.io/tags/study/</link>
-      <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
+      <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/tags/study/</guid>
       <description></description>
@@ -86,15 +95,6 @@
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/tags/mellanox/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>rdma</title>
-      <link>https://insujang.github.io/tags/rdma/</link>
-      <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/tags/rdma/</guid>
       <description></description>
     </item>
     

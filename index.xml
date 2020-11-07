@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 03 Nov 2020 13:09:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 07 Nov 2020 19:07:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Accelerating Ceph RPM Packaging: Using Multithreaded Compression</title>
+      <link>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
+      <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
+Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
+1. RPM Packaing 101 RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
+    </item>
+    
     <item>
       <title>Deploying a Ceph Development Environment Cluster</title>
       <link>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</link>
@@ -108,17 +119,6 @@ A major confusing point comes from ambiguous distinction between Custom Resource
       <guid>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</guid>
       <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
 Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
-    </item>
-    
-    <item>
-      <title>Building Mellanox OFED from source code</title>
-      <link>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</link>
-      <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</guid>
-      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
-Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
-When you untar the archive, you can see SOURCES directory, which contains the following another archives.</description>
     </item>
     
   </channel>
