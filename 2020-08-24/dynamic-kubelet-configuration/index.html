@@ -13,7 +13,7 @@ Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors it
 Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:">
 <meta itemprop="datePublished" content="2020-08-24T09:21:00+09:00" />
 <meta itemprop="dateModified" content="2020-08-24T09:21:00+09:00" />
-<meta itemprop="wordCount" content="1574">
+<meta itemprop="wordCount" content="1575">
 
 
 
@@ -168,7 +168,7 @@ $ kubectl <span class="o">(</span>-n kube-system<span class="o">)</span> create 
 </span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
 </span><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
 </span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="l">|    </span><span class="w"> </span><span class="c"># &lt;- Do not omit &#39;|&#39;.</span><span class="w">
+</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="l">|     # &lt;- Do not omit &#39;|&#39;.</span><span class="w">
 </span><span class="w">        </span>{<span class="w">
 </span><span class="w">            </span><span class="nt">&#34;kind&#34;: </span><span class="s2">&#34;KubeletConfiguration&#34;</span><span class="p">,</span><span class="w">
 </span><span class="w">            </span><span class="nt">&#34;apiVersion&#34;: </span><span class="s2">&#34;kubelet.config.k8s.io/v1beta1&#34;</span><span class="p">,</span><span class="w">
@@ -179,7 +179,7 @@ Available Kubelet configuration key/value can be investigated in [<a href="https
 <p>In my case, I want to try to restrict allocatable resources via dynamic Kubernetes configuration. I added several Kubelet flags in the ConfigMap object:</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">&lt;omitted&gt;</span><span class="w">
 </span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="sd">|
 </span><span class="sd">        {
 </span><span class="sd">            &#34;kind&#34;: &#34;KubeletConfiguration&#34;,
 </span><span class="sd">            &#34;apiVersion&#34;: &#34;kubelet.config.k8s.io/v1beta1&#34;,
@@ -196,7 +196,7 @@ Available Kubelet configuration key/value can be investigated in [<a href="https
 </span><span class="sd">            &#34;kubeReservedCgroup&#34;: &#34;/kubepods.slice&#34;,  &lt;-- not necessary
 </span><span class="sd">            &#34;cgroupPerQOS&#34;: true,
 </span><span class="sd">            &#34;enforceNodeAllocatable&#34;: [&#34;pods&#34;],
-</span><span class="sd">        }</span><span class="w">        
+</span><span class="sd">        }
 </span></code></pre></div><blockquote>
 <p>Note that <code>systemReservedCgroup</code> and <code>kubeReservedCgroup</code> are not necessary, since I do not put <code>&quot;system-reserved&quot;</code> and <code>&quot;kube-reserved&quot;</code> in <code>enforceNodeAllocatable</code>.</p>
 <p>Note that <code>cgroupPerQOS</code> should be true for resource restriction on Kubernetes Pods, and <code>enforceNodeAllocatable</code> must not contain neither <code>system-reserved</code> nore <code>kube-reserved</code> string elements, otherwise you will see the following wierd error in the Kubelet log.
