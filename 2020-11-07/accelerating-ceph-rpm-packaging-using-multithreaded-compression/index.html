@@ -13,7 +13,7 @@ Ceph source code is managed by Github 1, and it contains several shell scripts f
 1. RPM Packaing 101 RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.">
 <meta itemprop="datePublished" content="2020-11-07T19:07:00+09:00" />
 <meta itemprop="dateModified" content="2020-11-07T19:07:00+09:00" />
-<meta itemprop="wordCount" content="1364">
+<meta itemprop="wordCount" content="1362">
 
 
 
@@ -232,7 +232,7 @@ make &quot;$CEPH_MFLAGS_JOBS&quot;
 cd build
 ctest &quot;$CEPH_MFLAGS_JOBS&quot;
 %endif
-</code></pre><p>where <code>$CEPH_MFLAGS_JOBS</code> is defined <code>-j$CEPH_SMP_NCPUS</code>, which is carefully set for parallel build, but proper one that would not parallelize the system:</p>
+</code></pre><p>where <code>$CEPH_MFLAGS_JOBS</code> is defined <code>-j$CEPH_SMP_NCPUS</code>, which is carefully set for parallel build, which would not paralyze the entire system:</p>
 <pre><code># Parallel build settings ...
 CEPH_MFLAGS_JOBS=&quot;%{?_smp_mflags}&quot;
 CEPH_SMP_NCPUS=$(echo &quot;$CEPH_MFLAGS_JOBS&quot; | sed 's/-j//')
