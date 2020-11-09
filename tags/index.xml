@@ -36,24 +36,6 @@
     </item>
     
     <item>
-      <title>distributed</title>
-      <link>https://insujang.github.io/tags/distributed/</link>
-      <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/tags/distributed/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>storage</title>
-      <link>https://insujang.github.io/tags/storage/</link>
-      <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/tags/storage/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>flatpak</title>
       <link>https://insujang.github.io/tags/flatpak/</link>
       <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
@@ -95,6 +77,24 @@
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
       <guid>https://insujang.github.io/tags/mellanox/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rdma</title>
+      <link>https://insujang.github.io/tags/rdma/</link>
+      <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/tags/rdma/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cmake</title>
+      <link>https://insujang.github.io/tags/cmake/</link>
+      <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/tags/cmake/</guid>
       <description></description>
     </item>
     
