@@ -287,7 +287,7 @@ There is <a href="https://linuxreviews.org/Comparison_of_Compression_Algorithms"
 <p>The reason that maintainers were reluctant to adapt multithreaded compression seems memory usage. Refer to <a href="https://patchwork.openembedded.org/patch/140380/">this mail archive</a>.</p>
 </blockquote>
 <p>Now you can override this <code>rpmbuild</code> variable with <code>--define</code> option.
-I want to change it to use just multithreading. Then compression type must be <code>w2T16.xzdio</code> (xz level 2 using 16 threads. I am using AMD Ryzeon 2700X, which has 16 threads total).</p>
+I want to change it to use just multithreading. Then compression type must be <code>w2T16.xzdio</code> (xz level 2 using 16 threads. I am using AMD Ryzen 2700X, which has 16 threads total).</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ rpmbuild --define <span class="s2">&#34;_binary_payload w2T16.xzdio&#34;</span> --rebuild ceph-16.0.0-6971.g6352099561.el8.src.rpm
 $ &lt;output omitted&gt;
 </code></pre></div><figure>
