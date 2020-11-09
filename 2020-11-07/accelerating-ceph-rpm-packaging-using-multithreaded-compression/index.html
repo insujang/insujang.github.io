@@ -13,7 +13,7 @@ Ceph source code is managed by Github 1, and it contains several shell scripts f
 1. RPM Packaing 101 RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.">
 <meta itemprop="datePublished" content="2020-11-07T19:07:00+09:00" />
 <meta itemprop="dateModified" content="2020-11-07T19:07:00+09:00" />
-<meta itemprop="wordCount" content="1362">
+<meta itemprop="wordCount" content="1485">
 
 
 
@@ -90,6 +90,13 @@ Ceph source code is managed by Github 1, and it contains several shell scripts f
     <li><a href="#2-building-a-ceph-rpm-package">2. Building a Ceph RPM Package</a>
       <ul>
         <li><a href="#using-spec-file">Using SPEC file</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
         <li><a href="#using-tarball">Using tarball</a></li>
         <li><a href="#using-srpm-source-rpm">Using SRPM (Source RPM).</a></li>
       </ul>
@@ -161,7 +168,33 @@ Group:          System/Filesystems
 URL:            http://ceph.com/
 Source0:        %{?_remote_tarball_prefix}ceph-16.0.0-6971-g6352099561.tar.bz2    &lt;&lt;---
 ...
-</code></pre><p>By default, packaging a Ceph RPM with <code>ceph.spec</code> downloads archived source code from <code>https://download.ceph.com/tarballs/ceph-&lt;version&gt;.tar.bz2</code>, most of which are not provided since 2016 (Recently, they only provides <code>tar.gz</code>, not <code>tar.bz2</code>).
+</code></pre><blockquote>
+<p>This <code>ceph.spec</code> file is automatically generated from <code>ceph.spec.in</code> by <code>make-dist</code> command.</p>
+<p>You can use <code>./make-dist &lt;version_name&gt;</code> to customize the version.
+By default, it uses <code>git describe --log --match 'v*' | se d's/^v//'</code> for version name.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nv">version</span><span class="o">=</span><span class="nv">$1</span>
+<span class="o">[</span> -z <span class="s2">&#34;</span><span class="nv">$version</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">version</span><span class="o">=</span><span class="k">$(</span>git describe --long --match <span class="s1">&#39;v*&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/^v//&#39;</span><span class="k">)</span>
+<span class="k">if</span> expr index <span class="nv">$version</span> <span class="s1">&#39;-&#39;</span> &gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+    <span class="nv">rpm_version</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$version</span> <span class="p">|</span> cut -d - -f 1-1<span class="k">)</span>
+    <span class="nv">rpm_release</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$version</span> <span class="p">|</span> cut -d - -f 2- <span class="p">|</span> sed <span class="s1">&#39;s/-/./&#39;</span><span class="k">)</span>
+<span class="k">else</span>
+    <span class="nv">rpm_version</span><span class="o">=</span><span class="nv">$version</span>
+    <span class="nv">rpm_release</span><span class="o">=</span><span class="m">0</span>
+<span class="k">fi</span>
+</code></pre></div></blockquote>
+<p>&hellip;</p>
+<h1 id="populate-files-with-version-strings">populate files with version strings<a href="#populate-files-with-version-strings" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>echo &ldquo;including src/.git_version, ceph.spec&rdquo;</p>
+<p>(git rev-parse HEAD ; echo $version) 2&gt; /dev/null &gt; src/.git_version</p>
+<p>for spec in ceph.spec.in; do
+cat $spec |
+sed &ldquo;s/@PROJECT_VERSION@/$rpm_version/g&rdquo; |
+sed &ldquo;s/@RPM_RELEASE@/$rpm_release/g&rdquo; |
+sed &ldquo;s/@TARBALL_BASENAME@/ceph-$version/g&rdquo; &gt; <code>echo $spec | sed 's/.in$//'</code>
+done</p>
+<blockquote>
+<pre><code></code></pre></blockquote>
+<p>By default, packaging a Ceph RPM with <code>ceph.spec</code> downloads archived source code from <code>https://download.ceph.com/tarballs/ceph-&lt;version&gt;.tar.bz2</code>, most of which are not provided since 2016 (Recently, they only provides <code>tar.gz</code>, not <code>tar.bz2</code>).
 It also requires customized archived source code to be uploaded to the server, preventing cloned source code to be used for RPM package build.
 Therefore, I will not use <code>ceph.spec</code> for RPM package build.</p>
 <p>You can still use SPEC file with your source code, not tarballs, but it requires modification on the SPEC file, which I do not want. Please refer to <a href="https://serverfault.com/a/311449">here</a> for more details.</p>
