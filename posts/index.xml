@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 07 Nov 2020 19:07:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 09 Nov 2020 15:09:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building Container Image inside Container using Buildah</title>
+      <link>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</link>
+      <pubDate>Mon, 09 Nov 2020 15:09:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
+      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
+The introduction below clearly shows why it is required.
+ Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
+    </item>
+    
     <item>
       <title>Accelerating Ceph RPM Packaging: Using Multithreaded Compression</title>
       <link>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
@@ -109,16 +120,6 @@ Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself impl
       <guid>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</guid>
       <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.g. ReplicaSet, etc). Main introduction in Kubernetes document is in [here].
 A major confusing point comes from ambiguous distinction between Custom Resource Definition (CRD) and Aggregated APIserver (AA). Even the document explains some differences of two types of implementation, it is not clearly understandable.</description>
-    </item>
-    
-    <item>
-      <title>Introduction to Programming Infiniband RDMA</title>
-      <link>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</link>
-      <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</guid>
-      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
-Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
     </item>
     
   </channel>
