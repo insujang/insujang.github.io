@@ -13,7 +13,7 @@ The introduction below clearly shows why it is required.
  Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.">
 <meta itemprop="datePublished" content="2020-11-09T15:09:00+09:00" />
 <meta itemprop="dateModified" content="2020-11-09T15:09:00+09:00" />
-<meta itemprop="wordCount" content="1287">
+<meta itemprop="wordCount" content="1389">
 
 
 
@@ -114,6 +114,11 @@ As I pointed out years ago, this is one of the most dangerous things you can do.
 Instead, I will use <code>buildah</code>.</p>
 <p>Two Red Hat developer blog posts are already out <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, and this post summarizes the two posts and introduces step-by-step instructions.</p>
 <h2 id="1-creating-a-dockerfile-and-building-a-container-image">1. Creating a Dockerfile and Building a Container Image<a href="#1-creating-a-dockerfile-and-building-a-container-image" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>You can simply use the existing buildah container image and skip this subsection:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker pull quay.io/buildah/stable
+</code></pre></div><p><a href="https://quay.io/repository/buildah/stable"><em>Red Hat Quay.io</em></a></p>
+</blockquote>
 <div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> centos:8</span><span class="err">
 </span><span class="err">
 </span><span class="err"></span><span class="c"># Remove directories used by dnf that are just taking up space.</span><span class="err">
@@ -125,7 +130,7 @@ Instead, I will use <code>buildah</code>.</p>
 According to <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, fuse-overlayfs still gives better performance than VFS storage driver.</p>
 <blockquote>
 <p>We use the fuse-overlay program inside of the container rather than using the host kernel overlay.
-The reason is that, currently, kernel overlay mounts require the SYS_ADMIN capability, and we want to be able to run our Buildah containers without any additional privileges than a normal root container.
+The reason is that, currently, kernel overlay mounts require the SYS_ADMIN capability, and we want to be able to run our Buildah containers without any additional privileges than a normal root container for image construction.
 Fuse-overlay works quite well and gives us better performance than using the VFS storage driver.
 Note that using Fuse requires people running the Buildah container to provide the /dev/fuse device.</p>
 <p><em><a href="https://developers.redhat.com/blog/2019/08/14/best-practices-for-running-buildah-in-a-container/">Best practices for running Buildah in a container</a>, Daniel Walsh</em></p>
@@ -161,18 +166,23 @@ executor failed running [/bin/sh -c dnf -y install buildah fuse-overlayfs --excl
 <ul>
 <li><code>docker(podman) run</code>: run a new container based on the given image.</li>
 <li><code>--device /dev/fuse:rw</code>: mount <code>/dev/fuse</code> device into container, so that <code>buildah</code> in a container can use it to run an inner container.</li>
-<li><code>--security-opt seccomp=unconfined</code>: Docker, by default, restricts using <code>unshare</code> system call inside a container, therefore implementing a new namespaces are prohibited in all containers. This flag would allow <code>unshare</code> call in containers to make <code>buildah</code> work properly.</li>
-<li><code>--security-opt label=disable</code>: it is given in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, but it seems buildah in an inner container works properly without this. Have no idea what this option means. Need to study more with <a href="https://docs.docker.com/engine/reference/run/#security-configuration">the Docker documentation</a>.</li>
-<li><code>-v /var/lib/mycontainer:/var/lib/containers:Z</code>: this mount option comes from <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I think its purpose is to store built images into <code>/var/lib/mycontainer</code> in the host. However, if I use my private repository and push the generated images directly to the repository, this mount will not be necessary. I will not use this mount option for further instructions.</li>
+<li><code>--security-opt seccomp=unconfined</code>: Docker, by default, restricts using <code>unshare</code> system call inside a container, therefore implementing a new namespaces are prohibited in all containers. This flag would allow <code>unshare</code> system call in containers to make <code>buildah</code> work properly.</li>
+<li><code>--security-opt label=disable</code>: it is given in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, but it seems <code>buildah</code> in an inner container works properly without this option. Have no idea what it means. Need to study more with <a href="https://docs.docker.com/engine/reference/run/#security-configuration">the Docker documentation</a>.</li>
+<li><code>-v /var/lib/mycontainer:/var/lib/containers:Z</code>: this mount option also comes from <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I think its purpose is to store built images into <code>/var/lib/mycontainer</code> in the host. However, if I use my private repository and push the generated images directly to the repository, this mount will not be necessary. I will not use this mount option for further instructions.</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker<span class="o">(</span>or podman<span class="o">)</span> run -it --device /dev/fuse:rw --security-opt<span class="o">=</span>unconfined buildahimage bash
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ docker<span class="o">(</span>or podman<span class="o">)</span> run -it --device /dev/fuse:rw --security-opt <span class="nv">seccomp</span><span class="o">=</span>unconfined buildahimage bash
 <span class="o">[</span>root@b84150497970 /<span class="o">]</span><span class="c1"># buildah </span>
 A tool that facilitates building OCI images
 Usage:
   buildah <span class="o">[</span>flags<span class="o">]</span>
   buildah <span class="o">[</span>command<span class="o">]</span>
 ...
-</code></pre></div><p>Now let&rsquo;s make a container image!</p>
+</code></pre></div><blockquote>
+<p>You can also use vfs instead of fuse-overlayfs with <code>buildah --storage-driver=vfs</code> in a container. In this case, you do not have to mount <code>/dev/fuse</code> device into a container during creation.
+Both ways do not require a privilege (CAP_SYS_ADMIN).</p>
+<p>But according to comments in <a href="https://github.com/containers/buildah/issues/2554">an issue</a>, vfs has a problem: each layer copies the entire contents of the sublayer, taking a huge amount of space and being slow.</p>
+</blockquote>
+<p>Now let&rsquo;s make a container image!</p>
 <h2 id="3-building-a-container-image-using-buildah">3. Building a Container Image using Buildah<a href="#3-building-a-container-image-using-buildah" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ buildah from centos:8
 Getting image <span class="nb">source</span> signatures
@@ -193,6 +203,7 @@ CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER N
 <h3 id="using-buildah-mnt">Using <code>buildah mnt</code><a href="#using-buildah-mnt" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>This is instructed in the buildah blog post <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
 It was written two years ago, hence it may not work now.
+I think it is an old way,
 I only summarize the commands here. Refer to the post for detail explanations.</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ <span class="nv">containerid</span><span class="o">=</span><span class="k">$(</span>buildah from scratch<span class="k">)</span>
 $ <span class="nv">scratchmnt</span><span class="o">=</span><span class="k">$(</span>buildah mount <span class="nv">$containerid</span><span class="k">)</span>
@@ -205,7 +216,7 @@ Red Hat says:</p>
 <blockquote>
 <p>For one last piece of fun, let’s see if we can run a Buildah container within this Podman container using our modified Buildah code.</p>
 </blockquote>
-<p>But I could run a container without any buildah code modification, meaning the functionality is merged into buildah and I can use it as well.</p>
+<p>But I could run a container without any buildah code modification, meaning the functionality seems to be merged into buildah and I can use it as well.</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">buildah run --isolation<span class="o">=</span>chroot centos-working-container ls /
 bin  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 </code></pre></div><p>After editing the container, you can use <code>buildah commit</code> to make an image.
