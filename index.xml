@@ -7,7 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 09 Nov 2020 15:09:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 05 Dec 2020 15:37:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing Ceph Network Module 1</title>
+      <link>https://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/</link>
+      <pubDate>Sat, 05 Dec 2020 15:37:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/</guid>
+      <description>The series of &amp;ldquo;analyzing ceph network module&amp;rdquo; posts explains how Ceph daemons communicate with each other. This post explains the network architecture overview.
+A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  But, how specifically those libraries (librbd, librgw, libcephfs, librados) are implemented to communicate with underlying Ceph daemons in RADOS?</description>
+    </item>
+    
     <item>
       <title>Building Container Image inside Container using Buildah</title>
       <link>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</link>
@@ -110,16 +123,6 @@ Importing Packages without Go Modules Go programmers can import third-party pack
       <guid>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</guid>
       <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
 Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
-    </item>
-    
-    <item>
-      <title>Kubernetes Custom Resource Definition (CRD)</title>
-      <link>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</link>
-      <pubDate>Tue, 11 Feb 2020 17:23:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</guid>
-      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.g. ReplicaSet, etc). Main introduction in Kubernetes document is in [here].
-A major confusing point comes from ambiguous distinction between Custom Resource Definition (CRD) and Aggregated APIserver (AA). Even the document explains some differences of two types of implementation, it is not clearly understandable.</description>
     </item>
     
   </channel>

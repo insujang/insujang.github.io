@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Analyzing Ceph Network Module 1">
+<meta itemprop="description" content="The series of &ldquo;analyzing ceph network module&rdquo; posts explains how Ceph daemons communicate with each other. This post explains the network architecture overview.
+A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  But, how specifically those libraries (librbd, librgw, libcephfs, librados) are implemented to communicate with underlying Ceph daemons in RADOS?">
+<meta itemprop="datePublished" content="2020-12-05T15:37:00+09:00" />
+<meta itemprop="dateModified" content="2020-12-05T15:37:00+09:00" />
+<meta itemprop="wordCount" content="1286">
+
+
+
+<meta itemprop="keywords" content="study,ceph," />
+<meta property="og:title" content="Analyzing Ceph Network Module 1" />
+<meta property="og:description" content="The series of &ldquo;analyzing ceph network module&rdquo; posts explains how Ceph daemons communicate with each other. This post explains the network architecture overview.
+A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  But, how specifically those libraries (librbd, librgw, libcephfs, librados) are implemented to communicate with underlying Ceph daemons in RADOS?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/" />
+<meta property="article:published_time" content="2020-12-05T15:37:00+09:00" />
+<meta property="article:modified_time" content="2020-12-05T15:37:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Analyzing Ceph Network Module 1"/>
+<meta name="twitter:description" content="The series of &ldquo;analyzing ceph network module&rdquo; posts explains how Ceph daemons communicate with each other. This post explains the network architecture overview.
+A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  But, how specifically those libraries (librbd, librgw, libcephfs, librados) are implemented to communicate with underlying Ceph daemons in RADOS?"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Analyzing Ceph Network Module 1</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper container-lg">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav d-md-inline d-none">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main container-lg animated fadeIn faster">
+		<header class="post-header row">
+			<div class="col-12 col-xl-3"></div>
+			<div class="col-12 col-xl-9">
+				<div class="post-meta"><span>Dec 5, 2020</span></div>
+				<h1>Analyzing Ceph Network Module 1</h1>
+			</div>
+		</header>
+		<article class="row">
+			<div id="toc-aside" class="col-12 col-xl-3">
+				<hr class="d-block d-xl-none">
+				<div class="toc-title">What&#39;s on this Post</div>
+				<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-ceph-client-network-architecture-overview">1. Ceph Client Network Architecture Overview</a></li>
+    <li><a href="#2-ceph-network-module-internal-architecture">2. Ceph Network Module Internal Architecture</a>
+      <ul>
+        <li><a href="#1-asyncmeseenger">1. AsyncMeseenger</a></li>
+        <li><a href="#2-networkstack-and-worker">2. NetworkStack and Worker</a></li>
+        <li><a href="#3-processor">3. Processor</a></li>
+        <li><a href="#4-eventcenter">4. EventCenter</a></li>
+        <li><a href="#5-asyncconnection">5. AsyncConnection</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-ceph-daemon---client-communication-flow">3. Ceph Daemon - Client Communication Flow</a></li>
+  </ul>
+</nav>
+				<hr class="d-block d-xl-none">
+			</div>
+
+			<div class="content col-12 col-xl-9">
+				<p>The series of &ldquo;analyzing ceph network module&rdquo; posts explains how Ceph daemons communicate with each other.
+This post explains the network architecture overview.</p>
+<p>A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).</p>
+<p>Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:</p>
+<figure>
+    <img src="/assets/images/201205/ceph-stack.png"
+         alt="image"/> <figcaption>
+            <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>But, how specifically those libraries (<code>librbd</code>, <code>librgw</code>, <code>libcephfs</code>, <code>librados</code>) are implemented to communicate with underlying Ceph daemons in RADOS?
+How the daemons communicate with each other to manage the Ceph cluster?
+This post summarizes posts regarding this question into one <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.</p>
+<h2 id="1-ceph-client-network-architecture-overview">1. Ceph Client Network Architecture Overview<a href="#1-ceph-client-network-architecture-overview" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<figure>
+    <img src="/assets/images/201205/ceph-network-upper.png"
+         alt="image"/> <figcaption>
+            <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>Ceph clients use <code>Messenger</code> class (currently the only used Messenger is <code>AsyncMessenger</code>) to talk to the Ceph cluster.
+Ceph users can use the Ceph cluster by using either <code>librgw</code>, <code>librbd</code>, cephfs (either ceph kernel or <code>ceph-fuse</code>, I will explain latter only), or <code>librados</code>. All libraries use <code>librados</code> in their underlying system, which uses <code>AsyncMessenger</code> for communication.</p>
+<p>As you can see, <code>MonClient</code> and <code>MgrClient</code>, which are used to connect to <code>ceph-mon</code> or <code>ceph-mgr</code>, also use <code>AsyncMessenger</code>.
+In other words, all daemons also use <code>Messenger</code> class to communicate with each other.</p>
+<p>Detailed communication flow will be explained later.</p>
+<h2 id="2-ceph-network-module-internal-architecture">2. Ceph Network Module Internal Architecture<a href="#2-ceph-network-module-internal-architecture" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<figure>
+    <img src="/assets/images/201205/ceph-network-module.png"
+         alt="image"/> <figcaption>
+            <p>Ceph Network Architecture.</p>
+        </figcaption>
+</figure>
+
+<p>To understand how clients and daemons communicate, we first know the internal network architecture that is used in Ceph.
+The figure above is a roughly drawn Ceph network architecture class diagram. Note that it is not a pure UML class diagram; the types of arrows mean:</p>
+<ol>
+<li>solid line with white block arrow: indicates class inheritance.</li>
+<li>solid line with line arrow: indicates ownership.</li>
+<li>dot line with line arrow: indicates reference.</li>
+</ol>
+<figure>
+    <img src="/assets/images/201205/ceph-network-flow.png"
+         alt="image"/> <figcaption>
+            <p>Ceph Network Function Execution Flow. The flow includes asynchronous ones too, so you should not consider y-axis as a timeline.</p>
+        </figcaption>
+</figure>
+
+<p>The classes that I will focus on are 1. <code>AsyncMessenger</code>, 2. <code>NetworkStack</code> and <code>Worker</code>, 3. <code>Processor</code>, 4. <code>EventCenter</code>, and 5. <code>AsyncConnection</code>.
+Those classes are entangled and interact with each other to implement an asynchronous network mechanism.</p>
+<h3 id="1-asyncmeseenger">1. AsyncMeseenger<a href="#1-asyncmeseenger" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<blockquote>
+<p>AsyncMessenger is represented for maintaining a set of asynchronous connections,
+it may own a bind address and the accepted connections will be managed by AsyncMessenger.</p>
+<p><em>ceph/src/msg/async/AsyncMessenger.h</em></p>
+</blockquote>
+<p><code>AsyncMessenger</code> manages the connections with <code>ceph::unordered_map&lt;entity_addrvec_t, AsyncConnectionRef&gt; conns</code> after establishing a connection via <code>Processor</code> class.</p>
+<p>In its constructor, it prepares a lower network control plane by initializing <code>NetworkStack</code> and <code>Processor</code> classes.
+<code>AsyncMessenger</code> is the owner of the classes and is responsible to manage them.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">AsyncMessenger</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">cct</span><span class="p">,</span> <span class="n">entity_name_t</span> <span class="n">name</span><span class="p">,</span>
+                               <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">mname</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">_nonce</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">auto</span> <span class="n">single</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">cct</span><span class="o">-&gt;</span><span class="n">lookup_or_create_singleton_object</span><span class="o">&lt;</span><span class="n">StackSingleton</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="s">&#34;AsyncMessenger::NetworkStack::&#34;</span> <span class="o">+</span> <span class="n">transport_type</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">cct</span><span class="p">);</span>
+  <span class="c1">// NetworkStack::create() is called in StackSingleton::ready().
+</span><span class="c1"></span>  <span class="n">single</span><span class="o">-&gt;</span><span class="n">ready</span><span class="p">(</span><span class="n">transport_type</span><span class="p">);</span>
+  <span class="n">stack</span> <span class="o">=</span> <span class="n">single</span><span class="o">-&gt;</span><span class="n">stack</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+  <span class="n">stack</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="p">...</span>
+  <span class="kt">unsigned</span> <span class="n">processor_num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stack</span><span class="o">-&gt;</span><span class="n">support_local_listen_table</span><span class="p">())</span>
+    <span class="n">processor_num</span> <span class="o">=</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">get_num_worker</span><span class="p">();</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">processor_num</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">processors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="k">new</span> <span class="n">Processor</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">get_worker</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">cct</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="2-networkstack-and-worker">2. NetworkStack and Worker<a href="#2-networkstack-and-worker" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><code>NetworkStack</code> is an abstracted class of currently used network stack. Ceph provides posix, RDMA, and DPDK network stack.
+This post only explains posix network stack: use POSIX socket API (<code>bind()</code>, <code>listen()</code>, <code>send()</code>, <code>recv()</code>, etc).</p>
+<p><code>NetworkStack</code> constructor internally creates <code>Worker</code> class instances running in seperate threads. Worker threads make the main thread free from blocked wait mechanism (such as <code>epoll_wait()</code>).
+<code>NetworkStack</code> is the owner of all corresponding <code>Worker</code> instances and is responsible to manage them.</p>
+<p><code>src/msg/async/Stack.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">NetworkStack</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">type</span><span class="p">;</span>
+  <span class="c1">// Overridden by PosixStack, RDMAStack, and DPDKStack.
+</span><span class="c1"></span>  <span class="k">virtual</span> <span class="n">Worker</span><span class="o">*</span> <span class="nf">create_worker</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  
+ <span class="k">protected</span><span class="o">:</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Wroker</span><span class="o">*&gt;</span> <span class="n">workers</span><span class="p">;</span>
+  <span class="k">explicit</span> <span class="nf">NetworkStack</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">t</span><span class="p">);</span>
+
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">NetworkStack</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">// Static function. Stack can only be instantiated through this function.
+</span><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">NetworkStack</span><span class="o">&gt;</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">NetworkStack</span><span class="o">&gt;</span> <span class="n">stack</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+  <span class="c1">// Create a proper stack regarding the type t
+</span><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="s">&#34;posix&#34;</span><span class="p">)</span>
+    <span class="n">stack</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="k">new</span> <span class="n">PosixNetworkStack</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">t</span><span class="p">));</span>
+  <span class="p">...</span>
+
+  <span class="k">const</span> <span class="kt">int</span> <span class="n">InitEventNumber</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">worker_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">worker_id</span> <span class="o">&lt;</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">num_workers</span><span class="p">;</span> <span class="o">++</span><span class="n">worker_id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Calls PosixNetworkStack-&gt;create_worker(), which creates a new PosixWorker.
+</span><span class="c1"></span>    <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">create_worker</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">worker_id</span><span class="p">);</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">InitEventNumber</span><span class="p">,</span> <span class="n">worker_id</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
+    <span class="n">stack</span><span class="o">-&gt;</span><span class="n">workers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">stack</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Threads are not created in <code>NetworkStack</code> constructor, but in <code>NetworkStack::start()</code>. <code>AsyncMessenger</code> calls the function after creating a <code>NetworkStack</code> class instance.</p>
+<p><code>src/msg/async/Stack.cc</code>, <code>src/msg/async/PosixStack.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_workers</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">workers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">is_init</span><span class="p">())</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span> <span class="p">()</span><span class="o">&gt;</span> <span class="kr">thread</span> <span class="o">=</span> <span class="n">add_thread</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="n">spawn_worker</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="kr">thread</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span> <span class="p">()</span><span class="o">&gt;</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">add_thread</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">worker_id</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="n">workers</span><span class="p">[</span><span class="n">worker_id</span><span class="p">];</span>
+  <span class="k">return</span> <span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">w</span><span class="p">]()</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Calls epoll_wait with EpollDriver.
+</span><span class="c1"></span>      <span class="n">w</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">process_events</span><span class="p">(</span><span class="n">EventMaxWaitUs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dur</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">();</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">PosixNetworkStack</span><span class="o">::</span><span class="n">spawn_worker</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span> <span class="p">()</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">func</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+  <span class="n">threads</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>I will explain later, but this post assumes we are using Epoll for event handling mechanism. <code>w-&gt;center.process_events()</code> internally calls <code>epoll_wait()</code>, which is blocked, and wakes up when it receives an event.</p>
+<p>When it receives a callback, it calls <code>do_request()</code> function of the given callback reference variable, which in this case, <code>listen_handler</code> variable of <code>Processor</code> class instance.</p>
+<p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Processor</span><span class="o">::</span><span class="nl">C_processor_accept</span> <span class="p">:</span> <span class="k">public</span> <span class="n">EventCallback</span> <span class="p">{</span>
+  <span class="n">Processor</span> <span class="o">*</span><span class="n">pro</span><span class="p">;</span>
+
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">C_processor_accept</span><span class="p">(</span><span class="n">Processor</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">:</span> <span class="n">pro</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="kt">void</span> <span class="nf">do_request</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">id</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+    <span class="n">pro</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="n">Processor</span><span class="o">::</span><span class="n">Processor</span><span class="p">(</span><span class="n">AsyncMessenger</span> <span class="o">*</span><span class="n">r</span><span class="p">,</span> <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span><span class="p">,</span> <span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">)</span>
+  <span class="o">:</span> <span class="n">msgr</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">net</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">worker</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">listen_handler</span><span class="p">(</span><span class="k">new</span> <span class="n">C_processor_accept</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="p">{}</span>
+</code></pre></div><h3 id="3-processor">3. Processor<a href="#3-processor" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><code>Processor</code> is managed by <code>AsyncMessenger</code>, and is responsible for</p>
+<ol>
+<li>bind and listen a socket,</li>
+<li>create a callback instance when an asynchronous event arrives,</li>
+<li>and accept a request for connection establishment.</li>
+</ol>
+<p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">Processor</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span> <span class="o">&amp;</span><span class="n">bind_addrs</span><span class="p">,</span>
+                    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">avoid_ports</span><span class="p">,</span>
+                    <span class="n">entity_addrvec_t</span><span class="o">*</span> <span class="n">bound_addrs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">bind_addrs</span><span class="p">.</span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span><span class="o">&amp;</span> <span class="n">listen_addr</span> <span class="o">=</span> <span class="n">bound_addrs</span><span class="o">-&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">k</span><span class="p">];</span>
+
+    <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">submit_to</span><span class="p">(</span><span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">get_id</span><span class="p">(),</span>
+        <span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">listen_addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">r</span><span class="p">]()</span> <span class="p">{</span>
+          <span class="c1">// In this case, it calls PosixWorker::listen().
+</span><span class="c1"></span>          <span class="n">worker</span><span class="o">-&gt;</span><span class="n">listen</span><span class="p">(</span><span class="n">listen_addr</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">listen_sockets</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+        <span class="p">},</span>
+        <span class="nb">false</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">Processor</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">submit_to</span><span class="p">(</span><span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">get_id</span><span class="p">(),</span>
+      <span class="p">[</span><span class="k">this</span><span class="p">]()</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">listen_socket</span> <span class="p">:</span> <span class="n">listen_sockets</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">create_file_event</span><span class="p">(</span><span class="n">listen_socket</span><span class="p">.</span><span class="n">fd</span><span class="p">(),</span> <span class="n">EVENT_READABLE</span><span class="p">,</span> <span class="n">listen_handler</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nb">false</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><code>Processor:accept()</code> is called when a connection request arrives, by <code>listen_handler</code> member variable of <code>Processor</code> class instance.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">ConnectedSocket</span> <span class="n">cli_socket</span><span class="p">;</span>
+  <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="n">worker</span><span class="p">;</span>
+  <span class="n">listen_socket</span><span class="p">.</span><span class="n">accept</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli_socket</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
+  <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">add_accept</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">cli_socket</span><span class="p">),</span> <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">get_myaddrs</span><span class="p">().</span><span class="n">v</span><span class="p">[</span><span class="n">listen_socket</span><span class="p">.</span><span class="n">get_addr_slot</span><span class="p">()],</span> <span class="n">addr</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="4-eventcenter">4. EventCenter<a href="#4-eventcenter" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>As you saw earlier, <code>Processor</code> uses <code>EventCenter</code> to register its callback handler for asynchronous events. <code>EventCenter</code> manages asynchronous event mechanism by using <code>EventDriver</code>, which is inherited by <code>EpollDriver</code>, <code>DPDKDriver</code>, <code>KqueueDriver</code>, and <code>SelectDriver</code>.
+In Linux, <code>EpollDriver</code> is used by default.</p>
+<p>When <code>Processor</code> class is started by <code>AsyncMessenger</code>, it calls <code>create_file_event()</code> of <code>EventCenter</code> class.
+It internally calls driver&rsquo;s <code>add_event()</code>, which calls <code>epoll_add()</code> in <code>EpollDriver</code>.</p>
+<p><code>src/msg/async/AsyncMessenger.cc</code>, <code>src/msg/async/Event.cc</code>, <code>src/msg/async/EventEpoll.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">Processor</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">submit_to</span><span class="p">(</span><span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">get_id</span><span class="p">(),</span> <span class="p">[</span><span class="k">this</span><span class="p">]()</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">create_file_event</span><span class="p">(</span><span class="n">listen_socket</span><span class="p">.</span><span class="n">fd</span><span class="p">(),</span> <span class="n">EVENT_READABLE</span><span class="p">,</span> <span class="n">listen_handler</span><span class="p">);</span>
+  <span class="p">},</span> <span class="nb">false</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">EventCenter</span><span class="o">::</span><span class="n">create_file_event</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mask</span><span class="p">,</span> <span class="n">EventCallbackRef</span> <span class="n">ctxt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">driver</span><span class="o">-&gt;</span><span class="n">add_event</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">event</span><span class="o">-&gt;</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span> <span class="n">EpollDriver</span><span class="o">::</span><span class="n">add_event</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cur_mask</span><span class="p">,</span> <span class="kt">int</span> <span class="n">add_mask</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="nc">epoll_event</span> <span class="n">ee</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">op</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-</span><span class="n">mask</span> <span class="o">==</span> <span class="n">EVENT_NONE</span> <span class="o">?</span> <span class="nl">EPOLL_CTL_ADD</span> <span class="p">:</span> <span class="n">EPOLL_CTL_MOD</span><span class="p">;</span>
+
+  <span class="n">ee</span><span class="p">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">EPOLLET</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">add_mask</span> <span class="o">&amp;</span> <span class="n">EVENT_READABLE</span><span class="p">)</span> <span class="n">ee</span><span class="p">.</span><span class="n">events</span> <span class="o">|=</span> <span class="n">EPOLLIN</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">add_mask</span> <span class="o">&amp;</span> <span class="n">EVENT_WRITABLE</span><span class="p">)</span> <span class="n">ee</span><span class="p">.</span><span class="n">events</span> <span class="o">|=</span> <span class="n">EPOLLOUT</span><span class="p">;</span>
+  <span class="n">ee</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">u64</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">ee</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+  <span class="n">epoll_ctl</span><span class="p">(</span><span class="n">epfd</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ee</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><blockquote>
+<p>Note that executing <code>epoll_ctl</code> while another thread already called <code>epoll_wait</code> makes no problem.
+Refer to <a href="https://stackoverflow.com/a/39979042">this</a>.</p>
+<blockquote>
+<p><em>While one thread is blocked in a call to epoll_pwait(), it is possible for another thread to add a file descriptor to the waited-upon epoll instance.</em></p>
+</blockquote>
+<p>Therefore, while worker threads are already waiting epoll_wait() to be returned, we can add a file descriptor into the epoll.</p>
+</blockquote>
+<h3 id="5-asyncconnection">5. AsyncConnection<a href="#5-asyncconnection" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>This class is not illustrated in this post. After a connection is established, <code>Processor::accept()</code> creates a <code>ConnectedSocket</code> and <code>AsyncConnection</code> class instance.</p>
+<p>Will be discussed in the next post.</p>
+<h2 id="3-ceph-daemon---client-communication-flow">3. Ceph Daemon - Client Communication Flow<a href="#3-ceph-daemon---client-communication-flow" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>TBD</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://sketch2sky.com/2017/12/11/ceph-asyncmessenger%E6%A8%A1%E5%9D%97%E7%AE%80%E6%9E%90/">Ceph ASyncMessenger 简析 I</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="http://blog.wjin.org/posts/ceph-async-messenger.html">Ceph Async Messenger</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://mahatic.com/2018/11/04/ceph-async-messenger/">Ceph ASync Messenger</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/43365361621/">Ceph async network communication source code analysis 1</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/4493505512/">Ceph AsyncMessenger source analysis (below)</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/48264588038/">Ceph network module - AsyncMessenger data structure analysis</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/93104587967/">Ceph network module - AsyncMessenger code flow analysis</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+		</article>
+
+		<hr class="post-end">
+		<footer class="post-info">
+			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+			<p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/ceph">ceph</a></span>
+			</p>
+		</footer>
+		
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>
