@@ -7,7 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 05 Dec 2020 15:37:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Dec 2020 15:04:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing Ceph Network Module 2</title>
+      <link>https://insujang.github.io/2020-12-10/analyzing-ceph-network-module-2/</link>
+      <pubDate>Thu, 10 Dec 2020 15:04:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-12-10/analyzing-ceph-network-module-2/</guid>
+      <description>Ceph Network Architecture.
+  In the previous post, I illustrated overall Ceph network architecture and code execution flow of initialization, specifically for servers.
+This post illustrates what would occur during connection establishment, both in servers and clients.
+1. Ceph Server Accepting Connection   Ceph network function execution flow for accepting a client connection.
+  In the previous post, I only showed EventCenter calls a overridden do_request() function of Processor::C_processor_accept class as a callback (BTW, this callback is for accepting a connection.</description>
+    </item>
+    
     <item>
       <title>Analyzing Ceph Network Module 1</title>
       <link>https://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/</link>

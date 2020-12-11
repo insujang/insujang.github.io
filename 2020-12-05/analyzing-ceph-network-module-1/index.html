@@ -15,7 +15,7 @@ Ceph offical document provides a very high-level diagram that depicts the Ceph a
   But, how specifically those libraries (librbd, librgw, libcephfs, librados) are implemented to communicate with underlying Ceph daemons in RADOS?">
 <meta itemprop="datePublished" content="2020-12-05T15:37:00+09:00" />
 <meta itemprop="dateModified" content="2020-12-05T15:37:00+09:00" />
-<meta itemprop="wordCount" content="1286">
+<meta itemprop="wordCount" content="1280">
 
 
 
@@ -102,7 +102,6 @@ Ceph offical document provides a very high-level diagram that depicts the Ceph a
         <li><a href="#5-asyncconnection">5. AsyncConnection</a></li>
       </ul>
     </li>
-    <li><a href="#3-ceph-daemon---client-communication-flow">3. Ceph Daemon - Client Communication Flow</a></li>
   </ul>
 </nav>
 				<hr class="d-block d-xl-none">
@@ -132,7 +131,7 @@ This post summarizes posts regarding this question into one <sup id="fnref:1"><a
 </figure>
 
 <p>Ceph clients use <code>Messenger</code> class (currently the only used Messenger is <code>AsyncMessenger</code>) to talk to the Ceph cluster.
-Ceph users can use the Ceph cluster by using either <code>librgw</code>, <code>librbd</code>, cephfs (either ceph kernel or <code>ceph-fuse</code>, I will explain latter only), or <code>librados</code>. All libraries use <code>librados</code> in their underlying system, which uses <code>AsyncMessenger</code> for communication.</p>
+Ceph users can use the Ceph cluster by using either <code>librgw</code>, <code>librbd</code>, cephfs (either ceph kernel or <code>ceph-fuse</code>, I will explain latter only), or <code>librados</code>. All libraries except cephfs use <code>librados</code> in their underlying system, which uses <code>AsyncMessenger</code> for communication.</p>
 <p>As you can see, <code>MonClient</code> and <code>MgrClient</code>, which are used to connect to <code>ceph-mon</code> or <code>ceph-mgr</code>, also use <code>AsyncMessenger</code>.
 In other words, all daemons also use <code>Messenger</code> class to communicate with each other.</p>
 <p>Detailed communication flow will be explained later.</p>
@@ -140,7 +139,7 @@ In other words, all daemons also use <code>Messenger</code> class to communicate
 <figure>
     <img src="/assets/images/201205/ceph-network-module.png"
          alt="image"/> <figcaption>
-            <p>Ceph Network Architecture.</p>
+            <p>Ceph network architecture.</p>
         </figcaption>
 </figure>
 
@@ -154,7 +153,7 @@ The figure above is a roughly drawn Ceph network architecture class diagram. Not
 <figure>
     <img src="/assets/images/201205/ceph-network-flow.png"
          alt="image"/> <figcaption>
-            <p>Ceph Network Function Execution Flow. The flow includes asynchronous ones too, so you should not consider y-axis as a timeline.</p>
+            <p>Ceph network function execution flow. The flow includes asynchronous ones too, so you should not consider y-axis as a timeline.</p>
         </figcaption>
 </figure>
 
@@ -353,10 +352,8 @@ Refer to <a href="https://stackoverflow.com/a/39979042">this</a>.</p>
 <p>Therefore, while worker threads are already waiting epoll_wait() to be returned, we can add a file descriptor into the epoll.</p>
 </blockquote>
 <h3 id="5-asyncconnection">5. AsyncConnection<a href="#5-asyncconnection" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p>This class is not illustrated in this post. After a connection is established, <code>Processor::accept()</code> creates a <code>ConnectedSocket</code> and <code>AsyncConnection</code> class instance.</p>
+<p>This class is not explained in this post. After a connection is established, <code>Processor::accept()</code> creates a <code>ConnectedSocket</code> and <code>AsyncConnection</code> class instance.</p>
 <p>Will be discussed in the next post.</p>
-<h2 id="3-ceph-daemon---client-communication-flow">3. Ceph Daemon - Client Communication Flow<a href="#3-ceph-daemon---client-communication-flow" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>TBD</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
