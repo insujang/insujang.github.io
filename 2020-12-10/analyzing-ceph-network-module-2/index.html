@@ -15,7 +15,7 @@ This post illustrates what would occur during connection establishment, both in 
   In the previous post, I only showed EventCenter calls a overridden do_request() function of Processor::C_processor_accept class as a callback (BTW, this callback is for accepting a connection.">
 <meta itemprop="datePublished" content="2020-12-10T15:04:00+09:00" />
 <meta itemprop="dateModified" content="2020-12-10T15:04:00+09:00" />
-<meta itemprop="wordCount" content="889">
+<meta itemprop="wordCount" content="904">
 
 
 
@@ -121,7 +121,8 @@ This post illustrates what would occur during connection establishment, both in 
         </figcaption>
 </figure>
 
-<p>In the previous post, I only showed <code>EventCenter</code> calls a overridden <code>do_request()</code> function of <code>Processor::C_processor_accept</code> class as a callback (BTW, this callback is for accepting a connection. Callback should be implemented for another type of communication).</p>
+<p>In the previous post, I only showed <code>EventCenter</code> calls a overridden <code>do_request()</code> function of <code>Processor::C_processor_accept</code> class as a callback (BTW, this callback is for accepting a connection. Callback should be implemented for another type of communication).
+<code>Processor::C_processor_accept::do_request()</code> calls <code>Processor::accept()</code>, in which the following code are executed to call POSIX <code>accept()</code> function.</p>
 <p><code>src/msg/async/AsyncMessenger.cc</code>, <code>src/msg/async/PosixStack.cc</code>, <code>src/common/compat.cc</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// In src/msg/async/AsyncMessenger.cc
 </span><span class="c1"></span><span class="kt">void</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">{</span>
@@ -190,7 +191,7 @@ It manages the connection with a state, like a <strong>finite-state machine</str
 <p>Clients, who want to establish a connection to a listening server, can use <code>AsyncMessenger::connect_to()</code> function.
 Different from server implementation, it first creates an <code>AsyncConnection</code> class instance first, and calls <code>AsyncConnection::connect()</code> to establish connection with the given server address.</p>
 <p><code>src/msg/async/AsyncMessenger.cc</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">ConnectionRef</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">connect_t</span><span class="p">(</span><span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">addrs</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">anon</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">ConnectionRef</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">connect_to</span><span class="p">(</span><span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">addrs</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">anon</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="p">)</span> <span class="p">{</span>
   <span class="p">...</span>
   <span class="k">auto</span> <span class="n">av</span> <span class="o">=</span> <span class="n">_filter_addrs</span><span class="p">(</span><span class="n">addrs</span><span class="p">);</span>
   <span class="k">return</span> <span class="nf">create_connect</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">anon</span><span class="p">);</span>
