@@ -7,7 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 10 Dec 2020 15:04:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 11 Dec 2020 15:28:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing Ceph Network Module 3</title>
+      <link>https://insujang.github.io/2020-12-11/analyzing-ceph-network-module-3/</link>
+      <pubDate>Fri, 11 Dec 2020 15:28:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-12-11/analyzing-ceph-network-module-3/</guid>
+      <description>High level Ceph architecture. [src]
+  In the previous posts 1 2, I illustrated how we establishes a connection between a server and a client using AsyncMessenger functions.
+However, in high level Ceph architecture, there are some more abstracted APIs that are useful for specific purpose, e.g., accessing ceph-mon or ceph-osd, etc. This post illustrates how MonClient is implemented.
+MonClient MonClient, considering its name, is a class that can be used to connect a Ceph monitor daemon.</description>
+    </item>
+    
     <item>
       <title>Analyzing Ceph Network Module 2</title>
       <link>https://insujang.github.io/2020-12-10/analyzing-ceph-network-module-2/</link>
@@ -114,18 +126,6 @@ Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not ena
       <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
 For this purpose, Fedora Silverblue adopted two technologies:
  libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.</description>
-    </item>
-    
-    <item>
-      <title>Go Modules: an Alternative to GOPATH for Package Distribution</title>
-      <link>https://insujang.github.io/2020-04-04/go-modules/</link>
-      <pubDate>Sat, 04 Apr 2020 19:27:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-04-04/go-modules/</guid>
-      <description>This post introduces Go modules, introduced in Go version 1.11.
-Go Modules? Go 1.11 introduces a new dependency mangement system, Go modules (That&amp;rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
-Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what does it means specifically. Here is my explanaion.
-Importing Packages without Go Modules Go programmers can import third-party packages (i.</description>
     </item>
     
   </channel>
