@@ -7,45 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 11 Dec 2020 15:28:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Analyzing Ceph Network Module 3</title>
-      <link>https://insujang.github.io/2020-12-11/analyzing-ceph-network-module-3/</link>
-      <pubDate>Fri, 11 Dec 2020 15:28:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-12-11/analyzing-ceph-network-module-3/</guid>
-      <description>High level Ceph architecture. [src]
-  In the previous posts 1 2, I illustrated how we establishes a connection between a server and a client using AsyncMessenger functions.
-However, in high level Ceph architecture, there are some more abstracted APIs that are useful for specific purpose, e.g., accessing ceph-mon or ceph-osd, etc. This post illustrates how MonClient is implemented.
-MonClient MonClient, considering its name, is a class that can be used to connect a Ceph monitor daemon.</description>
-    </item>
-    
-    <item>
-      <title>Analyzing Ceph Network Module 2</title>
-      <link>https://insujang.github.io/2020-12-10/analyzing-ceph-network-module-2/</link>
-      <pubDate>Thu, 10 Dec 2020 15:04:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-12-10/analyzing-ceph-network-module-2/</guid>
-      <description>Ceph Network Architecture.
-  In the previous post, I illustrated overall Ceph network architecture and code execution flow of initialization, specifically for servers.
-This post illustrates what would occur during connection establishment, both in servers and clients.
-1. Ceph Server Accepting Connection   Ceph network function execution flow for accepting a client connection.
-  In the previous post, I only showed EventCenter calls a overridden do_request() function of Processor::C_processor_accept class as a callback (BTW, this callback is for accepting a connection.</description>
-    </item>
-    
-    <item>
-      <title>Analyzing Ceph Network Module 1</title>
-      <link>https://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/</link>
-      <pubDate>Sat, 05 Dec 2020 15:37:00 +0900</pubDate>
-      
-      <guid>https://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/</guid>
-      <description>The series of &amp;ldquo;analyzing ceph network module&amp;rdquo; posts explains how Ceph daemons communicate with each other. This post explains the network architecture overview.
-A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).
-Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
-  High level Ceph architecture. [src]
-  But, how specifically those libraries (librbd, librgw, libcephfs, librados) are implemented to communicate with underlying Ceph daemons in RADOS?</description>
-    </item>
-    
+    <lastBuildDate>Mon, 09 Nov 2020 15:09:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Container Image inside Container using Buildah</title>
       <link>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</link>
@@ -126,6 +88,38 @@ Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not ena
       <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
 For this purpose, Fedora Silverblue adopted two technologies:
  libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.</description>
+    </item>
+    
+    <item>
+      <title>Go Modules: an Alternative to GOPATH for Package Distribution</title>
+      <link>https://insujang.github.io/2020-04-04/go-modules/</link>
+      <pubDate>Sat, 04 Apr 2020 19:27:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-04-04/go-modules/</guid>
+      <description>This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? Go 1.11 introduces a new dependency mangement system, Go modules (That&amp;rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what does it means specifically. Here is my explanaion.
+Importing Packages without Go Modules Go programmers can import third-party packages (i.</description>
+    </item>
+    
+    <item>
+      <title>Programming Kubernetes CRDs</title>
+      <link>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</link>
+      <pubDate>Thu, 13 Feb 2020 10:13:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</guid>
+      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
+Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Custom Resource Definition (CRD)</title>
+      <link>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</link>
+      <pubDate>Tue, 11 Feb 2020 17:23:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</guid>
+      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.g. ReplicaSet, etc). Main introduction in Kubernetes document is in [here].
+A major confusing point comes from ambiguous distinction between Custom Resource Definition (CRD) and Aggregated APIserver (AA). Even the document explains some differences of two types of implementation, it is not clearly understandable.</description>
     </item>
     
   </channel>
