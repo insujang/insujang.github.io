@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Analyzing Ceph Network Module">
+<meta itemprop="description" content="This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.">
+<meta itemprop="datePublished" content="2020-12-23T11:38:00+09:00" />
+<meta itemprop="dateModified" content="2020-12-23T11:38:00+09:00" />
+<meta itemprop="wordCount" content="3269">
+
+
+
+<meta itemprop="keywords" content="study,ceph," />
+<meta property="og:title" content="Analyzing Ceph Network Module" />
+<meta property="og:description" content="This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/" />
+<meta property="article:published_time" content="2020-12-23T11:38:00+09:00" />
+<meta property="article:modified_time" content="2020-12-23T11:38:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Analyzing Ceph Network Module"/>
+<meta name="twitter:description" content="This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Analyzing Ceph Network Module</title>
+	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper container-lg">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
+				</div>
+				<nav class="site-nav d-md-inline d-none">
+					
+				<a href="https://insujang.github.io/posts/">Posts</a>
+				<a href="https://insujang.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
+			<li><a href="https://insujang.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main container-lg animated fadeIn faster">
+		<header class="post-header row">
+			<div class="col-12 col-xl-3"></div>
+			<div class="col-12 col-xl-9">
+				<div class="post-meta"><span>Dec 23, 2020</span></div>
+				<h1>Analyzing Ceph Network Module</h1>
+			</div>
+		</header>
+		<article class="row">
+			<div id="toc-aside" class="col-12 col-xl-3">
+				<hr class="d-block d-xl-none">
+				<div class="toc-title">What&#39;s on this Post</div>
+				<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-ceph-network-architecture-overview">1. Ceph Network Architecture Overview</a></li>
+    <li><a href="#2-messenger-connection-and-processor">2. <code>Messenger</code>, <code>Connection</code>, and <code>Processor</code></a>
+      <ul>
+        <li><a href="#messenger"><code>Messenger</code></a></li>
+        <li><a href="#connection"><code>Connection</code></a></li>
+        <li><a href="#processor"><code>Processor</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#3-dispatcher-dispatchqueue-and-dispatchthread">3. <code>Dispatcher</code>, <code>DispatchQueue</code>, and <code>DispatchThread</code></a></li>
+    <li><a href="#4-networkstack-and-worker">4. <code>NetworkStack</code> and <code>Worker</code></a>
+      <ul>
+        <li><a href="#socket-subclasses">Socket subclasses</a></li>
+        <li><a href="#sending-messages">Sending messages</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-eventcenter-and-eventdriver">5. <code>EventCenter</code> and <code>EventDriver</code></a>
+      <ul>
+        <li><a href="#initialization">Initialization</a></li>
+        <li><a href="#eventdriver">EventDriver</a></li>
+        <li><a href="#event-callback-receiving-messages">Event Callback (receiving messages)</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+				<hr class="d-block d-xl-none">
+			</div>
+
+			<div class="content col-12 col-xl-9">
+				<p>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.</p>
+<p>Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:</p>
+<figure>
+    <img src="/assets/images/201205/ceph-stack.png"
+         alt="image"/> <figcaption>
+            <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.
+Even after reading those, I was not clear how they work.
+Therefore, I visualize the execution flow for network communication of Ceph and summarizes the concept here.</p>
+<h2 id="1-ceph-network-architecture-overview">1. Ceph Network Architecture Overview<a href="#1-ceph-network-architecture-overview" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<figure>
+    <img src="/assets/images/201223/ceph-network-overview.png"
+         alt="image"/> <figcaption>
+            <p>Ceph network class diagram.</p>
+        </figcaption>
+</figure>
+
+<blockquote>
+<p>Explanations of three types of arrows used in the class diagram:</p>
+<ol>
+<li>solid line with white block arrow: indicates class inheritance.</li>
+<li>solid line with line arrow: indicates ownership.</li>
+<li>dot line with line arrow: indicates reference.</li>
+</ol>
+</blockquote>
+<p>Roughly those classes can be grouped into four categories:</p>
+<ul>
+<li><code>Messenger</code>, <code>Connecttion</code>, and <code>Processor</code></li>
+<li><code>Dispatcher</code>, <code>DispatchQueue</code>, and <code>DispatchThread</code> (<code>DispatchThread</code> is not illustrated in the class diagram)</li>
+<li><code>NetworkStack</code> and <code>Worker</code></li>
+<li><code>EventCenter</code> and <code>EventDriver</code></li>
+</ul>
+<figure>
+    <img src="/assets/images/201223/ceph-network-osd-init.png"
+         alt="image"/> <figcaption>
+            <p>Function execution flow diagram when OSD accepts a connection and communicate.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/assets/images/201223/ceph-network-radosclient-connect.png"
+         alt="image"/> <figcaption>
+            <p>Function execution flow diagram when a client connects to a peer server and communicate using <code>librados</code>.</p>
+        </figcaption>
+</figure>
+
+<p>The function execution flows illustrated above is a rough illustration of function calls happening in connection establishment.
+First one is by OSD, and the other one is by librados.
+It would be helpful to see these flow diagram with the code below.</p>
+<h2 id="2-messenger-connection-and-processor">2. <code>Messenger</code>, <code>Connection</code>, and <code>Processor</code><a href="#2-messenger-connection-and-processor" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="messenger"><code>Messenger</code><a href="#messenger" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Central to the architecture is <code>Messenger</code> class. Currently only <code>AsyncMessenger</code> is provided and used.
+Messenger manages all the other class instances: connections, processors, a dispatch queue, a network stack (which manages workers, which owns an EventCenter, which owns an EventDriver), and dispatchers.</p>
+<p>Every time it connected to a peer, it creates an <code>AsyncConnection</code> class and returns it. To create a connection, <code>AsyncMessenger</code> provides the following two functions:</p>
+<ul>
+<li><code>connect_to()</code>: connect to peers with the given <code>entity_addrvec_t&amp; addrs</code> address information.</li>
+<li><code>bindv()</code>: bind a server socket so that it can accept a connection establishment request.</li>
+</ul>
+<p>Usage example (<code>connect_to()</code> by client):</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">librados</span><span class="o">::</span><span class="n">RadosClient</span><span class="o">::</span><span class="n">connect</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">MonClient</span><span class="o">::</span><span class="n">authenticate</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">MonClient</span><span class="o">::</span><span class="n">_reopen_session</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">MonClient</span><span class="o">::</span><span class="n">_add_conn</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">connect_to_mon</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">connect_to</span><span class="p">()</span>
+</code></pre></div><p><code>src/librados/RadosClient.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">librados</span><span class="o">::</span><span class="n">RadosClient</span><span class="o">::</span><span class="n">connect</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">monclient</span><span class="p">.</span><span class="n">build_initial_monmap</span><span class="p">();</span>
+  <span class="n">messenger</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create_client_messenger</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="s">&#34;radosclient&#34;</span><span class="p">);</span>
+  <span class="p">...</span>
+  <span class="n">monclient</span><span class="p">.</span><span class="n">set_messenger</span><span class="p">(</span><span class="n">messenger</span><span class="p">);</span>
+  <span class="n">messenger</span><span class="o">-&gt;</span><span class="n">add_dispatcher_tail</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="n">messenger</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="p">...</span>
+  <span class="n">monclient</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+  <span class="n">monclient</span><span class="p">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">conf</span><span class="o">-&gt;</span><span class="n">client_mount_timeout</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p><code>src/mon/MonClient.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">MonClient</span><span class="o">::</span><span class="n">authenticate</span><span class="p">(</span><span class="kt">double</span> <span class="n">timeout</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_opened</span><span class="p">())</span>
+    <span class="n">_reopen_session</span><span class="p">();</span>
+
+  <span class="p">...</span>
+  <span class="n">auth_cond</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">MonClient</span><span class="o">::</span><span class="n">_reopen_session</span><span class="p">(</span><span class="kt">int</span> <span class="n">rank</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">active_con</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+  <span class="n">pending_cons</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">_add_conn</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">global_id</span><span class="p">);</span>
+  <span class="k">else</span> <span class="nf">_add_conns</span><span class="p">(</span><span class="n">global_id</span><span class="p">);</span>
+  <span class="p">...</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">pending_cons</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">c</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">start</span><span class="p">(</span><span class="n">monmap</span><span class="p">.</span><span class="n">get_epoch</span><span class="p">(),</span> <span class="n">entity_name</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">MonClient</span><span class="o">::</span><span class="n">_add_conn</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">rank</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">global_id</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">peer</span> <span class="o">=</span> <span class="n">monmap</span><span class="p">.</span><span class="n">get_addrs</span><span class="p">(</span><span class="n">rank</span><span class="p">);</span>
+  <span class="c1">// type: ConnectionRef == ceph::ref_t&lt;Connection&gt;
+</span><span class="c1"></span>  <span class="c1">//                     == boost::intrusive_ptr&lt;Connection&gt;
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">conn</span> <span class="o">=</span> <span class="n">messenger</span><span class="o">-&gt;</span><span class="n">connect_to_mon</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p><code>src/msg/Messenger.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// AsyncMessenger inherits this class
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">Messenger</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">virtual</span> <span class="n">ConnectionRef</span> <span class="n">connect_to</span><span class="p">(</span>
+    <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span>
+    <span class="kt">bool</span> <span class="n">anon</span><span class="o">=</span><span class="nb">false</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">ConnectionRef</span> <span class="nf">connect_to_mon</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">anon</span><span class="o">=</span><span class="nb">false</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span> <span class="p">{</span>
+	  <span class="k">return</span> <span class="n">connect_to</span><span class="p">(</span><span class="n">CEPH_ENTITY_TYPE_MON</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">anon</span><span class="p">,</span> <span class="n">not_local_dest</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">ConnectionRef</span> <span class="nf">connect_to_mds</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">anon</span><span class="o">=</span><span class="nb">false</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span> <span class="p">{</span>
+	  <span class="k">return</span> <span class="n">connect_to</span><span class="p">(</span><span class="n">CEPH_ENTITY_TYPE_MDS</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">anon</span><span class="p">,</span> <span class="n">not_local_dest</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">ConnectionRef</span> <span class="nf">connect_to_osd</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">anon</span><span class="o">=</span><span class="nb">false</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span> <span class="p">{</span>
+	  <span class="k">return</span> <span class="n">connect_to</span><span class="p">(</span><span class="n">CEPH_ENTITY_TYPE_OSD</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">anon</span><span class="p">,</span> <span class="n">not_local_dest</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">ConnectionRef</span> <span class="nf">connect_to_mgr</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">anon</span><span class="o">=</span><span class="nb">false</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span> <span class="p">{</span>
+	  <span class="k">return</span> <span class="n">connect_to</span><span class="p">(</span><span class="n">CEPH_ENTITY_TYPE_MGR</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">anon</span><span class="p">,</span> <span class="n">not_local_dest</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>Usage example (<code>bindv()</code> by osd server):</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">main</span><span class="p">()</span> <span class="p">(</span><span class="n">ceph</span><span class="o">-</span><span class="n">osd</span><span class="p">.</span><span class="n">cc</span><span class="p">)</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">bindv</span><span class="p">()</span>
+</code></pre></div><p><code>src/ceph-osd.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_public</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">public_msg_type</span><span class="p">,</span>
+					   <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;client&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_cluster</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">cluster_msg_type</span><span class="p">,</span>
+					    <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;cluster&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_hb_back_client</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">cluster_msg_type</span><span class="p">,</span>
+					     <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;hb_back_client&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_hb_front_client</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">public_msg_type</span><span class="p">,</span>
+					     <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;hb_front_client&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_hb_back_server</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">cluster_msg_type</span><span class="p">,</span>
+						   <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;hb_back_server&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_hb_front_server</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">public_msg_type</span><span class="p">,</span>
+						    <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;hb_front_server&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="n">Messenger</span> <span class="o">*</span><span class="n">ms_objecter</span> <span class="o">=</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">g_ceph_context</span><span class="p">,</span> <span class="n">public_msg_type</span><span class="p">,</span>
+					     <span class="n">entity_name_t</span><span class="o">::</span><span class="n">OSD</span><span class="p">(</span><span class="n">whoami</span><span class="p">),</span> <span class="s">&#34;ms_objecter&#34;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">);</span>
+  <span class="p">...</span>
+
+  <span class="n">ms_public</span><span class="o">-&gt;</span><span class="n">bindv</span><span class="p">(</span><span class="n">public_addrs</span><span class="p">);</span>
+  <span class="n">ms_cluster</span><span class="o">-&gt;</span><span class="n">bindv</span><span class="p">(</span><span class="n">cluster_addrs</span><span class="p">);</span>
+  <span class="n">ms_hb_front_server</span><span class="o">-&gt;</span><span class="n">bindv</span><span class="p">(</span><span class="n">hb_front_addrs</span><span class="p">);</span>
+  <span class="n">ms_hb_front_client</span><span class="o">-&gt;</span><span class="n">client_bind</span><span class="p">(</span><span class="n">hb_front_addrs</span><span class="p">.</span><span class="n">front</span><span class="p">());</span>
+  <span class="n">ms_hb_back_server</span><span class="o">-&gt;</span><span class="n">bindv</span><span class="p">(</span><span class="n">hb_back_addrs</span><span class="p">);</span>
+  <span class="n">ms_hb_back_client</span><span class="o">-&gt;</span><span class="n">client_bind</span><span class="p">(</span><span class="n">hb_back_addrs</span><span class="p">.</span><span class="n">front</span><span class="p">());</span>
+  <span class="p">...</span>
+
+  <span class="n">ms_public</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="n">ms_hb_front_client</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="n">ms_hb_back_client</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="n">ms_hb_front_server</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="n">ms_hb_back_server</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="n">ms_cluster</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="connection"><code>Connection</code><a href="#connection" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<blockquote>
+<p>AsyncConnection maintains a logic session between two endpoints.
+In other words, a pair of addresses can find the only AsyncConnection.
+AsyncConnection will handle with network fault or read/write transactions.
+If one file descriptor broken, AsyncConnection will maintain the message queue and sequence, try to reconnect peer endpoint.</p>
+</blockquote>
+<p>When a client connects to a peer server or a server accepts a connection request from a client peer, an <code>AsyncConnection</code> class instance is created.
+It is managed by <code>AsyncMessenger</code>, and any read or write is at first handled by the <code>AsyncConnection</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">connect_to</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">create_connect</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">ceph</span><span class="o">::</span><span class="n">make_ref</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="k">new</span> <span class="n">ceph</span><span class="o">::</span><span class="n">ref_t</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">({</span><span class="k">new</span> <span class="nf">AsyncConnection</span><span class="p">(...),</span> <span class="nb">false</span><span class="p">})</span>
+    <span class="o">==</span> <span class="n">boost</span><span class="o">::</span><span class="n">intrusive_ptr</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">({</span><span class="k">new</span> <span class="n">AsyncConnection</span><span class="p">(...),</span> <span class="nb">false</span><span class="p">})</span>
+</code></pre></div><p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">ConnectionRef</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">connect_to</span><span class="p">(</span><span class="kt">int</span> <span class="n">type</span><span class="p">,</span>
+					<span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">addrs</span><span class="p">,</span>
+					<span class="kt">bool</span> <span class="n">anon</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">not_local_dest</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">AsyncConnectionRef</span> <span class="n">conn</span> <span class="o">=</span> <span class="n">_lookup_conn</span><span class="p">(</span><span class="n">av</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">conn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connect</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">conn</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">AsyncConnectionRef</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">create_connect</span><span class="p">(</span>
+          <span class="k">const</span> <span class="n">entity_addrvec_t</span><span class="o">&amp;</span> <span class="n">addrs</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">anon</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">get_worker</span><span class="p">();</span>
+  <span class="k">auto</span> <span class="n">conn</span> <span class="o">=</span> <span class="n">ceph</span><span class="o">::</span><span class="n">make_ref</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dispatch_queue</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
+						<span class="n">target</span><span class="p">.</span><span class="n">is_msgr2</span><span class="p">(),</span> <span class="nb">false</span><span class="p">);</span>
+  <span class="n">conn</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">(</span><span class="n">addrs</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">target</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">conn</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Server processes create an <code>AsyncConnection</code> when it receives a connection establishment request, which means we need to discuss more about asynchronous mechanism how <code>accept()</code> callback is called for full understanding.
+Here, however, let&rsquo;s just show a simple class instantiation only.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">Processor</span><span class="o">::</span><span class="n">C_processor_accept</span><span class="o">::</span><span class="n">do_request</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">(</span><span class="o">-&gt;</span> <span class="n">PosixServerSocketImpl</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">accept_cloexec</span><span class="p">())</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">add_accept</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">ceph</span><span class="o">::</span><span class="n">make_ref</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">()</span>
+</code></pre></div><p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Processor</span><span class="o">::</span><span class="nl">C_processor_accept</span> <span class="p">:</span> <span class="k">public</span> <span class="n">EventCallback</span> <span class="p">{</span>
+  <span class="n">Processor</span> <span class="o">*</span><span class="n">pro</span><span class="p">;</span>
+  <span class="k">explicit</span> <span class="nf">C_processor_accept</span><span class="p">(</span><span class="n">Processor</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">:</span> <span class="n">pro</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="kt">void</span> <span class="nf">do_request</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">id</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+    <span class="n">pro</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">listen_socket</span> <span class="p">:</span> <span class="n">listen_sockets</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">ConnectedSocket</span> <span class="n">cli_socket</span><span class="p">;</span>
+    <span class="n">listen_socket</span><span class="p">.</span><span class="n">accept</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli_socket</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
+    <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">add_accept</span><span class="p">(</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">cli_socket</span><span class="p">),</span>
+            <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">get_myaddrs</span><span class="p">().</span><span class="n">v</span><span class="p">[</span><span class="n">listen_socket</span><span class="p">.</span><span class="n">get_addr_slot</span><span class="p">()],</span>
+            <span class="n">addr</span><span class="p">);</span>
+    <span class="k">continue</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// listen_socket.accept() in src/msg/async/PosixStack.cc
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">PosixServerSocketImpl</span><span class="o">::</span><span class="n">accept</span><span class="p">(</span><span class="n">ConnectedSocket</span> <span class="o">*</span><span class="n">sock</span><span class="p">,</span> <span class="k">const</span> <span class="n">SocketOptions</span> <span class="o">&amp;</span><span class="n">opt</span><span class="p">,</span> <span class="n">entity_addr_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">sd</span> <span class="o">=</span> <span class="n">accept_cloexec</span><span class="p">(</span><span class="n">_fd</span><span class="p">,</span> <span class="p">(</span><span class="n">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ss</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">slen</span><span class="p">);</span>
+  <span class="p">...</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">PosixConnectedSocketImpl</span><span class="o">&gt;</span> <span class="n">csi</span><span class="p">(</span><span class="k">new</span> <span class="n">PosixConnectedSocketImpl</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="nb">true</span><span class="p">));</span>
+  <span class="o">*</span><span class="n">sock</span> <span class="o">=</span> <span class="n">ConnectedSocket</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">csi</span><span class="p">));</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// msgr-&gt;add_accept() in src/msg/async/AsyncMessenger.cc
+</span><span class="c1"></span><span class="kt">void</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">add_accept</span><span class="p">(</span><span class="n">Worker</span> <span class="o">*</span><span class="n">w</span><span class="p">,</span> <span class="n">ConnectedSocket</span> <span class="n">cli_socket</span><span class="p">,</span>
+				<span class="k">const</span> <span class="n">entity_addr_t</span> <span class="o">&amp;</span><span class="n">listen_addr</span><span class="p">,</span>
+				<span class="k">const</span> <span class="n">entity_addr_t</span> <span class="o">&amp;</span><span class="n">peer_addr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">conn</span> <span class="o">=</span> <span class="n">ceph</span><span class="o">::</span><span class="n">make_ref</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dispatch_queue</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
+						<span class="n">listen_addr</span><span class="p">.</span><span class="n">is_msgr2</span><span class="p">(),</span> <span class="nb">false</span><span class="p">);</span>
+  <span class="n">conn</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">cli_socket</span><span class="p">),</span> <span class="n">listen_addr</span><span class="p">,</span> <span class="n">peer_addr</span><span class="p">);</span>
+  <span class="n">accepting_conns</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">conn</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="processor"><code>Processor</code><a href="#processor" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Currently, <code>Processor</code> seems to be used only by servers, and not used by clients.
+It is responsible for:</p>
+<ul>
+<li><code>bind()</code>: bind and listen to a socket so that the socket can receive a request.</li>
+<li><code>accept()</code>: handle accept callback event.</li>
+</ul>
+<p>When binding a server socket:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">bindv</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Processor</span><span class="o">::</span><span class="n">bind</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">PosixWorker</span><span class="o">::</span><span class="n">listen</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="o">::</span><span class="n">bind</span><span class="p">()</span> <span class="n">and</span> <span class="o">::</span><span class="n">listen</span><span class="p">()</span> <span class="n">and</span> <span class="k">new</span> <span class="n">PosixServerSocketImpl</span><span class="p">()</span>
+</code></pre></div><p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">bindv</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span> <span class="o">&amp;</span><span class="n">bind_addrs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;&amp;</span><span class="nl">p</span> <span class="p">:</span> <span class="n">processors</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">bind</span><span class="p">(</span><span class="n">bind_addrs</span><span class="p">,</span> <span class="n">avoid_ports</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bound_addrs</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">Processor</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span> <span class="o">&amp;</span><span class="n">bind_addrs</span><span class="p">,</span>
+		    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">avoid_ports</span><span class="p">,</span>
+		    <span class="n">entity_addrvec_t</span><span class="o">*</span> <span class="n">bound_addrs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">bind_addrs</span><span class="p">.</span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">submit_to</span><span class="p">(</span>
+      <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">get_id</span><span class="p">(),</span>
+      <span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">listen_addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">r</span><span class="p">]()</span> <span class="p">{</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">worker</span><span class="o">-&gt;</span><span class="n">listen</span><span class="p">(</span><span class="n">listen_addr</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">listen_socket</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+      <span class="p">},</span> <span class="nb">false</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>Now the lambda function that contains <code>worker-&gt;listen()</code> call is submitted to the <code>EventCenter</code> and will be executed asynchronously later, but let&rsquo;s see just how it looks first. Will be discussed the asynchronous mechanism later.</p>
+<p><code>src/msg/async/PosixStack.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">PosixWorker</span><span class="o">::</span><span class="n">listen</span><span class="p">(</span><span class="n">entity_addr_t</span> <span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">addr_slot</span><span class="p">,</span>
+			<span class="k">const</span> <span class="n">SocketOptions</span> <span class="o">&amp;</span><span class="n">opt</span><span class="p">,</span> <span class="n">ServerSocket</span> <span class="o">*</span><span class="n">sock</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">listen_sd</span> <span class="o">=</span> <span class="n">net</span><span class="p">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">sa</span><span class="p">.</span><span class="n">get_family</span><span class="p">(),</span> <span class="nb">true</span><span class="p">);</span>
+  <span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">listen_sd</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="n">get_sockaddr</span><span class="p">(),</span> <span class="n">sa</span><span class="p">.</span><span class="n">get_sockaddr_len</span><span class="p">());</span>
+  <span class="o">::</span><span class="n">listen</span><span class="p">(</span><span class="n">listen_sd</span><span class="p">,</span> <span class="n">cct</span><span class="o">-&gt;</span><span class="n">_conf</span><span class="o">-&gt;</span><span class="n">ms_tcp_listen_backlog</span><span class="p">);</span>
+
+  <span class="o">*</span><span class="n">sock</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">PosixServerSocketImpl</span><span class="o">&gt;</span><span class="p">(</span>
+          <span class="k">new</span> <span class="n">PosixServerSocketImpl</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">listen_sd</span><span class="p">,</span> <span class="n">sa</span><span class="p">,</span> <span class="n">addr_slot</span><span class="p">)));</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>And the created socket file descriptor has an event, <code>EventCenter</code> calls <code>Processor::C_processor_accept::do_request()</code> as a callback (Will discuss it later too).
+This callback function actually accepts a request and create a <code>ConnectedSocket</code> and an <code>AsyncConnection</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">Processor</span><span class="o">::</span><span class="n">C_processor_accept</span><span class="o">::</span><span class="n">do_request</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">(</span><span class="o">-&gt;</span> <span class="n">PosixServerSocketImpl</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">accept_cloexec</span><span class="p">(),</span> <span class="n">and</span> <span class="k">new</span> <span class="n">PosixConnectedSocketImpl</span><span class="p">())</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">add_accept</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">ceph</span><span class="o">::</span><span class="n">make_ref</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">()</span>
+</code></pre></div><p>This process is already handled in <a href="#connection"><code>Messenger</code> section</a>, so I would skip duplicated explanation here.</p>
+<h2 id="3-dispatcher-dispatchqueue-and-dispatchthread">3. <code>Dispatcher</code>, <code>DispatchQueue</code>, and <code>DispatchThread</code><a href="#3-dispatcher-dispatchqueue-and-dispatchthread" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><code>Dispatcher</code> is a virtual class that declares several callback handlers, and several classes inherit <code>Dispatcher</code> class and override the callback handlers to implement their functionalities.
+For example, <code>OSD (src/osd/OSD.h)</code> inherits <code>Dispatcher</code> and implements <code>ms_dispatch(Message *m)</code> to handle messages from clients.
+<code>librados::RadosClient (src/librados/RadosClient.h)</code> also inherits <code>Dispatcher</code> to wait replies from server processes.</p>
+<p><code>src/osd/OSD.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">OSD</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Dispatcher</span><span class="p">,</span> <span class="k">public</span> <span class="n">md_config_obs_t</span> <span class="p">{</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="kt">bool</span> <span class="n">ms_can_fast_dispatch_any</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">true</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">bool</span> <span class="nf">ms_can_fast_dispatch</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">ms_fast_dispatch</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="nf">ms_dispatch</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">ms_handle_connect</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">ms_handle_fast_connect</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">ms_handle_fast_accept</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="nf">ms_handle_authentication</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="nf">ms_handle_reset</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">ms_handle_remote_reset</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span> <span class="p">{}</span>
+  <span class="kt">bool</span> <span class="nf">ms_handle_refused</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p><code>src/librados/RadosClient.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">librados</span><span class="o">::</span><span class="nl">RadosClient</span> <span class="p">:</span> <span class="k">public</span> <span class="n">Dispatcher</span><span class="p">,</span> <span class="k">public</span> <span class="n">md_config_obs_t</span> <span class="p">{</span>
+<span class="k">private</span><span class="o">:</span>
+  <span class="kt">bool</span> <span class="n">_dispatch</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="nf">ms_dispatch</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">ms_handle_connect</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="nf">ms_handle_reset</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">ms_handle_remote_reset</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="nf">ms_handle_refused</span><span class="p">(</span><span class="n">Connection</span> <span class="o">*</span><span class="n">con</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>The <code>ms_handle_*()</code> functions will be called by <code>DispatchThread</code>, when a queue item is enqueued into the <code>DispatchQueue</code>.
+<code>DispatchThread</code> and an actual thread is created when you call <code>Messenger::add_dispatcher_head()</code> or <code>Messenger::add_dispatcher_tail()</code> for the first time: these functions are required to be called by dispatchers so that <code>Messenger</code> can call registered dispatcher functions.</p>
+<p>For OSD daemon, an <code>OSD</code> class instance (which inherited <code>Dispatcher</code>) adds itself to an <code>AsyncMessenger</code> class instance by calling <code>add_dispatcher_tail(this)</code> during OSD initialization:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">main</span><span class="p">()</span> <span class="p">(</span><span class="n">ceph</span><span class="o">-</span><span class="n">osd</span><span class="p">.</span><span class="n">cc</span><span class="p">)</span>
+<span class="o">-&gt;</span> <span class="n">OSD</span><span class="o">::</span><span class="n">init</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">add_dispatcher_tail</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">ready</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">DispatchQueue</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Thread</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Thread</span><span class="o">::</span><span class="n">try_create</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">pthread_create</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="p">(</span><span class="kr">thread</span><span class="p">)</span> <span class="n">Thread</span><span class="o">::</span><span class="n">entry_wrapper</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="p">(</span><span class="kr">thread</span><span class="p">)</span> <span class="n">DispatchThread</span><span class="o">::</span><span class="n">entry</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="p">(</span><span class="kr">thread</span><span class="p">)</span> <span class="n">DispatchQueue</span><span class="o">::</span><span class="n">entry</span><span class="p">()</span>
+</code></pre></div><p><code>src/msg/Messenger.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">add_dispatcher_tail</span><span class="p">(</span><span class="n">Dispatcher</span> <span class="o">*</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">bool</span> <span class="n">first</span> <span class="o">=</span> <span class="n">dispatchers</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span>
+  <span class="n">dispatchers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">d</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">d</span><span class="o">-&gt;</span><span class="n">ms_can_fast_dispatch_any</span><span class="p">())</span>
+    <span class="n">fast_dispatchers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">d</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">first</span><span class="p">)</span>
+    <span class="n">ready</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div><p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">ready</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">stack</span><span class="o">-&gt;</span><span class="n">ready</span><span class="p">();</span>
+  <span class="p">...</span>
+  
+  <span class="n">dispatch_queue</span><span class="p">.</span><span class="n">start</span><span class="p">();</span> <span class="c1">// Here, dispatch queue is started.
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p><code>src/msg/DispatchQueue.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">DisaptchQueue</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">dispatch_thread</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="s">&#34;ms_dispatch&#34;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><code>src/common/Thread.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// DispatchThread inherits Thread.
+</span><span class="c1"></span><span class="kt">void</span> <span class="n">Thread</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">stacksize</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">try_create</span><span class="p">(</span><span class="n">stacksize</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">Thread</span><span class="o">::</span><span class="n">try_create</span><span class="p">(</span><span class="n">size_t</span> <span class="n">stacksize</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">thread_attr</span><span class="p">,</span> <span class="n">_entry_func</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="k">this</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="n">Thread</span><span class="o">::</span><span class="n">_entry_func</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="p">((</span><span class="n">Thread</span><span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">entry_wrapper</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="n">Thread</span><span class="o">::</span><span class="n">entry_wrapper</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">return</span> <span class="n">entry</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// Note that entry() of DispatchThread is overridden:
+</span><span class="c1">// in src/msg/DispatchQueue.h
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">DispatchThread</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Thread</span> <span class="p">{</span>
+  <span class="n">DispatchQueue</span> <span class="o">*</span><span class="n">dq</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">DispatchThread</span><span class="p">(</span><span class="n">DispatchQueue</span> <span class="o">*</span><span class="n">dq</span><span class="p">)</span> <span class="o">:</span> <span class="n">dq</span><span class="p">(</span><span class="n">dq</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="nf">entry</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+    <span class="n">dq</span><span class="o">-&gt;</span><span class="n">entry</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="n">dispatch_thread</span><span class="p">;</span>
+</code></pre></div><p>Note that <code>dq-&gt;entry()</code> calls <code>DispatchQueue::entry()</code>, which runs in an additional dispatch thread, and it handles enqueued items by calling <code>Messenger::ms_deliver_handle_*()</code> functions that actually calls <code>Dispatcher</code>s' callback functions:</p>
+<p><code>src/msg/DispatchQueue.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">DispatchQueue</span><span class="o">::</span><span class="n">entry</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">mqueue</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+      <span class="n">QueueItem</span> <span class="n">qitem</span> <span class="o">=</span> <span class="n">mqueue</span><span class="p">.</span><span class="n">dequeue</span><span class="p">();</span>
+      <span class="p">...</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">is_code</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">get_code</span><span class="p">())</span> <span class="p">{</span>
+          <span class="k">case</span> <span class="nl">D_BAD_REMOTE_RESET</span><span class="p">:</span>
+            <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">ms_deliver_handle_remote_reset</span><span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">get_connection</span><span class="p">());</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="nl">D_CONNECT</span><span class="p">:</span>
+            <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">ms_deliver_handle_connect</span><span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">get_connection</span><span class="p">());</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="nl">D_ACCEPT</span><span class="p">:</span>
+            <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">ms_deliver_handle_accept</span><span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">get_connection</span><span class="p">());</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="nl">D_BAD_RESET</span><span class="p">:</span>
+            <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">ms_deliver_handle_reset</span><span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">get_connection</span><span class="p">());</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="nl">D_CONN_REFUSED</span><span class="p">:</span>
+            <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">ms_deliver_handle_refused</span><span class="p">(</span><span class="n">qitem</span><span class="p">.</span><span class="n">get_connection</span><span class="p">());</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">default</span><span class="o">:</span>
+            <span class="n">ceph_abort</span><span class="p">();</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="n">ref_t</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">&gt;&amp;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">qitem</span><span class="p">.</span><span class="n">get_message</span><span class="p">();</span>
+        <span class="kt">uint64_t</span> <span class="n">msize</span> <span class="o">=</span> <span class="n">pre_dispatch</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+        <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">ms_deliver_dispatch</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+        <span class="n">post_dispatch</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">msize</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">l</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="c1">// wait for something to be put on queue
+</span><span class="c1"></span>  <span class="n">cond</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>For instance, if a message is delivered, <code>msgr-&gt;ms_deliver_dispatch(m)</code> is called:</p>
+<p><code>src/msg/Messenger.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">Messenger</span><span class="o">::</span><span class="n">ms_deliver_dispatch</span><span class="p">(</span><span class="k">const</span> <span class="n">ceph</span><span class="o">::</span><span class="n">ref_t</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">m</span><span class="o">-&gt;</span><span class="n">set_dispatch_stamp</span><span class="p">(</span><span class="n">ceph_clock_now</span><span class="p">());</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="nl">dispatcher</span> <span class="p">:</span> <span class="n">dispatchers</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">dispatcher</span><span class="o">-&gt;</span><span class="n">ms_dispatch2</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Note that ms_dispatch2 is a tricky implementation that actually calls ms_dispatch.
+</span><span class="c1">// src/msg/Dispatcher.h
+</span><span class="c1"></span><span class="cm">/* ms_dispatch2 because otherwise the child must define both */</span>
+<span class="k">virtual</span> <span class="kt">bool</span> <span class="n">Dispatcher</span><span class="o">::</span><span class="n">ms_dispatch2</span><span class="p">(</span><span class="k">const</span> <span class="n">MessageRef</span> <span class="o">&amp;</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">MessageRef</span> <span class="nf">mr</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+  <span class="n">ms_dispatch</span><span class="p">(</span><span class="n">mr</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div><p>Here, we know that <code>Dispatcher</code> class instances added themselves into the <code>Messenger</code>, so they are stored in <code>dispatchers</code> variable: the <code>Messenger</code> iterates those added dispatchers and call the implemented <code>ms_dispatch()</code> function.</p>
+<h2 id="4-networkstack-and-worker">4. <code>NetworkStack</code> and <code>Worker</code><a href="#4-networkstack-and-worker" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><code>NetworkStack</code> represents which network stack you want to use for communication. Currently Ceph provides POSIX, RDMA, and DPDK (<code>PosixNetworkStack</code>, <code>RDMANetworkStack</code>, and <code>DPDKNetworkStack</code>, respectively).
+<code>PosixNetworkStack</code>, for example, uses POSIX library APIs for network communication (e.g. <code>accept_cloexec()</code>, <code>connect()</code>, <code>sendmsg()</code>, and <code>read()</code>).</p>
+<p>NetworkStack spawns multiple worker threads with <code>Worker</code> class instance.
+These threads are independent from dispatch thread; <code>Worker</code> threads are responsible to wait any messages from peers and send messages to them.</p>
+<p><code>NetworkStack</code> and <code>Worker</code>s are created when <code>AsyncMessenger</code> is created.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// Clients uses Messenger::create_client_messenger() to call AsyncMessenger::create().
+</span><span class="c1">// Servers directly calls AsyncMessenger::create().
+</span><span class="c1"></span><span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">create</span><span class="p">()</span> <span class="p">(</span><span class="k">new</span> <span class="n">AsyncMessenger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">create</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">PosixNetworkStack</span><span class="p">()</span> <span class="n">and</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">create</span><span class="p">())</span>
+<span class="o">-&gt;</span> <span class="n">PosixNetworkStack</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">PosixNetworkStack</span><span class="o">::</span><span class="n">spawn_worker</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="p">(</span><span class="kr">thread</span><span class="p">)</span> <span class="n">lambda</span> <span class="n">function</span> <span class="n">defined</span> <span class="n">in</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">add_thread</span><span class="p">()</span>
+</code></pre></div><p><code>src/msg/Messenger.cc</code> and <code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// in src/msg/Messenger.cc
+</span><span class="c1"></span><span class="n">Messenger</span> <span class="o">*</span><span class="n">Messenger</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">cct</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">,</span>
+			     <span class="n">entity_name_t</span> <span class="n">name</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">lname</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">nonce</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nf">AsyncMessenger</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">lname</span><span class="p">),</span> <span class="n">nonce</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// in src/msg/async/AsyncMessenger.cc
+</span><span class="c1"></span><span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">AsyncMessenger</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">cct</span><span class="p">,</span> <span class="n">entity_name_t</span> <span class="n">name</span><span class="p">,</span>
+                               <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">mname</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">_nonce</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">SimplePolicyMessenger</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span>
+      <span class="n">dispatch_queue</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="n">mname</span><span class="p">),</span>
+      <span class="n">nonce</span><span class="p">(</span><span class="n">_nonce</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">transport_type</span> <span class="o">=</span> <span class="s">&#34;posix&#34;</span><span class="p">;</span>
+  <span class="c1">// StackSingletone ensures that there is exactly only one network stack in the process.
+</span><span class="c1"></span>  <span class="c1">// Return type: StackSingleton&amp;
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">single</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">cct</span><span class="o">-&gt;</span><span class="n">lookup_or_create_singleton_object</span><span class="o">&lt;</span><span class="n">StackSingleton</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="s">&#34;AsyncMessenger::NetworkStack::&#34;</span> <span class="o">+</span> <span class="n">transport_type</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">cct</span><span class="p">);</span>
+  <span class="n">single</span><span class="o">-&gt;</span><span class="n">ready</span><span class="p">();</span>
+  <span class="n">stack</span> <span class="o">=</span> <span class="n">single</span><span class="o">-&gt;</span><span class="n">stack</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+  <span class="n">stack</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="nc">StackSingletone</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="kt">void</span> <span class="n">ready</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">stack</span><span class="p">)</span> <span class="n">stack</span> <span class="o">=</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">cct</span><span class="p">,</span> <span class="n">type</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div><p><code>src/msg/async/Stack.cc</code> and <code>src/msg/async/PosixStack.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">NetworkStack</span><span class="o">&gt;</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span>
+						   <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">NetworkStack</span><span class="o">&gt;</span> <span class="n">stack</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="s">&#34;posix&#34;</span><span class="p">)</span> <span class="n">stack</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="k">new</span> <span class="n">PosixNetworkStack</span><span class="p">(</span><span class="n">c</span><span class="p">));</span>
+  <span class="p">...</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">worker_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">worker_id</span> <span class="o">&lt;</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">num_workers</span><span class="p">;</span> <span class="o">++</span><span class="n">worker_id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span> <span class="o">=</span> <span class="n">stack</span><span class="o">-&gt;</span><span class="n">create_worker</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">worker_id</span><span class="p">);</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">stack</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Worker</span> <span class="o">*</span><span class="n">PosixNetworkStack</span><span class="o">::</span><span class="n">create_worker</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">worker_id</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nf">PosixWorker</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">worker_id</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><code>src/msg/async/Stack.cc</code> and <code>src/msg/async/PosixStack.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_workers</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">workers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">is_init</span><span class="p">())</span> <span class="k">continue</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span> <span class="p">()</span><span class="o">&gt;</span> <span class="kr">thread</span> <span class="o">=</span> <span class="n">add_thread</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="n">spawn_worker</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="kr">thread</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">PosixNetworkStack</span><span class="o">::</span><span class="n">spawn_worker</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span> <span class="p">()</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">func</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+  <span class="n">threads</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>Note that <code>func</code> is passed by <code>add_thread()</code> function, which returns a lambda function for thread execution:</p>
+<p><code>src/msg/async/Stack.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">NetworkStack</span><span class="o">::</span><span class="n">add_thread</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">worker_id</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Worker</span><span class="o">*</span> <span class="n">w</span> <span class="o">=</span> <span class="n">workers</span><span class="p">[</span><span class="n">worker_id</span><span class="p">];</span>
+  <span class="k">return</span> <span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">w</span><span class="p">]()</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">();</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">init_done</span><span class="p">();</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">w</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">process_events</span><span class="p">(</span><span class="n">EventMaxWaitUs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dur</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">();</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div><p>The number of threads to be created depends on Ceph configuration value <code>ms_async_op_threads</code> [^cephmsfconf]. The default value is 3, and you can override it by specifying the number in ceph.conf.
+Note that there also exists <code>ms_async_max_op_threads</code> configuration, which is by default 5, that limits the maximum number of threads.</p>
+<p>Created threads create their own <code>EventCenter</code> and wait events in parallel, which will be discussed in the next subsection.</p>
+<h3 id="socket-subclasses">Socket subclasses<a href="#socket-subclasses" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Socket file descriptors are encapsulated into Ceph&rsquo;s classes (<code>ServerSocket</code> and <code>ConnectedSocket</code>, which have <code>ServerSocketImpl</code> and <code>ConnectedSocketImpl</code> respectively), and for each type of network stack they are inherited:</p>
+<ul>
+<li><code>PosixNetworkStack</code> -&gt; use <code>PosixServerSocketImpl</code> and <code>PosixConnectedSocketImpl</code></li>
+<li><code>RDMANetworkStack</code> -&gt; use <code>RDMAServerSocketImpl</code> and <code>RDMAConnectedSocketImpl</code></li>
+<li><code>DPDKNetworkStack</code> -&gt; use <code>DPDKServerSocketImpl</code> and <code>DPDKConnectedSocketImpl</code></li>
+</ul>
+<p>If <code>OSD</code> binds a server socket:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">main</span><span class="p">()</span> <span class="p">(</span><span class="n">ceph</span><span class="o">-</span><span class="n">osd</span><span class="p">.</span><span class="n">cc</span><span class="p">)</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">bindv</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">Processor</span><span class="o">::</span><span class="n">bind</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">PosixWorker</span><span class="o">::</span><span class="n">listen</span><span class="p">()</span> <span class="p">(</span><span class="o">-&gt;</span> <span class="o">::</span><span class="n">bind</span><span class="p">(),</span> <span class="o">::</span><span class="n">listen</span><span class="p">(),</span> <span class="n">and</span> <span class="k">new</span> <span class="n">PosixServerSocketImpl</span><span class="p">())</span>
+</code></pre></div><p><code>src/msg/async/AsyncMessenger.cc</code> and <code>src/msg/async/PosixStack.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">bindv</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span> <span class="o">&amp;</span><span class="n">bind_addrs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;&amp;</span><span class="nl">p</span> <span class="p">:</span> <span class="n">processors</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">bind</span><span class="p">(</span><span class="n">bind_addrs</span><span class="p">,</span> <span class="n">avoid_ports</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bound_addrs</span><span class="p">);</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">Processor</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="k">const</span> <span class="n">entity_addrvec_t</span> <span class="o">&amp;</span><span class="n">bind_addrs</span><span class="p">,</span>
+		    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">avoid_ports</span><span class="p">,</span>
+		    <span class="n">entity_addrvec_t</span><span class="o">*</span> <span class="n">bound_addrs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">submit_to</span><span class="p">(</span>
+    <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">get_id</span><span class="p">(),</span>
+    <span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">listen_addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">r</span><span class="p">]()</span> <span class="p">{</span>
+      <span class="n">r</span> <span class="o">=</span> <span class="n">worker</span><span class="o">-&gt;</span><span class="n">listen</span><span class="p">(</span><span class="n">listen_addr</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">listen_sockets</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+    <span class="p">},</span>
+    <span class="nb">false</span>
+  <span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="c1">// in src/msg/async/PosixStack.cc
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">PosixWorker</span><span class="o">::</span><span class="n">listen</span><span class="p">(</span><span class="n">entity_addr_t</span><span class="o">&amp;</span> <span class="n">sa</span><span class="p">,</span>
+                        <span class="kt">unsigned</span> <span class="n">addr_slot</span><span class="p">,</span>
+                        <span class="k">const</span> <span class="n">SocketOptions</span><span class="o">&amp;</span> <span class="n">opt</span><span class="p">,</span>
+                        <span class="n">ServerSocket</span><span class="o">*</span> <span class="n">sock</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">listen_sd</span> <span class="o">=</span> <span class="n">net</span><span class="p">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">sa</span><span class="p">.</span><span class="n">get_family</span><span class="p">(),</span> <span class="nb">true</span><span class="p">);</span>
+  <span class="n">net</span><span class="p">.</span><span class="n">set_nonblock</span><span class="p">(</span><span class="n">listen_sd</span><span class="p">);</span>
+  <span class="n">net</span><span class="p">.</span><span class="n">set_socket_options</span><span class="p">(</span><span class="n">listen_sd</span><span class="p">,</span> <span class="n">opt</span><span class="p">.</span><span class="n">nodelay</span><span class="p">,</span> <span class="n">opt</span><span class="p">.</span><span class="n">rcbuf_size</span><span class="p">);</span>
+
+  <span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">listen_sd</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="n">get_sockaddr</span><span class="p">(),</span> <span class="n">sa</span><span class="p">.</span><span class="n">get_sockaddr_len</span><span class="p">());</span>
+  <span class="o">::</span><span class="n">listen</span><span class="p">(</span><span class="n">listen_sd</span><span class="p">,</span> <span class="n">cct</span><span class="o">-&gt;</span><span class="n">_conf</span><span class="o">-&gt;</span><span class="n">ms_tcp_listen_backlog</span><span class="p">);</span>
+  
+  <span class="o">*</span><span class="n">sock</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">PosixServerSocketImpl</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="k">new</span> <span class="n">PosixServerSocketImpl</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">listen_sd</span><span class="p">,</span> <span class="n">sa</span><span class="p">,</span> <span class="n">addr_slot</span><span class="p">)));</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><blockquote>
+<p>Note that <code>ServerSocket</code> and <code>ConnectedSocket</code> illustrated in <a href="#connection">connection</a> subsection indicate these classes.</p>
+</blockquote>
+<p>All I/O communication are passed to and from those socket classes. Will be discussed a little bit more detail below.</p>
+<h3 id="sending-messages">Sending messages<a href="#sending-messages" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Before going to the next subsection, let&rsquo;s talk about sending messages, since worker threads are for <strong>receiving</strong> ones asynchronously.</p>
+<p>Very simply, upper class instances (e.g. <code>OSD</code>) use <code>Connection::send_message()</code> to send a message to the peer.</p>
+<p><code>src/osd/OSD.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="n">OSD</span><span class="o">::</span><span class="n">ms_dispatch</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">_dispatch</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">OSD</span><span class="o">::</span><span class="n">_dispatch</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="n">m</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="p">())</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">case</span> <span class="nl">MSG_COMMAND</span><span class="p">:</span>
+    <span class="n">handle_command</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MCommand</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">));</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">OSD</span><span class="o">::</span><span class="n">handle_command</span><span class="p">(</span><span class="n">MCommand</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ConnectionRef</span> <span class="n">con</span> <span class="o">=</span> <span class="n">m</span><span class="o">-&gt;</span><span class="n">get_connection</span><span class="p">();</span>
+  <span class="k">auto</span> <span class="n">session</span> <span class="o">=</span> <span class="n">ceph</span><span class="o">::</span><span class="n">ref_cast</span><span class="o">&lt;</span><span class="n">Session</span><span class="o">&gt;</span><span class="p">(</span><span class="n">con</span><span class="o">-&gt;</span><span class="n">get_priv</span><span class="p">());</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">con</span><span class="o">-&gt;</span><span class="n">send_message</span><span class="p">(</span><span class="k">new</span> <span class="n">MCommandReply</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">-</span><span class="n">EACCES</span><span class="p">));</span>
+    <span class="n">m</span><span class="o">-&gt;</span><span class="n">put</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>Then, <code>AsyncConnection</code> internally uses <code>ConnectedSocket</code> to send data to the peer:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">AsyncConnection</span><span class="o">::</span><span class="n">write</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">AsyncConnection</span><span class="o">::</span><span class="n">_try_send</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">PosixConnectedSocketImpl</span><span class="o">::</span><span class="n">send</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">PosixConnectedSocketImpl</span><span class="o">::</span><span class="n">do_sendmsg</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="o">::</span><span class="n">sendmsg</span><span class="p">()</span>
+</code></pre></div><p><code>src/msg/async/AsyncConnection.cc</code> and <code>src/msg/async/PosixStack.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">ssize_t</span> <span class="n">AsyncConnection</span><span class="o">::</span><span class="n">write</span><span class="p">(</span><span class="n">ceph</span><span class="o">::</span><span class="n">buffer</span><span class="o">::</span><span class="n">list</span> <span class="o">&amp;</span><span class="n">bl</span><span class="p">,</span>
+                               <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">ssize_t</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">callback</span><span class="p">,</span>
+                               <span class="kt">bool</span> <span class="n">more</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">outgoing_bl</span><span class="p">.</span><span class="n">claim_append</span><span class="p">(</span><span class="n">bl</span><span class="p">);</span>
+  <span class="n">ssize_t</span> <span class="n">r</span> <span class="o">=</span> <span class="n">_try_send</span><span class="p">(</span><span class="n">more</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">writeCallback</span> <span class="o">=</span> <span class="n">callback</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ssize_t</span> <span class="n">AsyncConnection</span><span class="o">::</span><span class="n">_try_send</span><span class="p">(</span><span class="kt">bool</span> <span class="n">more</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="c1">// type of variable cs: ConnectedSocket
+</span><span class="c1"></span>  <span class="n">cs</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">outgoing_bl</span><span class="p">,</span> <span class="n">more</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="c1">// src/msg/async/PosixStack.cc
+</span><span class="c1"></span><span class="n">ssize_t</span> <span class="nf">send</span><span class="p">(</span><span class="n">ceph</span><span class="o">::</span><span class="n">buffer</span><span class="o">::</span><span class="n">list</span> <span class="o">&amp;</span><span class="n">bl</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">more</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="kt">uint64_t</span> <span class="n">left_pbrs</span> <span class="o">=</span> <span class="n">bl</span><span class="p">.</span><span class="n">get_num_buffers</span><span class="p">();</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">left_pbrs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">do_sendmsg</span><span class="p">(</span><span class="n">_fd</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">msglen</span><span class="p">,</span> <span class="n">left_pbrs</span> <span class="o">||</span> <span class="n">more</span><span class="p">);</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#ifndef _WIN32
+</span><span class="cp"></span><span class="k">static</span> <span class="n">ssize_t</span> <span class="nf">do_sendmsg</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">msghdr</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">len</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">more</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">size_t</span> <span class="n">sent</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="o">::</span><span class="n">sendmsg</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">MSG_NOSIGNAL</span> <span class="o">|</span> <span class="p">(</span><span class="n">more</span> <span class="o">?</span> <span class="nl">MSG_MORE</span> <span class="p">:</span> <span class="mi">0</span><span class="p">));</span>
+    <span class="n">sent</span> <span class="o">+=</span> <span class="n">r</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">==</span> <span class="n">sent</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">ssize_t</span><span class="p">)</span> <span class="n">sent</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="5-eventcenter-and-eventdriver">5. <code>EventCenter</code> and <code>EventDriver</code><a href="#5-eventcenter-and-eventdriver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><code>EventCenter</code> is responsible to pass events from remote peers to worker threads. A class instance is created and owned by a worker thread mentioned above.
+The worker threads use <code>EventCenter</code> to receive events (e.g. connection request from <code>ServerSocket</code>, and message arrive from <code>ConnectedSocket</code>, connection reset, etc).</p>
+<h3 id="initialization">Initialization<a href="#initialization" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>At first, when <code>PosixWorker</code> instances are created, each class instance initializes <code>EventCenter</code> as well.</p>
+<p><code>src/msg/async/PosixStack.h</code> and <code>src/msg/async/Stack.h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">PosixWorker</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Worker</span> <span class="p">{</span>
+  <span class="n">ceph</span><span class="o">::</span><span class="n">NetHandle</span> <span class="n">net</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">initialize</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>
+ <span class="k">public</span><span class="o">:</span>
+  <span class="n">PosixWorker</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">i</span><span class="p">)</span> <span class="o">:</span> <span class="n">Worker</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">net</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="p">...</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Worker</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">Worker</span><span class="p">(</span><span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">worker_id</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">cct</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">perf_logger</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">id</span><span class="p">(</span><span class="n">worker_id</span><span class="p">),</span> <span class="n">references</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">center</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>The <code>Worker</code> constructor initializes <code>EventCenter</code> member variable named <code>center</code>.</p>
+<p>After creating <code>EventCenter</code> instances, all workers call <code>center.process_events()</code> infinitely to process pending events asynchronously:</p>
+<p><code>src/msg/async/Stack.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// lambda function defined in NetworkStack::add_thread
+</span><span class="c1">// executed by worker threads
+</span><span class="c1"></span><span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">w</span><span class="p">]()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">w</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">();</span>
+  <span class="n">w</span><span class="o">-&gt;</span><span class="n">init_done</span><span class="p">();</span>
+  <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">())</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">w</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">process_events</span><span class="p">(</span><span class="n">EventMaxWaitUs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dur</span><span class="p">);</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div><p><code>EventCenter::process_events()</code> internally uses <code>EventDriver</code> to receive events.</p>
+<h3 id="eventdriver">EventDriver<a href="#eventdriver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><code>EventDriver</code>, like <code>NetworkStack</code>, is an abstracted class for event control mechanism. In Linux, Ceph uses <code>epoll</code> by default, <code>kqueue</code> for BSD, etc: it provides four types of <code>EventDriver</code>: <code>EpollDriver</code>, <code>SelectDriver</code>, <code>KqueueDriver</code>, and <code>DPDKDriver</code>.</p>
+<p><code>src/msg/async/Event.cc</code> and <code>src/msg/async/EventEpoll.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">EventCenter</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="kt">int</span> <span class="n">nevent</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">center_id</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#34;dpdk&#34;</span><span class="p">)</span> <span class="p">{</span>
+<span class="cp">#ifdef HAVE_DPDK
+</span><span class="cp"></span>    <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DPDKDriver</span><span class="p">(</span><span class="n">cct</span><span class="p">);</span>
+<span class="cp">#endif
+</span><span class="cp"></span>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="cp">#ifdef HAVE_EPOLL
+</span><span class="cp"></span>  <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EpollDriver</span><span class="p">(</span><span class="n">cct</span><span class="p">);</span>
+<span class="cp">#else
+</span><span class="cp">#ifdef HAVE_KQUEUE
+</span><span class="cp"></span>  <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KqueueDriver</span><span class="p">(</span><span class="n">cct</span><span class="p">);</span>
+<span class="cp">#else
+</span><span class="cp"></span>  <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SelectDriver</span><span class="p">(</span><span class="n">cct</span><span class="p">);</span>
+<span class="cp">#endif
+</span><span class="cp">#endif
+</span><span class="cp"></span>  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">EventCenter</span><span class="o">::</span><span class="n">process_events</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">timeout_microseconds</span><span class="p">,</span>  <span class="n">ceph</span><span class="o">::</span><span class="n">timespan</span> <span class="o">*</span><span class="n">working_dur</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">FiredFileEvent</span><span class="o">&gt;</span> <span class="n">fired_events</span><span class="p">;</span>
+  <span class="n">numevents</span> <span class="o">=</span> <span class="n">driver</span><span class="o">-&gt;</span><span class="n">event_wait</span><span class="p">(</span><span class="n">fired_events</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tv</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">event_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">event_id</span> <span class="o">&lt;</span> <span class="n">numevents</span><span class="p">;</span> <span class="n">event_id</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">FileEvent</span> <span class="o">*</span><span class="n">event</span> <span class="o">=</span> <span class="n">_get_file_event</span><span class="p">(</span><span class="n">fired_events</span><span class="p">[</span><span class="n">event_id</span><span class="p">].</span><span class="n">fd</span><span class="p">);</span>
+    <span class="n">cb</span><span class="o">-&gt;</span><span class="n">do_request</span><span class="p">(</span><span class="n">fired_events</span><span class="p">[</span><span class="n">event_id</span><span class="p">].</span><span class="n">fd</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">EpollDriver</span><span class="o">::</span><span class="n">event_wait</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">FiredFileEvent</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">fired_events</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">timeval</span> <span class="o">*</span><span class="n">tvp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">retval</span> <span class="o">=</span> <span class="n">epoll_wait</span><span class="p">(</span><span class="n">epfd</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">nevent</span><span class="p">,</span>
+                          <span class="n">tvp</span> <span class="o">?</span> <span class="p">(</span><span class="n">tvp</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="o">*</span><span class="mi">1000</span> <span class="o">+</span> <span class="n">tvp</span><span class="o">-&gt;</span><span class="n">tv_usec</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+  <span class="p">...</span>
+  <span class="k">return</span> <span class="n">numevents</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>when the worker thread receives an event, it calls the specified callback function <code>cb-&gt;do_request()</code>.
+What is it?</p>
+<h3 id="event-callback-receiving-messages">Event Callback (receiving messages)<a href="#event-callback-receiving-messages" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>It is normal to say that we <em><strong>must</strong></em> register a callback function to be called when an event has been arrived.
+Ceph provides <code>EventCallback</code> class and asks them to implement a child class of <code>EventCallback</code> and override <code>EventCallback::do_request()</code>, the function that would be called by the worker thread when an event occurs.</p>
+<p>For example, <code>AsyncMessenger::Processor</code> has <code>Processor::C_processor_accept</code> class, which is used to accept a connection request in an asynchronous manner:</p>
+<p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Processor</span><span class="o">::</span><span class="nl">C_processor_accept</span> <span class="p">:</span> <span class="k">public</span> <span class="n">EventCallback</span> <span class="p">{</span>
+  <span class="n">Processor</span> <span class="o">*</span><span class="n">pro</span><span class="p">;</span>
+
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">C_processor_accept</span><span class="p">(</span><span class="n">Processor</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">:</span> <span class="n">pro</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="kt">void</span> <span class="nf">do_request</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">id</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+    <span class="n">pro</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">listen_socket</span> <span class="p">:</span> <span class="n">listen_sockets</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">ConnectedSocket</span> <span class="n">cli_socket</span><span class="p">;</span>
+      <span class="n">listen_socket</span><span class="p">.</span><span class="n">accept</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli_socket</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
+      <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">add_accept</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">cli_socket</span><span class="p">),</span>
+                       <span class="n">msgr</span><span class="o">-&gt;</span><span class="n">get_myaddrs</span><span class="p">().</span><span class="n">v</span><span class="p">[</span><span class="n">listen_socket</span><span class="p">.</span><span class="n">get_addr_slot</span><span class="p">()],</span>
+                       <span class="n">addr</span><span class="p">);</span>
+      <span class="p">...</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>When a <code>Processor</code> class instance is created, a <code>Processor::C_processor_accept</code> class instance is created as well, and this is passed with server socket file descriptor to the <code>EventCenter</code> when the processor begins execution.</p>
+<p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">Processor</span><span class="o">::</span><span class="n">Processor</span><span class="p">(</span><span class="n">AsyncMessenger</span> <span class="o">*</span><span class="n">r</span><span class="p">,</span> <span class="n">Worker</span> <span class="o">*</span><span class="n">w</span><span class="p">,</span> <span class="n">CephContext</span> <span class="o">*</span><span class="n">c</span><span class="p">)</span>
+  <span class="o">:</span> <span class="n">msgr</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">net</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">worker</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+    <span class="n">listen_handler</span><span class="p">(</span><span class="k">new</span> <span class="n">C_processor_accept</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="p">{}</span>
+
+<span class="kt">void</span> <span class="n">Processor</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">submit_to</span><span class="p">(</span>
+      <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">get_id</span><span class="p">(),</span>
+      <span class="p">[</span><span class="k">this</span><span class="p">]()</span> <span class="p">{</span>
+        <span class="n">worker</span><span class="o">-&gt;</span><span class="n">center</span><span class="p">.</span><span class="n">create_file_event</span><span class="p">(</span><span class="n">listen_socket</span><span class="p">.</span><span class="n">fd</span><span class="p">(),</span> <span class="n">EVENT_READABLE</span><span class="p">,</span> <span class="n">listen_handler</span><span class="p">);</span>
+      <span class="p">},</span>
+      <span class="nb">false</span>
+    <span class="p">);</span>
+  <span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p><code>EventCenter::create_file_event()</code> uses <code>EventDriver</code> again to register the passed file descriptor to I/O multiplexer (in this post, EPOLL):</p>
+<p><code>src/msg/async/Event.cc</code> and <code>src/msg/async/EventEpoll.cc</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">EventCenter</span><span class="o">::</span><span class="n">create_file_event</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mask</span><span class="p">,</span> <span class="n">EventCallbackRef</span> <span class="n">ctxt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">driver</span><span class="o">-&gt;</span><span class="n">add_event</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">event</span><span class="o">-&gt;</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">EpollDriver</span><span class="o">::</span><span class="n">add_event</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cur_mask</span><span class="p">,</span> <span class="kt">int</span> <span class="n">add_mask</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">epoll_ctl</span><span class="p">(</span><span class="n">epfd</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ee</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>As aforementioned, the worker threads are waiting to receive any events from the epoll, and the other threads addds the file descriptor into the epoll and when an event occurs, worker threads would wake up and handle it by calling <code>do_request()</code> callback function.</p>
+<p>For instance, accepting a connection request is handled as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">EventCenter</span><span class="o">::</span><span class="n">process_events</span><span class="p">()</span> <span class="p">(</span><span class="o">-&gt;</span> <span class="n">EventDriver</span><span class="o">::</span><span class="n">event_wait</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">epoll_wait</span><span class="p">())</span>
+<span class="o">-&gt;</span> <span class="n">Processor</span><span class="o">::</span><span class="n">C_processor_accept</span><span class="o">::</span><span class="n">do_request</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">Processor</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="p">(</span><span class="o">-&gt;</span> <span class="n">PosixServerSocketImpl</span><span class="o">::</span><span class="n">accept</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">::</span><span class="n">accept_cloexec</span><span class="p">()</span> <span class="n">and</span> <span class="k">new</span> <span class="n">PosixConnectedSocketImpl</span><span class="p">())</span>
+<span class="o">-&gt;</span> <span class="n">AsyncMessenger</span><span class="o">::</span><span class="n">add_accept</span><span class="p">()</span>
+<span class="o">-&gt;</span> <span class="n">ceph</span><span class="o">::</span><span class="n">make_ref</span><span class="o">&lt;</span><span class="n">AsyncConnection</span><span class="o">&gt;</span><span class="p">()</span> <span class="c1">// AsyncConnection is created with the accepted socket fd and ConnectedSocket class instance
+</span></code></pre></div><section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://sketch2sky.com/2017/12/11/ceph-asyncmessenger%E6%A8%A1%E5%9D%97%E7%AE%80%E6%9E%90/">Ceph ASyncMessenger 简析 I</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="http://blog.wjin.org/posts/ceph-async-messenger.html">Ceph Async Messenger</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://mahatic.com/2018/11/04/ceph-async-messenger/">Ceph ASync Messenger</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/43365361621/">Ceph async network communication source code analysis 1</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/4493505512/">Ceph AsyncMessenger source analysis (below)</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/48264588038/">Ceph network module - AsyncMessenger data structure analysis</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/93104587967/">Ceph network module - AsyncMessenger code flow analysis</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+		</article>
+
+		<hr class="post-end">
+		<footer class="post-info">
+			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
+			<p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/ceph">ceph</a></span>
+			</p>
+		</footer>
+		
+		<div id="comments" class="thin">
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'insujang';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

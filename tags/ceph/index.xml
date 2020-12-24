@@ -7,7 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 07 Nov 2020 19:07:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 23 Dec 2020 11:38:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing Ceph Network Module</title>
+      <link>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</link>
+      <pubDate>Wed, 23 Dec 2020 11:38:00 +0900</pubDate>
+      
+      <guid>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</guid>
+      <description>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+  High level Ceph architecture. [src]
+  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.</description>
+    </item>
+    
     <item>
       <title>Accelerating Ceph RPM Packaging: Using Multithreaded Compression</title>
       <link>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
