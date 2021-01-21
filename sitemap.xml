@@ -3,382 +3,382 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</loc>
+    <loc>/2020-12-23/analyzing-ceph-network-module/</loc>
     <lastmod>2020-12-23T11:38:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/</loc>
+    <loc>/</loc>
     <lastmod>2020-12-23T11:38:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/ceph/</loc>
+    <loc>/tags/ceph/</loc>
     <lastmod>2020-12-23T11:38:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/posts/</loc>
+    <loc>/posts/</loc>
     <lastmod>2020-12-23T11:38:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/study/</loc>
+    <loc>/tags/study/</loc>
     <lastmod>2020-12-23T11:38:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/</loc>
+    <loc>/tags/</loc>
     <lastmod>2020-12-23T11:38:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/buildah/</loc>
+    <loc>/tags/buildah/</loc>
     <lastmod>2020-11-09T15:09:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</loc>
+    <loc>/2020-11-09/building-container-image-inside-container-using-buildah/</loc>
     <lastmod>2020-11-09T15:09:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/container/</loc>
+    <loc>/tags/container/</loc>
     <lastmod>2020-11-09T15:09:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</loc>
+    <loc>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</loc>
     <lastmod>2020-11-07T19:07:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/rpm/</loc>
+    <loc>/tags/rpm/</loc>
     <lastmod>2020-11-07T19:07:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</loc>
+    <loc>/2020-11-03/deploying-a-ceph-development-environment-cluster/</loc>
     <lastmod>2020-11-03T13:09:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-08-30/introduction-to-ceph/</loc>
+    <loc>/2020-08-30/introduction-to-ceph/</loc>
     <lastmod>2020-08-30T14:16:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/flatpak/</loc>
+    <loc>/tags/flatpak/</loc>
     <lastmod>2020-08-27T17:22:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</loc>
+    <loc>/2020-08-27/introduction-to-flatpak/</loc>
     <lastmod>2020-08-27T17:22:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/linux/</loc>
+    <loc>/tags/linux/</loc>
     <lastmod>2020-08-27T17:22:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-08-24/dynamic-kubelet-configuration/</loc>
+    <loc>/2020-08-24/dynamic-kubelet-configuration/</loc>
     <lastmod>2020-08-24T09:21:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/kubernetes/</loc>
+    <loc>/tags/kubernetes/</loc>
     <lastmod>2020-08-24T09:21:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-07-15/fedora-silverblue/</loc>
+    <loc>/2020-07-15/fedora-silverblue/</loc>
     <lastmod>2020-07-15T12:35:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/go/</loc>
+    <loc>/tags/go/</loc>
     <lastmod>2020-04-04T19:27:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-04-04/go-modules/</loc>
+    <loc>/2020-04-04/go-modules/</loc>
     <lastmod>2020-04-04T19:27:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</loc>
+    <loc>/2020-02-13/programming-kubernetes-crd/</loc>
     <lastmod>2020-02-13T10:13:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-02-11/kubernetes-custom-resource/</loc>
+    <loc>/2020-02-11/kubernetes-custom-resource/</loc>
     <lastmod>2020-02-11T17:23:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</loc>
+    <loc>/2020-02-09/introduction-to-programming-infiniband/</loc>
     <lastmod>2020-02-09T19:58:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/mellanox/</loc>
+    <loc>/tags/mellanox/</loc>
     <lastmod>2020-02-09T19:58:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/rdma/</loc>
+    <loc>/tags/rdma/</loc>
     <lastmod>2020-02-09T19:58:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</loc>
+    <loc>/2020-01-25/building-mellanox-ofed-from-source/</loc>
     <lastmod>2020-01-25T10:28:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2020-01-07/self-signed-certificate/</loc>
+    <loc>/2020-01-07/self-signed-certificate/</loc>
     <lastmod>2020-01-07T16:12:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-12-18/kubernetes-authentication/</loc>
+    <loc>/2019-12-18/kubernetes-authentication/</loc>
     <lastmod>2019-12-18T09:26:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/cmake/</loc>
+    <loc>/tags/cmake/</loc>
     <lastmod>2019-12-10T15:04:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-12-10/cmake-for-custom-library-build-system-in-go/</loc>
+    <loc>/2019-12-10/cmake-for-custom-library-build-system-in-go/</loc>
     <lastmod>2019-12-10T15:04:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-11-28/implementing-kubernetes-cpp-client-library/</loc>
+    <loc>/2019-11-28/implementing-kubernetes-cpp-client-library/</loc>
     <lastmod>2019-11-28T21:09:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-11-21/installing-kubernetes-and-crio-in-debian/</loc>
+    <loc>/2019-11-21/installing-kubernetes-and-crio-in-debian/</loc>
     <lastmod>2019-11-21T18:32:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/</loc>
+    <loc>/2019-11-18/interactions-between-crio-and-conmon/</loc>
     <lastmod>2019-11-18T23:07:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/research/</loc>
+    <loc>/tags/research/</loc>
     <lastmod>2019-11-18T23:07:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-11-10/code-server/</loc>
+    <loc>/2019-11-10/code-server/</loc>
     <lastmod>2019-11-10T14:05:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/electron/</loc>
+    <loc>/tags/electron/</loc>
     <lastmod>2019-11-10T14:05:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-11-07/kubernetes/</loc>
+    <loc>/2019-11-07/kubernetes/</loc>
     <lastmod>2019-11-07T11:17:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-10-31/container-runtime/</loc>
+    <loc>/2019-10-31/container-runtime/</loc>
     <lastmod>2019-10-31T21:36:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-10-10/open-container-initiative-image-spec/</loc>
+    <loc>/2019-10-10/open-container-initiative-image-spec/</loc>
     <lastmod>2019-10-10T20:35:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/jekyll/</loc>
+    <loc>/tags/jekyll/</loc>
     <lastmod>2019-09-28T14:31:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-09-28/jekyll-vscode/</loc>
+    <loc>/2019-09-28/jekyll-vscode/</loc>
     <lastmod>2019-09-28T14:31:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</loc>
+    <loc>/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</loc>
     <lastmod>2019-02-07T17:00:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</loc>
+    <loc>/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</loc>
     <lastmod>2018-11-28T14:03:15+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</loc>
+    <loc>/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</loc>
     <lastmod>2018-11-27T10:05:14+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2018-11-22/systemd-boot-process/</loc>
+    <loc>/2018-11-22/systemd-boot-process/</loc>
     <lastmod>2018-11-22T13:49:40+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-10-09/intel-sgx-sealing/</loc>
+    <loc>/2017-10-09/intel-sgx-sealing/</loc>
     <lastmod>2017-10-09T15:26:34+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/io/</loc>
+    <loc>/tags/io/</loc>
     <lastmod>2017-10-09T15:26:34+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/sgx/</loc>
+    <loc>/tags/sgx/</loc>
     <lastmod>2017-10-09T15:26:34+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-09-06/nvmedirect/</loc>
+    <loc>/2017-09-06/nvmedirect/</loc>
     <lastmod>2017-09-06T20:40:37+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/pcie/</loc>
+    <loc>/tags/pcie/</loc>
     <lastmod>2017-09-06T20:40:37+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/amd/</loc>
+    <loc>/tags/amd/</loc>
     <lastmod>2017-08-16T16:48:47+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</loc>
+    <loc>/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</loc>
     <lastmod>2017-08-16T16:48:47+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/gpu/</loc>
+    <loc>/tags/gpu/</loc>
     <lastmod>2017-08-16T16:48:47+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/tags/cuda/</loc>
+    <loc>/tags/cuda/</loc>
     <lastmod>2017-06-23T10:13:09+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-06-23/gpu-resource-management/</loc>
+    <loc>/2017-06-23/gpu-resource-management/</loc>
     <lastmod>2017-06-23T10:13:09+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-06-01/implementing-and-using-custom-intel-sgx-trusted-library-2/</loc>
+    <loc>/2017-06-01/implementing-and-using-custom-intel-sgx-trusted-library-2/</loc>
     <lastmod>2017-06-01T19:58:54+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-05-31/implementing-and-using-custom-intel-sgx-trusted-library/</loc>
+    <loc>/2017-05-31/implementing-and-using-custom-intel-sgx-trusted-library/</loc>
     <lastmod>2017-05-31T18:42:44+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-05-10/usermode-helper-api/</loc>
+    <loc>/2017-05-10/usermode-helper-api/</loc>
     <lastmod>2017-05-10T01:58:06+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-05-09/cpu-affinity/</loc>
+    <loc>/2017-05-09/cpu-affinity/</loc>
     <lastmod>2017-05-09T21:56:25+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/</loc>
+    <loc>/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/</loc>
     <lastmod>2017-05-03T15:18:17+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-05-02/kvm-internal-how-a-vm-is-created/</loc>
+    <loc>/2017-05-02/kvm-internal-how-a-vm-is-created/</loc>
     <lastmod>2017-05-02T20:26:56+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-05-02/git-basics/</loc>
+    <loc>/2017-05-02/git-basics/</loc>
     <lastmod>2017-05-02T09:58:43+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-27/analyzing-gdev/</loc>
+    <loc>/2017-04-27/analyzing-gdev/</loc>
     <lastmod>2017-04-27T22:35:30+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-27/introduction-to-vfio/</loc>
+    <loc>/2017-04-27/introduction-to-vfio/</loc>
     <lastmod>2017-04-27T13:14:24+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-27/gpu-architecture-overview/</loc>
+    <loc>/2017-04-27/gpu-architecture-overview/</loc>
     <lastmod>2017-04-27T10:15:41+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</loc>
+    <loc>/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</loc>
     <lastmod>2017-04-21T20:36:41+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-14/adding-an-additional-sgx-instruction/</loc>
+    <loc>/2017-04-14/adding-an-additional-sgx-instruction/</loc>
     <lastmod>2017-04-14T23:22:59+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/</loc>
+    <loc>/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/</loc>
     <lastmod>2017-04-14T13:58:12+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-07/linux-kernel-memory-map-operations/</loc>
+    <loc>/2017-04-07/linux-kernel-memory-map-operations/</loc>
     <lastmod>2017-04-07T09:55:25+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-05/intel-sgx-instructions-in-enclave-initialization/</loc>
+    <loc>/2017-04-05/intel-sgx-instructions-in-enclave-initialization/</loc>
     <lastmod>2017-04-05T22:13:25+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-03/intel-sgx-protection-mechanism/</loc>
+    <loc>/2017-04-03/intel-sgx-protection-mechanism/</loc>
     <lastmod>2017-04-03T14:09:50+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-03/pci-express-i/o-system/</loc>
+    <loc>/2017-04-03/pci-express-i/o-system/</loc>
     <lastmod>2017-04-03T12:12:58+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-01/using-jekyll-with-atom-editor/</loc>
+    <loc>/2017-04-01/using-jekyll-with-atom-editor/</loc>
     <lastmod>2017-04-01T09:55:05+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/2017-04-01/new-blog-with-jekyll/</loc>
+    <loc>/2017-04-01/new-blog-with-jekyll/</loc>
     <lastmod>2017-04-01T01:56:49+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://insujang.github.io/about/</loc>
+    <loc>/about/</loc>
   </url>
   
 </urlset>

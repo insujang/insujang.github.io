@@ -1,105 +1,238 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Introduction to VFIO">
-<meta itemprop="description" content="Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything!  VFIO Device Filer descriptor   located in /dev/vfio
-  Each divided into regions
- Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl.">
-<meta itemprop="datePublished" content="2017-04-27T13:14:24+09:00" />
-<meta itemprop="dateModified" content="2017-04-27T13:14:24+09:00" />
-<meta itemprop="wordCount" content="549">
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
+<title>Introduction to VFIO | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
 
-<meta itemprop="keywords" content="research,linux,pcie," />
-<meta property="og:title" content="Introduction to VFIO" />
-<meta property="og:description" content="Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything!  VFIO Device Filer descriptor   located in /dev/vfio
-  Each divided into regions
- Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio).">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Introduction to VFIO",
+      "item":"/2017-04-27/introduction-to-vfio/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2017-04-27/introduction-to-vfio/"
+    },
+    "headline": "Introduction to VFIO | Better Tomorrow with Computer Science","datePublished": "2017-04-27T13:14:24+09:00",
+    "dateModified": "2017-04-27T13:14:24+09:00",
+    "wordCount":  549 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "Virtual Function I\/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio)."
+}
+</script><meta property="og:title" content="Introduction to VFIO | Better Tomorrow with Computer Science" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://insujang.github.io/2017-04-27/introduction-to-vfio/" />
-<meta property="article:published_time" content="2017-04-27T13:14:24+09:00" />
-<meta property="article:modified_time" content="2017-04-27T13:14:24+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Introduction to VFIO"/>
-<meta name="twitter:description" content="Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything!  VFIO Device Filer descriptor   located in /dev/vfio
-  Each divided into regions
- Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl."/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Introduction to VFIO</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp">
-		<div class="hdr-wrapper container-lg">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
-				</div>
-				<nav class="site-nav d-md-inline d-none">
-					
-				<a href="https://insujang.github.io/posts/">Posts</a>
-				<a href="https://insujang.github.io/about/">About</a>
-
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
-			<li><a href="https://insujang.github.io/about/">About</a></li>
-		</ul>
-	</div>
 
 
-	<main class="site-main container-lg animated fadeIn faster">
-		<header class="post-header row">
-			<div class="col-12 col-xl-3"></div>
-			<div class="col-12 col-xl-9">
-				<div class="post-meta"><span>Apr 27, 2017</span></div>
-				<h1>Introduction to VFIO</h1>
-			</div>
-		</header>
-		<article class="row">
-			<div id="toc-aside" class="col-12 col-xl-3">
-				<hr class="d-block d-xl-none">
-				<div class="toc-title">What&#39;s on this Post</div>
-				<nav id="TableOfContents">
-  <ul>
-    <li><a href="#virtual-function-io-vfio">Virtual Function I/O (VFIO)</a>
-      <ul>
-        <li><a href="#vfio-device-filer-descriptor">VFIO Device Filer descriptor</a></li>
-        <li><a href="#vfio-pci-device-driver-structure">VFIO-PCI Device Driver Structure</a></li>
-      </ul>
-    </li>
-    <li><a href="#references">References</a></li>
-  </ul>
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2017-04-27/introduction-to-vfio/" />
+
+
+
+
+<meta property="og:description" content="Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio)." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2017-04-27T13:14:24&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2017-04-27T13:14:24&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="research" />
+
+<meta property="article:tag" content="linux" />
+
+<meta property="article:tag" content="pcie" />
+
+
+
+
+
+<meta property="og:see_also" content="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/" />
+
+<meta property="og:see_also" content="/2017-04-03/pci-express-i/o-system/" />
+
+<meta property="og:see_also" content="/2017-04-27/gpu-architecture-overview/" />
+
+<meta property="og:see_also" content="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/" />
+
+<meta property="og:see_also" content="/2017-04-03/intel-sgx-protection-mechanism/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
 </nav>
-				<hr class="d-block d-xl-none">
-			</div>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+    <div class="pl-scrollbar">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
-			<div class="content col-12 col-xl-9">
-				<h2 id="virtual-function-io-vfio">Virtual Function I/O (VFIO)<a href="#virtual-function-io-vfio" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+        <h1 class="font-bold text-3xl text-primary-text">Introduction to VFIO</h1>
+        <div class="mr-6 my-2">
+    <span>Apr 27, 2017</span>
+</div>
+
+
+
+
+        
+        
+        
+
+        <div class="content">
+            <h2 id="virtual-function-io-vfio">Virtual Function I/O (VFIO)</h2>
 <ul>
 <li>Introduced to replace the old-fashioned KVM PCI device assignment (virtio).</li>
 <li>Userspace driver interface</li>
@@ -107,7 +240,7 @@
 <li>Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support</li>
 <li>Take <strong>an abstract view of a device</strong>: to support anything!</li>
 </ul>
-<h3 id="vfio-device-filer-descriptor">VFIO Device Filer descriptor<a href="#vfio-device-filer-descriptor" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h3 id="vfio-device-filer-descriptor">VFIO Device Filer descriptor</h3>
 <ul>
 <li>
 <p>located in /dev/vfio</p>
@@ -122,16 +255,19 @@ Properties that can be discovered via ioctl are:
 <ol>
 <li>
 <p>VFIO_DEVICE_GET_INFO (<code>/linux/include/uapi/linux/vfio.h:186~204</code>)</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define VFIO_DEVICE_GET_INFO    _IO(VFIO_TYPE, VFIO_BASE + 7)
-</span></code></pre></div></li>
+<pre><code class="language-c">#define VFIO_DEVICE_GET_INFO    _IO(VFIO_TYPE, VFIO_BASE + 7)
+</code></pre>
+</li>
 <li>
 <p>VFIO_DEVICE_GET_REGION_INFO (<code>/linux/include/uapi/vfio.h:206~230</code>)</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define VFIO_DEVICE_GET_REGION_INFO _IO(VFIO_TYPE, VFIO_BASE + 8)
-</span></code></pre></div></li>
+<pre><code class="language-c">#define VFIO_DEVICE_GET_REGION_INFO _IO(VFIO_TYPE, VFIO_BASE + 8)
+</code></pre>
+</li>
 <li>
 <p>VFIO_DEVICE_GET_IRQ_INFO (<code>/linux/include/uapi/vfio.h:291~333</code>)</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define VFIO_DEVICE_GET_IRQ_INFO    _IO(VFIO_TYPE, VFIO_BASE + 9)
-</span></code></pre></div></li>
+<pre><code class="language-c">#define VFIO_DEVICE_GET_IRQ_INFO    _IO(VFIO_TYPE, VFIO_BASE + 9)
+</code></pre>
+</li>
 </ol>
 </li>
 </ul>
@@ -141,7 +277,7 @@ Properties that can be discovered via ioctl are:
 </ul>
 </li>
 </ul>
-<h3 id="vfio-pci-device-driver-structure">VFIO-PCI Device Driver Structure<a href="#vfio-pci-device-driver-structure" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h3 id="vfio-pci-device-driver-structure">VFIO-PCI Device Driver Structure</h3>
 <ul>
 <li>
 <p>Mainly focus on <strong><code>vfio-pci</code></strong></p>
@@ -150,59 +286,64 @@ Properties that can be discovered via ioctl are:
 <p>Implementation is in <code>/linux/drviers/vfio/pci</code>. Main driver code is <code>vfio_pci.c</code>. This kernel module is compiled as <code>vfio_pci</code>, and we load the module as <code>modprobe vfio-pci</code> for VFIO based PCI-passthrough.</p>
 <pre><code>$ sudo modprobe vfio_pci
 $ sudo vfio-bind 0000:01:00.0
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>
 <p>Main kernel module file is <code>vfio_pci.c</code>. When Linux kernel initializes this module, <code>vfio_pci_init()</code> is called.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="n">__init</span> <span class="nf">vfio_pci_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// Allocate shared config space permision data used by all devices
-</span><span class="c1"></span>    <span class="n">vfio_pci_init_perm_bits</span><span class="p">();</span>
-    <span class="c1">// Register and scan for devices
-</span><span class="c1"></span>    <span class="n">pci_register_device</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vfio_pci_driver</span><span class="p">);</span>
-    <span class="n">vfio_pci_fill_ids</span><span class="p">();</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div></li>
+<pre><code class="language-c">static int __init vfio_pci_init(void) {
+    // Allocate shared config space permision data used by all devices
+    vfio_pci_init_perm_bits();
+    // Register and scan for devices
+    pci_register_device(&amp;vfio_pci_driver);
+    vfio_pci_fill_ids();
+    return 0;
+}
+</code></pre>
+</li>
 <li>
 <p>Also when loading the kernel module, <code>vfio_pci_probe()</code> function is called. This is a part of kernel module operation data structure <code>static struct pci_driver vfio_pci_driver</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">vfio_pci_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">pdev</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">pci_device_id</span> <span class="o">*</span><span class="n">id</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">vfio_pci_device</span><span class="o">*</span> <span class="n">vdev</span><span class="p">;</span>
-    <span class="n">vdev</span> <span class="o">=</span> <span class="n">kzalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">vdev</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
-    <span class="n">vdev</span><span class="o">-&gt;</span><span class="n">pdev</span> <span class="o">=</span> <span class="n">pdev</span><span class="p">;</span>
-    <span class="n">vdev</span><span class="o">-&gt;</span><span class="n">irq_type</span> <span class="o">=</span> <span class="n">VFIO_PCI_NUM_IRQS</span><span class="p">;</span>
-    <span class="n">vfio_add_group_dev</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vfio_pci_ops</span><span class="p">,</span> <span class="n">vdev</span><span class="p">);</span>
-    <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p>Here, VFIO PCI device structure is mapped to<code>pdev</code>, which represents the actual PCI device.</p>
+<pre><code class="language-c">static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id) {
+    struct vfio_pci_device* vdev;
+    vdev = kzalloc(sizeof(*vdev), GFP_KERNEL);
+    vdev-&gt;pdev = pdev;
+    vdev-&gt;irq_type = VFIO_PCI_NUM_IRQS;
+    vfio_add_group_dev(&amp;pdev-&gt;dev, &amp;vfio_pci_ops, vdev);
+    ...
+}
+</code></pre>
+<p>Here, VFIO PCI device structure is mapped to<code>pdev</code>, which represents the actual PCI device.</p>
 </li>
 <li>
 <p>To use VFIO, we pass a kind of parameter to QEMU, like<br>
 <code>-device vfio-pci,host=01:00.0,bus=root.1.addr=00.0,multifunction=on,x-vga=on</code><br>
 The above option is for passing a GPU (<code>01:00.0</code>) to a virtual machine.</p>
 <p>When QEMU opens a VFIO device driver to load the device, <code>vfio_pci_open()</code> is called. This function is a part of operations struct <code>static const struct vfio_device_ops vfio_pci_ops</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">vfio_pci_open</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">device_data</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="n">vfio_pci_device</span><span class="o">*</span> <span class="n">vdev</span> <span class="o">=</span> <span class="n">device_data</span><span class="p">;</span>
-    <span class="n">try_module_get</span><span class="p">(</span><span class="n">THIS_MODULE</span><span class="p">);</span>
-    <span class="n">vfio_pci_enable</span><span class="p">(</span><span class="n">vdev</span><span class="p">);</span>
-    <span class="n">vfio_spapr_pci_eeh_open</span><span class="p">(</span><span class="n">vdev</span><span class="o">-&gt;</span><span class="n">pdev</span><span class="p">);</span>
-    <span class="n">vdev</span><span class="o">-&gt;</span><span class="n">refcnt</span><span class="o">++</span><span class="p">;</span>
-    <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p>A presentation says <code>vfio-iommu-type1</code> works with x86 style guest mapping, but the implementation uses POWER SPAPR.</p>
+<pre><code class="language-c">static int vfio_pci_open(void *device_data)
+{
+    struct vfio_pci_device* vdev = device_data;
+    try_module_get(THIS_MODULE);
+    vfio_pci_enable(vdev);
+    vfio_spapr_pci_eeh_open(vdev-&gt;pdev);
+    vdev-&gt;refcnt++;
+    ...
+}
+</code></pre>
+<p>A presentation says <code>vfio-iommu-type1</code> works with x86 style guest mapping, but the implementation uses POWER SPAPR.</p>
 </li>
 <li>
 <p>In probing the kernel module, <code>vfio_pci_ops</code> is mapped to the VFIO device. This data structure contains the following operations.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">vfio_device_ops</span> <span class="n">vfio_pci_ops</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="p">.</span><span class="n">name</span>       <span class="o">=</span> <span class="s">&#34;vfio-pci&#34;</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">open</span>       <span class="o">=</span> <span class="n">vfio_pci_open</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">release</span>    <span class="o">=</span> <span class="n">vfio_pci_release</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">ioctl</span>      <span class="o">=</span> <span class="n">vfio_pci_ioctl</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">read</span>       <span class="o">=</span> <span class="n">vfio_pci_read</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">write</span>      <span class="o">=</span> <span class="n">vfio_pci_write</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">mmap</span>       <span class="o">=</span> <span class="n">vfio_pci_mmap</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">request</span>    <span class="o">=</span> <span class="n">vfio_pci_request</span><span class="p">,</span>
-<span class="p">};</span>
-</code></pre></div><p>Device information can be passed via <code>vfio_pci_ioctl()</code>, as said earlier.<br>
+<pre><code class="language-c">static const struct vfio_device_ops vfio_pci_ops = {
+  .name       = &quot;vfio-pci&quot;,
+  .open       = vfio_pci_open,
+  .release    = vfio_pci_release,
+  .ioctl      = vfio_pci_ioctl,
+  .read       = vfio_pci_read,
+  .write      = vfio_pci_write,
+  .mmap       = vfio_pci_mmap,
+  .request    = vfio_pci_request,
+};
+</code></pre>
+<p>Device information can be passed via <code>vfio_pci_ioctl()</code>, as said earlier.<br>
 To read and write a data, <code>vfio_pci_read()</code> and <code>vfio_pci_write()</code> functions are used.
 These functions are wrappers of <code>vfio_pci_rw()</code> (<code>/linux/drivers/vfio/pci/vfio_pci.c:985,994</code>).</p>
 <p><code>vfio_pci_rw()</code> is defined right above <code>vfio_pci_read()</code>, which calls</p>
@@ -220,68 +361,113 @@ These functions are wrappers of <code>vfio_pci_rw()</code> (<code>/linux/drivers
 </ul>
 </li>
 </ul>
-<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="references">References</h2>
 <ul>
 <li>Alex Williamson. <em>An Introduction to PCI Device Assignment with VFIO</em>. <a href="http://events.linuxfoundation.org/sites/events/files/slides/An%20Introduction%20to%20PCI%20Device%20Assignment%20with%20VFIO%20-%20Williamson%20-%202016-08-30_0.pdf">[Online]</a>. Aug 2016.</li>
 <li>Alex Williamson. <em>VFIO: PCI device assignment breaks free of KVM</em>. <a href="http://www.linux-kvm.org/images/d/d1/2011-forum-VFIO.pdf">[Online]</a>. 2011.</li>
 </ul>
 
-			</div>
-		</article>
+        </div>
+        
+        <div class="my-4">
+    
+    <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+    <a href="/tags/pcie/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#pcie</a>
+    
+</div>
+        
+        
+        
+        
+        
+        
+        
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2017-04-27/analyzing-gdev/" class="block">Analyzing Gdev</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2017-04-27/gpu-architecture-overview/" class="block">GPU Architecture Overview</a>
+        
+    </div>
+</div>
 
-		<hr class="post-end">
-		<footer class="post-info">
-			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-			<p>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span><span class="tag"><a href="https://insujang.github.io/tags/pcie">pcie</a></span>
-			</p>
-		</footer>
-		
-		<div id="comments" class="thin">
+        
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
+<script>
+    var disqus_config = function () {
     
     
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'insujang';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </div>
+    
+
+    
+    
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+        <h2 class="text-lg font-semibold mb-4">See Also</h2>
+        <div class="content">
+            
+            <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
+            <br />
+            
+            <a href="/2017-04-03/pci-express-i/o-system/">PCI Express I/O System</a>
+            <br />
+            
+            <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
+            <br />
+            
+            <a href="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/">Intel SGX Instructions in Enclave Initialization</a>
+            <br />
+            
+            <a href="/2017-04-03/intel-sgx-protection-mechanism/">Intel SGX Protection Mechanism</a>
+            <br />
+            
+        </div>
+    </div>
+    
 </div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
-		</p>
-	</footer>
-
-
-
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
-
+      </div>
+    </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

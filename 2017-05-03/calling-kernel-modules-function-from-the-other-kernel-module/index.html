@@ -1,110 +1,252 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Calling Kernel Module&#39;s Function from The Other Kernel Module">
-<meta itemprop="description" content="I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &quot;&lt;function_name&gt;&quot; undefined!. Even though I exported the function, there actually is another step that I should follow.
-References: http://stackoverflow.com/a/9499893
-What I did before finding the reference was to export the target function.
-/kernel1/functions.h void function1(void); /kernel1/functions.c #include &lt;linux/module.h&gt;void function1(void){}; EXPORT_SYMBOL(function1); However, the other kernel module (say it kernel2) does not know where function1() exists.">
-<meta itemprop="datePublished" content="2017-05-03T15:18:17+09:00" />
-<meta itemprop="dateModified" content="2017-05-03T15:18:17+09:00" />
-<meta itemprop="wordCount" content="141">
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
+<title>Calling Kernel Module&#39;s Function from The Other Kernel Module | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
 
-<meta itemprop="keywords" content="research,linux," />
-<meta property="og:title" content="Calling Kernel Module&#39;s Function from The Other Kernel Module" />
-<meta property="og:description" content="I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &quot;&lt;function_name&gt;&quot; undefined!. Even though I exported the function, there actually is another step that I should follow.
-References: http://stackoverflow.com/a/9499893
-What I did before finding the reference was to export the target function.
-/kernel1/functions.h void function1(void); /kernel1/functions.c #include &lt;linux/module.h&gt;void function1(void){}; EXPORT_SYMBOL(function1); However, the other kernel module (say it kernel2) does not know where function1() exists." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &quot;&lt;function_name&gt;&quot; undefined!">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Calling Kernel Module's Function from The Other Kernel Module",
+      "item":"/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/"
+    },
+    "headline": "Calling Kernel Module\u0027s Function from The Other Kernel Module | Better Tomorrow with Computer Science","datePublished": "2017-05-03T15:18:17+09:00",
+    "dateModified": "2017-05-03T15:18:17+09:00",
+    "wordCount":  142 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: \u0026quot;\u0026lt;function_name\u0026gt;\u0026quot; undefined!"
+}
+</script><meta property="og:title" content="Calling Kernel Module&#39;s Function from The Other Kernel Module | Better Tomorrow with Computer Science" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://insujang.github.io/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/" />
-<meta property="article:published_time" content="2017-05-03T15:18:17+09:00" />
-<meta property="article:modified_time" content="2017-05-03T15:18:17+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Calling Kernel Module&#39;s Function from The Other Kernel Module"/>
-<meta name="twitter:description" content="I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &quot;&lt;function_name&gt;&quot; undefined!. Even though I exported the function, there actually is another step that I should follow.
-References: http://stackoverflow.com/a/9499893
-What I did before finding the reference was to export the target function.
-/kernel1/functions.h void function1(void); /kernel1/functions.c #include &lt;linux/module.h&gt;void function1(void){}; EXPORT_SYMBOL(function1); However, the other kernel module (say it kernel2) does not know where function1() exists."/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Calling Kernel Module&#39;s Function from The Other Kernel Module</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp">
-		<div class="hdr-wrapper container-lg">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
-				</div>
-				<nav class="site-nav d-md-inline d-none">
-					
-				<a href="https://insujang.github.io/posts/">Posts</a>
-				<a href="https://insujang.github.io/about/">About</a>
-
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
-			<li><a href="https://insujang.github.io/about/">About</a></li>
-		</ul>
-	</div>
 
 
-	<main class="site-main container-lg animated fadeIn faster">
-		<header class="post-header row">
-			<div class="col-12 col-xl-3"></div>
-			<div class="col-12 col-xl-9">
-				<div class="post-meta"><span>May 3, 2017</span></div>
-				<h1>Calling Kernel Module&#39;s Function from The Other Kernel Module</h1>
-			</div>
-		</header>
-		<article class="row">
-			<div id="toc-aside" class="col-12 col-xl-3">
-				<hr class="d-block d-xl-none">
-				<div class="toc-title">What&#39;s on this Post</div>
-				<nav id="TableOfContents"></nav>
-				<hr class="d-block d-xl-none">
-			</div>
+<meta property="og:image" content="/images/icon.png">
 
-			<div class="content col-12 col-xl-9">
-				<p>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that <code>WARNING: &quot;&lt;function_name&gt;&quot; undefined!</code>.
+
+<meta property="og:url" content="/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/" />
+
+
+
+
+<meta property="og:description" content="I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &quot;&lt;function_name&gt;&quot; undefined!" />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2017-05-03T15:18:17&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2017-05-03T15:18:17&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="research" />
+
+<meta property="article:tag" content="linux" />
+
+
+
+
+
+<meta property="og:see_also" content="/2017-04-27/introduction-to-vfio/" />
+
+<meta property="og:see_also" content="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/" />
+
+<meta property="og:see_also" content="/2017-04-27/analyzing-gdev/" />
+
+<meta property="og:see_also" content="/2017-04-27/gpu-architecture-overview/" />
+
+<meta property="og:see_also" content="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/" />
+
+<meta property="og:see_also" content="/2017-04-03/intel-sgx-protection-mechanism/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+    <div class="pl-scrollbar">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+        <h1 class="font-bold text-3xl text-primary-text">Calling Kernel Module&#39;s Function from The Other Kernel Module</h1>
+        <div class="mr-6 my-2">
+    <span>May 3, 2017</span>
+</div>
+
+
+
+
+        
+        
+        
+
+        <div class="content">
+            <p>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that <code>WARNING: &quot;&lt;function_name&gt;&quot; undefined!</code>.
 Even though I exported the function, there actually is another step that I should follow.</p>
 <p><strong>References: <a href="http://stackoverflow.com/a/9499893">http://stackoverflow.com/a/9499893</a></strong></p>
 <p>What I did before finding the reference was to export the target function.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">kernel1</span><span class="o">/</span><span class="n">functions</span><span class="p">.</span><span class="n">h</span>
+<pre><code class="language-c">/kernel1/functions.h
 
-<span class="kt">void</span> <span class="n">function1</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">kernel1</span><span class="o">/</span><span class="n">functions</span><span class="p">.</span><span class="n">c</span>
+void function1(void);
+</code></pre>
+<pre><code class="language-c">/kernel1/functions.c
 
-<span class="cp">#include</span> <span class="cpf">&lt;linux/module.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="kt">void</span> <span class="n">function1</span><span class="p">(</span><span class="kt">void</span><span class="p">){};</span>
-<span class="n">EXPORT_SYMBOL</span><span class="p">(</span><span class="n">function1</span><span class="p">);</span>
-</code></pre></div><p>However, the other kernel module (say it kernel2) does not know where <code>function1()</code> exists. Hence, to use this function from kernel2, we need to <strong>import Module.symvers of kernel1</strong> into Kbuild.in of kernel module kernel2.</p>
+#include &lt;linux/module.h&gt;
+void function1(void){};
+EXPORT_SYMBOL(function1);
+</code></pre>
+<p>However, the other kernel module (say it kernel2) does not know where <code>function1()</code> exists. Hence, to use this function from kernel2, we need to <strong>import Module.symvers of kernel1</strong> into Kbuild.in of kernel module kernel2.</p>
 <p>As in the reference post, we just define <code>KBUILD_EXTRA_SYMBOLS</code> in Kbuild.in. We don&rsquo;t have to any more things.</p>
 <pre><code>/kernel2/Kbuild.in
 
@@ -113,67 +255,114 @@ KBUILD_EXTRA_SYMBOLS = /kernel1/Module.symvers
 
 EXTRA_CFLAGS = -I/kernel1/functions.h
 ...
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>Note that EXTRA_CFLAGS seems deprecated and ccflags-y should be used instead.</li>
 </ul>
 <p>Now compiling kernel2 will show no warnings.</p>
 
-			</div>
-		</article>
+        </div>
+        
+        <div class="my-4">
+    
+    <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+</div>
+        
+        
+        
+        
+        
+        
+        
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2017-05-09/cpu-affinity/" class="block">CPU Affinity</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2017-05-02/kvm-internal-how-a-vm-is-created/" class="block">KVM Internal: How a VM is Created?</a>
+        
+    </div>
+</div>
 
-		<hr class="post-end">
-		<footer class="post-info">
-			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-			<p>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span>
-			</p>
-		</footer>
-		
-		<div id="comments" class="thin">
+        
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
+<script>
+    var disqus_config = function () {
     
     
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'insujang';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </div>
+    
+
+    
+    
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+        <h2 class="text-lg font-semibold mb-4">See Also</h2>
+        <div class="content">
+            
+            <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
+            <br />
+            
+            <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
+            <br />
+            
+            <a href="/2017-04-27/analyzing-gdev/">Analyzing Gdev</a>
+            <br />
+            
+            <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
+            <br />
+            
+            <a href="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/">Intel SGX Instructions in Enclave Initialization</a>
+            <br />
+            
+            <a href="/2017-04-03/intel-sgx-protection-mechanism/">Intel SGX Protection Mechanism</a>
+            <br />
+            
+        </div>
+    </div>
+    
 </div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
-		</p>
-	</footer>
-
-
-
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
-
+      </div>
+    </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

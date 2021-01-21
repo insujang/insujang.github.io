@@ -2,59 +2,46 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ceph on Better Tomorrow with Computer Science</title>
-    <link>https://insujang.github.io/tags/ceph/</link>
+    <link>/tags/ceph/</link>
     <description>Recent content in ceph on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 23 Dec 2020 11:38:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Wed, 23 Dec 2020 11:38:00 +0900</lastBuildDate><atom:link href="/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Analyzing Ceph Network Module</title>
-      <link>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</link>
+      <link>/2020-12-23/analyzing-ceph-network-module/</link>
       <pubDate>Wed, 23 Dec 2020 11:38:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</guid>
-      <description>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
-Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
-  High level Ceph architecture. [src]
-  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.</description>
+      <guid>/2020-12-23/analyzing-ceph-network-module/</guid>
+      <description></description>
     </item>
     
     <item>
       <title>Accelerating Ceph RPM Packaging: Using Multithreaded Compression</title>
-      <link>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
+      <link>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
       <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
-      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
-Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
-1. RPM Packaing 101 RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
+      <guid>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package.</description>
     </item>
     
     <item>
       <title>Deploying a Ceph Development Environment Cluster</title>
-      <link>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</link>
+      <link>/2020-11-03/deploying-a-ceph-development-environment-cluster/</link>
       <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
-      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.
- I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.
- 1. Prerequisites Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
-Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.</description>
+      <guid>/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
+      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.</description>
     </item>
     
     <item>
       <title>Introduction to Ceph</title>
-      <link>https://insujang.github.io/2020-08-30/introduction-to-ceph/</link>
+      <link>/2020-08-30/introduction-to-ceph/</link>
       <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-08-30/introduction-to-ceph/</guid>
-      <description>Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
-  Ceph Cluster Overview. [Source]
-    Ceph Cluster Overview. [Source]
-    Ceph Cluster Overview. [Source]
-  A ceph storage cluster roughly consists of three components:
- Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.</description>
+      <guid>/2020-08-30/introduction-to-ceph/</guid>
+      <description>Ceph is an open-source distributed software platform 1 2.</description>
     </item>
     
   </channel>

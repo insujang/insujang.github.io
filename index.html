@@ -1,106 +1,626 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta name="generator" content="Hugo 0.76.5" />
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Better Tomorrow with Computer Science">
-<meta itemprop="description" content="">
-<meta property="og:title" content="Better Tomorrow with Computer Science" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://insujang.github.io/" />
-<meta property="og:updated_time" content="2020-12-23T11:38:00+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Better Tomorrow with Computer Science"/>
-<meta name="twitter:description" content=""/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Better Tomorrow with Computer Science</title>
-	<link rel="alternate" type="application/rss+xml" href="https://insujang.github.io/index.xml" title="Better Tomorrow with Computer Science" />
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-</head>
-
-<body id="page">
-	
-	<div id="spotlight" class="animated fadeIn">
-		<div class="slant"></div>
-		
-		<div class="container-md">
-			<div id="home-about">
-				<h1 id="home-title">Greetings, this is Insu.</h1>
-				<h2 id="home-subtitle">System Software Engineer at TmaxCloud</h2>
-
-				<a class="btn btn-outline-dark" href="/about/">About Me</a>
-			</div>
-
-			<div id="home-post">
-				<h1 id="post-title">Recent Posts</h1>
-				<a class="btn btn-outline-light" id="post-all" href="/posts/">See All</a>
-				<br/>
-				<div class="posts-group">
-					<ul class="posts-list">
-						<li class="post-item">
-							<a href="https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/">
-								<span class="post-title">Analyzing Ceph Network Module</span>
-							</a>
-						</li>
-						<li class="post-item">
-							<a href="https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/">
-								<span class="post-title">Building Container Image inside Container using Buildah</span>
-							</a>
-						</li>
-						<li class="post-item">
-							<a href="https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">
-								<span class="post-title">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</span>
-							</a>
-						</li>
-						<li class="post-item">
-							<a href="https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/">
-								<span class="post-title">Deploying a Ceph Development Environment Cluster</span>
-							</a>
-						</li>
-						<li class="post-item">
-							<a href="https://insujang.github.io/2020-08-30/introduction-to-ceph/">
-								<span class="post-title">Introduction to Ceph</span>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div id="home-footer">
-				<p>
-					&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a>
-				</p>
-			</div>
-		</div>
-	</div>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<title>Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
 
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Eureka is a elegant and powerful theme for Hugo.">
+
+
+
+<meta property="og:title" content="Better Tomorrow with Computer Science" />
+<meta property="og:type" content="website" />
+
+
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/" />
+
+
+
+
+
+<meta property="og:description" content="Eureka is a elegant and powerful theme for Hugo." />
+
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="og:updated_time" content="2020-12-23T11:38:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="" />
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Better Tomorrow with Computer Science" />
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+  
+  
+  
+    
+      
+  
+
+  
+
+  
+  
+  
+
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+  
+
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+  
+
+  <div class="pl-scrollbar bg-secondary-bg" 
+    >
+    <div class="max-w-screen-xl mx-auto">
+      <div id="about" class="lg:w-3/4 mx-auto px-6 md:px-8 xl:px-12 py-12">
+        
+  
+
+  
+    <div class="flex flex-col md:flex-row items-center justify-center mb-12">
+  
+  
+    <div class="flex-none w-48 mx-auto md:ml-0 md:mr-8 md:pr-8 md:border-r">
+      <img src="/images/profile.png" class="rounded-full" alt="Avatar">
+    </div>
+  
+  <div class="flex-grow mt-4 md:mt-0">
+    <div class="text-3xl py-4">Insu Jang</div>
+    <div class="w-3/12 xl:w-2/12 border-b"></div>
+
+    <div class="flex items-center pt-4">
+      
+        <i class="fas fa-user"></i>
+      
+      <div class="flex flex-wrap">
+        
+          <span class="pl-4">System Software Engineer</span>
+        
+
+        
+          <a href="https://www.tmaxsoft.com" class="pl-4">TmaxSoft Inc.</a>
+        
+      </div>
+
+    </div>
+
+    
+      <div class="py-8 text-lg leading-normal">
+        I am a system software engineer in cloud division at TmaxSoft Inc. I am interested in distributed computing, heterogeneous computing, non-volatile memory, and serverless computing.
+      </div>
+    
+  </div>
+  <div class="flex md:flex-col justify-center items-center ml-8">
+    
+    
+      
+      
+      
+      
+      <div class="pb-6 pr-6 md:pr-0 pt-6 md:pt-0">
+        
+        
+        <a href="mailto:insujang@casys.kaist.ac.kr"><i class="fas fa-envelope fa-2x"></i></a>
+        
+      </div>
+    
+      
+      
+      
+      
+      <div class="pb-6 pr-6 md:pr-0 pt-6 md:pt-0">
+        
+        
+        <a href="https://www.linkedin.com/in/insujang/"><i class="fab fa-linkedin fa-2x"></i></a>
+        
+      </div>
+    
+      
+      
+      
+      
+      <div class="pb-6 pr-6 md:pr-0 pt-6 md:pt-0">
+        
+        
+        <a href="https://github.com/insujang"><i class="fab fa-github fa-2x"></i></a>
+        
+      </div>
+    
+      
+      
+      
+      
+      <div class="pb-6 pr-6 md:pr-0 pt-6 md:pt-0">
+        
+        <a href="/assets/cv/cv_insujang.pdf"><b>CV</b></a>
+        
+      </div>
+    
+  </div>
+</div>
+<div class="content">
+  <h2 id="education">Education</h2>
+<ul>
+<li>B.Sc. in Computer Science, <a href="https://www.kaist.ac.kr/en/">KAIST</a>, 2016 - 2018<br>
+Advisor: <a href="http://casys.kaist.ac.kr:8080/~jhuh/">Dr. Jaehyuk Huh</a></li>
+<li>M.Sc. in Computer Engineering, <a href="https://www.skku.edu/eng/">Sungkyunkwan University (SKKU)</a>, 2011 - 2016</li>
+</ul>
+<h2 id="publications">Publications</h2>
+<ol>
+<li><strong>Heterogeneous Isolated Execution for Commodity GPUs</strong> [<a href="http://casys.kaist.ac.kr:8080/~jhuh/papers/jang_asplos19.pdf">paper</a>]<br>
+<strong>Insu Jang</strong>, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh<br>
+ASPLOS 2019</li>
+</ol>
+<h2 id="experiences">Experiences</h2>
+<ul>
+<li><strong>System Software Engineer</strong><br>
+Nov 2020 - Current, <a href="https://www.tmaxsoft.com/">Cloud Division, TmaxSoft Inc.</a></li>
+<li><strong>System Software Engineer</strong><br>
+Mar 2018 - Oct 2020, <a href="https://www.tmaxsoft.com/">OS Division, TmaxSoft Inc.</a></li>
+<li><strong>Research Assistant</strong><br>
+Jan 2020 - Jul 2020, <a href="http://casys.kaist.ac.kr/">Computer Architecture and Systems Lab, KAIST</a> (Advisor: <a href="https://sites.google.com/view/yjkwon/home">Dr. Youngjin Kwon</a>)</li>
+<li><strong>Research Assistant</strong><br>
+Mar 2016 - Feb 2018, <a href="http://casys.kaist.ac.kr/">Computer Architecture and Systems Lab, KAIST</a> (Advisor: <a href="http://casys.kaist.ac.kr:8080/~jhuh/">Dr. Jaehyuk Huh</a>)</li>
+<li><strong>Research Intern</strong><br>
+Jan 2016 - Feb 2016, <a href="https://etri.re.kr/eng/main/main.etri">Electronics and Telecommunications Research Institute (ETRI)</a></li>
+<li><strong>Research Intern</strong><br>
+Jul 2015 - Aug 2015, <a href="https://aict.snu.ac.kr/eng/">Advanced Institute of Convergence Technology (AICT)</a></li>
+<li><strong>Undergraduate Research Assistant (Purdue/NIPA Capston Project)</strong><br>
+Jul 2014 - Aug 2014, <a href="https://polytechnic.purdue.edu/facilities/m2m-lab">M2M Lab, Purdue University</a> (Advisor: <a href="https://polytechnic.purdue.edu/profile/ematson">Dr. Eric T. Matson</a>)</li>
+<li><strong>Undergraduate Research Assistant</strong><br>
+May 2014 - Jul 2015, <a href="http://monet.skku.edu/">Networking Lab, Sugnkyunkwan University</a> (Advisor: <a href="http://monet.skku.edu/?page_id=3351">Dr. Hyunseung Choo</a>)</li>
+<li><strong>Student Member</strong><br>
+Jan 2013 - Apr 2014, <a href="https://www.secmem.org/">Samsung Software Membership, Samsung Electronics</a></li>
+</ul>
+<h2 id="honors-and-awards">Honors and Awards</h2>
+<ul>
+<li><strong>Korea National Fellowship</strong>. from Korea Ministry of Science and ICT, 2016 - 2018</li>
+<li><strong>National Scholarship for Science and Engineering</strong>. from Korea Student Aid Foundation (KOSAF), 2014 - 2016</li>
+<li><strong>2nd Award</strong>, 2015 Convergence App Contest. from College of Software, Sungkyunkwan University, Dec 2015</li>
+<li><strong>Deans' List Award</strong>. from Department of Computer Engineering, Sungkyunkwan University, Apr 2015</li>
+<li><strong>Deans' List Award</strong>. from Department of Computer Engineering, Sungkyunkwan University, Oct 2014</li>
+<li><strong>1st Prize</strong>, 2013 Smart TV and Peripherals Contest. from Korea Ministry of Trade, Industry and Energy, Nov 2013</li>
+<li><strong>1st Prize</strong>, 2013 Mobile E-learning App Idea Contest. From Korea Ministry of Education, Sep 2013</li>
+</ul>
+<h2 id="projects">Projects</h2>
+<ul>
+<li>
+<p><strong>RTSR: Real Time Video Super Resolution</strong><br>
+(KAIST Spring 2017 CS570 Machine Learning Project)</p>
+<p>Applied a state of the art deep learning based Single Image Super Resolution (SISR) technique named <a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Kim_Accurate_Image_Super-Resolution_CVPR_2016_paper.html">VDSR</a> into videos.
+Instead of applying SISR to all video frames, we used it only into I-frame in <a href="https://en.wikipedia.org/wiki/Group_of_pictures">the H.264 group of picture structure</a> to apply super resolution in real time speed.<br>
+Implementation is based on <a href="http://pytorch.org/">Pytorch</a>, <a href="https://github.com/twtygqyy/pytorch-vdsr">VDSR on Pytoch</a>,
+<a href="https://www.ffmpeg.org/">FFmpeg</a>, and <a href="https://github.com/Akagi201/ffmpeg-player">a simple FFmpeg player</a>.</p>
+<p><img src="/assets/images/projects/rtsr_thumbnail.png" alt="rtsr"></p>
+<p><a href="/assets/pdf/cs570_final.pdf">[Report]</a>
+<a href="/assets/pdf/cs570_final_ppt.pdf">[PPT]</a>
+<a href="https://youtu.be/_cVU23W_Jt8">[Youtube]</a></p>
+</li>
+<li>
+<p><strong>HEAD: HardwarE Accelerated Deduplication</strong><br>
+(KAIST Fall 2016 CS710 Topics in Computing Acceleration with FPGA Project)</p>
+<p>Implemented Xilinx FPGA based implementation for file data dedpuplication.
+Used <a href="https://en.wikipedia.org/wiki/MurmurHash">Murmurhash</a> for fast, and partial parallel hashing algorithm to boost deduplication fingerprinting process.<br>
+<a href="/assets/pdf/cs710_final_ppt.pdf">[PPT]</a>
+<a href="https://github.com/insujang/HEAD">[Code]</a></p>
+</li>
+<li>
+<p><strong>SUNSHINE: Service for You to eNhance Self-management Helpfully and Intelligently from Now to forEver</strong><br>
+(KAIST Spring 2016 CS442 Mobile Computing and Applications Project)</p>
+<p>Proposed an intelligent way to control mobile app execution and Internet browser contents based on
+&lsquo;contents related factor&rsquo; analysis. The control is done in a system level, and a prototype implementation is on Android AOSP 5.0.<br>
+<a href="/assets/pdf/cs442_final.pdf">[Report]</a>
+<a href="/assets/pdf/cs442_final_ppt.pdf">[PPT]</a></p>
+<p><strong>In October 2019, a similar feature (restricting app executions) called Focus Mode has been implemented in <a href="https://news.samsung.com/global/one-ui-beta-program-enjoy-android-10-on-galaxy-s10-starting-today">Samsung Galaxy&rsquo;s One UI 2.0</a> three years later of our project!</strong></p>
+</li>
+<li>
+<p><strong>CSMA/CN: Collision Notification for 802.11 WLAN with BLE</strong><br>
+(KAIST Spring 2016 CS546 Wireless Mobile Internet Project)</p>
+<p>Proposed a way to notify a collision from a router to clients with Bluetooth Low Energy while it is sending its data. Solved a problem of half-duplex Wi-Fi constraints.<br>
+<a href="/assets/pdf/cs546_proposal.pdf">[Proposal]</a>
+<a href="https://github.com/insujang/csmacn">[Code]</a></p>
+</li>
+<li>
+<p><strong>Energy Aware Real-time Scheduling Algorithm on ARM big.LITTLE HMP Architecture</strong><br>
+(Sungkyunkwan University Fall 2015 ECE5756 Real Time Systems Special Topics Project)</p>
+<p>Proposed an algorithm to reduce power consumption while keep real-time constraints
+with a low-overhead heuristic mathmatical calculation.<br>
+<a href="/assets/pdf/ece5756_final.pdf">[Report]</a></p>
+</li>
+<li>
+<p><strong>My Summary Note: Automatic Note Summary Application</strong><br>
+(Sungkyunkwan University Fall 2015 ICE3037 Design Capstone Project)</p>
+<p>Awarded an excellence prize in 2015 Convergence App Contest.
+Proposed an automatic way of user&rsquo;s note summaries in PDFs with a Android tablet.<br>
+<a href="/assets/pdf/ice3037_final.pdf">[Report (Korean)]</a>
+<a href="/assets/pdf/ice3037_final_ppt.pdf">[PPT (Korean)]</a></p>
+</li>
+<li>
+<p><strong>Data Transmission with Inaudible Sound</strong><br>
+(A research project as an undergraduate research assistant, Jul 2014 - May 2015)</p>
+<p>Proposed a short-distance data transmission mechanism between microphones and
+speakers embedded in off-the-shelf smartphones.<br>
+<a href="/assets/pdf/research_paper_data_communication.pdf">[Paper (Unpublished)]</a></p>
+</li>
+<li>
+<p><strong>MoleRush: Smart TV - Android Interactive Game</strong><br>
+(Samsung Software Membership Project, Sep 2013)</p>
+<p>Awarded the grand prize in 2013 Smart TV and Peripherals Contest.
+Designed a game using smartphones as controllers, and a smart TV as a display board.
+At most 4 players can play together, and more families can enjoy the game together by seeing the smart TV.</p>
+<p><img src="/assets/images/projects/molerush_thumbnail.png" alt="molerush">
+<a href="https://youtu.be/fFzxrAJX9wo">[Youtube]</a></p>
+</li>
+</ul>
+
+</div>
+  
+
+      </div>
+    </div>
+  </div>
+
+    
+
+  
+  
+    
+      
+  
+
+  
+
+  
+  
+  
+
+  
+    
+    
+    
+    
+    
+    
+    
+  
+
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+  
+
+  <div class="pl-scrollbar bg-primary-bg" 
+    >
+    <div class="max-w-screen-xl mx-auto">
+      <div id="pages" class="lg:w-3/4 mx-auto px-6 md:px-8 xl:px-12 py-12">
+        
+  
+
+  
+    
+  <h2 class=" font-bold text-3xl my-4">Posts</h2>
+
+
+  
+  
+  <div class="overflow-hidden divide-y">
+  
+  <div class="py-6">
+    <div class="flex flex-col-reverse lg:flex-row justify-between">
+  
+  <div class="w-full ">
+    <div class="mb-4">
+  <a href="/2020-12-23/analyzing-ceph-network-module/" class="font-bold text-xl hover:text-eureka">Analyzing Ceph Network Module</a>
+</div>
+
+
+<div class="mr-6 my-2">
+    <span>Dec 23, 2020</span>
+</div>
+
+
+
+
+
+  </div>
+
+  
+</div>
+  </div>
+  
+  <div class="py-6">
+    <div class="flex flex-col-reverse lg:flex-row justify-between">
+  
+  <div class="w-full ">
+    <div class="mb-4">
+  <a href="/2020-11-09/building-container-image-inside-container-using-buildah/" class="font-bold text-xl hover:text-eureka">Building Container Image inside Container using Buildah</a>
+</div>
+
+
+<div class="mr-6 my-2">
+    <span>Nov 9, 2020</span>
+</div>
+
+
+
+
+
+  </div>
+
+  
+</div>
+  </div>
+  
+  <div class="py-6">
+    <div class="flex flex-col-reverse lg:flex-row justify-between">
+  
+  <div class="w-full ">
+    <div class="mb-4">
+  <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" class="font-bold text-xl hover:text-eureka">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+</div>
+
+
+<div class="mr-6 my-2">
+    <span>Nov 7, 2020</span>
+</div>
+
+
+
+
+
+  </div>
+
+  
+</div>
+  </div>
+  
+  <div class="py-6">
+    <div class="flex flex-col-reverse lg:flex-row justify-between">
+  
+  <div class="w-full ">
+    <div class="mb-4">
+  <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/" class="font-bold text-xl hover:text-eureka">Deploying a Ceph Development Environment Cluster</a>
+</div>
+
+
+<div class="mr-6 my-2">
+    <span>Nov 3, 2020</span>
+</div>
+
+
+
+
+
+  </div>
+
+  
+</div>
+  </div>
+  
+  <div class="py-6">
+    <div class="flex flex-col-reverse lg:flex-row justify-between">
+  
+  <div class="w-full ">
+    <div class="mb-4">
+  <a href="/2020-08-30/introduction-to-ceph/" class="font-bold text-xl hover:text-eureka">Introduction to Ceph</a>
+</div>
+
+
+<div class="mr-6 my-2">
+    <span>Aug 30, 2020</span>
+</div>
+
+
+
+
+
+  </div>
+
+  
+</div>
+  </div>
+  
+</div>
+
+
+  <div class="pt-2 hover:text-eureka">
+    
+  <a href="/posts/" class="font-semibold">Read More</a>
+  <i class="fas fa-caret-right ml-1"></i>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+      </div>
+    </div>
+  </div>
+
+    
+
+  
+  
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

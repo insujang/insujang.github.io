@@ -2,31 +2,28 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>rdma on Better Tomorrow with Computer Science</title>
-    <link>https://insujang.github.io/tags/rdma/</link>
+    <link>/tags/rdma/</link>
     <description>Recent content in rdma on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sun, 09 Feb 2020 19:58:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/rdma/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Sun, 09 Feb 2020 19:58:00 +0900</lastBuildDate><atom:link href="/tags/rdma/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduction to Programming Infiniband RDMA</title>
-      <link>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</link>
+      <link>/2020-02-09/introduction-to-programming-infiniband/</link>
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/</guid>
-      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
-Backgrounds Channel Adapter (CA) Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
+      <guid>/2020-02-09/introduction-to-programming-infiniband/</guid>
+      <description>This post explains the basic of RDMA programming.</description>
     </item>
     
     <item>
       <title>Building Mellanox OFED from source code</title>
-      <link>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</link>
+      <link>/2020-01-25/building-mellanox-ofed-from-source/</link>
       <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/</guid>
-      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
-Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
-When you untar the archive, you can see SOURCES directory, which contains the following another archives.</description>
+      <guid>/2020-01-25/building-mellanox-ofed-from-source/</guid>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).</description>
     </item>
     
   </channel>

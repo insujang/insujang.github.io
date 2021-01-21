@@ -1,345 +1,483 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library">
-<meta itemprop="description" content="Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest.">
-<meta itemprop="datePublished" content="2019-11-28T21:09:00+09:00" />
-<meta itemprop="dateModified" content="2019-11-28T21:09:00+09:00" />
-<meta itemprop="wordCount" content="1057">
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
+<title>Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
 
-<meta itemprop="keywords" content="study,go," />
-<meta property="og:title" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library" />
-<meta property="og:description" content="Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Linking Go and C Since Go 1.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Implementing Kubernetes C++ Client Library using Go Client Library",
+      "item":"/2019-11-28/implementing-kubernetes-cpp-client-library/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2019-11-28/implementing-kubernetes-cpp-client-library/"
+    },
+    "headline": "Implementing Kubernetes C\u002b\u002b Client Library using Go Client Library | Better Tomorrow with Computer Science","datePublished": "2019-11-28T21:09:00+09:00",
+    "dateModified": "2019-11-28T21:09:00+09:00",
+    "wordCount":  1075 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "Linking Go and C Since Go 1."
+}
+</script><meta property="og:title" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library | Better Tomorrow with Computer Science" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://insujang.github.io/2019-11-28/implementing-kubernetes-cpp-client-library/" />
-<meta property="article:published_time" content="2019-11-28T21:09:00+09:00" />
-<meta property="article:modified_time" content="2019-11-28T21:09:00+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library"/>
-<meta name="twitter:description" content="Linking Go and C Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
-package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &#34;C&#34; import &#34;fmt&#34; //export hello func hello(name string) { fmt.Printf(&#34;Hello from Go, %s!\n&#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest."/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp">
-		<div class="hdr-wrapper container-lg">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
-				</div>
-				<nav class="site-nav d-md-inline d-none">
-					
-				<a href="https://insujang.github.io/posts/">Posts</a>
-				<a href="https://insujang.github.io/about/">About</a>
-
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
-			<li><a href="https://insujang.github.io/about/">About</a></li>
-		</ul>
-	</div>
 
 
-	<main class="site-main container-lg animated fadeIn faster">
-		<header class="post-header row">
-			<div class="col-12 col-xl-3"></div>
-			<div class="col-12 col-xl-9">
-				<div class="post-meta"><span>Nov 28, 2019</span></div>
-				<h1>Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</h1>
-			</div>
-		</header>
-		<article class="row">
-			<div id="toc-aside" class="col-12 col-xl-3">
-				<hr class="d-block d-xl-none">
-				<div class="toc-title">What&#39;s on this Post</div>
-				<nav id="TableOfContents">
-  <ul>
-    <li><a href="#linking-go-and-c">Linking Go and C</a></li>
-    <li><a href="#incorporating-with-cmake">Incorporating with CMake</a></li>
-    <li><a href="#implement-c-shim-layer-with-kubernetes-go-library">Implement C++ Shim Layer with Kubernetes Go Library</a></li>
-  </ul>
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2019-11-28/implementing-kubernetes-cpp-client-library/" />
+
+
+
+
+<meta property="og:description" content="Linking Go and C Since Go 1." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2019-11-28T21:09:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2019-11-28T21:09:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="go" />
+
+
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
 </nav>
-				<hr class="d-block d-xl-none">
-			</div>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+    <div class="pl-scrollbar">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
-			<div class="content col-12 col-xl-9">
-				<h2 id="linking-go-and-c">Linking Go and C<a href="#linking-go-and-c" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+        <h1 class="font-bold text-3xl text-primary-text">Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</h1>
+        <div class="mr-6 my-2">
+    <span>Nov 28, 2019</span>
+</div>
+
+
+
+
+        
+        
+        
+
+        <div class="content">
+            <h2 id="linking-go-and-c">Linking Go and C</h2>
 <p>Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>	<span class="c1">// buildmode=[c-archive|c-shared] requires exactly one main package
-</span><span class="c1"></span>
-<span class="kn">import</span> <span class="s">&#34;C&#34;</span>
-<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+<pre><code class="language-go">package main	// buildmode=[c-archive|c-shared] requires exactly one main package
 
-<span class="c1">//export hello
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">hello</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Hello from Go, %s!\n&#34;</span><span class="p">,</span> <span class="nx">name</span><span class="p">);</span>
-<span class="p">}</span>
+import &quot;C&quot;
+import &quot;fmt&quot;
 
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{}</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">## as c-shared library</span>
-go build -buildmode<span class="o">=</span>c-shared -o libtest.so test.go
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">## as c-archive(static) library</span>
-go build -buildmode<span class="o">=</span>c-archive -o libtest.a test.go
-</code></pre></div><p>With the command above, <a href="https://golang.org/cmd/cgo/">cgo</a> automatically generates a header file and a library file:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ ls
+//export hello
+func hello(name string) {
+	fmt.Printf(&quot;Hello from Go, %s!\n&quot;, name);
+}
+
+func main() {}
+</code></pre>
+<pre><code class="language-shell">## as c-shared library
+go build -buildmode=c-shared -o libtest.so test.go
+</code></pre>
+<pre><code class="language-shell">## as c-archive(static) library
+go build -buildmode=c-archive -o libtest.a test.go
+</code></pre>
+<p>With the command above, <a href="https://golang.org/cmd/cgo/">cgo</a> automatically generates a header file and a library file:</p>
+<pre><code class="language-shell">$ ls
 libtest.a  libtest.h  test.go
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&#34;libtest.h&#34;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;This is a cpp application calling a Go function.&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    <span class="n">GoString</span> <span class="n">name</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;insu&#34;</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="s">&#34;insu&#34;</span><span class="p">)};</span>
-    <span class="n">hello</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Now link the library to the c++ code above:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">g++ -o <span class="nb">test</span> test.cpp -L. -ltest -lpthread
-</code></pre></div><blockquote>
+</code></pre>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;string.h&gt;
+#include &quot;libtest.h&quot;
+
+int main() {
+    std::cout &lt;&lt; &quot;This is a cpp application calling a Go function.&quot; &lt;&lt; std::endl;
+    GoString name = {&quot;insu&quot;, strlen(&quot;insu&quot;)};
+    hello(name);
+    return 0;
+}
+</code></pre>
+<p>Now link the library to the c++ code above:</p>
+<pre><code class="language-shell">g++ -o test test.cpp -L. -ltest -lpthread
+</code></pre>
+<blockquote>
 <p>When you use a static library (libtest.a), you need to explicitly link pthread library.</p>
 </blockquote>
 <pre><code>$ ./test 
 This is a cpp application calling a Go function.
 Hello from Go, insu!
-</code></pre><h2 id="incorporating-with-cmake">Incorporating with CMake<a href="#incorporating-with-cmake" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre>
+<h2 id="incorporating-with-cmake">Incorporating with CMake</h2>
 <p>Using CMake and Go is quite wired; Go build system supports out-of-source build and cross-platform build that CMake would also aims. Here, I would like to use CMake to make a build system for a program implemented by <em>both</em> Go and C++. Luckily, we do not have to take care of Go workspace hierarchy since we only use <code>go build</code> command.</p>
 <blockquote>
 <p>To understand how go build system works, refer to this <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
 <p>I am not familiar with how CMake works yet, so please leave a comment if a better solution exists. Thank you.</p>
 </blockquote>
-<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.0</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">project</span><span class="p">(</span><span class="s">test</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">TARGET_OUT</span> <span class="s">test.out</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">TARGET_LIB</span> <span class="s">test.lib</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Go configurations
-</span><span class="c"></span><span class="err">
-</span><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">GO_SRCS</span>
-  <span class="s">test.go</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">GO_LIBNAME</span> <span class="s">libtest.a</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Custom command for &#39;go build -buildmode=c-archive ...&#39;
-</span><span class="c"># to create a library from Go codes.
-</span><span class="c"></span><span class="nb">add_custom_command</span><span class="p">(</span><span class="s">OUTPUT</span> <span class="o">${</span><span class="nv">GO_LIBNAME</span><span class="o">}</span>
-  <span class="s">DEPENDS</span> <span class="o">${</span><span class="nv">GO_SRCS</span><span class="o">}</span>
-  <span class="s">WORKING_DIRECTORY</span> <span class="o">${</span><span class="nv">CMAKE_CURRENT_SOURCE_DIR</span><span class="o">}</span>
-  <span class="s">COMMAND</span> <span class="s">env</span> <span class="s">go</span> <span class="s">build</span> <span class="s">-buildmode=c-archive</span>
-  <span class="s">-o</span> <span class="s2">&#34;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&#34;</span>
-  <span class="o">${</span><span class="nv">CMAKE_GO_FLAGS</span><span class="o">}</span> <span class="o">${</span><span class="nv">GO_SRCS</span><span class="o">}</span>
-  <span class="s">COMMENT</span> <span class="s2">&#34;Building Go library&#34;</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Add a custom target for the library.
-</span><span class="c"></span><span class="nb">add_custom_target</span><span class="p">(</span><span class="o">${</span><span class="nv">TARGET_LIB</span><span class="o">}</span> <span class="s">DEPENDS</span> <span class="o">${</span><span class="nv">GO_LIBNAME</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># C++ configurations
-</span><span class="c"></span><span class="err">
-</span><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CPP_SRCS</span>
-  <span class="s">test.cpp</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># A library and a header are generated in the binary directory.
-</span><span class="c"></span><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="o">${</span><span class="nv">TARGET_OUT</span><span class="o">}</span> <span class="o">${</span><span class="nv">CPP_SRCS</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">add_dependencies</span><span class="p">(</span><span class="o">${</span><span class="nv">TARGET_OUT</span><span class="o">}</span> <span class="o">${</span><span class="nv">TARGET_LIB</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">TARGET_OUT</span><span class="o">}</span> <span class="s">test</span> <span class="s">pthread</span><span class="p">)</span><span class="err">
-</span></code></pre></div><p>Now build a program out of source directory..</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build <span class="o">&amp;&amp;</span> cmake .. <span class="o">&amp;&amp;</span> make
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.0)
+project(test)
+
+set(TARGET_OUT test.out)
+set(TARGET_LIB test.lib)
+
+# Go configurations
+
+set(GO_SRCS
+  test.go)
+set(GO_LIBNAME libtest.a)
+
+# Custom command for 'go build -buildmode=c-archive ...'
+# to create a library from Go codes.
+add_custom_command(OUTPUT ${GO_LIBNAME}
+  DEPENDS ${GO_SRCS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMAND env go build -buildmode=c-archive
+  -o &quot;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&quot;
+  ${CMAKE_GO_FLAGS} ${GO_SRCS}
+  COMMENT &quot;Building Go library&quot;)
+
+# Add a custom target for the library.
+add_custom_target(${TARGET_LIB} DEPENDS ${GO_LIBNAME})
+
+# C++ configurations
+
+set(CPP_SRCS
+  test.cpp)
+
+# A library and a header are generated in the binary directory.
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+link_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+add_executable(${TARGET_OUT} ${CPP_SRCS})
+add_dependencies(${TARGET_OUT} ${TARGET_LIB})
+target_link_libraries(${TARGET_OUT} test pthread)
+</code></pre>
+<p>Now build a program out of source directory..</p>
+<pre><code class="language-shell">$ mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make
 -- The C compiler identification is GNU 7.4.0
 -- The CXX compiler identification is GNU 7.4.0
--- Check <span class="k">for</span> working C compiler: /usr/bin/cc
--- Check <span class="k">for</span> working C compiler: /usr/bin/cc -- works
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
 -- Detecting C compiler ABI info
--- Detecting C compiler ABI info - <span class="k">done</span>
+-- Detecting C compiler ABI info - done
 -- Detecting C compile features
--- Detecting C compile features - <span class="k">done</span>
--- Check <span class="k">for</span> working CXX compiler: /usr/bin/c++
--- Check <span class="k">for</span> working CXX compiler: /usr/bin/c++ -- works
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
 -- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - <span class="k">done</span>
+-- Detecting CXX compiler ABI info - done
 -- Detecting CXX compile features
--- Detecting CXX compile features - <span class="k">done</span>
--- Configuring <span class="k">done</span>
--- Generating <span class="k">done</span>
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
 -- Build files have been written to: &lt;path&gt;
 Scanning dependencies of target test.lib
-<span class="o">[</span> 33%<span class="o">]</span> Building Go library
-<span class="o">[</span> 33%<span class="o">]</span> Built target test.lib
+[ 33%] Building Go library
+[ 33%] Built target test.lib
 Scanning dependencies of target test.out
-<span class="o">[</span> 66%<span class="o">]</span> Building CXX object CMakeFiles/test.out.dir/test.cpp.o
-<span class="o">[</span>100%<span class="o">]</span> Linking CXX executable test.out
-<span class="o">[</span>100%<span class="o">]</span> Built target test.out
+[ 66%] Building CXX object CMakeFiles/test.out.dir/test.cpp.o
+[100%] Linking CXX executable test.out
+[100%] Built target test.out
 
 $ ./test.out
-This is a cpp application calling a Go <span class="k">function</span>.
+This is a cpp application calling a Go function.
 Hello from Go, insu!
-</code></pre></div><h2 id="implement-c-shim-layer-with-kubernetes-go-library">Implement C++ Shim Layer with Kubernetes Go Library<a href="#implement-c-shim-layer-with-kubernetes-go-library" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre>
+<h2 id="implement-c-shim-layer-with-kubernetes-go-library">Implement C++ Shim Layer with Kubernetes Go Library</h2>
 <p>Now the basic step is done. Let&rsquo;s move into Kubernetes area.</p>
 <p>For a test, clone Client-go library and execute it<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <blockquote>
 <p>I&rsquo;m using microk8s for tests.</p>
 </blockquote>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nb">cd</span> create-update-delete-deployment
+<pre><code class="language-shell">$ cd create-update-delete-deployment
 $ go build -o ./app
-$ ./app -kubeconfig<span class="o">=</span>/var/snap/microk8s/current/credentials/client.config
+$ ./app -kubeconfig=/var/snap/microk8s/current/credentials/client.config
 Creating deployment...
-Created deployment <span class="s2">&#34;demo-deployment&#34;</span>.
--&gt; Press Return key to <span class="k">continue</span>.
+Created deployment &quot;demo-deployment&quot;.
+-&gt; Press Return key to continue.
 
 Updating deployment...
 Updated deployment...
--&gt; Press Return key to <span class="k">continue</span>.
+-&gt; Press Return key to continue.
 
-Listing deployments in namespace <span class="s2">&#34;default&#34;</span>:
- * demo-deployment <span class="o">(</span><span class="m">1</span> replicas<span class="o">)</span>
--&gt; Press Return key to <span class="k">continue</span>.
+Listing deployments in namespace &quot;default&quot;:
+ * demo-deployment (1 replicas)
+-&gt; Press Return key to continue.
 
 Deleting deployment...
 Deleted deployment.
-</code></pre></div><p>Works like a charm. Now imitate the example <code>main.go</code> to create a C++ interface.</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>	<span class="c1">// buildmode=[c-archive|c-shared] requires exactly one main package
-</span><span class="c1"></span>
-<span class="kn">import</span> <span class="s">&#34;C&#34;</span>
+</code></pre>
+<p>Works like a charm. Now imitate the example <code>main.go</code> to create a C++ interface.</p>
+<pre><code class="language-go">package main	// buildmode=[c-archive|c-shared] requires exactly one main package
 
-<span class="kn">import</span> <span class="p">(</span>
-  <span class="s">&#34;fmt&#34;</span>
-  <span class="s">&#34;encoding/json&#34;</span>
+import &quot;C&quot;
 
-  <span class="nx">appsv1</span> <span class="s">&#34;k8s.io/api/apps/v1&#34;</span>
-  <span class="nx">apiv1</span> <span class="s">&#34;k8s.io/api/core/v1&#34;</span>
-  <span class="nx">metav1</span> <span class="s">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
-  <span class="s">&#34;k8s.io/client-go/kubernetes&#34;</span>
-  <span class="s">&#34;k8s.io/client-go/tools/clientcmd&#34;</span>
-<span class="p">)</span>
+import (
+  &quot;fmt&quot;
+  &quot;encoding/json&quot;
 
-<span class="c1">//export createPod
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">createPod</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">kubeconfig</span> <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;/var/snap/microk8s/current/credentials/client.config&#34;</span>
-  <span class="nx">config</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientcmd</span><span class="p">.</span><span class="nf">BuildConfigFromFlags</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span> <span class="nx">kubeconfig</span><span class="p">)</span>
-  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-  <span class="p">}</span>
-  <span class="nx">clientset</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">kubernetes</span><span class="p">.</span><span class="nf">NewForConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
-  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-  <span class="p">}</span>
+  appsv1 &quot;k8s.io/api/apps/v1&quot;
+  apiv1 &quot;k8s.io/api/core/v1&quot;
+  metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
+  &quot;k8s.io/client-go/kubernetes&quot;
+  &quot;k8s.io/client-go/tools/clientcmd&quot;
+)
 
-  <span class="nx">deploymentsClient</span> <span class="o">:=</span> <span class="nx">clientset</span><span class="p">.</span><span class="nf">AppsV1</span><span class="p">().</span><span class="nf">Deployments</span><span class="p">(</span><span class="nx">apiv1</span><span class="p">.</span><span class="nx">NamespaceDefault</span><span class="p">)</span>
-  <span class="nx">deployment</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">appsv1</span><span class="p">.</span><span class="nx">Deployment</span><span class="p">{</span>
-		<span class="nx">ObjectMeta</span><span class="p">:</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">{</span>
-			<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;demo-deployment&#34;</span><span class="p">,</span>
-		<span class="p">},</span>
-		<span class="nx">Spec</span><span class="p">:</span> <span class="nx">appsv1</span><span class="p">.</span><span class="nx">DeploymentSpec</span><span class="p">{</span>
-			<span class="nx">Selector</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">metav1</span><span class="p">.</span><span class="nx">LabelSelector</span><span class="p">{</span>
-				<span class="nx">MatchLabels</span><span class="p">:</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
-					<span class="s">&#34;app&#34;</span><span class="p">:</span> <span class="s">&#34;demo&#34;</span><span class="p">,</span>
-				<span class="p">},</span>
-			<span class="p">},</span>
-			<span class="nx">Template</span><span class="p">:</span> <span class="nx">apiv1</span><span class="p">.</span><span class="nx">PodTemplateSpec</span><span class="p">{</span>
-				<span class="nx">ObjectMeta</span><span class="p">:</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">{</span>
-					<span class="nx">Labels</span><span class="p">:</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
-						<span class="s">&#34;app&#34;</span><span class="p">:</span> <span class="s">&#34;demo&#34;</span><span class="p">,</span>
-					<span class="p">},</span>
-				<span class="p">},</span>
-				<span class="nx">Spec</span><span class="p">:</span> <span class="nx">apiv1</span><span class="p">.</span><span class="nx">PodSpec</span><span class="p">{</span>
-					<span class="nx">Containers</span><span class="p">:</span> <span class="p">[]</span><span class="nx">apiv1</span><span class="p">.</span><span class="nx">Container</span><span class="p">{</span>
-						<span class="p">{</span>
-							<span class="nx">Name</span><span class="p">:</span>  <span class="s">&#34;web&#34;</span><span class="p">,</span>
-							<span class="nx">Image</span><span class="p">:</span> <span class="s">&#34;nginx:1.12&#34;</span><span class="p">,</span>
-							<span class="nx">Ports</span><span class="p">:</span> <span class="p">[]</span><span class="nx">apiv1</span><span class="p">.</span><span class="nx">ContainerPort</span><span class="p">{</span>
-								<span class="p">{</span>
-									<span class="nx">Name</span><span class="p">:</span>          <span class="s">&#34;http&#34;</span><span class="p">,</span>
-									<span class="nx">Protocol</span><span class="p">:</span>      <span class="nx">apiv1</span><span class="p">.</span><span class="nx">ProtocolTCP</span><span class="p">,</span>
-									<span class="nx">ContainerPort</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-								<span class="p">},</span>
-							<span class="p">},</span>
-						<span class="p">},</span>
-					<span class="p">},</span>
-				<span class="p">},</span>
-			<span class="p">},</span>
-		<span class="p">},</span>
-  <span class="p">}</span>
+//export createPod
+func createPod() int {
+  var kubeconfig string = &quot;/var/snap/microk8s/current/credentials/client.config&quot;
+  config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, kubeconfig)
+  if err != nil {
+    panic(err)
+  }
+  clientset, err := kubernetes.NewForConfig(config)
+  if err != nil {
+    panic(err)
+  }
+
+  deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+  deployment := &amp;appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: &quot;demo-deployment&quot;,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Selector: &amp;metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					&quot;app&quot;: &quot;demo&quot;,
+				},
+			},
+			Template: apiv1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						&quot;app&quot;: &quot;demo&quot;,
+					},
+				},
+				Spec: apiv1.PodSpec{
+					Containers: []apiv1.Container{
+						{
+							Name:  &quot;web&quot;,
+							Image: &quot;nginx:1.12&quot;,
+							Ports: []apiv1.ContainerPort{
+								{
+									Name:          &quot;http&quot;,
+									Protocol:      apiv1.ProtocolTCP,
+									ContainerPort: 80,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+  }
   
-  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Creating deployment...&#34;</span><span class="p">)</span>
-  <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">deploymentsClient</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">deployment</span><span class="p">)</span>
-  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-  <span class="p">}</span>
-  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Created deployment %q.\n&#34;</span><span class="p">,</span> <span class="nx">result</span><span class="p">.</span><span class="nf">GetObjectMeta</span><span class="p">().</span><span class="nf">GetName</span><span class="p">())</span>
+  fmt.Println(&quot;Creating deployment...&quot;)
+  result, err := deploymentsClient.Create(deployment)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Printf(&quot;Created deployment %q.\n&quot;, result.GetObjectMeta().GetName())
 
-  <span class="k">return</span> <span class="mi">0</span>
-<span class="p">}</span>
+  return 0
+}
 
-<span class="c1">//export getPodsList
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">getPodsList</span><span class="p">()</span> <span class="o">*</span><span class="nx">C</span><span class="p">.</span><span class="nx">char</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">kubeconfig</span> <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;/var/snap/microk8s/current/credentials/client.config&#34;</span>
-  <span class="nx">config</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientcmd</span><span class="p">.</span><span class="nf">BuildConfigFromFlags</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span> <span class="nx">kubeconfig</span><span class="p">)</span>
-  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-  <span class="p">}</span>
-  <span class="nx">clientset</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">kubernetes</span><span class="p">.</span><span class="nf">NewForConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
-  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-  <span class="p">}</span>
+//export getPodsList
+func getPodsList() *C.char {
+  var kubeconfig string = &quot;/var/snap/microk8s/current/credentials/client.config&quot;
+  config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, kubeconfig)
+  if err != nil {
+    panic(err)
+  }
+  clientset, err := kubernetes.NewForConfig(config)
+  if err != nil {
+    panic(err)
+  }
 
-  <span class="nx">deploymentsClient</span> <span class="o">:=</span> <span class="nx">clientset</span><span class="p">.</span><span class="nf">AppsV1</span><span class="p">().</span><span class="nf">Deployments</span><span class="p">(</span><span class="nx">apiv1</span><span class="p">.</span><span class="nx">NamespaceDefault</span><span class="p">)</span>
-  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Listing deployments in namespace %q:\n&#34;</span><span class="p">,</span> <span class="nx">apiv1</span><span class="p">.</span><span class="nx">NamespaceDefault</span><span class="p">)</span>
-  <span class="nx">list</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">deploymentsClient</span><span class="p">.</span><span class="nf">List</span><span class="p">(</span><span class="nx">metav1</span><span class="p">.</span><span class="nx">ListOptions</span><span class="p">{})</span>
-  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">d</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">list</span><span class="p">.</span><span class="nx">Items</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34; * %s (%d replicas)\n&#34;</span><span class="p">,</span> <span class="nx">d</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="o">*</span><span class="nx">d</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">Replicas</span><span class="p">)</span>
-  <span class="p">}</span>
+  deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+  fmt.Printf(&quot;Listing deployments in namespace %q:\n&quot;, apiv1.NamespaceDefault)
+  list, err := deploymentsClient.List(metav1.ListOptions{})
+  if err != nil {
+		panic(err)
+	}
+	for _, d := range list.Items {
+		fmt.Printf(&quot; * %s (%d replicas)\n&quot;, d.Name, *d.Spec.Replicas)
+  }
   
-  <span class="nx">json</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">list</span><span class="p">.</span><span class="nx">Items</span><span class="p">)</span>
-  <span class="nx">json_string</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span>
-  <span class="k">return</span> <span class="nx">C</span><span class="p">.</span><span class="nf">CString</span><span class="p">(</span><span class="nx">json_string</span><span class="p">);</span>
-<span class="p">}</span>
+  json, _ := json.Marshal(list.Items)
+  json_string := string(json)
+  return C.CString(json_string);
+}
 
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{}</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&#34;libtest.h&#34;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">// createPod();
-</span><span class="c1"></span>    <span class="kt">char</span><span class="o">*</span> <span class="n">pods</span> <span class="o">=</span> <span class="n">getPodsList</span><span class="p">();</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">pods</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    <span class="n">free</span><span class="p">(</span><span class="n">pods</span><span class="p">);</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>The result comes from Go code, printed in C++.</p>
+func main() {}
+</code></pre>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;stdlib.h&gt;
+#include &quot;libtest.h&quot;
+
+int main() {
+    // createPod();
+    char* pods = getPodsList();
+    std::cout &lt;&lt; pods &lt;&lt; std::endl;
+    free(pods);
+    return 0;
+}
+</code></pre>
+<p>The result comes from Go code, printed in C++.</p>
 <pre><code>$ ./test.out
 Listing deployments in namespace &quot;default&quot;:
  * demo-deployment (1 replicas)
@@ -433,7 +571,8 @@ Listing deployments in namespace &quot;default&quot;:
     }
   }
 ]
-</code></pre><section class="footnotes" role="doc-endnotes">
+</code></pre>
+<section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
@@ -448,62 +587,82 @@ Listing deployments in namespace &quot;default&quot;:
 </ol>
 </section>
 
-			</div>
-		</article>
+        </div>
+        
+        <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/go/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#go</a>
+    
+</div>
+        
+        
+        
+        
+        
+        
+        
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2019-12-10/cmake-for-custom-library-build-system-in-go/" class="block">Cmake for Custom Library Build System in Go</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2019-11-21/installing-kubernetes-and-crio-in-debian/" class="block">Installing Kubernetes and cri-o in Debian</a>
+        
+    </div>
+</div>
 
-		<hr class="post-end">
-		<footer class="post-info">
-			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-			<p>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/go">go</a></span>
-			</p>
-		</footer>
-		
-		<div id="comments" class="thin">
+        
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
+<script>
+    var disqus_config = function () {
     
     
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'insujang';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </div>
+    
+
+    
+    
 </div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
-		</p>
-	</footer>
-
-
-
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
-
+      </div>
+    </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

@@ -2,126 +2,469 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Better Tomorrow with Computer Science</title>
-    <link>https://insujang.github.io/posts/</link>
+    <link>/posts/</link>
     <description>Recent content in Posts on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 23 Dec 2020 11:38:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Wed, 23 Dec 2020 11:38:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Analyzing Ceph Network Module</title>
-      <link>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</link>
+      <link>/2020-12-23/analyzing-ceph-network-module/</link>
       <pubDate>Wed, 23 Dec 2020 11:38:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-12-23/analyzing-ceph-network-module/</guid>
-      <description>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
-Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
-  High level Ceph architecture. [src]
-  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.</description>
+      <guid>/2020-12-23/analyzing-ceph-network-module/</guid>
+      <description></description>
     </item>
     
     <item>
       <title>Building Container Image inside Container using Buildah</title>
-      <link>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</link>
+      <link>/2020-11-09/building-container-image-inside-container-using-buildah/</link>
       <pubDate>Mon, 09 Nov 2020 15:09:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
-      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
-The introduction below clearly shows why it is required.
- Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
+      <guid>/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
+      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.</description>
     </item>
     
     <item>
       <title>Accelerating Ceph RPM Packaging: Using Multithreaded Compression</title>
-      <link>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
+      <link>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
       <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
-      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
-Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
-1. RPM Packaing 101 RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
+      <guid>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package.</description>
     </item>
     
     <item>
       <title>Deploying a Ceph Development Environment Cluster</title>
-      <link>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</link>
+      <link>/2020-11-03/deploying-a-ceph-development-environment-cluster/</link>
       <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
-      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.
- I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.
- 1. Prerequisites Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
-Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.</description>
+      <guid>/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
+      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.</description>
     </item>
     
     <item>
       <title>Introduction to Ceph</title>
-      <link>https://insujang.github.io/2020-08-30/introduction-to-ceph/</link>
+      <link>/2020-08-30/introduction-to-ceph/</link>
       <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-08-30/introduction-to-ceph/</guid>
-      <description>Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
-  Ceph Cluster Overview. [Source]
-    Ceph Cluster Overview. [Source]
-    Ceph Cluster Overview. [Source]
-  A ceph storage cluster roughly consists of three components:
- Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.</description>
+      <guid>/2020-08-30/introduction-to-ceph/</guid>
+      <description>Ceph is an open-source distributed software platform 1 2.</description>
     </item>
     
     <item>
       <title>Introduction to Flatpak</title>
-      <link>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</link>
+      <link>/2020-08-27/introduction-to-flatpak/</link>
       <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-08-27/introduction-to-flatpak/</guid>
-      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1. Although Snap is the most famous one, I think the internal architecture of Flatpak is more reliable.
-Fedora Silverblue and EndlessOS provide software installation primarily via Flathub, a central repository of Flatpak based applications 2 3.
-This post briefly summarizes how to use Flatpak in terms of implementing a sample applications.
-Installing Flatpak In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.</description>
+      <guid>/2020-08-27/introduction-to-flatpak/</guid>
+      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1.</description>
     </item>
     
     <item>
       <title>Dynamic Kubelet Configuration</title>
-      <link>https://insujang.github.io/2020-08-24/dynamic-kubelet-configuration/</link>
+      <link>/2020-08-24/dynamic-kubelet-configuration/</link>
       <pubDate>Mon, 24 Aug 2020 09:21:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-08-24/dynamic-kubelet-configuration/</guid>
-      <description>Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
-Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
-Kubelet Flags for Dynamic Configuration Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:</description>
+      <guid>/2020-08-24/dynamic-kubelet-configuration/</guid>
+      <description>Kubelet, at launch time, loads configuration files from pre-specified files.</description>
     </item>
     
     <item>
       <title>Introduction to Fedora Silverblue</title>
-      <link>https://insujang.github.io/2020-07-15/fedora-silverblue/</link>
+      <link>/2020-07-15/fedora-silverblue/</link>
       <pubDate>Wed, 15 Jul 2020 12:35:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-07-15/fedora-silverblue/</guid>
-      <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
-For this purpose, Fedora Silverblue adopted two technologies:
- libostree (OSTree) Flatpak  libostree 2 libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.</description>
+      <guid>/2020-07-15/fedora-silverblue/</guid>
+      <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution.</description>
     </item>
     
     <item>
       <title>Go Modules: an Alternative to GOPATH for Package Distribution</title>
-      <link>https://insujang.github.io/2020-04-04/go-modules/</link>
+      <link>/2020-04-04/go-modules/</link>
       <pubDate>Sat, 04 Apr 2020 19:27:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-04-04/go-modules/</guid>
-      <description>This post introduces Go modules, introduced in Go version 1.11.
-Go Modules? Go 1.11 introduces a new dependency mangement system, Go modules (That&amp;rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
-Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what does it means specifically. Here is my explanaion.
-Importing Packages without Go Modules Go programmers can import third-party packages (i.</description>
+      <guid>/2020-04-04/go-modules/</guid>
+      <description>This post introduces Go modules, introduced in Go version 1.</description>
     </item>
     
     <item>
       <title>Programming Kubernetes CRDs</title>
-      <link>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</link>
+      <link>/2020-02-13/programming-kubernetes-crd/</link>
       <pubDate>Thu, 13 Feb 2020 10:13:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-02-13/programming-kubernetes-crd/</guid>
-      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
-Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
+      <guid>/2020-02-13/programming-kubernetes-crd/</guid>
+      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Custom Resource Definition (CRD)</title>
+      <link>/2020-02-11/kubernetes-custom-resource/</link>
+      <pubDate>Tue, 11 Feb 2020 17:23:00 +0900</pubDate>
+      
+      <guid>/2020-02-11/kubernetes-custom-resource/</guid>
+      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Programming Infiniband RDMA</title>
+      <link>/2020-02-09/introduction-to-programming-infiniband/</link>
+      <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
+      
+      <guid>/2020-02-09/introduction-to-programming-infiniband/</guid>
+      <description>This post explains the basic of RDMA programming.</description>
+    </item>
+    
+    <item>
+      <title>Building Mellanox OFED from source code</title>
+      <link>/2020-01-25/building-mellanox-ofed-from-source/</link>
+      <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
+      
+      <guid>/2020-01-25/building-mellanox-ofed-from-source/</guid>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).</description>
+    </item>
+    
+    <item>
+      <title>Generate a Self-signed Certificate</title>
+      <link>/2020-01-07/self-signed-certificate/</link>
+      <pubDate>Tue, 07 Jan 2020 16:12:00 +0900</pubDate>
+      
+      <guid>/2020-01-07/self-signed-certificate/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Authentication: Client Certificate</title>
+      <link>/2019-12-18/kubernetes-authentication/</link>
+      <pubDate>Wed, 18 Dec 2019 09:26:00 +0900</pubDate>
+      
+      <guid>/2019-12-18/kubernetes-authentication/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cmake for Custom Library Build System in Go</title>
+      <link>/2019-12-10/cmake-for-custom-library-build-system-in-go/</link>
+      <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
+      
+      <guid>/2019-12-10/cmake-for-custom-library-build-system-in-go/</guid>
+      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities.</description>
+    </item>
+    
+    <item>
+      <title>Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</title>
+      <link>/2019-11-28/implementing-kubernetes-cpp-client-library/</link>
+      <pubDate>Thu, 28 Nov 2019 21:09:00 +0900</pubDate>
+      
+      <guid>/2019-11-28/implementing-kubernetes-cpp-client-library/</guid>
+      <description>Linking Go and C Since Go 1.</description>
+    </item>
+    
+    <item>
+      <title>Installing Kubernetes and cri-o in Debian</title>
+      <link>/2019-11-21/installing-kubernetes-and-crio-in-debian/</link>
+      <pubDate>Thu, 21 Nov 2019 18:32:00 +0900</pubDate>
+      
+      <guid>/2019-11-21/installing-kubernetes-and-crio-in-debian/</guid>
+      <description>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine.</description>
+    </item>
+    
+    <item>
+      <title>Interactions between cri-o and conmon in Kubernetes</title>
+      <link>/2019-11-18/interactions-between-crio-and-conmon/</link>
+      <pubDate>Mon, 18 Nov 2019 23:07:00 +0900</pubDate>
+      
+      <guid>/2019-11-18/interactions-between-crio-and-conmon/</guid>
+      <description>cri-o cri-o is a lightweight container runtime framework for Kubernetes.</description>
+    </item>
+    
+    <item>
+      <title>Code Server: Using vscode via Web Browsers</title>
+      <link>/2019-11-10/code-server/</link>
+      <pubDate>Sun, 10 Nov 2019 14:05:00 +0900</pubDate>
+      
+      <guid>/2019-11-10/code-server/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>/2019-11-07/kubernetes/</link>
+      <pubDate>Thu, 07 Nov 2019 11:17:00 +0900</pubDate>
+      
+      <guid>/2019-11-07/kubernetes/</guid>
+      <description>Kubernetes Kubernetes is is an container-based cluster orchestration tool, originally implemented by Google.</description>
+    </item>
+    
+    <item>
+      <title>Container Runtime</title>
+      <link>/2019-10-31/container-runtime/</link>
+      <pubDate>Thu, 31 Oct 2019 21:36:00 +0900</pubDate>
+      
+      <guid>/2019-10-31/container-runtime/</guid>
+      <description>From Docker to Kubernetes, these days container solutions are emerging.</description>
+    </item>
+    
+    <item>
+      <title>Open Container Initiative (OCI) Standard, Image Spec</title>
+      <link>/2019-10-10/open-container-initiative-image-spec/</link>
+      <pubDate>Thu, 10 Oct 2019 20:35:00 +0900</pubDate>
+      
+      <guid>/2019-10-10/open-container-initiative-image-spec/</guid>
+      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers.</description>
+    </item>
+    
+    <item>
+      <title>Managing Github Pages blog with VScode and Jekyll</title>
+      <link>/2019-09-28/jekyll-vscode/</link>
+      <pubDate>Sat, 28 Sep 2019 14:31:00 +0900</pubDate>
+      
+      <guid>/2019-09-28/jekyll-vscode/</guid>
+      <description>In recent days, I barely managed my blog after graduation.</description>
+    </item>
+    
+    <item>
+      <title>Implementing a New Custom Netlink Family Protocol</title>
+      <link>/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</link>
+      <pubDate>Thu, 07 Feb 2019 17:00:00 +0900</pubDate>
+      
+      <guid>/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</guid>
+      <description>Netlink Protocol Netlink is a communication protocol between kernel and userspace.</description>
+    </item>
+    
+    <item>
+      <title>udev: Function Flow for KOBJECT_UEVENT kernel group message </title>
+      <link>/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</link>
+      <pubDate>Wed, 28 Nov 2018 14:03:15 +0900</pubDate>
+      
+      <guid>/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</guid>
+      <description>Identifying the device {: .</description>
+    </item>
+    
+    <item>
+      <title>udev: Device Manager for the Linux Kernel in Userspace</title>
+      <link>/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</link>
+      <pubDate>Tue, 27 Nov 2018 10:05:14 +0900</pubDate>
+      
+      <guid>/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>systemd Boot Process</title>
+      <link>/2018-11-22/systemd-boot-process/</link>
+      <pubDate>Thu, 22 Nov 2018 13:49:40 +0900</pubDate>
+      
+      <guid>/2018-11-22/systemd-boot-process/</guid>
+      <description>What is systemd?</description>
+    </item>
+    
+    <item>
+      <title>Intel SGX Sealing</title>
+      <link>/2017-10-09/intel-sgx-sealing/</link>
+      <pubDate>Mon, 09 Oct 2017 15:26:34 +0900</pubDate>
+      
+      <guid>/2017-10-09/intel-sgx-sealing/</guid>
+      <description>There is a few information related to sealing, even no detailed explanation in the paper: Intel SGX explaned.</description>
+    </item>
+    
+    <item>
+      <title>NVMeDirect</title>
+      <link>/2017-09-06/nvmedirect/</link>
+      <pubDate>Wed, 06 Sep 2017 20:40:37 +0900</pubDate>
+      
+      <guid>/2017-09-06/nvmedirect/</guid>
+      <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.</description>
+    </item>
+    
+    <item>
+      <title>Enabling AtomicOps in VFIO PCI Passthrough</title>
+      <link>/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</link>
+      <pubDate>Wed, 16 Aug 2017 16:48:47 +0900</pubDate>
+      
+      <guid>/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</guid>
+      <description>I tried to use AMD&amp;rsquo;s GPU for research, with the software stack called AMD ROCm.</description>
+    </item>
+    
+    <item>
+      <title>GPU Resource Management</title>
+      <link>/2017-06-23/gpu-resource-management/</link>
+      <pubDate>Fri, 23 Jun 2017 10:13:09 +0900</pubDate>
+      
+      <guid>/2017-06-23/gpu-resource-management/</guid>
+      <description>This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).</description>
+    </item>
+    
+    <item>
+      <title>Implementing and Using Custom Intel SGX Trusted Library 2</title>
+      <link>/2017-06-01/implementing-and-using-custom-intel-sgx-trusted-library-2/</link>
+      <pubDate>Thu, 01 Jun 2017 19:58:54 +0900</pubDate>
+      
+      <guid>/2017-06-01/implementing-and-using-custom-intel-sgx-trusted-library-2/</guid>
+      <description>In the previous post, I showed how to link a trusted function that can be called insdie the enclave.</description>
+    </item>
+    
+    <item>
+      <title>Implementing and Using Custom Intel SGX Trusted Library</title>
+      <link>/2017-05-31/implementing-and-using-custom-intel-sgx-trusted-library/</link>
+      <pubDate>Wed, 31 May 2017 18:42:44 +0900</pubDate>
+      
+      <guid>/2017-05-31/implementing-and-using-custom-intel-sgx-trusted-library/</guid>
+      <description>Intel SGX Trusted Library Trusted libraries are libraries that are linked to a SGX program, and used inside an enclave.</description>
+    </item>
+    
+    <item>
+      <title>Usermode Helper API</title>
+      <link>/2017-05-10/usermode-helper-api/</link>
+      <pubDate>Wed, 10 May 2017 01:58:06 +0900</pubDate>
+      
+      <guid>/2017-05-10/usermode-helper-api/</guid>
+      <description>We already know that fork() and exec() are system calls for making a new process from user space.</description>
+    </item>
+    
+    <item>
+      <title>CPU Affinity</title>
+      <link>/2017-05-09/cpu-affinity/</link>
+      <pubDate>Tue, 09 May 2017 21:56:25 +0900</pubDate>
+      
+      <guid>/2017-05-09/cpu-affinity/</guid>
+      <description>CPU affinity, also called CPU pinning, enables the binding of a process or a thread to a specific CPU core, or CPU cores.</description>
+    </item>
+    
+    <item>
+      <title>Calling Kernel Module&#39;s Function from The Other Kernel Module</title>
+      <link>/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/</link>
+      <pubDate>Wed, 03 May 2017 15:18:17 +0900</pubDate>
+      
+      <guid>/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/</guid>
+      <description>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &amp;quot;&amp;lt;function_name&amp;gt;&amp;quot; undefined!</description>
+    </item>
+    
+    <item>
+      <title>KVM Internal: How a VM is Created?</title>
+      <link>/2017-05-02/kvm-internal-how-a-vm-is-created/</link>
+      <pubDate>Tue, 02 May 2017 20:26:56 +0900</pubDate>
+      
+      <guid>/2017-05-02/kvm-internal-how-a-vm-is-created/</guid>
+      <description>KVM is an acronym of &amp;ldquo;Kernel based Virtual Machine&amp;rdquo;, and is a virtualization infrastructure for the Linux kernel that turns it into a hypervisor.</description>
+    </item>
+    
+    <item>
+      <title>Git Basics</title>
+      <link>/2017-05-02/git-basics/</link>
+      <pubDate>Tue, 02 May 2017 09:58:43 +0900</pubDate>
+      
+      <guid>/2017-05-02/git-basics/</guid>
+      <description>1. Initialize a Git Repository $ git init  This will create .</description>
+    </item>
+    
+    <item>
+      <title>Analyzing Gdev</title>
+      <link>/2017-04-27/analyzing-gdev/</link>
+      <pubDate>Thu, 27 Apr 2017 22:35:30 +0900</pubDate>
+      
+      <guid>/2017-04-27/analyzing-gdev/</guid>
+      <description>Gdev Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to VFIO</title>
+      <link>/2017-04-27/introduction-to-vfio/</link>
+      <pubDate>Thu, 27 Apr 2017 13:14:24 +0900</pubDate>
+      
+      <guid>/2017-04-27/introduction-to-vfio/</guid>
+      <description>Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio).</description>
+    </item>
+    
+    <item>
+      <title>GPU Architecture Overview</title>
+      <link>/2017-04-27/gpu-architecture-overview/</link>
+      <pubDate>Thu, 27 Apr 2017 10:15:41 +0900</pubDate>
+      
+      <guid>/2017-04-27/gpu-architecture-overview/</guid>
+      <description>GPU Model {: .</description>
+    </item>
+    
+    <item>
+      <title>Hooking an SGX ENCLS Leaf Function Call from KVM</title>
+      <link>/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</link>
+      <pubDate>Fri, 21 Apr 2017 20:36:41 +0900</pubDate>
+      
+      <guid>/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</guid>
+      <description>Environment  Host: Ubuntu 14.</description>
+    </item>
+    
+    <item>
+      <title>Adding an Additional SGX Instruction</title>
+      <link>/2017-04-14/adding-an-additional-sgx-instruction/</link>
+      <pubDate>Fri, 14 Apr 2017 23:22:59 +0900</pubDate>
+      
+      <guid>/2017-04-14/adding-an-additional-sgx-instruction/</guid>
+      <description>Implementing a SGX SDK Function for the Instruction 1.</description>
+    </item>
+    
+    <item>
+      <title>Intel SGX SDK Functions for Enclave Creation</title>
+      <link>/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/</link>
+      <pubDate>Fri, 14 Apr 2017 13:58:12 +0900</pubDate>
+      
+      <guid>/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/</guid>
+      <description>Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.</description>
+    </item>
+    
+    <item>
+      <title>Linux Kernel Memory Map Operations</title>
+      <link>/2017-04-07/linux-kernel-memory-map-operations/</link>
+      <pubDate>Fri, 07 Apr 2017 09:55:25 +0900</pubDate>
+      
+      <guid>/2017-04-07/linux-kernel-memory-map-operations/</guid>
+      <description>Memory mapping is one of the most important features to protect the memory system in Linux.</description>
+    </item>
+    
+    <item>
+      <title>Intel SGX Instructions in Enclave Initialization</title>
+      <link>/2017-04-05/intel-sgx-instructions-in-enclave-initialization/</link>
+      <pubDate>Wed, 05 Apr 2017 22:13:25 +0900</pubDate>
+      
+      <guid>/2017-04-05/intel-sgx-instructions-in-enclave-initialization/</guid>
+      <description>1. ECREATE  [Intel SGX Explained p63] Section 5.</description>
+    </item>
+    
+    <item>
+      <title>Intel SGX Protection Mechanism</title>
+      <link>/2017-04-03/intel-sgx-protection-mechanism/</link>
+      <pubDate>Mon, 03 Apr 2017 14:09:50 +0900</pubDate>
+      
+      <guid>/2017-04-03/intel-sgx-protection-mechanism/</guid>
+      <description>All Figure numbers are same with those in the paper.</description>
+    </item>
+    
+    <item>
+      <title>PCI Express I/O System</title>
+      <link>/2017-04-03/pci-express-i/o-system/</link>
+      <pubDate>Mon, 03 Apr 2017 12:12:58 +0900</pubDate>
+      
+      <guid>/2017-04-03/pci-express-i/o-system/</guid>
+      <description>I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.</description>
+    </item>
+    
+    <item>
+      <title>Using Jekyll with Atom Editor</title>
+      <link>/2017-04-01/using-jekyll-with-atom-editor/</link>
+      <pubDate>Sat, 01 Apr 2017 09:55:05 +0900</pubDate>
+      
+      <guid>/2017-04-01/using-jekyll-with-atom-editor/</guid>
+      <description>{: .</description>
+    </item>
+    
+    <item>
+      <title>New blog with Jekyll</title>
+      <link>/2017-04-01/new-blog-with-jekyll/</link>
+      <pubDate>Sat, 01 Apr 2017 01:56:49 +0900</pubDate>
+      
+      <guid>/2017-04-01/new-blog-with-jekyll/</guid>
+      <description>After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.</description>
     </item>
     
   </channel>

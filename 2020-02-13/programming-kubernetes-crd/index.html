@@ -1,111 +1,240 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Programming Kubernetes CRDs">
-<meta itemprop="description" content="In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
-Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.">
-<meta itemprop="datePublished" content="2020-02-13T10:13:00+09:00" />
-<meta itemprop="dateModified" content="2020-02-13T10:13:00+09:00" />
-<meta itemprop="wordCount" content="2991">
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
+<title>Programming Kubernetes CRDs | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
 
-<meta itemprop="keywords" content="kubernetes,study,go," />
-<meta property="og:title" content="Programming Kubernetes CRDs" />
-<meta property="og:description" content="In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
-Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="In [previous post], I briefly introduced a custom resource definition and how to create it through CLI.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Programming Kubernetes CRDs",
+      "item":"/2020-02-13/programming-kubernetes-crd/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2020-02-13/programming-kubernetes-crd/"
+    },
+    "headline": "Programming Kubernetes CRDs | Better Tomorrow with Computer Science","datePublished": "2020-02-13T10:13:00+09:00",
+    "dateModified": "2020-02-13T10:13:00+09:00",
+    "wordCount":  2991 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "In [previous post], I briefly introduced a custom resource definition and how to create it through CLI."
+}
+</script><meta property="og:title" content="Programming Kubernetes CRDs | Better Tomorrow with Computer Science" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://insujang.github.io/2020-02-13/programming-kubernetes-crd/" />
-<meta property="article:published_time" content="2020-02-13T10:13:00+09:00" />
-<meta property="article:modified_time" content="2020-02-13T10:13:00+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Programming Kubernetes CRDs"/>
-<meta name="twitter:description" content="In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
-Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here."/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Programming Kubernetes CRDs</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp">
-		<div class="hdr-wrapper container-lg">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
-				</div>
-				<nav class="site-nav d-md-inline d-none">
-					
-				<a href="https://insujang.github.io/posts/">Posts</a>
-				<a href="https://insujang.github.io/about/">About</a>
-
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
-			<li><a href="https://insujang.github.io/about/">About</a></li>
-		</ul>
-	</div>
 
 
-	<main class="site-main container-lg animated fadeIn faster">
-		<header class="post-header row">
-			<div class="col-12 col-xl-3"></div>
-			<div class="col-12 col-xl-9">
-				<div class="post-meta"><span>Feb 13, 2020</span></div>
-				<h1>Programming Kubernetes CRDs</h1>
-			</div>
-		</header>
-		<article class="row">
-			<div id="toc-aside" class="col-12 col-xl-3">
-				<hr class="d-block d-xl-none">
-				<div class="toc-title">What&#39;s on this Post</div>
-				<nav id="TableOfContents">
-  <ul>
-    <li><a href="#1-generating-go-code-with-code-generator">1. Generating Go code with code-generator</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#write-template-code">Write template code</a></li>
-        <li><a href="#get-generated-go-code-with-code-generator">Get generated Go code with code-generator</a></li>
-      </ul>
-    </li>
-    <li><a href="#2-implementing-custom-controller-based-on-the-generated-code-and-client-go">2. Implementing custom controller based on the generated code and client-go</a>
-      <ul>
-        <li><a href="#implementing-a-custom-resource-object-watcher">Implementing a custom resource object watcher</a></li>
-        <li><a href="#running-the-watcher">Running the watcher</a></li>
-        <li><a href="#register-a-crd-programmatically">Register a CRD programmatically</a></li>
-        <li><a href="#create-s-custom-resource-programmatically">Create s custom resource programmatically</a></li>
-        <li><a href="#implementing-a-control-logic">Implementing a control logic</a></li>
-      </ul>
-    </li>
-  </ul>
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2020-02-13/programming-kubernetes-crd/" />
+
+
+
+
+<meta property="og:description" content="In [previous post], I briefly introduced a custom resource definition and how to create it through CLI." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2020-02-13T10:13:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2020-02-13T10:13:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="kubernetes" />
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="go" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-02-11/kubernetes-custom-resource/" />
+
+<meta property="og:see_also" content="/2019-12-18/kubernetes-authentication/" />
+
+<meta property="og:see_also" content="/2019-12-10/cmake-for-custom-library-build-system-in-go/" />
+
+<meta property="og:see_also" content="/2019-11-28/implementing-kubernetes-cpp-client-library/" />
+
+<meta property="og:see_also" content="/2020-02-09/introduction-to-programming-infiniband/" />
+
+<meta property="og:see_also" content="/2020-01-25/building-mellanox-ofed-from-source/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
 </nav>
-				<hr class="d-block d-xl-none">
-			</div>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+    <div class="pl-scrollbar">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
-			<div class="content col-12 col-xl-9">
-				<p>In <a href="/2020-02-11/kubernetes-custom-resource/">[previous post]</a>, I briefly introduced a custom resource definition and how to create it through CLI.
+
+<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+        <h1 class="font-bold text-3xl text-primary-text">Programming Kubernetes CRDs</h1>
+        <div class="mr-6 my-2">
+    <span>Feb 13, 2020</span>
+</div>
+
+
+
+
+        
+        
+        
+
+        <div class="content">
+            <p>In <a href="/2020-02-11/kubernetes-custom-resource/">[previous post]</a>, I briefly introduced a custom resource definition and how to create it through CLI.
 In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.</p>
 <p>Many tutorials are exist, but not perfect <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</p>
 <blockquote>
@@ -126,15 +255,15 @@ I think each has its advantages, this post only explains how to implement a cont
 <li>In custom controller part, we need to <strong>manually implement control logics</strong> (do something when an add/update/delete event arrives).</li>
 </ul>
 <p>In implementation, we first generate a Go code using code-generator, and then implement our custom controller using client-go and the generated code.</p>
-<h2 id="1-generating-go-code-with-code-generator">1. Generating Go code with code-generator<a href="#1-generating-go-code-with-code-generator" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="1-generating-go-code-with-code-generator">1. Generating Go code with code-generator</h2>
 <p><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> well explains how to use code-generator, however, <strong>it assumes all Go projects be in <code>$GOPATH</code> (your input Go code, your genearted code)</strong>, since there was no Go module concept at that time (October 2017). I would like to know how to use it outside <code>GOPATH</code>, but I could not. Here, I show you how to do it. You <strong>can</strong> generate code outside <code>GOPATH</code> using Go module system.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ tree ~/kubernetes-test-controller
+<pre><code class="language-shell">$ tree ~/kubernetes-test-controller
 /root/kubernetes-test-controller
-<span class="p">|</span>-- cmd
-<span class="p">|</span>   <span class="sb">`</span>-- controller
-<span class="p">|</span>-- go.mod
-<span class="sb">`</span>-- lib
-    <span class="sb">`</span>-- testresource
+|-- cmd
+|   `-- controller
+|-- go.mod
+`-- lib
+    `-- testresource
 
 $ cat go.mod
 module insujang.github.io/kubernetes-test-controller
@@ -142,81 +271,86 @@ module insujang.github.io/kubernetes-test-controller
 go 1.13
 
 require k8s.io/client-go v0.17.0 // indirect
-</code></pre></div><p>Note that generated code and our sample controller will be the same module named <code>insujang.github.io/kubernetes-test-controller</code>. I also explicitly added dependency to <code>client-go</code> via <code>GO111MODULE=on go get k8s.io/client-go@v0.17.0</code>.</p>
-<h3 id="prerequisites">Prerequisites<a href="#prerequisites" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre>
+<p>Note that generated code and our sample controller will be the same module named <code>insujang.github.io/kubernetes-test-controller</code>. I also explicitly added dependency to <code>client-go</code> via <code>GO111MODULE=on go get k8s.io/client-go@v0.17.0</code>.</p>
+<h3 id="prerequisites">Prerequisites</h3>
 <p>Download code-generator. In the old post, I introduced <code>GO111MODULE=off go get k8s.io/code-generator</code>, to download it in <code>$GOPATH</code>, <strong>but it is not necessary, since we do not use this repository as a Go dependent package.</strong> Download it anywhere you want.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ git clone https://github.com/kubernetes/code-generator
-$ <span class="nb">cd</span> code-generator<span class="p">;</span> git checkout v0.17.0
-</code></pre></div><blockquote>
+<pre><code class="language-shell">$ git clone https://github.com/kubernetes/code-generator
+$ cd code-generator; git checkout v0.17.0
+</code></pre>
+<blockquote>
 <p>Note that you need to change the branch of the repository to specific version, not master, because with the master branch our generated Go code is <strong>incompatible</strong> to current Kubernetes cluster.</p>
 </blockquote>
-<h3 id="write-template-code">Write template code<a href="#write-template-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h3 id="write-template-code">Write template code</h3>
 <p>To use code-generator, you must write three files: <code>doc.go</code>, <code>register.go</code>, and <code>types.go</code>.</p>
 <p><img src="https://www.openshift.com/hs-fs/hubfs/Imported_Blog_Media/Screen-Shot-2017-10-16-at-17_58_28.png?width=580&amp;height=502&amp;name=Screen-Shot-2017-10-16-at-17_58_28.png" alt="package_tree"></p>
 <p>The tree above comes from <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Although it is better to keep the tree structure (doing so the path of package looks more naturally like the existing Kubernetes objects: <code>apis/example.com/v1</code>), <strong>it is not necessary to keep this structure</strong>. Instead, I use the following directory tree.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">tree ~/kubernetes-test-controller/lib/testresource/v1beta1
+<pre><code class="language-shell">tree ~/kubernetes-test-controller/lib/testresource/v1beta1
 /root/kubernetes-test-controller/lib/testresource/v1beta1
-<span class="p">|</span>-- doc.go
-<span class="p">|</span>-- register.go
-<span class="sb">`</span>-- types.go
-</code></pre></div><blockquote>
+|-- doc.go
+|-- register.go
+`-- types.go
+</code></pre>
+<blockquote>
 <p>all the other directories, such as client/clientset, informers, listers, are generated by code-generator. You do not have to manually generate them.
 Also, pkg/apis/example.com/register.go is not mandatory.</p>
 </blockquote>
 <blockquote>
 <p>The only requirement you should follow is to put those files in <code>&lt;version&gt;</code> directory, such as <code>v1beta1</code> in my example. <code>v1</code>, <code>v1alpha1</code>, whatever you want is ok.</p>
 </blockquote>
-<h4 id="docgo">doc.go<a href="#docgo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// +k8s:deepcopy-gen=package
-</span><span class="c1">// +groupName=insujang.github.io
-</span><span class="c1"></span>
-<span class="kn">package</span> <span class="nx">v1beta1</span>
-</code></pre></div><p><code>//+tag-name=value</code> is a tag that code-generator uses for generating Go code. For detailed explanation, refer to <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> or <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I stronglly recommend to buy <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> as it explains those in detail.</p>
+<h4 id="docgo">doc.go</h4>
+<pre><code class="language-go">// +k8s:deepcopy-gen=package
+// +groupName=insujang.github.io
+
+package v1beta1
+</code></pre>
+<p><code>//+tag-name=value</code> is a tag that code-generator uses for generating Go code. For detailed explanation, refer to <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> or <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I stronglly recommend to buy <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> as it explains those in detail.</p>
 <p>For <code>groupName</code>, you should specify the group name that you used as a part of module name. I initialized a Go module at the root directory of the Go project named <code>insujang.github.io/kubernetes-test-controller</code>, so my <code>groupName</code> should be <code>insujang.github.io</code>.</p>
-<h4 id="typesgo">types.go<a href="#typesgo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">v1beta1</span>
+<h4 id="typesgo">types.go</h4>
+<pre><code class="language-go">package v1beta1
 
-<span class="kn">import</span> <span class="nx">metav1</span> <span class="s">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
+import metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
 
-<span class="c1">// These const variables are used in our custom controller.
-</span><span class="c1"></span><span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">GroupName</span> <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;insujang.github.io&#34;</span>
-	<span class="nx">Kind</span>      <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;TestResource&#34;</span>
-	<span class="nx">Version</span>   <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;v1beta1&#34;</span>
-	<span class="nx">Plural</span>    <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;testresources&#34;</span>
-	<span class="nx">Singluar</span>  <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;testresource&#34;</span>
-	<span class="nx">ShortName</span> <span class="kt">string</span> <span class="p">=</span> <span class="s">&#34;ts&#34;</span>
-	<span class="nx">Name</span>      <span class="kt">string</span> <span class="p">=</span> <span class="nx">Plural</span> <span class="o">+</span> <span class="s">&#34;.&#34;</span> <span class="o">+</span> <span class="nx">GroupName</span>
-<span class="p">)</span>
+// These const variables are used in our custom controller.
+const (
+	GroupName string = &quot;insujang.github.io&quot;
+	Kind      string = &quot;TestResource&quot;
+	Version   string = &quot;v1beta1&quot;
+	Plural    string = &quot;testresources&quot;
+	Singluar  string = &quot;testresource&quot;
+	ShortName string = &quot;ts&quot;
+	Name      string = Plural + &quot;.&quot; + GroupName
+)
 
-<span class="c1">// TestResourceSpec specifies the &#39;spec&#39; of TestResource CRD.
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">TestResourceSpec</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">Command</span>        <span class="kt">string</span> <span class="s">`json:&#34;command&#34;`</span>
-	<span class="nx">CustomProperty</span> <span class="kt">string</span> <span class="s">`json:&#34;customProperty&#34;`</span>
-<span class="p">}</span>
+// TestResourceSpec specifies the 'spec' of TestResource CRD.
+type TestResourceSpec struct {
+	Command        string `json:&quot;command&quot;`
+	CustomProperty string `json:&quot;customProperty&quot;`
+}
 
-<span class="c1">// +genclient
-</span><span class="c1">// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-</span><span class="c1"></span>
-<span class="c1">// TestResource describes a TestResource custom resource.
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">TestResource</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">metav1</span><span class="p">.</span><span class="nx">TypeMeta</span>   <span class="s">`json:&#34;,inline&#34;`</span>
-	<span class="nx">metav1</span><span class="p">.</span><span class="nx">ObjectMeta</span> <span class="s">`json:&#34;metadata,omitempty&#34;`</span>
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-	<span class="nx">Spec</span>   <span class="nx">TestResourceSpec</span> <span class="s">`json:&#34;spec&#34;`</span>
-	<span class="nx">Status</span> <span class="kt">string</span>           <span class="s">`json:&#34;status&#34;`</span>
-<span class="p">}</span>
+// TestResource describes a TestResource custom resource.
+type TestResource struct {
+	metav1.TypeMeta   `json:&quot;,inline&quot;`
+	metav1.ObjectMeta `json:&quot;metadata,omitempty&quot;`
 
-<span class="c1">// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-</span><span class="c1"></span>
-<span class="c1">// TestResourceList is a list of TestResource resources.
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">TestResourceList</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">metav1</span><span class="p">.</span><span class="nx">TypeMeta</span> <span class="s">`json:&#34;,inline&#34;`</span>
-	<span class="nx">metav1</span><span class="p">.</span><span class="nx">ListMeta</span> <span class="s">`json:&#34;metadata&#34;`</span>
+	Spec   TestResourceSpec `json:&quot;spec&quot;`
+	Status string           `json:&quot;status&quot;`
+}
 
-	<span class="nx">Items</span> <span class="p">[]</span><span class="nx">TestResource</span> <span class="s">`json:&#34;items&#34;`</span>
-<span class="p">}</span>
-</code></pre></div><p><code>types.go</code> mainly specifies how a Go-type version of your CRD looks like.
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// TestResourceList is a list of TestResource resources.
+type TestResourceList struct {
+	metav1.TypeMeta `json:&quot;,inline&quot;`
+	metav1.ListMeta `json:&quot;metadata&quot;`
+
+	Items []TestResource `json:&quot;items&quot;`
+}
+</code></pre>
+<p><code>types.go</code> mainly specifies how a Go-type version of your CRD looks like.
 code-generator uses <code>TypeResource</code> and <code>TypeResourceList</code> struct to generate a code, and custom controller will use these structure to communicate with kube-apiserver (specifically, when generating HTTP requests).</p>
 <blockquote>
 <p><strong>Complex Status structure</strong>: My <code>TestResource</code> has a <code>Status</code> typed <code>string</code>, however, it can be a complex structure. For instance, the <code>Status</code> of Pod is defined as <a href="https://github.com/kubernetes/kubernetes/blob/v1.17.3/staging/src/k8s.io/apiserver/pkg/apis/example/v1/types.go#L56">[this]</a>. It works as long as you match this Go-typed spec and actual CRD.</p>
@@ -225,60 +359,64 @@ code-generator uses <code>TypeResource</code> and <code>TypeResourceList</code> 
 <p><strong>NoStatus</strong>: If you do not want to make <code>Status</code> in your CRD, erase the field and add <code>// +noStatus</code> tag to indicate to code-generator that this has no Status.</p>
 </blockquote>
 <p>Also note that you have to be careful for naming. You <strong>should capitalize</strong> all the fields so that your controller and the generated code can access those fields. In other words, for json names, you <strong>should not</strong> capitalize to make it work with HTTP APIs. For instance, <code>TestResourceSpec.CustomProperty</code> is a public field in Go, but its json name should be <code>customProperty</code>, not <code>CustomProperty</code>.</p>
-<h4 id="registergo">register.go<a href="#registergo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">v1beta1</span>
+<h4 id="registergo">register.go</h4>
+<pre><code class="language-go">package v1beta1
 
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="nx">metav1</span> <span class="s">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
-	<span class="s">&#34;k8s.io/apimachinery/pkg/runtime&#34;</span>
-	<span class="s">&#34;k8s.io/apimachinery/pkg/runtime/schema&#34;</span>
-<span class="p">)</span>
+import (
+	metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
+	&quot;k8s.io/apimachinery/pkg/runtime&quot;
+	&quot;k8s.io/apimachinery/pkg/runtime/schema&quot;
+)
 
-<span class="kd">var</span> <span class="p">(</span>
-	<span class="c1">// SchemeBuilder initializes a scheme builder
-</span><span class="c1"></span>	<span class="nx">SchemeBuilder</span> <span class="p">=</span> <span class="nx">runtime</span><span class="p">.</span><span class="nf">NewSchemeBuilder</span><span class="p">(</span><span class="nx">addKnownTypes</span><span class="p">)</span>
-	<span class="c1">// AddToScheme is a global function that registers this API group &amp; version to a scheme
-</span><span class="c1"></span>	<span class="nx">AddToScheme</span> <span class="p">=</span> <span class="nx">SchemeBuilder</span><span class="p">.</span><span class="nx">AddToScheme</span>
-<span class="p">)</span>
+var (
+	// SchemeBuilder initializes a scheme builder
+	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
+	// AddToScheme is a global function that registers this API group &amp; version to a scheme
+	AddToScheme = SchemeBuilder.AddToScheme
+)
 
-<span class="c1">// SchemeGroupVersion is group version used to register these objects.
-</span><span class="c1"></span><span class="kd">var</span> <span class="nx">SchemeGroupVersion</span> <span class="p">=</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">{</span>
-	<span class="nx">Group</span><span class="p">:</span>   <span class="nx">GroupName</span><span class="p">,</span>
-	<span class="nx">Version</span><span class="p">:</span> <span class="nx">Version</span><span class="p">,</span>
-<span class="p">}</span>
+// SchemeGroupVersion is group version used to register these objects.
+var SchemeGroupVersion = schema.GroupVersion{
+	Group:   GroupName,
+	Version: Version,
+}
 
-<span class="kd">func</span> <span class="nf">Resource</span><span class="p">(</span><span class="nx">resource</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">GroupResource</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="nx">SchemeGroupVersion</span><span class="p">.</span><span class="nf">WithResource</span><span class="p">(</span><span class="nx">resource</span><span class="p">).</span><span class="nf">GroupResource</span><span class="p">()</span>
-<span class="p">}</span>
+func Resource(resource string) schema.GroupResource {
+	return SchemeGroupVersion.WithResource(resource).GroupResource()
+}
 
-<span class="kd">func</span> <span class="nf">addKnownTypes</span><span class="p">(</span><span class="nx">scheme</span> <span class="o">*</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">Scheme</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">scheme</span><span class="p">.</span><span class="nf">AddKnownTypes</span><span class="p">(</span><span class="nx">SchemeGroupVersion</span><span class="p">,</span>
-		<span class="o">&amp;</span><span class="nx">TestResource</span><span class="p">{},</span>
-		<span class="o">&amp;</span><span class="nx">TestResourceList</span><span class="p">{},</span>
-	<span class="p">)</span>
-	<span class="nx">metav1</span><span class="p">.</span><span class="nf">AddToGroupVersion</span><span class="p">(</span><span class="nx">scheme</span><span class="p">,</span> <span class="nx">SchemeGroupVersion</span><span class="p">)</span>
-	<span class="k">return</span> <span class="kc">nil</span>
-<span class="p">}</span>
-</code></pre></div><p>The global variables are used by the generated-code internally, so you have to define all the variables, unless your controller will not be compiled.</p>
-<h3 id="get-generated-go-code-with-code-generator">Get generated Go code with code-generator<a href="#get-generated-go-code-with-code-generator" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+func addKnownTypes(scheme *runtime.Scheme) error {
+	scheme.AddKnownTypes(SchemeGroupVersion,
+		&amp;TestResource{},
+		&amp;TestResourceList{},
+	)
+	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
+	return nil
+}
+</code></pre>
+<p>The global variables are used by the generated-code internally, so you have to define all the variables, unless your controller will not be compiled.</p>
+<h3 id="get-generated-go-code-with-code-generator">Get generated Go code with code-generator</h3>
 <p>Now code for code-generator is ready. Let&rsquo;s get our generated code.
 But first, as code-generator assumes all our Go code is located based on <code>$GOPATH</code>, we have to fake the code-generator.</p>
 <p>code-generator and our Go module are at:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">~ $ tree -d -L <span class="m">1</span> ~
+<pre><code class="language-shell">~ $ tree -d -L 1 ~
 /root
-<span class="p">|</span>-- code-generator
-<span class="sb">`</span>-- kubernetes-test-controller
-</code></pre></div><p>Then, we specify our module&rsquo;s location to code-generator as:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">~/code-generator $ go mod edit -replace<span class="o">=</span>insujang.github.io/kubernetes-test-controller<span class="o">=</span>../kubernetes-test-controller
-</code></pre></div><p>This will indicate code-generator that any modules in <code>insujang.github.io</code> will be replaced by those with the same name in <code>..</code>. For instance, the module named <code>insujang.github.io/kubernetes-test-controller/lib/testresource/v1beta1</code> is replaced by <code>../kubernetes-test-controller/lib/testresource/v1beta1</code>.</p>
+|-- code-generator
+`-- kubernetes-test-controller
+</code></pre>
+<p>Then, we specify our module&rsquo;s location to code-generator as:</p>
+<pre><code class="language-shell">~/code-generator $ go mod edit -replace=insujang.github.io/kubernetes-test-controller=../kubernetes-test-controller
+</code></pre>
+<p>This will indicate code-generator that any modules in <code>insujang.github.io</code> will be replaced by those with the same name in <code>..</code>. For instance, the module named <code>insujang.github.io/kubernetes-test-controller/lib/testresource/v1beta1</code> is replaced by <code>../kubernetes-test-controller/lib/testresource/v1beta1</code>.</p>
 <p>This trick is a key that you can implement a custom controller outside <code>$GOPATH</code>. The code-generator works with the old legacy GOPATH mode, assuming all code is in <code>$GOPATH</code>. So, its input is a relative path from <code>$GOPATH/src</code>, and the generated code imports packages using the path. For instance, if you just use <code>../kubernetes-test-controller/lib/testresource</code> as an input of code-generator, the generated code all contains <code>import &quot;../kubernetes-test-controller/lib/testresource/&lt;subpath/to/packages&gt;&quot;</code>, which makes the generated code not usable in other modules, if you want to use the generated code as dependent packages.</p>
 <p>With the module path replacement, the following command will generate code.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">~/code-generator $ ./generate-groups.sh all insujang.github.io/kubernetes-test-controller/lib/testresource/generated insujang.github.io/kubernetes-test-controller/lib testresource:v1beta1 --go-header-file ./hack/boilerplate.go.txt --output-base ..
+<pre><code class="language-shell">~/code-generator $ ./generate-groups.sh all insujang.github.io/kubernetes-test-controller/lib/testresource/generated insujang.github.io/kubernetes-test-controller/lib testresource:v1beta1 --go-header-file ./hack/boilerplate.go.txt --output-base ..
 Generating deepcopy funcs
-Generating clientset <span class="k">for</span> testresource:v1beta1 at insujang.github.io/lib/testresource/generated/clientset
-Generating listers <span class="k">for</span> testresource:v1beta1 at insujang.github.io/lib/testresource/generated/listers
-Generating informers <span class="k">for</span> testresource:v1beta1 at insujang.github.io/lib/testresource/generated/informers
-</code></pre></div><ul>
+Generating clientset for testresource:v1beta1 at insujang.github.io/lib/testresource/generated/clientset
+Generating listers for testresource:v1beta1 at insujang.github.io/lib/testresource/generated/listers
+Generating informers for testresource:v1beta1 at insujang.github.io/lib/testresource/generated/informers
+</code></pre>
+<ul>
 <li>For third and fourth argument, you should match your directory structure with these arguments. In my case, the input code are in <code>~/kubernetes-test-controller/lib/testresource/v1beta1</code>. <code>insujang.github.io/lib</code> will be replaced <code>../kubernetes-test-controller/lib</code> due to <code>go mod edit -replace</code> operation that we did. A combination of this path and the target CRD <code>testresource:v1beta1</code> should be same with the actual directory containing the input code.</li>
 <li>For second argument, you can specify anything, but after specifying the path, you cannot modify the structure;
 I specified <code>insujang.github.io/lib/testresource/generated</code>. All packages in the directory should be imported with this path, such as <code>import &quot;insujang.github.io/lib/testresource/generated/clientset/versioned&quot;</code>.</li>
@@ -290,234 +428,240 @@ I specified <code>insujang.github.io/lib/testresource/generated</code>. All pack
 <li><code>testresource/generated/*</code> (as indicated through the second argument)</li>
 <li><code>testresource/v1beta1/zz_generated.deepcopy.go</code></li>
 </ul>
-<h4 id="move-the-generated-code">Move the generated code<a href="#move-the-generated-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<h4 id="move-the-generated-code">Move the generated code</h4>
 <p>The input code (types.go, register.go, and doc.go) are still necessary for the generated code to work. Currently the generated code and the input code is dividened, let&rsquo;s merge them.</p>
 <p>Simply, copy all the generated code into our project.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cp -r ~/insujang.github.io/kubernetes-test-controller/lib/testresource/* ~/kubernetes-test-controller/lib/testresource/
+<pre><code class="language-shell">$ cp -r ~/insujang.github.io/kubernetes-test-controller/lib/testresource/* ~/kubernetes-test-controller/lib/testresource/
 $ rm -r ~/insujang.github.io
-</code></pre></div><p>The result of the generated code looks like:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">~/kubernetes-test-controller $ tree -L <span class="m">4</span> .
+</code></pre>
+<p>The result of the generated code looks like:</p>
+<pre><code class="language-shell">~/kubernetes-test-controller $ tree -L 4 .
 .
-<span class="p">|</span>-- cmd
-<span class="p">|</span>   <span class="sb">`</span>-- controller
-<span class="p">|</span>-- go.mod
-<span class="p">|</span>-- go.sum
-<span class="sb">`</span>-- lib
-    <span class="sb">`</span>-- testresource
-        <span class="p">|</span>-- generated
-        <span class="p">|</span>   <span class="p">|</span>-- clientset
-        <span class="p">|</span>   <span class="p">|</span>-- informers
-        <span class="p">|</span>   <span class="sb">`</span>-- listers
-        <span class="sb">`</span>-- v1beta1
-            <span class="p">|</span>-- doc.go
-            <span class="p">|</span>-- register.go
-            <span class="p">|</span>-- types.go
-            <span class="sb">`</span>-- zz_generated.deepcopy.go
-</code></pre></div><p>The generated code, although it is outside <code>$GOPATH</code>, can be accessed via <code>insujang.github.io/lib/testresource/*</code> in this Go project!</p>
-<h2 id="2-implementing-custom-controller-based-on-the-generated-code-and-client-go">2. Implementing custom controller based on the generated code and client-go<a href="#2-implementing-custom-controller-based-on-the-generated-code-and-client-go" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+|-- cmd
+|   `-- controller
+|-- go.mod
+|-- go.sum
+`-- lib
+    `-- testresource
+        |-- generated
+        |   |-- clientset
+        |   |-- informers
+        |   `-- listers
+        `-- v1beta1
+            |-- doc.go
+            |-- register.go
+            |-- types.go
+            `-- zz_generated.deepcopy.go
+</code></pre>
+<p>The generated code, although it is outside <code>$GOPATH</code>, can be accessed via <code>insujang.github.io/lib/testresource/*</code> in this Go project!</p>
+<h2 id="2-implementing-custom-controller-based-on-the-generated-code-and-client-go">2. Implementing custom controller based on the generated code and client-go</h2>
 <p>Now let&rsquo;s implement our custom controller with the generated code at <code>~/kubernetes-test-controller/cmd/controller</code>.</p>
 <p>Sample-controller is well illustrated in <a href="https://github.com/kubernetes/sample-controller/blob/master/controller.go">[here]</a>.</p>
 <p>Explaining it simply, all we have to do is to register our custom resource objects into watcher, and add a control logic.</p>
-<h3 id="implementing-a-custom-resource-object-watcher">Implementing a custom resource object watcher<a href="#implementing-a-custom-resource-object-watcher" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<h3 id="implementing-a-custom-resource-object-watcher">Implementing a custom resource object watcher</h3>
+<pre><code class="language-go">package main
 
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;os&#34;</span>
-	<span class="s">&#34;time&#34;</span>
+import (
+	&quot;os&quot;
+	&quot;time&quot;
 
-	<span class="nx">corev1</span> <span class="s">&#34;k8s.io/api/core/v1&#34;</span>
-	<span class="nx">apiextensionsclientset</span> <span class="s">&#34;k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset&#34;</span>
-	<span class="nx">utilruntime</span> <span class="s">&#34;k8s.io/apimachinery/pkg/util/runtime&#34;</span>
-	<span class="s">&#34;k8s.io/apimachinery/pkg/util/wait&#34;</span>
-	<span class="s">&#34;k8s.io/client-go/kubernetes&#34;</span>
-	<span class="nx">typedcorev1</span> <span class="s">&#34;k8s.io/client-go/kubernetes/typed/core/v1&#34;</span>
-	<span class="s">&#34;k8s.io/client-go/tools/cache&#34;</span>
-	<span class="s">&#34;k8s.io/client-go/tools/clientcmd&#34;</span>
-	<span class="s">&#34;k8s.io/client-go/tools/record&#34;</span>
-	<span class="s">&#34;k8s.io/client-go/util/workqueue&#34;</span>
-	<span class="s">&#34;k8s.io/klog&#34;</span>
+	corev1 &quot;k8s.io/api/core/v1&quot;
+	apiextensionsclientset &quot;k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset&quot;
+	utilruntime &quot;k8s.io/apimachinery/pkg/util/runtime&quot;
+	&quot;k8s.io/apimachinery/pkg/util/wait&quot;
+	&quot;k8s.io/client-go/kubernetes&quot;
+	typedcorev1 &quot;k8s.io/client-go/kubernetes/typed/core/v1&quot;
+	&quot;k8s.io/client-go/tools/cache&quot;
+	&quot;k8s.io/client-go/tools/clientcmd&quot;
+	&quot;k8s.io/client-go/tools/record&quot;
+	&quot;k8s.io/client-go/util/workqueue&quot;
+	&quot;k8s.io/klog&quot;
 
-	<span class="nx">testresourceclienteset</span> <span class="s">&#34;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/clientset/versioned&#34;</span>
-	<span class="nx">testresourecescheme</span> <span class="s">&#34;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/clientset/versioned/scheme&#34;</span>
-	<span class="nx">testresourceinformers</span> <span class="s">&#34;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/informers/externalversions&#34;</span>
-	<span class="nx">testresourcelisters</span> <span class="s">&#34;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/listers/testresource/v1beta1&#34;</span>
-	<span class="nx">testresourcev1beta1</span> <span class="s">&#34;insujang.github.io/kubernetes-test-controller/lib/testresource/v1beta1&#34;</span>
-<span class="p">)</span>
+	testresourceclienteset &quot;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/clientset/versioned&quot;
+	testresourecescheme &quot;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/clientset/versioned/scheme&quot;
+	testresourceinformers &quot;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/informers/externalversions&quot;
+	testresourcelisters &quot;insujang.github.io/kubernetes-test-controller/lib/testresource/generated/listers/testresource/v1beta1&quot;
+	testresourcev1beta1 &quot;insujang.github.io/kubernetes-test-controller/lib/testresource/v1beta1&quot;
+)
 
-<span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">kubeclientset</span>          <span class="nx">kubernetes</span><span class="p">.</span><span class="nx">Interface</span>
-	<span class="nx">apiextensionsclientset</span> <span class="nx">apiextensionsclientset</span><span class="p">.</span><span class="nx">Interface</span>
-	<span class="nx">testresourceclientset</span>  <span class="nx">testresourceclienteset</span><span class="p">.</span><span class="nx">Interface</span>
-	<span class="nx">informer</span>               <span class="nx">cache</span><span class="p">.</span><span class="nx">SharedIndexInformer</span>
-	<span class="nx">lister</span>                 <span class="nx">testresourcelisters</span><span class="p">.</span><span class="nx">TestResourceLister</span>
-	<span class="nx">recorder</span>               <span class="nx">record</span><span class="p">.</span><span class="nx">EventRecorder</span>
-	<span class="nx">workqueue</span>              <span class="nx">workqueue</span><span class="p">.</span><span class="nx">RateLimitingInterface</span>
-<span class="p">}</span>
+type Controller struct {
+	kubeclientset          kubernetes.Interface
+	apiextensionsclientset apiextensionsclientset.Interface
+	testresourceclientset  testresourceclienteset.Interface
+	informer               cache.SharedIndexInformer
+	lister                 testresourcelisters.TestResourceLister
+	recorder               record.EventRecorder
+	workqueue              workqueue.RateLimitingInterface
+}
 
-<span class="kd">func</span> <span class="nf">NewController</span><span class="p">()</span> <span class="o">*</span><span class="nx">Controller</span> <span class="p">{</span>
-	<span class="nx">kubeconfig</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;KUBECONFIG&#34;</span><span class="p">)</span>
+func NewController() *Controller {
+	kubeconfig := os.Getenv(&quot;KUBECONFIG&quot;)
 
-	<span class="nx">config</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientcmd</span><span class="p">.</span><span class="nf">BuildConfigFromFlags</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span> <span class="nx">kubeconfig</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">klog</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
-	<span class="p">}</span>
+	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, kubeconfig)
+	if err != nil {
+		klog.Fatalf(err.Error())
+	}
 
-	<span class="nx">kubeClient</span> <span class="o">:=</span> <span class="nx">kubernetes</span><span class="p">.</span><span class="nf">NewForConfigOrDie</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
-	<span class="nx">apiextensionsClient</span> <span class="o">:=</span> <span class="nx">apiextensionsclientset</span><span class="p">.</span><span class="nf">NewForConfigOrDie</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
-	<span class="nx">testClient</span> <span class="o">:=</span> <span class="nx">testresourceclienteset</span><span class="p">.</span><span class="nf">NewForConfigOrDie</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
+	kubeClient := kubernetes.NewForConfigOrDie(config)
+	apiextensionsClient := apiextensionsclientset.NewForConfigOrDie(config)
+	testClient := testresourceclienteset.NewForConfigOrDie(config)
 
-	<span class="nx">informerFactory</span> <span class="o">:=</span> <span class="nx">testresourceinformers</span><span class="p">.</span><span class="nf">NewSharedInformerFactory</span><span class="p">(</span><span class="nx">testClient</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span>
-	<span class="nx">informer</span> <span class="o">:=</span> <span class="nx">informerFactory</span><span class="p">.</span><span class="nf">Insujang</span><span class="p">().</span><span class="nf">V1beta1</span><span class="p">().</span><span class="nf">TestResources</span><span class="p">()</span>
-	<span class="nx">informer</span><span class="p">.</span><span class="nf">Informer</span><span class="p">().</span><span class="nf">AddEventHandler</span><span class="p">(</span><span class="nx">cache</span><span class="p">.</span><span class="nx">ResourceEventHandlerFuncs</span><span class="p">{</span>
-		<span class="nx">AddFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">object</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
-			<span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Added: %v&#34;</span><span class="p">,</span> <span class="nx">object</span><span class="p">)</span>
-		<span class="p">},</span>
-		<span class="nx">UpdateFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">oldObject</span><span class="p">,</span> <span class="nx">newObject</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
-			<span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Updated: %v&#34;</span><span class="p">,</span> <span class="nx">newObject</span><span class="p">)</span>
-		<span class="p">},</span>
-		<span class="nx">DeleteFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">object</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
-			<span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Deleted: %v&#34;</span><span class="p">,</span> <span class="nx">object</span><span class="p">)</span>
-		<span class="p">},</span>
-	<span class="p">})</span>
-	<span class="nx">informerFactory</span><span class="p">.</span><span class="nf">Start</span><span class="p">(</span><span class="nx">wait</span><span class="p">.</span><span class="nx">NeverStop</span><span class="p">)</span>
+	informerFactory := testresourceinformers.NewSharedInformerFactory(testClient, time.Minute*1)
+	informer := informerFactory.Insujang().V1beta1().TestResources()
+	informer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: func(object interface{}) {
+			klog.Infof(&quot;Added: %v&quot;, object)
+		},
+		UpdateFunc: func(oldObject, newObject interface{}) {
+			klog.Infof(&quot;Updated: %v&quot;, newObject)
+		},
+		DeleteFunc: func(object interface{}) {
+			klog.Infof(&quot;Deleted: %v&quot;, object)
+		},
+	})
+	informerFactory.Start(wait.NeverStop)
 
-	<span class="nx">utilruntime</span><span class="p">.</span><span class="nf">Must</span><span class="p">(</span><span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nf">AddToScheme</span><span class="p">(</span><span class="nx">testresourecescheme</span><span class="p">.</span><span class="nx">Scheme</span><span class="p">))</span>
-	<span class="nx">eventBroadcaster</span> <span class="o">:=</span> <span class="nx">record</span><span class="p">.</span><span class="nf">NewBroadcaster</span><span class="p">()</span>
-	<span class="nx">eventBroadcaster</span><span class="p">.</span><span class="nf">StartLogging</span><span class="p">(</span><span class="nx">klog</span><span class="p">.</span><span class="nx">Infof</span><span class="p">)</span>
-	<span class="nx">eventBroadcaster</span><span class="p">.</span><span class="nf">StartRecordingToSink</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">typedcorev1</span><span class="p">.</span><span class="nx">EventSinkImpl</span><span class="p">{</span><span class="nx">Interface</span><span class="p">:</span> <span class="nx">kubeClient</span><span class="p">.</span><span class="nf">CoreV1</span><span class="p">().</span><span class="nf">Events</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">)})</span>
-	<span class="nx">recorder</span> <span class="o">:=</span> <span class="nx">eventBroadcaster</span><span class="p">.</span><span class="nf">NewRecorder</span><span class="p">(</span><span class="nx">testresourecescheme</span><span class="p">.</span><span class="nx">Scheme</span><span class="p">,</span> <span class="nx">corev1</span><span class="p">.</span><span class="nx">EventSource</span><span class="p">{</span><span class="nx">Component</span><span class="p">:</span> <span class="s">&#34;testresource-controller&#34;</span><span class="p">})</span>
+	utilruntime.Must(testresourcev1beta1.AddToScheme(testresourecescheme.Scheme))
+	eventBroadcaster := record.NewBroadcaster()
+	eventBroadcaster.StartLogging(klog.Infof)
+	eventBroadcaster.StartRecordingToSink(&amp;typedcorev1.EventSinkImpl{Interface: kubeClient.CoreV1().Events(&quot;&quot;)})
+	recorder := eventBroadcaster.NewRecorder(testresourecescheme.Scheme, corev1.EventSource{Component: &quot;testresource-controller&quot;})
 
-	<span class="nx">workqueue</span> <span class="o">:=</span> <span class="nx">workqueue</span><span class="p">.</span><span class="nf">NewRateLimitingQueue</span><span class="p">(</span><span class="nx">workqueue</span><span class="p">.</span><span class="nf">DefaultControllerRateLimiter</span><span class="p">())</span>
+	workqueue := workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
 
-	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">Controller</span><span class="p">{</span>
-		<span class="nx">kubeclientset</span><span class="p">:</span>          <span class="nx">kubeClient</span><span class="p">,</span>
-		<span class="nx">apiextensionsclientset</span><span class="p">:</span> <span class="nx">apiextensionsClient</span><span class="p">,</span>
-		<span class="nx">testresourceclientset</span><span class="p">:</span>  <span class="nx">testClient</span><span class="p">,</span>
-    <span class="nx">informer</span><span class="p">:</span>               <span class="nx">informer</span><span class="p">.</span><span class="nf">Informer</span><span class="p">(),</span>
-    <span class="nx">lister</span><span class="p">:</span>                 <span class="nx">informer</span><span class="p">.</span><span class="nf">Lister</span><span class="p">(),</span>
-		<span class="nx">recorder</span><span class="p">:</span>               <span class="nx">recorder</span><span class="p">,</span>
-		<span class="nx">workqueue</span><span class="p">:</span>              <span class="nx">workqueue</span><span class="p">,</span>
-	<span class="p">}</span>
-<span class="p">}</span>
+	return &amp;Controller{
+		kubeclientset:          kubeClient,
+		apiextensionsclientset: apiextensionsClient,
+		testresourceclientset:  testClient,
+    informer:               informer.Informer(),
+    lister:                 informer.Lister(),
+		recorder:               recorder,
+		workqueue:              workqueue,
+	}
+}
 
-</code></pre></div><p>It should have been hard to manually implement <code>testresourceclientset.NewforConfig()</code>, <code>testresourceinformers.NewSharedInformerFactory()</code>, etc. Thanks to code-generator, all these are automatically generated.
+</code></pre>
+<p>It should have been hard to manually implement <code>testresourceclientset.NewforConfig()</code>, <code>testresourceinformers.NewSharedInformerFactory()</code>, etc. Thanks to code-generator, all these are automatically generated.
 You can easily find out that you just implement the line 50~52 to handle object.</p>
-<h3 id="running-the-watcher">Running the watcher<a href="#running-the-watcher" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h3 id="running-the-watcher">Running the watcher</h3>
 <p>Before we use the controller, we first sync the local cache. Then we can use an event loop, handling events.</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">Run</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">defer</span> <span class="nx">utilruntime</span><span class="p">.</span><span class="nf">HandleCrash</span><span class="p">()</span>
-	<span class="k">defer</span> <span class="nx">c</span><span class="p">.</span><span class="nx">workqueue</span><span class="p">.</span><span class="nf">ShutDown</span><span class="p">()</span>
+<pre><code class="language-go">func (c *Controller) Run() {
+	defer utilruntime.HandleCrash()
+	defer c.workqueue.ShutDown()
 
-	<span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Waiting cache to be synced.&#34;</span><span class="p">)</span>
-	<span class="c1">// Handle timeout for syncing.
-</span><span class="c1"></span>	<span class="nx">timeout</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
-	<span class="nx">timeoutCh</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
-	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="o">&lt;-</span><span class="nx">timeout</span><span class="p">.</span><span class="nx">C</span>
-		<span class="nx">timeoutCh</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
-	<span class="p">}()</span>
-	<span class="k">if</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">.</span><span class="nf">WaitForCacheSync</span><span class="p">(</span><span class="nx">timeoutCh</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">informer</span><span class="p">.</span><span class="nx">HasSynced</span><span class="p">);</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
-		<span class="nx">klog</span><span class="p">.</span><span class="nf">Fatalln</span><span class="p">(</span><span class="s">&#34;Timeout expired during waiting for caches to sync.&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
+	klog.Infoln(&quot;Waiting cache to be synced.&quot;)
+	// Handle timeout for syncing.
+	timeout := time.NewTimer(time.Second * 30)
+	timeoutCh := make(chan struct{})
+	go func() {
+		&lt;-timeout.C
+		timeoutCh &lt;- struct{}{}
+	}()
+	if ok := cache.WaitForCacheSync(timeoutCh, c.informer.HasSynced); !ok {
+		klog.Fatalln(&quot;Timeout expired during waiting for caches to sync.&quot;)
+	}
 
-	<span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Starting custom controller.&#34;</span><span class="p">)</span>
-	<span class="k">select</span> <span class="p">{}</span>
-<span class="p">}</span>
+	klog.Infoln(&quot;Starting custom controller.&quot;)
+	select {}
+}
 
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">controller</span> <span class="o">:=</span> <span class="nf">NewController</span><span class="p">()</span>
-  <span class="nx">controller</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div><p>However, currently CRD is not registered, the code will print the following error:</p>
+func main() {
+  controller := NewController()
+  controller.Run()
+}
+</code></pre>
+<p>However, currently CRD is not registered, the code will print the following error:</p>
 <pre><code>I0406 17:19:45.234148   28602 types.go:85] Waiting cache to be synced.
 E0406 17:19:45.239971   28602 reflector.go:178] pkg/mod/k8s.io/client-go@v0.18.0/tools/cache/reflector.go:125: Failed to list *v1beta1.TestResource: the server could not find the requested resource (get testresources.insujang.github.io)
-</code></pre><h3 id="register-a-crd-programmatically">Register a CRD programmatically<a href="#register-a-crd-programmatically" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre>
+<h3 id="register-a-crd-programmatically">Register a CRD programmatically</h3>
 <p>It is okay to use a yaml file for CRD registration, but here I want to register it programatically.</p>
 <p><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> mentions how to do it, but explanation is so insufficiant that I could not implement a new one.</p>
 <p>Here is an example of how to register TestResource CRD into Kubernetes.</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<pre><code class="language-go">package main
 
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;fmt&#34;</span>
-	<span class="s">&#34;time&#34;</span>
+import (
+	&quot;fmt&quot;
+	&quot;time&quot;
 
-	<span class="nx">testresourcev1beta1</span> <span class="s">&#34;insujang.github.io/kubernetes-test-controller/lib/testresource/v1beta1&#34;</span>
-	<span class="nx">apiextensions</span> <span class="s">&#34;k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1&#34;</span>
-	<span class="nx">metav1</span> <span class="s">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
-	<span class="s">&#34;k8s.io/apimachinery/pkg/util/wait&#34;</span>
-	<span class="s">&#34;k8s.io/klog&#34;</span>
-<span class="p">)</span>
+	testresourcev1beta1 &quot;insujang.github.io/kubernetes-test-controller/lib/testresource/v1beta1&quot;
+	apiextensions &quot;k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1&quot;
+	metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
+	&quot;k8s.io/apimachinery/pkg/util/wait&quot;
+	&quot;k8s.io/klog&quot;
+)
 
-<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">waitCRDAccepted</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">wait</span><span class="p">.</span><span class="nf">Poll</span><span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span> <span class="kd">func</span><span class="p">()</span> <span class="p">(</span><span class="kt">bool</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">crd</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">apiextensionsclientset</span><span class="p">.</span><span class="nf">ApiextensionsV1beta1</span><span class="p">().</span><span class="nf">CustomResourceDefinitions</span><span class="p">().</span><span class="nf">Get</span><span class="p">(</span><span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">GetOptions</span><span class="p">{})</span>
+func (c *Controller) waitCRDAccepted() error {
+	err := wait.Poll(1*time.Second, 10*time.Second, func() (bool, error) {
+		crd, err := c.apiextensionsclientset.ApiextensionsV1beta1().CustomResourceDefinitions().Get(testresourcev1beta1.Name, metav1.GetOptions{})
 
-		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">err</span>
-		<span class="p">}</span>
+		if err != nil {
+			return false, err
+		}
 
-		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">condition</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">crd</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Conditions</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="nx">condition</span><span class="p">.</span><span class="nx">Type</span> <span class="o">==</span> <span class="nx">apiextensions</span><span class="p">.</span><span class="nx">Established</span> <span class="o">&amp;&amp;</span>
-				<span class="nx">condition</span><span class="p">.</span><span class="nx">Status</span> <span class="o">==</span> <span class="nx">apiextensions</span><span class="p">.</span><span class="nx">ConditionTrue</span> <span class="p">{</span>
-				<span class="k">return</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">nil</span>
-			<span class="p">}</span>
-		<span class="p">}</span>
+		for _, condition := range crd.Status.Conditions {
+			if condition.Type == apiextensions.Established &amp;&amp;
+				condition.Status == apiextensions.ConditionTrue {
+				return true, nil
+			}
+		}
 
-		<span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;CRD is not accepted&#34;</span><span class="p">)</span>
-	<span class="p">})</span>
+		return false, fmt.Errorf(&quot;CRD is not accepted&quot;)
+	})
 
-	<span class="k">return</span> <span class="nx">err</span>
-<span class="p">}</span>
+	return err
+}
 
-<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">CreateCRD</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">crd</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">CustomResourceDefinition</span><span class="p">{</span>
-		<span class="nx">ObjectMeta</span><span class="p">:</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">{</span>
-			<span class="nx">Name</span><span class="p">:</span> <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
-		<span class="p">},</span>
-		<span class="nx">Spec</span><span class="p">:</span> <span class="nx">apiextensions</span><span class="p">.</span><span class="nx">CustomResourceDefinitionSpec</span><span class="p">{</span>
-			<span class="nx">Group</span><span class="p">:</span>   <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">GroupName</span><span class="p">,</span>
-			<span class="nx">Version</span><span class="p">:</span> <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">Version</span><span class="p">,</span>
-			<span class="nx">Scope</span><span class="p">:</span>   <span class="nx">apiextensions</span><span class="p">.</span><span class="nx">NamespaceScoped</span><span class="p">,</span>
-			<span class="nx">Names</span><span class="p">:</span> <span class="nx">apiextensions</span><span class="p">.</span><span class="nx">CustomResourceDefinitionNames</span><span class="p">{</span>
-				<span class="nx">Plural</span><span class="p">:</span>     <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">Plural</span><span class="p">,</span>
-				<span class="nx">Singular</span><span class="p">:</span>   <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">Singluar</span><span class="p">,</span>
-				<span class="nx">Kind</span><span class="p">:</span>       <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">Kind</span><span class="p">,</span>
-				<span class="nx">ShortNames</span><span class="p">:</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">ShortName</span><span class="p">},</span>
-			<span class="p">},</span>
-			<span class="nx">Validation</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">CustomResourceValidation</span><span class="p">{</span>
-				<span class="nx">OpenAPIV3Schema</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">JSONSchemaProps</span><span class="p">{</span>
-					<span class="nx">Type</span><span class="p">:</span> <span class="s">&#34;object&#34;</span><span class="p">,</span>
-					<span class="nx">Properties</span><span class="p">:</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">JSONSchemaProps</span><span class="p">{</span>
-						<span class="s">&#34;spec&#34;</span><span class="p">:</span> <span class="p">{</span>
-							<span class="nx">Type</span><span class="p">:</span> <span class="s">&#34;object&#34;</span><span class="p">,</span>
-							<span class="nx">Properties</span><span class="p">:</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">JSONSchemaProps</span><span class="p">{</span>
-								<span class="s">&#34;command&#34;</span><span class="p">:</span>        <span class="p">{</span><span class="nx">Type</span><span class="p">:</span> <span class="s">&#34;string&#34;</span><span class="p">,</span> <span class="nx">Pattern</span><span class="p">:</span> <span class="s">&#34;^(echo).*&#34;</span><span class="p">},</span>
-								<span class="s">&#34;customProperty&#34;</span><span class="p">:</span> <span class="p">{</span><span class="nx">Type</span><span class="p">:</span> <span class="s">&#34;string&#34;</span><span class="p">},</span>
-							<span class="p">},</span>
-							<span class="nx">Required</span><span class="p">:</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;command&#34;</span><span class="p">,</span> <span class="s">&#34;customProperty&#34;</span><span class="p">},</span>
-						<span class="p">},</span>
-					<span class="p">},</span>
-				<span class="p">},</span>
-			<span class="p">},</span>
-			<span class="nx">AdditionalPrinterColumns</span><span class="p">:</span> <span class="p">[]</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">CustomResourceColumnDefinition</span><span class="p">{</span>
-				<span class="p">{</span>
-					<span class="nx">Name</span><span class="p">:</span>     <span class="s">&#34;command&#34;</span><span class="p">,</span>
-					<span class="nx">Type</span><span class="p">:</span>     <span class="s">&#34;string&#34;</span><span class="p">,</span>
-					<span class="nx">JSONPath</span><span class="p">:</span> <span class="s">&#34;.spec.command&#34;</span><span class="p">,</span>
-				<span class="p">},</span>
-			<span class="p">},</span>
-		<span class="p">},</span>
-	<span class="p">}</span>
+func (c *Controller) CreateCRD() error {
+	crd := &amp;apiextensions.CustomResourceDefinition{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: testresourcev1beta1.Name,
+		},
+		Spec: apiextensions.CustomResourceDefinitionSpec{
+			Group:   testresourcev1beta1.GroupName,
+			Version: testresourcev1beta1.Version,
+			Scope:   apiextensions.NamespaceScoped,
+			Names: apiextensions.CustomResourceDefinitionNames{
+				Plural:     testresourcev1beta1.Plural,
+				Singular:   testresourcev1beta1.Singluar,
+				Kind:       testresourcev1beta1.Kind,
+				ShortNames: []string{testresourcev1beta1.ShortName},
+			},
+			Validation: &amp;apiextensions.CustomResourceValidation{
+				OpenAPIV3Schema: &amp;apiextensions.JSONSchemaProps{
+					Type: &quot;object&quot;,
+					Properties: map[string]apiextensions.JSONSchemaProps{
+						&quot;spec&quot;: {
+							Type: &quot;object&quot;,
+							Properties: map[string]apiextensions.JSONSchemaProps{
+								&quot;command&quot;:        {Type: &quot;string&quot;, Pattern: &quot;^(echo).*&quot;},
+								&quot;customProperty&quot;: {Type: &quot;string&quot;},
+							},
+							Required: []string{&quot;command&quot;, &quot;customProperty&quot;},
+						},
+					},
+				},
+			},
+			AdditionalPrinterColumns: []apiextensions.CustomResourceColumnDefinition{
+				{
+					Name:     &quot;command&quot;,
+					Type:     &quot;string&quot;,
+					JSONPath: &quot;.spec.command&quot;,
+				},
+			},
+		},
+	}
 
-	<span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">apiextensionsclientset</span><span class="p">.</span><span class="nf">ApiextensionsV1beta1</span><span class="p">().</span><span class="nf">CustomResourceDefinitions</span><span class="p">().</span><span class="nf">Create</span><span class="p">(</span><span class="nx">crd</span><span class="p">)</span>
+	_, err := c.apiextensionsclientset.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
 
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">klog</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
-	<span class="p">}</span>
+	if err != nil {
+		klog.Fatalf(err.Error())
+	}
 
-	<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nf">waitCRDAccepted</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div><blockquote>
+	return c.waitCRDAccepted()
+}
+</code></pre>
+<blockquote>
 <p>Note that you have to check whether the CRD registration succeeded after creating a CRD.</p>
 </blockquote>
 <blockquote>
@@ -526,20 +670,22 @@ E0406 17:19:45.239971   28602 reflector.go:178] pkg/mod/k8s.io/client-go@v0.18.0
 <blockquote>
 <p>If you want to specify objects for your custom properties, use recursive <code>apiextensions.JsonSchemaProps</code>.</p>
 <p>For array types, use the following code:</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="s">&#34;customProperty&#34;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="nx">Type</span><span class="p">:</span> <span class="s">&#34;array&#34;</span><span class="p">,</span>
-  <span class="nx">Items</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">JsonSchemaPropsOrArray</span><span class="p">{</span>
-     <span class="nx">Schema</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">apiextensions</span><span class="p">.</span><span class="nx">JsonSchemaProps</span><span class="p">{</span><span class="nx">Type</span><span class="p">:</span> <span class="s">&#34;string&#34;</span><span class="p">},</span>
-  <span class="p">},</span>
-<span class="p">}</span>
-</code></pre></div><p>The <code>customProperty</code> will have string array.</p>
+<pre><code class="language-go">&quot;customProperty&quot;: {
+  Type: &quot;array&quot;,
+  Items: &amp;apiextensions.JsonSchemaPropsOrArray{
+     Schema: &amp;apiextensions.JsonSchemaProps{Type: &quot;string&quot;},
+  },
+}
+</code></pre>
+<p>The <code>customProperty</code> will have string array.</p>
 </blockquote>
 <p>Review <code>TestResourceSpec</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">TestResourceSpec</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">Command</span>        <span class="kt">string</span> <span class="s">`json:&#34;command&#34;`</span>
-	<span class="nx">CustomProperty</span> <span class="kt">string</span> <span class="s">`json:&#34;customProperty&#34;`</span>
-<span class="p">}</span>
-</code></pre></div><ul>
+<pre><code class="language-go">type TestResourceSpec struct {
+	Command        string `json:&quot;command&quot;`
+	CustomProperty string `json:&quot;customProperty&quot;`
+}
+</code></pre>
+<ul>
 <li>It has two properties: <code>command</code> and <code>customProperty</code>. This kind of specifications should be in Validation field of <code>apiextensions.CustomResourceDefinition</code>.</li>
 <li>I added both fields are required when creating a custom resource typed <code>TestResource</code> CRD. When creating a <code>TestResource</code> custom resource, it will fail if we do not put values for both fields.</li>
 <li>I specified <code>AdditionalPrinterColumns</code>. it is for kubectl: when <code>kubectl get testresources</code>, additional columns specified are shown together with their names.</li>
@@ -547,7 +693,7 @@ E0406 17:19:45.239971   28602 reflector.go:178] pkg/mod/k8s.io/client-go@v0.18.0
 <blockquote>
 <p>To investigate more, refer to <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.</p>
 </blockquote>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl describe crds testresources.insujang.github.io
+<pre><code class="language-shell">$ kubectl describe crds testresources.insujang.github.io
 Namespace:    
 Labels:       &lt;none&gt;
 Annotations:  &lt;none&gt;
@@ -565,12 +711,12 @@ Spec:
     Short Names:
       tr
     Singular:               testresource
-  Preserve Unknown Fields:  <span class="nb">true</span>
+  Preserve Unknown Fields:  true
   Scope:                    Namespaced
   Versions:
     Additional Printer Columns:
       Json Path:  .spec.command
-      Name:       <span class="nb">command</span>
+      Name:       command
       Type:       string
     Name:         v1beta1
     Schema:
@@ -579,17 +725,17 @@ Spec:
           Spec:
             Properties:
               Command:
-                Pattern:  ^<span class="o">(</span><span class="nb">echo</span><span class="o">)</span>.*
+                Pattern:  ^(echo).*
                 Type:     string
               Custom Property:
                 Type:  string
             Required:
-              <span class="nb">command</span>
+              command
               customProperty
             Type:  object
         Type:      object
-    Served:        <span class="nb">true</span>
-    Storage:       <span class="nb">true</span>
+    Served:        true
+    Storage:       true
 Status:
   Accepted Names:
     Kind:       TestResource
@@ -611,78 +757,84 @@ Status:
     Type:                  Established
   Stored Versions:
     v1beta1
-</code></pre></div><p>Test it with the following yaml!</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat create_cr.yaml
+</code></pre>
+<p>Test it with the following yaml!</p>
+<pre><code class="language-shell">$ cat create_cr.yaml
 apiVersion: insujang.github.io/v1beta1
 kind: TestResource
 metadata:
         name: example-tr
 spec:
-        command: <span class="s2">&#34;echo Hello World!&#34;</span>
-        customProperty: <span class="s2">&#34;asdasd=1234&#34;</span>
+        command: &quot;echo Hello World!&quot;
+        customProperty: &quot;asdasd=1234&quot;
 
 $ kubectl apply -f create_custom_resource.yaml 
 testresource.insujang.github.io/example-tr created
 
 $ kubectl get testresources
 NAME         COMMAND
-example-tr   <span class="nb">echo</span> Hello World!
-</code></pre></div><h3 id="create-s-custom-resource-programmatically">Create s custom resource programmatically<a href="#create-s-custom-resource-programmatically" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+example-tr   echo Hello World!
+</code></pre>
+<h3 id="create-s-custom-resource-programmatically">Create s custom resource programmatically</h3>
 <p>Right above, we create a TestResource using yaml.
 Creating a custom resource is not different from creating Kubernetes native resources.</p>
 <p>Here, the input code for code-generator is used to specify an object' spec.</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">CreateObject</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">object</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">TestResource</span><span class="p">{</span>
-		<span class="nx">ObjectMeta</span><span class="p">:</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">{</span>
-			<span class="nx">Name</span><span class="p">:</span>      <span class="s">&#34;example-tr2&#34;</span><span class="p">,</span>
-			<span class="nx">Namespace</span><span class="p">:</span> <span class="nx">corev1</span><span class="p">.</span><span class="nx">NamespaceDefault</span><span class="p">,</span>
-		<span class="p">},</span>
-		<span class="nx">Spec</span><span class="p">:</span> <span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">TestResourceSpec</span><span class="p">{</span>
-			<span class="nx">Command</span><span class="p">:</span>        <span class="s">&#34;echo Hello World!&#34;</span><span class="p">,</span>
-			<span class="nx">CustomProperty</span><span class="p">:</span> <span class="s">&#34;asdasd=1234&#34;</span><span class="p">,</span>
-		<span class="p">},</span>
-	<span class="p">}</span>
+<pre><code class="language-go">func (c *Controller) CreateObject() error {
+	object := &amp;testresourcev1beta1.TestResource{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      &quot;example-tr2&quot;,
+			Namespace: corev1.NamespaceDefault,
+		},
+		Spec: testresourcev1beta1.TestResourceSpec{
+			Command:        &quot;echo Hello World!&quot;,
+			CustomProperty: &quot;asdasd=1234&quot;,
+		},
+	}
 
-	<span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">testresourceclientset</span><span class="p">.</span><span class="nf">InsujangV1beta1</span><span class="p">().</span><span class="nf">TestResources</span><span class="p">(</span><span class="nx">corev1</span><span class="p">.</span><span class="nx">NamespaceDefault</span><span class="p">).</span><span class="nf">Create</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
-	<span class="k">return</span> <span class="nx">err</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="implementing-a-control-logic">Implementing a control logic<a href="#implementing-a-control-logic" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+	_, err := c.testresourceclientset.InsujangV1beta1().TestResources(corev1.NamespaceDefault).Create(object)
+	return err
+}
+</code></pre>
+<h3 id="implementing-a-control-logic">Implementing a control logic</h3>
 <p>Meanwhile, our custom controller receives <strong>added event</strong> from kube-apiserver when you create objects.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">go run .
-I0406 18:08:49.084638   <span class="m">13160</span> types.go:85<span class="o">]</span> Waiting cache to be synced.
-I0406 18:08:49.184743   <span class="m">13160</span> types.go:97<span class="o">]</span> Starting custom controller.
-I0406 18:08:55.036674   <span class="m">13160</span> types.go:52<span class="o">]</span> Added: <span class="p">&amp;</span><span class="o">{</span>... <span class="o">{</span>example-tr  default /apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-tr f0d66c6f-c843-40e7-921a-6f7eae726417 <span class="m">21342187</span> <span class="m">1</span> 2020-04-06 18:08:55 +0900 KST &lt;nil&gt; &lt;nil&gt; map<span class="o">[]</span> map<span class="o">[</span>kubectl.kubernetes.io/last-applied-configuration:<span class="o">{</span><span class="s2">&#34;apiVersion&#34;</span>:<span class="s2">&#34;insujang.github.io/v1beta1&#34;</span>,<span class="s2">&#34;kind&#34;</span>:<span class="s2">&#34;TestResource&#34;</span>,<span class="s2">&#34;metadata&#34;</span>:<span class="o">{</span><span class="s2">&#34;annotations&#34;</span>:<span class="o">{}</span>,<span class="s2">&#34;name&#34;</span>:<span class="s2">&#34;example-tr&#34;</span>,<span class="s2">&#34;namespace&#34;</span>:<span class="s2">&#34;default&#34;</span><span class="o">}</span>,<span class="s2">&#34;spec&#34;</span>:<span class="o">{</span><span class="s2">&#34;command&#34;</span>:<span class="s2">&#34;echo Hello World!&#34;</span>,<span class="s2">&#34;customProperty&#34;</span>:<span class="s2">&#34;asdasd=1234&#34;</span><span class="o">}}</span> ...<span class="o">}}</span>
-</code></pre></div><p>In <a href="#implementing-a-custom-resource-object-watcher">[here]</a>, we only implemented a <strong>watcher</strong>. It does not have modification functionality. Imagine that after Kubelet runs a container, the corresponding Pod&rsquo;s status is changed from <code>PENDING</code> to <code>RUNNING</code>.</p>
+<pre><code class="language-shell">go run .
+I0406 18:08:49.084638   13160 types.go:85] Waiting cache to be synced.
+I0406 18:08:49.184743   13160 types.go:97] Starting custom controller.
+I0406 18:08:55.036674   13160 types.go:52] Added: &amp;{... {example-tr  default /apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-tr f0d66c6f-c843-40e7-921a-6f7eae726417 21342187 1 2020-04-06 18:08:55 +0900 KST &lt;nil&gt; &lt;nil&gt; map[] map[kubectl.kubernetes.io/last-applied-configuration:{&quot;apiVersion&quot;:&quot;insujang.github.io/v1beta1&quot;,&quot;kind&quot;:&quot;TestResource&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;name&quot;:&quot;example-tr&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;command&quot;:&quot;echo Hello World!&quot;,&quot;customProperty&quot;:&quot;asdasd=1234&quot;}} ...}}
+</code></pre>
+<p>In <a href="#implementing-a-custom-resource-object-watcher">[here]</a>, we only implemented a <strong>watcher</strong>. It does not have modification functionality. Imagine that after Kubelet runs a container, the corresponding Pod&rsquo;s status is changed from <code>PENDING</code> to <code>RUNNING</code>.</p>
 <p>Now we modify the added callback function:</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="o">...</span>
-<span class="nx">c</span><span class="p">.</span><span class="nx">informer</span><span class="p">.</span><span class="nf">AddEventHandler</span><span class="p">(</span><span class="nx">cache</span><span class="p">.</span><span class="nx">ResourceEventHandlerFuncs</span><span class="p">{</span>
-		<span class="nx">AddFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">object</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
-			<span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Added: %v&#34;</span><span class="p">,</span> <span class="nx">object</span><span class="p">)</span>
-		<span class="p">},</span>
-    <span class="o">...</span>
-<span class="p">})</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">objectAddedCallback</span><span class="p">(</span><span class="nx">object</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
-		<span class="c1">// You can get TestResource type as this
-</span><span class="c1"></span>	<span class="nx">resource</span> <span class="o">:=</span> <span class="nx">object</span><span class="p">.(</span><span class="o">*</span><span class="nx">testresourcev1beta1</span><span class="p">.</span><span class="nx">TestResource</span><span class="p">)</span>
+<pre><code class="language-go">...
+c.informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: func(object interface{}) {
+			klog.Infof(&quot;Added: %v&quot;, object)
+		},
+    ...
+})
+</code></pre>
+<pre><code class="language-go">func (c *Controller) objectAddedCallback(object interface{}) {
+		// You can get TestResource type as this
+	resource := object.(*testresourcev1beta1.TestResource)
 
-	<span class="c1">// or this
-</span><span class="c1"></span>	<span class="nx">key</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">.</span><span class="nf">MetaNamespaceKeyFunc</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
-	<span class="nx">namespace</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">.</span><span class="nf">SplitMetaNamespaceKey</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
-  <span class="nx">resource</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">lister</span><span class="p">.</span><span class="nf">TestResources</span><span class="p">(</span><span class="nx">namespace</span><span class="p">).</span><span class="nf">Get</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+	// or this
+	key, _ := cache.MetaNamespaceKeyFunc(object)
+	namespace, name, _ := cache.SplitMetaNamespaceKey(key)
+  resource, _ := c.lister.TestResources(namespace).Get(name)
   
-	<span class="nx">copy</span> <span class="o">:=</span> <span class="nx">resource</span><span class="p">.</span><span class="nf">DeepCopy</span><span class="p">()</span>
-	<span class="nx">copy</span><span class="p">.</span><span class="nx">Status</span> <span class="p">=</span> <span class="s">&#34;HANDLED&#34;</span>
-	<span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">testresourceclientset</span><span class="p">.</span><span class="nf">InsujangV1beta1</span><span class="p">().</span><span class="nf">TestResources</span><span class="p">(</span><span class="nx">corev1</span><span class="p">.</span><span class="nx">NamespaceDefault</span><span class="p">).</span><span class="nf">Update</span><span class="p">(</span><span class="nx">copy</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
-		<span class="k">return</span>
-	<span class="p">}</span>
+	copy := resource.DeepCopy()
+	copy.Status = &quot;HANDLED&quot;
+	_, err := c.testresourceclientset.InsujangV1beta1().TestResources(corev1.NamespaceDefault).Update(copy)
+	if err != nil {
+		klog.Errorf(err.Error())
+		return
+	}
 
-	<span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="nx">copy</span><span class="p">)</span>
+	klog.Infoln(copy)
 
-	<span class="nx">c</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">copy</span><span class="p">,</span> <span class="nx">corev1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;ObjectHandled&#34;</span><span class="p">,</span> <span class="s">&#34;Object is handled by custom controller.&#34;</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div><p>This callback function is called when an object is added into Kubernetes cluster. What the callback function does is to modify its Status to <code>&quot;HANDLED&quot;</code>, and update it to kube-apiserver.</p>
+	c.recorder.Event(copy, corev1.EventTypeNormal, &quot;ObjectHandled&quot;, &quot;Object is handled by custom controller.&quot;)
+}
+</code></pre>
+<p>This callback function is called when an object is added into Kubernetes cluster. What the callback function does is to modify its Status to <code>&quot;HANDLED&quot;</code>, and update it to kube-apiserver.</p>
 <p>client-go passes object itself as an argument of the callback. But sample controller <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> uses the second way to get an object, which is useless and inefficient I think. If you tries to access another object in the callback, you should use, however, if not, just asserting and casting the given argument would be more efficient.</p>
 <p>Note that you should not directly modify the object.
 The object is a refernece of locally stored cache, managed internally by client-go. It could break consistency between the local cache and actual data in Kubernetes cluster, so you <strong>should always copy the object, modify it, and transfer it to kube-apiserver to update an object</strong>.</p>
@@ -717,62 +869,110 @@ The object is a refernece of locally stored cache, managed internally by client-
 </ol>
 </section>
 
-			</div>
-		</article>
+        </div>
+        
+        <div class="my-4">
+    
+    <a href="/tags/kubernetes/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#kubernetes</a>
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/go/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#go</a>
+    
+</div>
+        
+        
+        
+        
+        
+        
+        
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2020-04-04/go-modules/" class="block">Go Modules: an Alternative to GOPATH for Package Distribution</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-02-11/kubernetes-custom-resource/" class="block">Kubernetes Custom Resource Definition (CRD)</a>
+        
+    </div>
+</div>
 
-		<hr class="post-end">
-		<footer class="post-info">
-			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-			<p>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/kubernetes">kubernetes</a></span><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/go">go</a></span>
-			</p>
-		</footer>
-		
-		<div id="comments" class="thin">
+        
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
+<script>
+    var disqus_config = function () {
     
     
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'insujang';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </div>
+    
+
+    
+    
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+        <h2 class="text-lg font-semibold mb-4">See Also</h2>
+        <div class="content">
+            
+            <a href="/2020-02-11/kubernetes-custom-resource/">Kubernetes Custom Resource Definition (CRD)</a>
+            <br />
+            
+            <a href="/2019-12-18/kubernetes-authentication/">Kubernetes Authentication: Client Certificate</a>
+            <br />
+            
+            <a href="/2019-12-10/cmake-for-custom-library-build-system-in-go/">Cmake for Custom Library Build System in Go</a>
+            <br />
+            
+            <a href="/2019-11-28/implementing-kubernetes-cpp-client-library/">Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</a>
+            <br />
+            
+            <a href="/2020-02-09/introduction-to-programming-infiniband/">Introduction to Programming Infiniband RDMA</a>
+            <br />
+            
+            <a href="/2020-01-25/building-mellanox-ofed-from-source/">Building Mellanox OFED from source code</a>
+            <br />
+            
+        </div>
+    </div>
+    
 </div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
-		</p>
-	</footer>
-
-
-
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
-
+      </div>
+    </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

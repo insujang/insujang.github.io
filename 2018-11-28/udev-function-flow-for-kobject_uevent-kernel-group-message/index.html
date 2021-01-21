@@ -1,276 +1,422 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="udev: Function Flow for KOBJECT_UEVENT kernel group message ">
-<meta itemprop="description" content="Identifying the device {: .center-image} [source]
-When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
-linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; .">
-<meta itemprop="datePublished" content="2018-11-28T14:03:15+09:00" />
-<meta itemprop="dateModified" content="2018-11-28T14:03:15+09:00" />
-<meta itemprop="wordCount" content="642">
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
+<title>udev: Function Flow for KOBJECT_UEVENT kernel group message  | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
 
-<meta itemprop="keywords" content="research,linux," />
-<meta property="og:title" content="udev: Function Flow for KOBJECT_UEVENT kernel group message " />
-<meta property="og:description" content="Identifying the device {: .center-image} [source]
-When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
-linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; ." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Identifying the device {: .">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"udev: Function Flow for KOBJECT_UEVENT kernel group message ",
+      "item":"/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/"
+    },
+    "headline": "udev: Function Flow for KOBJECT_UEVENT kernel group message  | Better Tomorrow with Computer Science","datePublished": "2018-11-28T14:03:15+09:00",
+    "dateModified": "2018-11-28T14:03:15+09:00",
+    "wordCount":  642 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "Identifying the device {: ."
+}
+</script><meta property="og:title" content="udev: Function Flow for KOBJECT_UEVENT kernel group message  | Better Tomorrow with Computer Science" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://insujang.github.io/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/" />
-<meta property="article:published_time" content="2018-11-28T14:03:15+09:00" />
-<meta property="article:modified_time" content="2018-11-28T14:03:15+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="udev: Function Flow for KOBJECT_UEVENT kernel group message "/>
-<meta name="twitter:description" content="Identifying the device {: .center-image} [source]
-When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
-linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; ."/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>udev: Function Flow for KOBJECT_UEVENT kernel group message </title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp">
-		<div class="hdr-wrapper container-lg">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
-				</div>
-				<nav class="site-nav d-md-inline d-none">
-					
-				<a href="https://insujang.github.io/posts/">Posts</a>
-				<a href="https://insujang.github.io/about/">About</a>
-
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
-			<li><a href="https://insujang.github.io/about/">About</a></li>
-		</ul>
-	</div>
 
 
-	<main class="site-main container-lg animated fadeIn faster">
-		<header class="post-header row">
-			<div class="col-12 col-xl-3"></div>
-			<div class="col-12 col-xl-9">
-				<div class="post-meta"><span>Nov 28, 2018</span></div>
-				<h1>udev: Function Flow for KOBJECT_UEVENT kernel group message </h1>
-			</div>
-		</header>
-		<article class="row">
-			<div id="toc-aside" class="col-12 col-xl-3">
-				<hr class="d-block d-xl-none">
-				<div class="toc-title">What&#39;s on this Post</div>
-				<nav id="TableOfContents">
-  <ul>
-    <li><a href="#identifying-the-device">Identifying the device</a></li>
-  </ul>
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/" />
+
+
+
+
+<meta property="og:description" content="Identifying the device {: ." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2018-11-28T14:03:15&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2018-11-28T14:03:15&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="research" />
+
+<meta property="article:tag" content="linux" />
+
+
+
+
+
+<meta property="og:see_also" content="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/" />
+
+<meta property="og:see_also" content="/2018-11-22/systemd-boot-process/" />
+
+<meta property="og:see_also" content="/2017-05-10/usermode-helper-api/" />
+
+<meta property="og:see_also" content="/2017-05-09/cpu-affinity/" />
+
+<meta property="og:see_also" content="/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/" />
+
+<meta property="og:see_also" content="/2017-04-27/introduction-to-vfio/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
 </nav>
-				<hr class="d-block d-xl-none">
-			</div>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+    <div class="pl-scrollbar">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
-			<div class="content col-12 col-xl-9">
-				<h2 id="identifying-the-device">Identifying the device<a href="#identifying-the-device" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+        <h1 class="font-bold text-3xl text-primary-text">udev: Function Flow for KOBJECT_UEVENT kernel group message </h1>
+        <div class="mr-6 my-2">
+    <span>Nov 28, 2018</span>
+</div>
+
+
+
+
+        
+        
+        
+
+        <div class="content">
+            <h2 id="identifying-the-device">Identifying the device</h2>
 <p><img src="/assets/images/181127/usb_subsystem_linux.png" alt="USB subsystem in Linux">{: .center-image}
 <a href="https://opensourceforu.com/2011/10/usb-drivers-in-linux-1/">[source]</a></p>
 <p>When a USB device is inserted to system, the very first initialization function to be started is <code>drivers/usb/core/usb.c:usb_init()</code>, written in <a href="https://www.technovelty.org/linux/what-actually-happens-when-you-plug-in-a-usb-device.html">[here]</a>.
 The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure <code>struct usb_device</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">usb</span><span class="p">.</span><span class="n">h</span>
+<pre><code class="language-c">linux/include/linux/usb.h
 
-<span class="k">struct</span> <span class="n">usb_device</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">devnum</span><span class="p">;</span>
-  <span class="kt">char</span> <span class="n">devpath</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
-  <span class="p">...</span>
-  <span class="k">struct</span> <span class="n">usb_device</span> <span class="o">*</span><span class="n">parent</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">usb_bus</span> <span class="o">*</span><span class="n">bus</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">usb_host_endpoint</span> <span class="n">ep0</span><span class="p">;</span>
+struct usb_device {
+  int devnum;
+  char devpath[16];
+  ...
+  struct usb_device *parent;
+  struct usb_bus *bus;
+  struct usb_host_endpoint ep0;
 
-  <span class="k">struct</span> <span class="n">device</span> <span class="n">dev</span><span class="p">;</span>
-  <span class="p">...</span>
-<span class="p">};</span>
-</code></pre></div><p>Then the USB core registers the usb device with <code>device_register(&amp;usb_device-&gt;dev)</code> function.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">device_register</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">device_initialize</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">device_add</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>The bus-specific fields of the <code>usb_device</code> structure are initialized by the USB core (e.g. devnum respresents an address on a USB bus) in <code>device_initialize()</code> call.
+  struct device dev;
+  ...
+};
+</code></pre>
+<p>Then the USB core registers the usb device with <code>device_register(&amp;usb_device-&gt;dev)</code> function.</p>
+<pre><code class="language-c">int device_register(struct device *dev)
+{
+  device_initialize(dev);
+  return device_add(dev);
+}
+</code></pre>
+<p>The bus-specific fields of the <code>usb_device</code> structure are initialized by the USB core (e.g. devnum respresents an address on a USB bus) in <code>device_initialize()</code> call.
 During handling <code>device_add()</code>, the kernel adds the kobject of the <code>usb_device</code> structure (at this time of the registration the usb device is shown in the <code>sysfs</code> directory <a href="https://www.win.tue.nl/~aeb/linux/lk/lk-13.html">[sysfs]</a>, which will be used by udevd), and the kernel emits <code>KOBJECT_UEVENT</code> messages with kernel message group.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">/</span><span class="n">drivers</span><span class="o">/</span><span class="n">base</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span> <span class="n">device_add</span><span class="p">()</span>
+<pre><code class="language-c">linux/drivers/base/core.c: device_add()
 
-<span class="kt">int</span> <span class="n">device_add</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">dev</span> <span class="o">=</span> <span class="n">get_device</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+int device_add(struct device *dev)
+{
+  dev = get_device(dev);
 
-  <span class="p">...</span>
+  ...
 
-  <span class="cm">/* first, register with generic layer. */</span>
-  <span class="cm">/* we require the name to be set before, and pass NULL */</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">kobject_add</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">kobj</span><span class="p">,</span> <span class="n">dev</span><span class="o">-&gt;</span><span class="n">kobj</span><span class="p">.</span><span class="n">parent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">device_create_file</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dev_attr_uevent</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">attrError</span><span class="p">;</span>
+  /* first, register with generic layer. */
+  /* we require the name to be set before, and pass NULL */
+  error = kobject_add(&amp;dev-&gt;kobj, dev-&gt;kobj.parent, NULL);
+  error = device_create_file(dev, &amp;dev_attr_uevent);
+  if (error)
+    goto attrError;
 
-  <span class="p">...</span>
+  ...
 
-  <span class="n">error</span> <span class="o">=</span> <span class="n">device_add_class_symlinks</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">SymlinkError</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">device_add_attrs</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">AttrsError</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">bus_add_device</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">BusError</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">dpm_sysfs_add</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">DPMError</span><span class="p">;</span>
-  <span class="n">device_pm_add</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+  error = device_add_class_symlinks(dev);
+  if (error)
+    goto SymlinkError;
+  error = device_add_attrs(dev);
+  if (error)
+    goto AttrsError;
+  error = bus_add_device(dev);
+  if (error)
+    goto BusError;
+  error = dpm_sysfs_add(dev);
+  if (error)
+    goto DPMError;
+  device_pm_add(dev);
 
-  <span class="p">...</span>
+  ...
 
-  <span class="n">kobject_uevent</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">kobj</span><span class="p">,</span> <span class="n">KOBJ_ADD</span><span class="p">);</span>
+  kobject_uevent(&amp;dev-&gt;kobj, KOBJ_ADD);
 
-  <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p><code>kobject_uevent()</code> function is:</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">kobject_uevent</span><span class="p">.</span><span class="n">c</span>
+  ...
+}
+</code></pre>
+<p><code>kobject_uevent()</code> function is:</p>
+<pre><code class="language-c">linux/lib/kobject_uevent.c
 
-<span class="cm">/**
-</span><span class="cm"> * kobject_uevent - notify userspace by sending an uevent
-</span><span class="cm"> *
-</span><span class="cm"> * @kobj: struct kobject that the action is happening to
-</span><span class="cm"> * @action: action that is happening
-</span><span class="cm"> *
-</span><span class="cm"> * Returns 0 if kobject_uevent() is completed with success or the
-</span><span class="cm"> * corresponding error when it fails.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="n">kobject_uevent</span><span class="p">(</span><span class="k">struct</span> <span class="n">kobject</span> <span class="o">*</span><span class="n">kobj</span><span class="p">,</span> <span class="k">enum</span> <span class="n">kobject_action</span> <span class="n">action</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">return</span> <span class="n">kobject_uevent_env</span><span class="p">(</span><span class="n">kobj</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-<span class="p">}</span>
+/**
+ * kobject_uevent - notify userspace by sending an uevent
+ *
+ * @kobj: struct kobject that the action is happening to
+ * @action: action that is happening
+ *
+ * Returns 0 if kobject_uevent() is completed with success or the
+ * corresponding error when it fails.
+ */
+int kobject_uevent(struct kobject *kobj, enum kobject_action action)
+{
+  return kobject_uevent_env(kobj, action, NULL);
+}
 
-<span class="cm">/**
-</span><span class="cm"> * kobject_uevent_env - send an uevent with environmental data
-</span><span class="cm"> *
-</span><span class="cm"> * @kobj: struct kobject that the action is happening to
-</span><span class="cm"> * @action: action that is happening
-</span><span class="cm"> * @envp_ext: pointer to environmental data
-</span><span class="cm"> *
-</span><span class="cm"> * Returns 0 if kobject_uevent_env() is completed with success or the
-</span><span class="cm"> * corresponding error when it fails.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="n">kobject_uevent_env</span><span class="p">(</span><span class="k">struct</span> <span class="n">kobject</span> <span class="o">*</span><span class="n">kobj</span><span class="p">,</span> <span class="k">enum</span> <span class="n">kobject_action</span> <span class="n">action</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">envp_ext</span><span class="p">[])</span>
-<span class="p">{</span>
-  <span class="p">...</span>
+/**
+ * kobject_uevent_env - send an uevent with environmental data
+ *
+ * @kobj: struct kobject that the action is happening to
+ * @action: action that is happening
+ * @envp_ext: pointer to environmental data
+ *
+ * Returns 0 if kobject_uevent_env() is completed with success or the
+ * corresponding error when it fails.
+ */
+int kobject_uevent_env(struct kobject *kobj, enum kobject_action action, char *envp_ext[])
+{
+  ...
 
-  <span class="cm">/* default keys */</span>
-  <span class="n">retval</span> <span class="o">=</span> <span class="n">add_uevent_var</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="s">&#34;ACTION=%s&#34;</span><span class="p">,</span> <span class="n">action_string</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">retval</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-  <span class="n">retval</span> <span class="o">=</span> <span class="n">add_uevent_var</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="s">&#34;DEVPATH=%s&#34;</span><span class="p">,</span> <span class="n">devpath</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">retval</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-  <span class="n">retval</span> <span class="o">=</span> <span class="n">add_uevent_var</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="s">&#34;SUBSYSTEM=%s&#34;</span><span class="p">,</span> <span class="n">subsystem</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">retval</span><span class="p">)</span>
-    <span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
+  /* default keys */
+  retval = add_uevent_var(env, &quot;ACTION=%s&quot;, action_string);
+  if (retval)
+    goto exit;
+  retval = add_uevent_var(env, &quot;DEVPATH=%s&quot;, devpath);
+  if (retval)
+    goto exit;
+  retval = add_uevent_var(env, &quot;SUBSYSTEM=%s&quot;, subsystem);
+  if (retval)
+    goto exit;
 
-  <span class="p">...</span>
+  ...
 
-  <span class="cm">/* keys passed in from the caller */</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">envp_ext</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">envp_ext</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">retval</span> <span class="o">=</span> <span class="n">add_uevent_var</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="s">&#34;%s&#34;</span><span class="p">,</span> <span class="n">envp_ext</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">retval</span><span class="p">)</span>
-        <span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
+  /* keys passed in from the caller */
+  if (envp_ext) {
+    for (i = 0; envp_ext[i]; i++) {
+      retval = add_uevent_var(env, &quot;%s&quot;, envp_ext[i]);
+      if (retval)
+        goto exit;
+    }
+  }
 
-  <span class="n">retval</span> <span class="o">=</span> <span class="n">kobject_uevent_net_broadcast</span><span class="p">(</span><span class="n">kobj</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">action_string</span><span class="p">,</span> <span class="n">devpath</span><span class="p">);</span>
-<span class="p">}</span>
+  retval = kobject_uevent_net_broadcast(kobj, env, action_string, devpath);
+}
 
-<span class="k">static</span> <span class="kt">int</span> <span class="n">kobject_uevent_net_broadcast</span><span class="p">(</span><span class="k">struct</span> <span class="n">kobject</span> <span class="o">*</span><span class="n">kobj</span><span class="p">,</span>
-          <span class="k">struct</span> <span class="n">kobj_uevent_env</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span>
-          <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">action_string</span><span class="p">,</span>
-          <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">devpath</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="p">...</span>
+static int kobject_uevent_net_broadcast(struct kobject *kobj,
+          struct kobj_uevent_env *env,
+          const char *action_string,
+          const char *devpath)
+{
+  ...
 
-  <span class="cm">/* kobjects currently only carry network namespace tags and they
-</span><span class="cm">   * are the only tag relevant here since we want to decide which
-</span><span class="cm">   * network namespaces to broadcast the uevent into.
-</span><span class="cm">   */</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">ops</span> <span class="o">&amp;&amp;</span> <span class="n">ops</span><span class="o">-&gt;</span><span class="n">netlink_ns</span> <span class="o">&amp;&amp;</span> <span class="n">kobj</span><span class="o">-&gt;</span><span class="n">ktype</span><span class="o">-&gt;</span><span class="n">namespace</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ops</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">==</span> <span class="n">KOBJ_NS_TYPE_NET</span><span class="p">)</span>
-      <span class="n">net</span> <span class="o">=</span> <span class="n">kobj</span><span class="o">-&gt;</span><span class="n">ktype</span><span class="o">-&gt;</span><span class="n">namespace</span><span class="p">(</span><span class="n">kobj</span><span class="p">);</span>
+  /* kobjects currently only carry network namespace tags and they
+   * are the only tag relevant here since we want to decide which
+   * network namespaces to broadcast the uevent into.
+   */
+  if (ops &amp;&amp; ops-&gt;netlink_ns &amp;&amp; kobj-&gt;ktype-&gt;namespace)
+    if (ops-&gt;type == KOBJ_NS_TYPE_NET)
+      net = kobj-&gt;ktype-&gt;namespace(kobj);
 
-  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">net</span><span class="p">)</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">uevent_net_broadcast_untagged</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">action_string</span><span class="p">,</span>
-                <span class="n">devpath</span><span class="p">);</span>
-  <span class="k">else</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">uevent_net_broadcast_tagged</span><span class="p">(</span><span class="n">net</span><span class="o">-&gt;</span><span class="n">uevent_sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span>
-              <span class="n">action_string</span><span class="p">,</span> <span class="n">devpath</span><span class="p">);</span>
+  if (!net)
+    ret = uevent_net_broadcast_untagged(env, action_string,
+                devpath);
+  else
+    ret = uevent_net_broadcast_tagged(net-&gt;uevent_sock-&gt;sk, env,
+              action_string, devpath);
 
-  <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p>The final destination should be <code>netlink_broadcast()</code>, which is callbed by <code>uevent_net_broadcast_(un)tagged()</code> function.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">uevent_net_broadcast_untagged</span><span class="p">(</span><span class="k">struct</span> <span class="n">kobj_uevent_env</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span>
-           <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">action_string</span><span class="p">,</span>
-           <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">devpath</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="p">...</span>
+  ...
+}
+</code></pre>
+<p>The final destination should be <code>netlink_broadcast()</code>, which is callbed by <code>uevent_net_broadcast_(un)tagged()</code> function.</p>
+<pre><code class="language-c">static int uevent_net_broadcast_untagged(struct kobj_uevent_env *env,
+           const char *action_string,
+           const char *devpath)
+{
+  ...
 
-  <span class="cm">/* send netlink message */</span>
-  <span class="n">list_for_each_entry</span><span class="p">(</span><span class="n">ue_sk</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">uevent_sock_list</span><span class="p">,</span> <span class="n">list</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">uevent_sock</span> <span class="o">=</span> <span class="n">ue_sk</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">;</span>
+  /* send netlink message */
+  list_for_each_entry(ue_sk, &amp;uevent_sock_list, list) {
+    struct sock *uevent_sock = ue_sk-&gt;sk;
 
-    <span class="p">...</span>
+    ...
 
-    <span class="n">retval</span> <span class="o">=</span> <span class="n">netlink_broadcast</span><span class="p">(</span><span class="n">uevent_sock</span><span class="p">,</span> <span class="n">skb_get</span><span class="p">(</span><span class="n">skb</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-             <span class="n">GFP_KERNEL</span><span class="p">);</span>
+    retval = netlink_broadcast(uevent_sock, skb_get(skb), 0, 1,
+             GFP_KERNEL);
 
-    <span class="p">...</span>
-  <span class="p">}</span>
+    ...
+  }
 
-  <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p>According to the signature of <code>netlink_broadcast()</code> function, 0 is portid and 1 is group number: equivalent to the value of <code>GROUP_KERNEL</code> in libudev library.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">netlink</span><span class="o">/</span><span class="n">af_netlink</span><span class="p">.</span><span class="n">c</span>
+  ...
+}
+</code></pre>
+<p>According to the signature of <code>netlink_broadcast()</code> function, 0 is portid and 1 is group number: equivalent to the value of <code>GROUP_KERNEL</code> in libudev library.</p>
+<pre><code class="language-c">linux/net/netlink/af_netlink.c
 
-<span class="kt">int</span> <span class="n">netlink_broadcast</span><span class="p">(</span><span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">ssk</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sk_buff</span> <span class="o">*</span><span class="n">skb</span><span class="p">,</span> <span class="n">u32</span> <span class="n">portid</span><span class="p">,</span> <span class="n">u32</span> <span class="n">group</span><span class="p">,</span> <span class="n">gfp_t</span> <span class="n">allocation</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">systemd</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">libsystemd</span><span class="o">/</span><span class="n">sd</span><span class="o">-</span><span class="n">device</span><span class="o">/</span><span class="n">device</span><span class="o">-</span><span class="n">monitor</span><span class="o">-</span><span class="n">private</span><span class="p">.</span><span class="n">h</span>
+int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, u32 portid, u32 group, gfp_t allocation)
+</code></pre>
+<pre><code class="language-c">systemd/src/libsystemd/sd-device/device-monitor-private.h
 
-<span class="k">typedef</span> <span class="k">enum</span> <span class="n">MonitorNetlinkGroup</span> <span class="p">{</span>
-  <span class="n">MONITOR_GROUP_NONE</span><span class="p">,</span>
-  <span class="n">MONITOR_GROUP_KERNEL</span><span class="p">,</span>
-  <span class="n">MONITOR_GROUP_UDEV</span><span class="p">,</span>
-  <span class="n">_MONITOR_NETLINK_GROUP_MAX</span><span class="p">,</span>
-  <span class="n">_MONITOR_NETLINK_GROUP_INVALID</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-<span class="p">}</span> <span class="n">MonitorNetlinkGroup</span><span class="p">;</span>
-</code></pre></div><p>In summary, the kernel function call trace for sending <code>GROUP_KERNEL</code> udev message to udevd is as follows:</p>
+typedef enum MonitorNetlinkGroup {
+  MONITOR_GROUP_NONE,
+  MONITOR_GROUP_KERNEL,
+  MONITOR_GROUP_UDEV,
+  _MONITOR_NETLINK_GROUP_MAX,
+  _MONITOR_NETLINK_GROUP_INVALID = -1,
+} MonitorNetlinkGroup;
+</code></pre>
+<p>In summary, the kernel function call trace for sending <code>GROUP_KERNEL</code> udev message to udevd is as follows:</p>
 <pre><code>device_register()
 device_add()
 kobject_uevent()
@@ -279,62 +425,109 @@ kobject_uevent_net_broadcast()
 uevent_net_broadcast_untagged()
 netlink_broadcast()
 </code></pre>
-			</div>
-		</article>
 
-		<hr class="post-end">
-		<footer class="post-info">
-			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-			<p>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/research">research</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span>
-			</p>
-		</footer>
-		
-		<div id="comments" class="thin">
+        </div>
+        
+        <div class="my-4">
+    
+    <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+</div>
+        
+        
+        
+        
+        
+        
+        
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2019-02-07/implementing-a-new-custom-netlink-family-protocol/" class="block">Implementing a New Custom Netlink Family Protocol</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/" class="block">udev: Device Manager for the Linux Kernel in Userspace</a>
+        
+    </div>
+</div>
+
+        
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
+<script>
+    var disqus_config = function () {
     
     
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'insujang';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </div>
+    
+
+    
+    
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+        <h2 class="text-lg font-semibold mb-4">See Also</h2>
+        <div class="content">
+            
+            <a href="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/">udev: Device Manager for the Linux Kernel in Userspace</a>
+            <br />
+            
+            <a href="/2018-11-22/systemd-boot-process/">systemd Boot Process</a>
+            <br />
+            
+            <a href="/2017-05-10/usermode-helper-api/">Usermode Helper API</a>
+            <br />
+            
+            <a href="/2017-05-09/cpu-affinity/">CPU Affinity</a>
+            <br />
+            
+            <a href="/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/">Calling Kernel Module&#39;s Function from The Other Kernel Module</a>
+            <br />
+            
+            <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
+            <br />
+            
+        </div>
+    </div>
+    
 </div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
-		</p>
-	</footer>
-
-
-
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
-
+      </div>
+    </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

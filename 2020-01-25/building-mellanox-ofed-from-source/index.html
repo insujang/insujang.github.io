@@ -1,120 +1,249 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="theme-color" content="#494f5c">
-	<meta name="msapplication-TileColor" content="#494f5c">
-<meta itemprop="name" content="Building Mellanox OFED from source code">
-<meta itemprop="description" content="Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
-Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
-When you untar the archive, you can see SOURCES directory, which contains the following another archives.">
-<meta itemprop="datePublished" content="2020-01-25T10:28:00+09:00" />
-<meta itemprop="dateModified" content="2020-01-25T10:28:00+09:00" />
-<meta itemprop="wordCount" content="1277">
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
 
+<title>Building Mellanox OFED from source code | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
 
-<meta itemprop="keywords" content="study,linux,mellanox,rdma," />
-<meta property="og:title" content="Building Mellanox OFED from source code" />
-<meta property="og:description" content="Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
-Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
-When you untar the archive, you can see SOURCES directory, which contains the following another archives." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Building Mellanox OFED from source code",
+      "item":"/2020-01-25/building-mellanox-ofed-from-source/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2020-01-25/building-mellanox-ofed-from-source/"
+    },
+    "headline": "Building Mellanox OFED from source code | Better Tomorrow with Computer Science","datePublished": "2020-01-25T10:28:00+09:00",
+    "dateModified": "2020-01-25T10:28:00+09:00",
+    "wordCount":  1283 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA)."
+}
+</script><meta property="og:title" content="Building Mellanox OFED from source code | Better Tomorrow with Computer Science" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://insujang.github.io/2020-01-25/building-mellanox-ofed-from-source/" />
-<meta property="article:published_time" content="2020-01-25T10:28:00+09:00" />
-<meta property="article:modified_time" content="2020-01-25T10:28:00+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Building Mellanox OFED from source code"/>
-<meta name="twitter:description" content="Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
-Building Mellanox OFED source code: inside install script Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.
-When you untar the archive, you can see SOURCES directory, which contains the following another archives."/>
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Building Mellanox OFED from source code</title>
-	<link rel="stylesheet" href="https://insujang.github.io/css/style.min.750dffddfe464fb1deda1889e9da51b10b17d137b71ce3fceea0577e63c622e1.css" integrity="sha256-dQ3/3f5GT7He2hiJ6dpRsQsX0Te3HOP87qBXfmPGIuE=" crossorigin="anonymous">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp">
-		<div class="hdr-wrapper container-lg">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://insujang.github.io">Better Tomorrow with Computer Science</a>
-				</div>
-				<nav class="site-nav d-md-inline d-none">
-					
-				<a href="https://insujang.github.io/posts/">Posts</a>
-				<a href="https://insujang.github.io/about/">About</a>
-
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social d-md-inline d-none"><a href="https://linkedin.com/in/insujang" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a><a href="https://github.com/insujang" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="mailto:insujang@casys.kaist.ac.kr" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a><a href="/assets/cv/cv_insujang.pdf" target="_blank" rel="noopener me" title="Cv"><svg width="35.16" height="20.304" viewBox="0 0 35.16 20.304" class="feather" xmlns="http://www.w3.org/2000/svg"  fill="currentColor"><path d="M 26.568 16.656 L 26.592 16.656 A 20.535 20.535 0 0 1 26.807 15.883 Q 27.083 14.958 27.528 13.704 L 31.896 1.536 L 29.952 1.296 A 1.402 1.402 0 0 1 29.912 1.068 Q 29.885 0.78 29.952 0.41 A 3.068 3.068 0 0 1 29.952 0.408 Q 31.272 0.504 32.496 0.504 Q 33.222 0.504 34.175 0.47 A 82.192 82.192 0 0 0 35.088 0.432 A 1.36 1.36 0 0 1 35.16 0.858 Q 35.161 1.076 35.089 1.295 A 1.389 1.389 0 0 1 35.088 1.296 L 33.504 1.584 Q 33.12 2.16 32.544 3.72 L 26.352 20.304 L 25.512 20.304 L 18.408 1.536 L 16.464 1.296 A 1.402 1.402 0 0 1 16.424 1.068 Q 16.397 0.78 16.464 0.41 A 3.068 3.068 0 0 1 16.464 0.408 Q 17.351 0.473 18.584 0.494 A 75.288 75.288 0 0 0 19.872 0.504 Q 21.744 0.504 23.304 0.432 A 1.36 1.36 0 0 1 23.376 0.858 Q 23.377 1.076 23.305 1.295 A 1.389 1.389 0 0 1 23.304 1.296 L 21.312 1.584 L 25.704 13.704 Q 26.208 15.168 26.568 16.656 Z M 15.576 1.44 L 15.576 6.048 A 5.899 5.899 0 0 1 15.216 6.097 Q 14.997 6.12 14.808 6.12 A 2.978 2.978 0 0 1 14.557 6.11 Q 14.359 6.094 14.208 6.048 L 13.44 2.04 A 5.356 5.356 0 0 0 11.911 1.367 Q 11.226 1.179 10.414 1.114 A 11.147 11.147 0 0 0 9.528 1.08 Q 8.016 1.08 6.804 1.764 Q 5.592 2.448 4.74 3.612 A 8.175 8.175 0 0 0 3.756 5.406 A 10.035 10.035 0 0 0 3.432 6.348 A 11.682 11.682 0 0 0 2.992 9.037 A 13.406 13.406 0 0 0 2.976 9.696 A 14.18 14.18 0 0 0 3.141 11.9 A 11.725 11.725 0 0 0 3.42 13.2 A 10.167 10.167 0 0 0 3.997 14.787 A 8.064 8.064 0 0 0 4.68 15.984 A 6.163 6.163 0 0 0 6.083 17.446 A 5.727 5.727 0 0 0 6.66 17.82 A 5.12 5.12 0 0 0 8.996 18.474 A 6.121 6.121 0 0 0 9.264 18.48 Q 10.992 18.48 12.6 17.808 A 9.917 9.917 0 0 0 15.278 16.169 A 9.401 9.401 0 0 0 15.432 16.032 A 1.271 1.271 0 0 1 15.777 16.371 Q 15.886 16.525 15.972 16.724 A 2.727 2.727 0 0 1 16.056 16.944 A 14.323 14.323 0 0 1 13.856 18.656 Q 12.442 19.536 11.011 19.866 A 7.644 7.644 0 0 1 9.288 20.064 A 10.957 10.957 0 0 1 7.231 19.88 A 8.159 8.159 0 0 1 5.184 19.212 A 8.752 8.752 0 0 1 2.934 17.663 A 8.073 8.073 0 0 1 2.28 16.956 Q 1.128 15.552 0.564 13.764 Q 0 11.976 0 10.104 Q 0 8.208 0.648 6.396 Q 1.296 4.584 2.544 3.156 A 9.184 9.184 0 0 1 5.289 1.031 A 10.613 10.613 0 0 1 5.628 0.864 Q 7.464 0 9.816 0 Q 12.912 0 15.576 1.44 Z" vector-effect="non-scaling-stroke"/></svg></a></span><button id="menu-btn" class="hdr-btn d-inline d-md-none" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://insujang.github.io/posts/">Posts</a></li>
-			<li><a href="https://insujang.github.io/about/">About</a></li>
-		</ul>
-	</div>
 
 
-	<main class="site-main container-lg animated fadeIn faster">
-		<header class="post-header row">
-			<div class="col-12 col-xl-3"></div>
-			<div class="col-12 col-xl-9">
-				<div class="post-meta"><span>Jan 25, 2020</span></div>
-				<h1>Building Mellanox OFED from source code</h1>
-			</div>
-		</header>
-		<article class="row">
-			<div id="toc-aside" class="col-12 col-xl-3">
-				<hr class="d-block d-xl-none">
-				<div class="toc-title">What&#39;s on this Post</div>
-				<nav id="TableOfContents">
-  <ul>
-    <li><a href="#building-mellanox-ofed-source-code-inside-install-script">Building Mellanox OFED source code: inside install script</a></li>
-    <li><a href="#compiling-modified-code-using-dpkg-buildpackage">Compiling modified code: using dpkg-buildpackage</a>
-      <ul>
-        <li><a href="#adding-code">Adding code</a></li>
-        <li><a href="#building-a-package">building a package</a></li>
-        <li><a href="#installing-a-package">Installing a package</a></li>
-        <li><a href="#test">Test</a></li>
-      </ul>
-    </li>
-    <li><a href="#compiling-modified-code-using-makefile-libibverbs">Compiling modified code: using Makefile (libibverbs)</a>
-      <ul>
-        <li><a href="#compiling-with-makefile">Compiling with Makefile</a></li>
-        <li><a href="#no-userspace-device-specific-driver-how-to-fix-it">No userspace device-specific driver. How to fix it?</a></li>
-      </ul>
-    </li>
-  </ul>
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2020-01-25/building-mellanox-ofed-from-source/" />
+
+
+
+
+<meta property="og:description" content="Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA)." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2020-01-25T10:28:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2020-01-25T10:28:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="linux" />
+
+<meta property="article:tag" content="mellanox" />
+
+<meta property="article:tag" content="rdma" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-01-07/self-signed-certificate/" />
+
+<meta property="og:see_also" content="/2019-12-18/kubernetes-authentication/" />
+
+<meta property="og:see_also" content="/2019-12-10/cmake-for-custom-library-build-system-in-go/" />
+
+<meta property="og:see_also" content="/2019-11-28/implementing-kubernetes-cpp-client-library/" />
+
+<meta property="og:see_also" content="/2019-11-21/installing-kubernetes-and-crio-in-debian/" />
+
+<meta property="og:see_also" content="/2019-11-10/code-server/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
 </nav>
-				<hr class="d-block d-xl-none">
-			</div>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+    <div class="pl-scrollbar">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
-			<div class="content col-12 col-xl-9">
-				<p>Mellanox is a manufacturer of networking products based on <strong>infiniband</strong>, which in these days are used for Remote DMA (RDMA).
+
+<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+        <h1 class="font-bold text-3xl text-primary-text">Building Mellanox OFED from source code</h1>
+        <div class="mr-6 my-2">
+    <span>Jan 25, 2020</span>
+</div>
+
+
+
+
+        
+        
+        
+
+        <div class="content">
+            <p>Mellanox is a manufacturer of networking products based on <strong>infiniband</strong>, which in these days are used for Remote DMA (RDMA).
 Though their documents are explained and managed well in their <a href="https://www.mellanox.com">[website]</a>,
 I cannot find how to build an infiniband device driver from source code they provide.</p>
-<h2 id="building-mellanox-ofed-source-code-inside-install-script">Building Mellanox OFED source code: inside install script<a href="#building-mellanox-ofed-source-code-inside-install-script" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="building-mellanox-ofed-source-code-inside-install-script">Building Mellanox OFED source code: inside install script</h2>
 <p>Source code can be downloaded in <a href="https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed">[here]</a>.
 Currently the latest version of MLNX_OFED is <a href="http://www.mellanox.com/downloads/ofed/MLNX_OFED-4.7-3.2.9.0/MLNX_OFED_SRC-debian-4.7-3.2.9.0.tgz">4.7-3.2.9.0</a>.</p>
 <p>When you untar the archive, you can see <code>SOURCES</code> directory, which contains the following another archives.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">~/MLNX_OFED_SRC-4.7-3.2.9.0/SOURCES$ ls
+<pre><code class="language-shell">~/MLNX_OFED_SRC-4.7-3.2.9.0/SOURCES$ ls
 dapl_2.1.10mlnx.orig.tar.gz                              libvma_8.9.5.orig.tar.gz
 ibacm_41mlnx1.orig.tar.gz                                mlnx-ethtool_5.1.orig.tar.gz
 ibsim_0.7mlnx1.orig.tar.gz                               mlnx-iproute2_5.2.0.orig.tar.gz
@@ -133,7 +262,8 @@ libmlx4_41mlnx1.orig.tar.gz                              sockperf_3.6.orig.tar.g
 libmlx5_41mlnx1.orig.tar.gz                              srp_4.7.orig.tar.gz
 librdmacm_41mlnx1.orig.tar.gz                            srptools_41mlnx1.orig.tar.gz
 librxe_41mlnx1.orig.tar.gz                               ucx_1.7.0.orig.tar.gz
-</code></pre></div><p>Seeing the automated <code>install.pl</code> script in the root directory, we can easily recognize that it does:</p>
+</code></pre>
+<p>Seeing the automated <code>install.pl</code> script in the root directory, we can easily recognize that it does:</p>
 <ul>
 <li>copy (maybe backup? not sure) the archive into <code>/var/tmp</code>.</li>
 <li>untar the archive</li>
@@ -155,31 +285,35 @@ is_module_in_deb: core is in /home/insujang/MLNX_OFED_SRC-4.7-3.2.9.0/DEBS/ubunt
 &lt;omit duplicated&gt;
 Installing mlnx-ofed-kernel-dkms-4.7...
 Running /usr/bin/dpkg -i --force-confnew --force-confmiss /home/insujang/MLNX_OFED_SRC-4.7-3.2.9.0/DEBS/ubuntu18.04/x86_64/COMMON/mlnx-ofed-kernel-dkms_4.7-OFED.4.7.3.2.9.1.g457f064_all.deb
-</code></pre><h2 id="compiling-modified-code-using-dpkg-buildpackage">Compiling modified code: using dpkg-buildpackage<a href="#compiling-modified-code-using-dpkg-buildpackage" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre>
+<h2 id="compiling-modified-code-using-dpkg-buildpackage">Compiling modified code: using dpkg-buildpackage</h2>
 <p>So, we can modify the source code with manual debian package build for customization.</p>
 <pre><code>$ mkdir -p ~/Documents/mlnx-ofed-kernel
 $ cp mlnx-ofed-kernel_4.7.orig.tar.gz ~/Documents/mlnx-ofed-kernel
 $ tar xvf ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel_4.7.orig.tar.gz # The root path of untared source code: ~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel-4.7
-</code></pre><h3 id="adding-code">Adding code<a href="#adding-code" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre>
+<h3 id="adding-code">Adding code</h3>
 <p>Add some modifications to the code. I added a simple <code>printk()</code> function call into <code>drivers/net/ethernet/mellanox/mlx5/core/main.c:static int __init init(void)</code>, the function that is called when the kernel module is loaded.</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">drivers</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ethernet</span><span class="o">/</span><span class="n">mellanox</span><span class="o">/</span><span class="n">mlx5</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">main</span><span class="p">.</span><span class="n">c</span>
-<span class="p">...</span>
-<span class="k">static</span> <span class="kt">int</span> <span class="n">__init</span> <span class="n">init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="p">...</span>
-    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;Hello Mellanox World!&#34;</span><span class="p">);</span>
-    <span class="p">...</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="p">...</span>
-</code></pre></div><h3 id="building-a-package">building a package<a href="#building-a-package" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<pre><code class="language-c">drivers/net/ethernet/mellanox/mlx5/core/main.c
+...
+static int __init init(void)
+{
+    ...
+    printk(&quot;Hello Mellanox World!&quot;);
+    ...
+    return 0;
+}
+...
+</code></pre>
+<h3 id="building-a-package">building a package</h3>
 <p>When you try to build a deb package (<code>dpkg-buildpackage -us -uc</code>), it says:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">dpkg-source: info: <span class="nb">local</span> changes detected, the modified files are:
+<pre><code class="language-shell">dpkg-source: info: local changes detected, the modified files are:
  mlnx-ofed-kernel-4.7/drivers/net/ethernet/mellanox/mlx5/core/main.c
-dpkg-source: info: you can integrate the <span class="nb">local</span> changes with dpkg-source --commit
+dpkg-source: info: you can integrate the local changes with dpkg-source --commit
 dpkg-source: error: aborting due to unexpected upstream changes, see /tmp/mlnx-ofed-kernel_4.7-OFED.4.7.3.2.9.1.g457f064.diff.9Exitm
-dpkg-buildpackage: error: dpkg-source -b mlnx-ofed-kernel-4.7 subprocess returned <span class="nb">exit</span> status <span class="m">2</span>
-</code></pre></div><blockquote>
+dpkg-buildpackage: error: dpkg-source -b mlnx-ofed-kernel-4.7 subprocess returned exit status 2
+</code></pre>
+<blockquote>
 <p><code>dpkg-buildpackage</code> is called in <code>~/Documents/mlnx-ofed-kernel/mlnx-ofed-kernel-4.7</code>, where the root directory of source code.</p>
 </blockquote>
 <p>Commit the change:</p>
@@ -189,7 +323,8 @@ dpkg-source: info: local changes detected, the modified files are:
 Enter the desired patch name: hello world
 
 dpkg-source: info: local changes have been recorded in a new patch: mlnx-ofed-kernel-4.7/debian/patches/hello-world
-</code></pre><p>Build again:</p>
+</code></pre>
+<p>Build again:</p>
 <pre><code>$ dpkg-buildpackage -us -uc
 dpkg-buildpackage: info: source package mlnx-ofed-kernel
 dpkg-buildpackage: info: source version 4.7-OFED.4.7.3.2.9.1.g457f064
@@ -200,7 +335,8 @@ dpkg-buildpackage: info: source distribution unstable
 dpkg-genchanges: info: including full source code in upload
  dpkg-source --after-build mlnx-ofed-kernel-4.7
 dpkg-buildpackage: info: full upload (original source is included)
-</code></pre><h3 id="installing-a-package">Installing a package<a href="#installing-a-package" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre>
+<h3 id="installing-a-package">Installing a package</h3>
 <p>Install the package:</p>
 <pre><code>$ sudo dpkg -i mlnx-ofed-kernel-dkms-4.7-OFED.4.7.3.2.9.1.g457f064_all.deb
 ...
@@ -212,7 +348,8 @@ Making new initrd.img-4.15.0-74-generic
 update-initramfs.........
 
 DKMS: install completed.
-</code></pre><h3 id="test">Test<a href="#test" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+</code></pre>
+<h3 id="test">Test</h3>
 <p>Reload the kernel module.</p>
 <pre><code>$ sudo /etc/init.d/openibd restart
 Unloading HCA driver:                                      [  OK  ]
@@ -226,103 +363,114 @@ $ dmesg
 [360773.379878] Hello Mellanox World!
 [360773.384107] mlx5_ib: Mellanox Connect-IB Infiniband driver v4.7-3.2.9
 [360773.791522] mlx5_core 0000:18:00.0: MLX5E: StrdRq(0) RqSz(1024) StrdSz(256) RxCqeCmprss(0)
-</code></pre><p>Changed source code are applied in the kernel module: <code>mlx5_core</code>.</p>
-<h2 id="compiling-modified-code-using-makefile-libibverbs">Compiling modified code: using Makefile (libibverbs)<a href="#compiling-modified-code-using-makefile-libibverbs" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+</code></pre>
+<p>Changed source code are applied in the kernel module: <code>mlx5_core</code>.</p>
+<h2 id="compiling-modified-code-using-makefile-libibverbs">Compiling modified code: using Makefile (libibverbs)</h2>
 <p>However, this work is too burdensome to test our customized code; commit the changes that might have bugs to test whether there is a bug.
 Many components are userspace drivers, so we can just build it.</p>
-<h3 id="compiling-with-makefile">Compiling with Makefile<a href="#compiling-with-makefile" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h3 id="compiling-with-makefile">Compiling with Makefile</h3>
 <p>For example, let us build <code>libibverbs</code>, a verb API library that we use for RDMA programming.
 <code>libibverbs</code> adopted <code>autogen</code> system for cross-domain build.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nb">cd</span> libibverbs
+<pre><code class="language-shell">$ cd libibverbs
 $ ./autogen.sh
 $ ./configure
 $ make -j
-</code></pre></div><p>the system will kindly introduce which packages are missing to build the library. After <code>make</code> command is done, the library will be built on <code>libibverbs/src/.libs</code> directory.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">libibverbs/src/.libs$ $ ls -l
-total <span class="m">2704</span>
--rw-rw-r-- <span class="m">1</span> insujang insujang <span class="m">1087330</span> Jan <span class="m">29</span> 13:55 libibverbs.a
-lrwxrwxrwx <span class="m">1</span> insujang insujang      <span class="m">16</span> Jan <span class="m">29</span> 13:55 libibverbs.la -&gt; ../libibverbs.la
--rw-rw-r-- <span class="m">1</span> insujang insujang     <span class="m">987</span> Jan <span class="m">29</span> 13:55 libibverbs.lai
-lrwxrwxrwx <span class="m">1</span> insujang insujang      <span class="m">19</span> Jan <span class="m">29</span> 13:55 libibverbs.so -&gt; libibverbs.so.1.0.0
-lrwxrwxrwx <span class="m">1</span> insujang insujang      <span class="m">19</span> Jan <span class="m">29</span> 13:55 libibverbs.so.1 -&gt; libibverbs.so.1.0.0
--rwxrwxr-x <span class="m">1</span> insujang insujang  <span class="m">566096</span> Jan <span class="m">29</span> 13:55 libibverbs.so.1.0.0
+</code></pre>
+<p>the system will kindly introduce which packages are missing to build the library. After <code>make</code> command is done, the library will be built on <code>libibverbs/src/.libs</code> directory.</p>
+<pre><code class="language-shell">libibverbs/src/.libs$ $ ls -l
+total 2704
+-rw-rw-r-- 1 insujang insujang 1087330 Jan 29 13:55 libibverbs.a
+lrwxrwxrwx 1 insujang insujang      16 Jan 29 13:55 libibverbs.la -&gt; ../libibverbs.la
+-rw-rw-r-- 1 insujang insujang     987 Jan 29 13:55 libibverbs.lai
+lrwxrwxrwx 1 insujang insujang      19 Jan 29 13:55 libibverbs.so -&gt; libibverbs.so.1.0.0
+lrwxrwxrwx 1 insujang insujang      19 Jan 29 13:55 libibverbs.so.1 -&gt; libibverbs.so.1.0.0
+-rwxrwxr-x 1 insujang insujang  566096 Jan 29 13:55 libibverbs.so.1.0.0
 ...
-</code></pre></div><p>Use <code>libibverbs.so</code> to build our test program. I personally use CMake, so adding the following code into CMakeLists.txt would be enough.</p>
-<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">include_directories</span><span class="p">(</span><span class="s">/home/insujang/libibverbs/include</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">link_directories</span><span class="p">(</span><span class="s">/home/insujang/libibverbs/src/.libs</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">test_program</span> <span class="o">${</span><span class="nv">SRCS</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_program</span> <span class="s">ibverbs</span><span class="p">)</span><span class="err">
-</span></code></pre></div><blockquote>
+</code></pre>
+<p>Use <code>libibverbs.so</code> to build our test program. I personally use CMake, so adding the following code into CMakeLists.txt would be enough.</p>
+<pre><code class="language-cmake">include_directories(/home/insujang/libibverbs/include)
+link_directories(/home/insujang/libibverbs/src/.libs)
+
+add_executable(test_program ${SRCS})
+target_link_libraries(test_program ibverbs)
+</code></pre>
+<blockquote>
 <p><strong>[Feb 15, 2020 Update]</strong> Or, you can use more modern way to import libraries <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">add_library</span><span class="p">(</span><span class="s">ibverbs</span> <span class="s">SHARED</span> <span class="s">IMPORTED</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">ibverbs</span> <span class="s">PROPERTIES</span>
-  <span class="s">IMPORTED_LOCATION</span> <span class="s">/home/insujang/libibverbs/src/.libs/libibverbs.so</span>
-  <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="s">/home/insujang/libibverbs/include</span><span class="p">)</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">test_program</span> <span class="o">${</span><span class="nv">SRCS</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_program</span> <span class="s">ibverbs</span><span class="p">)</span><span class="err">
-</span></code></pre></div></blockquote>
-<h3 id="no-userspace-device-specific-driver-how-to-fix-it">No userspace device-specific driver. How to fix it?<a href="#no-userspace-device-specific-driver-how-to-fix-it" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<pre><code class="language-cmake">add_library(ibverbs SHARED IMPORTED)
+set_target_properties(ibverbs PROPERTIES
+  IMPORTED_LOCATION /home/insujang/libibverbs/src/.libs/libibverbs.so
+  INTERFACE_INCLUDE_DIRECTORIES /home/insujang/libibverbs/include)
+
+add_executable(test_program ${SRCS})
+target_link_libraries(test_program ibverbs)
+</code></pre>
+</blockquote>
+<h3 id="no-userspace-device-specific-driver-how-to-fix-it">No userspace device-specific driver. How to fix it?</h3>
 <p>Are we done? Sadly no. When you launch a program, libibverbs prints warning messages and your program cannot find infiniband devices.</p>
 <pre><code>libibverbs: Warning: couldn't open config directory '/usr/local/etc/libibverbs.d'.
 libibverbs: Warning: no userspace device-specific driver found for /sys/class/infiniband_verbs/uverbs1
 libibverbs: Warning: no userspace device-specific driver found for /sys/class/infiniband_verbs/uverbs0
-</code></pre><p>What is a difference between libraries installed with dpkg and manual compiled one? To investigate it, we recompile the test program using libraries that are installed by dpkg.
+</code></pre>
+<p>What is a difference between libraries installed with dpkg and manual compiled one? To investigate it, we recompile the test program using libraries that are installed by dpkg.
 To see internal works, use <code>strace</code> to trace its system calls.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ strace ./test_program
+<pre><code class="language-shell">$ strace ./test_program
 ...
-openat<span class="o">(</span>AT_FDCWD, <span class="s2">&#34;/sys/class/infiniband_verbs/abi_version&#34;</span>, O_RDONLY<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>
-read<span class="o">(</span>3, <span class="s2">&#34;6\n&#34;</span>, 8<span class="o">)</span>                       <span class="o">=</span> <span class="m">2</span>
-close<span class="o">(</span>3<span class="o">)</span>                                <span class="o">=</span> <span class="m">0</span>
-geteuid<span class="o">()</span>                               <span class="o">=</span> <span class="m">1003</span>
-prlimit64<span class="o">(</span>0, RLIMIT_MEMLOCK, NULL, <span class="o">{</span><span class="nv">rlim_cur</span><span class="o">=</span>RLIM64_INFINITY, <span class="nv">rlim_max</span><span class="o">=</span>RLIM64_INFINITY<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-openat<span class="o">(</span>AT_FDCWD, <span class="s2">&#34;/etc/libibverbs.d&#34;</span>, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="p">|</span>O_CLOEXEC<span class="p">|</span>O_DIRECTORY<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>               &lt;-- here. The program with custom library finds <span class="sb">`</span>/usr/local/etc/libibverbs.d<span class="sb">`</span> at this point.
-fstat<span class="o">(</span>3, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFDIR<span class="p">|</span>0755, <span class="nv">st_size</span><span class="o">=</span>4096, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-getdents<span class="o">(</span>3, /* <span class="m">5</span> entries */, 32768<span class="o">)</span>     <span class="o">=</span> <span class="m">144</span>
-stat<span class="o">(</span><span class="s2">&#34;/etc/libibverbs.d/.&#34;</span>, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFDIR<span class="p">|</span>0755, <span class="nv">st_size</span><span class="o">=</span>4096, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-stat<span class="o">(</span><span class="s2">&#34;/etc/libibverbs.d/..&#34;</span>, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFDIR<span class="p">|</span>0755, <span class="nv">st_size</span><span class="o">=</span>4096, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-stat<span class="o">(</span><span class="s2">&#34;/etc/libibverbs.d/rxe.driver&#34;</span>, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>11, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-openat<span class="o">(</span>AT_FDCWD, <span class="s2">&#34;/etc/libibverbs.d/rxe.driver&#34;</span>, O_RDONLY<span class="o">)</span> <span class="o">=</span> <span class="m">4</span>
-fstat<span class="o">(</span>4, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>11, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-read<span class="o">(</span>4, <span class="s2">&#34;driver rxe\n&#34;</span>, 4096<span class="o">)</span>           <span class="o">=</span> <span class="m">11</span>
-read<span class="o">(</span>4, <span class="s2">&#34;&#34;</span>, 4096<span class="o">)</span>                       <span class="o">=</span> <span class="m">0</span>
-close<span class="o">(</span>4<span class="o">)</span>                                <span class="o">=</span> <span class="m">0</span>
-stat<span class="o">(</span><span class="s2">&#34;/etc/libibverbs.d/mlx4.driver&#34;</span>, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>35, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-openat<span class="o">(</span>AT_FDCWD, <span class="s2">&#34;/etc/libibverbs.d/mlx4.driver&#34;</span>, O_RDONLY<span class="o">)</span> <span class="o">=</span> <span class="m">4</span>
-fstat<span class="o">(</span>4, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>35, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-read<span class="o">(</span>4, <span class="s2">&#34;driver /usr/lib/libibverbs/libml&#34;</span>..., 4096<span class="o">)</span> <span class="o">=</span> <span class="m">35</span>
-read<span class="o">(</span>4, <span class="s2">&#34;&#34;</span>, 4096<span class="o">)</span>                       <span class="o">=</span> <span class="m">0</span>
-close<span class="o">(</span>4<span class="o">)</span>                                <span class="o">=</span> <span class="m">0</span>
-stat<span class="o">(</span><span class="s2">&#34;/etc/libibverbs.d/mlx5.driver&#34;</span>, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>35, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-openat<span class="o">(</span>AT_FDCWD, <span class="s2">&#34;/etc/libibverbs.d/mlx5.driver&#34;</span>, O_RDONLY<span class="o">)</span> <span class="o">=</span> <span class="m">4</span>
-fstat<span class="o">(</span>4, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>35, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-read<span class="o">(</span>4, <span class="s2">&#34;driver /usr/lib/libibverbs/libml&#34;</span>..., 4096<span class="o">)</span> <span class="o">=</span> <span class="m">35</span>
+openat(AT_FDCWD, &quot;/sys/class/infiniband_verbs/abi_version&quot;, O_RDONLY) = 3
+read(3, &quot;6\n&quot;, 8)                       = 2
+close(3)                                = 0
+geteuid()                               = 1003
+prlimit64(0, RLIMIT_MEMLOCK, NULL, {rlim_cur=RLIM64_INFINITY, rlim_max=RLIM64_INFINITY}) = 0
+openat(AT_FDCWD, &quot;/etc/libibverbs.d&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3               &lt;-- here. The program with custom library finds `/usr/local/etc/libibverbs.d` at this point.
+fstat(3, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+getdents(3, /* 5 entries */, 32768)     = 144
+stat(&quot;/etc/libibverbs.d/.&quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat(&quot;/etc/libibverbs.d/..&quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat(&quot;/etc/libibverbs.d/rxe.driver&quot;, {st_mode=S_IFREG|0644, st_size=11, ...}) = 0
+openat(AT_FDCWD, &quot;/etc/libibverbs.d/rxe.driver&quot;, O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=11, ...}) = 0
+read(4, &quot;driver rxe\n&quot;, 4096)           = 11
+read(4, &quot;&quot;, 4096)                       = 0
+close(4)                                = 0
+stat(&quot;/etc/libibverbs.d/mlx4.driver&quot;, {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+openat(AT_FDCWD, &quot;/etc/libibverbs.d/mlx4.driver&quot;, O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+read(4, &quot;driver /usr/lib/libibverbs/libml&quot;..., 4096) = 35
+read(4, &quot;&quot;, 4096)                       = 0
+close(4)                                = 0
+stat(&quot;/etc/libibverbs.d/mlx5.driver&quot;, {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+openat(AT_FDCWD, &quot;/etc/libibverbs.d/mlx5.driver&quot;, O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=35, ...}) = 0
+read(4, &quot;driver /usr/lib/libibverbs/libml&quot;..., 4096) = 35
 ...
-</code></pre></div><p>It reads <code>/etc/libibverbs.d</code>, instead of <code>/usr/lib/etc/libibverbs.d</code>. <code>/etc/libibverbs.d</code> contains the following files:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ tree /etc/libibverbs.d/
+</code></pre>
+<p>It reads <code>/etc/libibverbs.d</code>, instead of <code>/usr/lib/etc/libibverbs.d</code>. <code>/etc/libibverbs.d</code> contains the following files:</p>
+<pre><code class="language-shell">$ tree /etc/libibverbs.d/
 /etc/libibverbs.d/
 ├── mlx4.driver
 ├── mlx5.driver
 └── rxe.driver
-</code></pre></div><p>As I use mlx5 device, let&rsquo;s see mlx5.driver file&hellip;</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat /etc/libibverbs/mlx5.driver
+</code></pre>
+<p>As I use mlx5 device, let&rsquo;s see mlx5.driver file&hellip;</p>
+<pre><code class="language-shell">$ cat /etc/libibverbs/mlx5.driver
 driver /usr/lib/libibverbs/libmlx5
-</code></pre></div><p><code>libibverbs</code> library should search its userspace driver in <code>/usr/lib/libverbs</code>, but the directory contains:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">/usr/lib/libibverbs$ ls
+</code></pre>
+<p><code>libibverbs</code> library should search its userspace driver in <code>/usr/lib/libverbs</code>, but the directory contains:</p>
+<pre><code class="language-shell">/usr/lib/libibverbs$ ls
 libmlx4-rdmav2.so  libmlx5-rdmav2.so
-</code></pre></div><p>Then it means that <code>libibverbs</code> library appends <code>-rdmav2.so</code> to the value of driver in <code>/etc/libibverbs/mlx5.driver</code>; <code>/etc/libibverbs/libmlx5-rdmav2.so</code>.
+</code></pre>
+<p>Then it means that <code>libibverbs</code> library appends <code>-rdmav2.so</code> to the value of driver in <code>/etc/libibverbs/mlx5.driver</code>; <code>/etc/libibverbs/libmlx5-rdmav2.so</code>.
 strace result also shows it load the file.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ strace ./test_program
+<pre><code class="language-shell">$ strace ./test_program
 ...
-openat<span class="o">(</span>AT_FDCWD, <span class="s2">&#34;/usr/lib/libibverbs/libmlx5-rdmav2.so&#34;</span>, O_RDONLY<span class="p">|</span>O_CLOEXEC<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>             &lt;-- here.
-read<span class="o">(</span>3, <span class="s2">&#34;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0\200W\0\0\0\0\0\0&#34;</span>..., 832<span class="o">)</span> <span class="o">=</span> <span class="m">832</span>
-fstat<span class="o">(</span>3, <span class="o">{</span><span class="nv">st_mode</span><span class="o">=</span>S_IFREG<span class="p">|</span>0644, <span class="nv">st_size</span><span class="o">=</span>358712, ...<span class="o">})</span> <span class="o">=</span> <span class="m">0</span>
-mmap<span class="o">(</span>NULL, 2453888, PROT_READ<span class="p">|</span>PROT_EXEC, MAP_PRIVATE<span class="p">|</span>MAP_DENYWRITE, 3, 0<span class="o">)</span> <span class="o">=</span> 0x7f248f566000
-mprotect<span class="o">(</span>0x7f248f5bc000, 2093056, PROT_NONE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
-mmap<span class="o">(</span>0x7f248f7bb000, 12288, PROT_READ<span class="p">|</span>PROT_WRITE, MAP_PRIVATE<span class="p">|</span>MAP_FIXED<span class="p">|</span>MAP_DENYWRITE, 3, 0x55000<span class="o">)</span> <span class="o">=</span> 0x7f248f7bb000
+openat(AT_FDCWD, &quot;/usr/lib/libibverbs/libmlx5-rdmav2.so&quot;, O_RDONLY|O_CLOEXEC) = 3             &lt;-- here.
+read(3, &quot;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0\200W\0\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=358712, ...}) = 0
+mmap(NULL, 2453888, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f248f566000
+mprotect(0x7f248f5bc000, 2093056, PROT_NONE) = 0
+mmap(0x7f248f7bb000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x55000) = 0x7f248f7bb000
 ...
-</code></pre></div><p>Now we got what we have to do.</p>
+</code></pre>
+<p>Now we got what we have to do.</p>
 <ol>
 <li>Copy <code>/etc/libibverb.d</code> into <code>/usr/local/etc/libibverbs.d</code>.</li>
 <li>Modify <code>/usr/local/etc/libibverbs.d/mlx5.driver</code> to point your own libmlx5 library if needed.</li>
@@ -341,62 +489,112 @@ mmap<span class="o">(</span>0x7f248f7bb000, 12288, PROT_READ<span class="p">|</s
 </ol>
 </section>
 
-			</div>
-		</article>
+        </div>
+        
+        <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+    <a href="/tags/mellanox/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#mellanox</a>
+    
+    <a href="/tags/rdma/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#rdma</a>
+    
+</div>
+        
+        
+        
+        
+        
+        
+        
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2020-02-09/introduction-to-programming-infiniband/" class="block">Introduction to Programming Infiniband RDMA</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-01-07/self-signed-certificate/" class="block">Generate a Self-signed Certificate</a>
+        
+    </div>
+</div>
 
-		<hr class="post-end">
-		<footer class="post-info">
-			<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>Insu Jang</p>
-			<p>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://insujang.github.io/tags/study">study</a></span><span class="tag"><a href="https://insujang.github.io/tags/linux">linux</a></span><span class="tag"><a href="https://insujang.github.io/tags/mellanox">mellanox</a></span><span class="tag"><a href="https://insujang.github.io/tags/rdma">rdma</a></span>
-			</p>
-		</footer>
-		
-		<div id="comments" class="thin">
+        
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
+<script>
+    var disqus_config = function () {
     
     
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'insujang';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </div>
+    
+
+    
+    
+    <div
+        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+        <h2 class="text-lg font-semibold mb-4">See Also</h2>
+        <div class="content">
+            
+            <a href="/2020-01-07/self-signed-certificate/">Generate a Self-signed Certificate</a>
+            <br />
+            
+            <a href="/2019-12-18/kubernetes-authentication/">Kubernetes Authentication: Client Certificate</a>
+            <br />
+            
+            <a href="/2019-12-10/cmake-for-custom-library-build-system-in-go/">Cmake for Custom Library Build System in Go</a>
+            <br />
+            
+            <a href="/2019-11-28/implementing-kubernetes-cpp-client-library/">Implementing Kubernetes C&#43;&#43; Client Library using Go Client Library</a>
+            <br />
+            
+            <a href="/2019-11-21/installing-kubernetes-and-crio-in-debian/">Installing Kubernetes and cri-o in Debian</a>
+            <br />
+            
+            <a href="/2019-11-10/code-server/">Code Server: Using vscode via Web Browsers</a>
+            <br />
+            
+        </div>
+    </div>
+    
 </div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2017 - 2020 <a href="https://insujang.github.io">Insu Jang</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a>
-		</p>
-	</footer>
-
-
-
-	<script src="https://insujang.github.io/js/bundle.min.2803cd839686977006471d106bcb3bfc2eaed4c348aa5adf01e47a8cecc6293b.js" integrity="sha256-KAPNg5aGl3AGRx0Qa8s7/C6u1MNIqlrfAeR6jOzGKTs=" crossorigin="anonymous"></script>
-	
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-158110335-1', 'auto');
-	
-	ga('send', 'pageview');
-}
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
-
+      </div>
+    </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
 </body>
 
 </html>

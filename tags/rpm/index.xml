@@ -2,21 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>rpm on Better Tomorrow with Computer Science</title>
-    <link>https://insujang.github.io/tags/rpm/</link>
+    <link>/tags/rpm/</link>
     <description>Recent content in rpm on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 07 Nov 2020 19:07:00 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/rpm/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Sat, 07 Nov 2020 19:07:00 +0900</lastBuildDate><atom:link href="/tags/rpm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Accelerating Ceph RPM Packaging: Using Multithreaded Compression</title>
-      <link>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
+      <link>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</link>
       <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
-      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
-Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
-1. RPM Packaing 101 RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
+      <guid>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package.</description>
     </item>
     
   </channel>

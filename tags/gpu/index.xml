@@ -2,22 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>gpu on Better Tomorrow with Computer Science</title>
-    <link>https://insujang.github.io/tags/gpu/</link>
+    <link>/tags/gpu/</link>
     <description>Recent content in gpu on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 16 Aug 2017 16:48:47 +0900</lastBuildDate><atom:link href="https://insujang.github.io/tags/gpu/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Wed, 16 Aug 2017 16:48:47 +0900</lastBuildDate><atom:link href="/tags/gpu/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Enabling AtomicOps in VFIO PCI Passthrough</title>
-      <link>https://insujang.github.io/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</link>
+      <link>/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</link>
       <pubDate>Wed, 16 Aug 2017 16:48:47 +0900</pubDate>
       
-      <guid>https://insujang.github.io/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</guid>
-      <description>I tried to use AMD&amp;rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.
-HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode. {: .center-image}
-Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.
-AMD ROC sample code illustrates how a user application creates the packet:</description>
+      <guid>/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</guid>
+      <description>I tried to use AMD&amp;rsquo;s GPU for research, with the software stack called AMD ROCm.</description>
     </item>
     
   </channel>
