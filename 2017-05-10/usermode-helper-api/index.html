@@ -212,27 +212,26 @@
 </script></div>
   </header>
   <main class="flex-grow pt-16">
-    <div class="pl-scrollbar">
       <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
 
-<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
-    <div
-        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-        <h1 class="font-bold text-3xl text-primary-text">Usermode Helper API</h1>
-        <div class="mr-6 my-2">
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Usermode Helper API</h1>
+    <div class="mr-6 my-2">
     <span>May 10, 2017</span>
 </div>
 
 
 
 
-        
-        
-        
+    
+    
+    
 
-        <div class="content">
-            <p>We already know that <code>fork()</code> and <code>exec()</code> are system calls for making a new process from user space.</p>
+    <div class="content">
+        <p>We already know that <code>fork()</code> and <code>exec()</code> are system calls for making a new process from user space.</p>
 <p>However, system calls cannot be called in kernel space. Then how to execute a process from kernel space?<br>
 Usermode Helper API is for creating a user mode process from kernel space.</p>
 <p>Data structure that is used for the API is <code>struct subprocess_info</code>.</p>
@@ -284,22 +283,22 @@ return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
 <li>Invoking user-space applications from the kernel. M. Jones. [Online]: <a href="https://www.ibm.com/developerworks/library/l-user-space-apps/">https://www.ibm.com/developerworks/library/l-user-space-apps/</a></li>
 </ul>
 
-        </div>
-        
-        <div class="my-4">
+    </div>
+    
+    <div class="my-4">
     
     <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
     
     <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
     
 </div>
-        
-        
-        
-        
-        
-        
-        
+    
+    
+    
+    
+    
+    
+    
 <div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
     <div>
         
@@ -315,7 +314,7 @@ return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
     </div>
 </div>
 
-        
+    
 
 <div id="disqus_thread"></div>
 <script>
@@ -339,37 +338,37 @@ return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
-    </div>
-    
+</div>
 
-    
-    
-    <div
-        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-        <h2 class="text-lg font-semibold mb-4">See Also</h2>
-        <div class="content">
-            
-            <a href="/2017-05-09/cpu-affinity/">CPU Affinity</a>
-            <br />
-            
-            <a href="/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/">Calling Kernel Module&#39;s Function from The Other Kernel Module</a>
-            <br />
-            
-            <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
-            <br />
-            
-            <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
-            <br />
-            
-            <a href="/2017-04-27/analyzing-gdev/">Analyzing Gdev</a>
-            <br />
-            
-            <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
-            <br />
-            
-        </div>
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2017-05-09/cpu-affinity/">CPU Affinity</a>
+        <br />
+        
+        <a href="/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/">Calling Kernel Module&#39;s Function from The Other Kernel Module</a>
+        <br />
+        
+        <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
+        <br />
+        
+        <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
+        <br />
+        
+        <a href="/2017-04-27/analyzing-gdev/">Analyzing Gdev</a>
+        <br />
+        
+        <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
+        <br />
+        
     </div>
-    
+</div>
+
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', ()=>{
@@ -378,7 +377,6 @@ return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
 </script>
 
       </div>
-    </div>
     
   </main>
   <footer class="pl-scrollbar">

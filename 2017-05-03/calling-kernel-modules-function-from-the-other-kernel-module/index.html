@@ -212,27 +212,26 @@
 </script></div>
   </header>
   <main class="flex-grow pt-16">
-    <div class="pl-scrollbar">
       <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
 
 
-<div class="grid grid-cols-2 lg:grid-cols-8 gap-4 lg:pt-12">
-    <div
-        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-        <h1 class="font-bold text-3xl text-primary-text">Calling Kernel Module&#39;s Function from The Other Kernel Module</h1>
-        <div class="mr-6 my-2">
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Calling Kernel Module&#39;s Function from The Other Kernel Module</h1>
+    <div class="mr-6 my-2">
     <span>May 3, 2017</span>
 </div>
 
 
 
 
-        
-        
-        
+    
+    
+    
 
-        <div class="content">
-            <p>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that <code>WARNING: &quot;&lt;function_name&gt;&quot; undefined!</code>.
+    <div class="content">
+        <p>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that <code>WARNING: &quot;&lt;function_name&gt;&quot; undefined!</code>.
 Even though I exported the function, there actually is another step that I should follow.</p>
 <p><strong>References: <a href="http://stackoverflow.com/a/9499893">http://stackoverflow.com/a/9499893</a></strong></p>
 <p>What I did before finding the reference was to export the target function.</p>
@@ -261,22 +260,22 @@ EXTRA_CFLAGS = -I/kernel1/functions.h
 </ul>
 <p>Now compiling kernel2 will show no warnings.</p>
 
-        </div>
-        
-        <div class="my-4">
+    </div>
+    
+    <div class="my-4">
     
     <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
     
     <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
     
 </div>
-        
-        
-        
-        
-        
-        
-        
+    
+    
+    
+    
+    
+    
+    
 <div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
     <div>
         
@@ -292,7 +291,7 @@ EXTRA_CFLAGS = -I/kernel1/functions.h
     </div>
 </div>
 
-        
+    
 
 <div id="disqus_thread"></div>
 <script>
@@ -316,37 +315,37 @@ EXTRA_CFLAGS = -I/kernel1/functions.h
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
-    </div>
-    
+</div>
 
-    
-    
-    <div
-        class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-        <h2 class="text-lg font-semibold mb-4">See Also</h2>
-        <div class="content">
-            
-            <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
-            <br />
-            
-            <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
-            <br />
-            
-            <a href="/2017-04-27/analyzing-gdev/">Analyzing Gdev</a>
-            <br />
-            
-            <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
-            <br />
-            
-            <a href="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/">Intel SGX Instructions in Enclave Initialization</a>
-            <br />
-            
-            <a href="/2017-04-03/intel-sgx-protection-mechanism/">Intel SGX Protection Mechanism</a>
-            <br />
-            
-        </div>
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
+        <br />
+        
+        <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
+        <br />
+        
+        <a href="/2017-04-27/analyzing-gdev/">Analyzing Gdev</a>
+        <br />
+        
+        <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
+        <br />
+        
+        <a href="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/">Intel SGX Instructions in Enclave Initialization</a>
+        <br />
+        
+        <a href="/2017-04-03/intel-sgx-protection-mechanism/">Intel SGX Protection Mechanism</a>
+        <br />
+        
     </div>
-    
+</div>
+
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', ()=>{
@@ -355,7 +354,6 @@ EXTRA_CFLAGS = -I/kernel1/functions.h
 </script>
 
       </div>
-    </div>
     
   </main>
   <footer class="pl-scrollbar">
