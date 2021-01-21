@@ -82,7 +82,7 @@
     },
     "headline": "Building Container Image inside Container using Buildah | Better Tomorrow with Computer Science","datePublished": "2020-11-09T15:09:00+09:00",
     "dateModified": "2020-11-09T15:09:00+09:00",
-    "wordCount":  1395 ,
+    "wordCount":  1420 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -311,10 +311,11 @@ executor failed running [/bin/sh -c dnf -y install buildah fuse-overlayfs --excl
 <li><code>docker(podman) run</code>: run a new container based on the given image.</li>
 <li><code>--device /dev/fuse:rw</code>: mount <code>/dev/fuse</code> device into container, so that <code>buildah</code> in a container can use it to run an inner container.</li>
 <li><code>--security-opt seccomp=unconfined</code>: Docker, by default, restricts using <code>unshare</code> system call inside a container, therefore implementing a new namespaces are prohibited in all containers. This flag would allow <code>unshare</code> system call in containers to make <code>buildah</code> work properly.</li>
+<li><code>--security-opt apparmor=unconfined</code>: Thanks to Timothy Wolff-Piggott! He left a comment that this flag is required for proper operations. Check <a href="https://github.com/containers/buildah/issues/2899">this issue</a> for detail.</li>
 <li><code>--security-opt label=disable</code>: it is given in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, but it seems <code>buildah</code> in an inner container works properly without this option. Have no idea what it means. Need to study more with <a href="https://docs.docker.com/engine/reference/run/#security-configuration">the Docker documentation</a>.</li>
 <li><code>-v /var/lib/mycontainer:/var/lib/containers:Z</code>: this mount option also comes from <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. I think its purpose is to store built images into <code>/var/lib/mycontainer</code> in the host. However, if I use my private repository and push the generated images directly to the repository, this mount will not be necessary. I will not use this mount option for further instructions.</li>
 </ul>
-<pre><code class="language-sh">$ docker(or podman) run -it --device /dev/fuse:rw --security-opt seccomp=unconfined buildahimage bash
+<pre><code class="language-sh">$ docker(or podman) run -it --device /dev/fuse:rw --security-opt seccomp=unconfined --security-opt apparmor=unconfined buildahimage bash
 [root@b84150497970 /]# buildah 
 A tool that facilitates building OCI images
 Usage:
