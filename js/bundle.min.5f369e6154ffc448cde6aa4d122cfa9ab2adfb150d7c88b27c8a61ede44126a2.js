@@ -1,8 +1,0 @@
-let mobileMenuVisible=false;const toggleMobileMenu=()=>{let mobileMenu=document.getElementById('mobile-menu');if(mobileMenuVisible==false){mobileMenu.style.animationName='bounceInRight';mobileMenu.style.webkitAnimationName='bounceInRight';mobileMenu.style.display='block';mobileMenuVisible=true;}else{mobileMenu.style.animationName='bounceOutRight';mobileMenu.style.webkitAnimationName='bounceOutRight'
-mobileMenuVisible=false;}}
-let menu=document.getElementById("menu-btn")
-if(menu!==null){menu.addEventListener("click",toggleMobileMenu)};(function(){'use strict';if(!document.queryCommandSupported('copy')){return;}
-function flashCopyMessage(el,msg){el.textContent=msg;setTimeout(function(){el.textContent="Copy";},1000);}
-function selectText(node){var selection=window.getSelection();var range=document.createRange();range.selectNodeContents(node);selection.removeAllRanges();selection.addRange(range);return selection;}
-function addCopyButton(containerEl){var copyBtn=document.createElement("button");copyBtn.className="highlight-copy-btn";copyBtn.textContent="Copy";var codeEl=containerEl.firstElementChild;copyBtn.addEventListener('click',function(){try{var selection=selectText(codeEl);document.execCommand('copy');selection.removeAllRanges();flashCopyMessage(copyBtn,'Copied!')}catch(e){console&&console.log(e);flashCopyMessage(copyBtn,'Failed :\'(')}});containerEl.appendChild(copyBtn);}
-var highlightBlocks=document.getElementsByClassName('highlight');Array.prototype.forEach.call(highlightBlocks,addCopyButton);})();
