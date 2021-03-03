@@ -7,16 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Thu, 18 Feb 2021 16:11:00 +0900</lastBuildDate><atom:link href="/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Initializing OSDs in Ceph Cluster</title>
-      <link>/2021-02-18/initializing-osds-in-ceph-cluster/</link>
-      <pubDate>Thu, 18 Feb 2021 16:11:00 +0900</pubDate>
-      
-      <guid>/2021-02-18/initializing-osds-in-ceph-cluster/</guid>
-      <description>Although Ceph provides a document to install Ceph cluster 1, it does not work in my machine, specifically adding OSDs.</description>
-    </item>
-    
+    <lastBuildDate>Wed, 23 Dec 2020 11:38:00 +0900</lastBuildDate><atom:link href="/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Analyzing Ceph Network Module</title>
       <link>/2020-12-23/analyzing-ceph-network-module/</link>
