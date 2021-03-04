@@ -82,7 +82,7 @@
     },
     "headline": "Using Ceph RBD as a QEMU Storage | Better Tomorrow with Computer Science","datePublished": "2021-03-04T14:40:00+09:00",
     "dateModified": "2021-03-04T14:40:00+09:00",
-    "wordCount":  1538 ,
+    "wordCount":  1537 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -433,15 +433,15 @@ Created bdev <code>CephX</code> is managed by SPDK vhost process as illustrated 
 <p>The RPC command attaches <code>Ceph0</code> bdev to the <code>vhost.1</code> vhost-blk controller.
 The manual says the above command creates a vhost-blk device exposing <code>Ceph0</code> device, and the device will be accessible to QEMU via <code>/var/tmp/vhost.1</code>, which means there is still no kernel-level block devices in <code>/dev</code> directory.</p>
 <h3 id="launching-a-qemu-vm-with-spdk-vhost">Launching a QEMU VM with SPDK vhost</h3>
-<p>Using vhost exposes devices via sockets, not block devices in <code>/dev</code> directory, so QEMU has to access the devices in another way: socket.</p>
-<p>Instead of using <code>-drive</code> argument, we can put a character device indicating the created device socket:</p>
+<p>Using vhost exposes devices via sockets, not block devices in <code>/dev</code> directory, so QEMU has to access the devices via sockets.
+Instead of using <code>-drive</code> argument, we can put a character device indicating the created device socket:</p>
 <pre><code class="language-sh">$ qemu-system-x86_64 ... \
   -object memory-backend-file,id=mem,size=1G,mem-path=/dev/hugepages,share=on \
   -numa node,memdev=mem \
   -chardev socket,id=char1,path=/var/tmp/vhost.1 \
   -device vhost-user-blk-pci,id=vhostblk0,chardev=char1
 </code></pre>
-<p>I understand that the given memory-backend-file is used for the shared hugepage memory containing virtqueues and I/O buffers, however, I do not understand why it should be same with the entire VM&rsquo;s memory size and also should be followed by <code>-numa</code> option so far.</p>
+<p>I understand that the given memory-backend-file is used for the shared hugepage memory containing virtqueues and I/O buffers, however, I do not understand why it&rsquo;s size should be same with the entire VM&rsquo;s memory size and also should be followed by <code>-numa</code> option so far.</p>
 <pre><code class="language-sh"># in VM
 $ lspci -nnn
 00:03.0 SCSI storage controller: Red Hat, Inc. Virtio block device
