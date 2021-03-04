@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Using Ceph RBD as a QEMU Storage | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="This post explains how we can use a Ceph RBD as a QEMU storage.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Using Ceph RBD as a QEMU Storage",
+      "item":"/2021-03-04/using-ceph-rbd-as-a-qemu-storage/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2021-03-04/using-ceph-rbd-as-a-qemu-storage/"
+    },
+    "headline": "Using Ceph RBD as a QEMU Storage | Better Tomorrow with Computer Science","datePublished": "2021-03-04T14:40:00+09:00",
+    "dateModified": "2021-03-04T14:40:00+09:00",
+    "wordCount":  1538 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "This post explains how we can use a Ceph RBD as a QEMU storage."
+}
+</script><meta property="og:title" content="Using Ceph RBD as a QEMU Storage | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" />
+
+
+
+
+<meta property="og:description" content="This post explains how we can use a Ceph RBD as a QEMU storage." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2021-03-04T14:40:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2021-03-04T14:40:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="ceph" />
+
+<meta property="article:tag" content="spdk" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-12-23/analyzing-ceph-network-module/" />
+
+<meta property="og:see_also" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" />
+
+<meta property="og:see_also" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+
+<meta property="og:see_also" content="/2020-08-30/introduction-to-ceph/" />
+
+<meta property="og:see_also" content="/2020-11-09/building-container-image-inside-container-using-buildah/" />
+
+<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Using Ceph RBD as a QEMU Storage</h1>
+    <div class="mr-6 my-2">
+    <span>Mar 4, 2021</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post explains how we can use a Ceph RBD as a QEMU storage.
+We can attach a Ceph RBD to a QEMU VM through either <code>virtio-blk</code> or <code>vhost-user-blk</code> QEMU device (<code>vhost</code> requires SPDK).</p>
+<p>Assume that a Ceph cluster is ready following <a href="https://docs.ceph.com/en/latest/cephadm/install/">the manual</a>.</p>
+<h2 id="setting-a-ceph-client-configuration-client-setup">Setting a Ceph client Configuration <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></h2>
+<p>For a node to access a Ceph cluster, it requires some configuration:</p>
+<ul>
+<li>Config file setup</li>
+<li>User authentication setup</li>
+</ul>
+<p>This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</p>
+<h3 id="install-ceph-client-package">Install Ceph client package</h3>
+<p>All you need to install for a client node is <code>ceph-common</code>:</p>
+<pre><code class="language-sh">$ apt install ceph-common
+</code></pre>
+<h3 id="config-file-setup">Config file setup</h3>
+<p>Run the following command in the host:</p>
+<pre><code class="language-sh">$ ceph config generate-minimal-conf
+# minimal ceph.conf for &lt;fsid&gt;
+[global]
+        fsid = &lt;fsid&gt;
+        mon_host = [v2:.../0,v1:.../0]
+</code></pre>
+<p>Copy the 4 lines and paste it into <code>/etc/ceph/ceph.conf</code> on the client node:</p>
+<pre><code class="language-sh"># on the client node
+$ cat /etc/ceph/ceph.conf
+[global]
+        fsid = &lt;fsid&gt;
+        mon_host = [v2:.../0,v1:.../0]
+</code></pre>
+<h3 id="keyring-setup">Keyring setup</h3>
+<blockquote>
+<p>Most Ceph clusters are run with authentication enabled, and the client will need keys in order to communicate with cluster machines.</p>
+</blockquote>
+<p>For better security, we could create a new user with less privilege and use this credential, following <a href="https://docs.ceph.com/en/latest/rados/operations/user-management/">this manual</a> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
+This post just uses the admin user to access the cluster for simplicity:</p>
+<pre><code class="language-sh"># on the host node
+$ ceph auth get client.admin &amp;&gt; ceph.client.admin.keyring
+# copy ceph.client.admin.keyring file to /etc/ceph of the client node...
+</code></pre>
+<p>The file should be located <code>/etc/ceph/ceph.client.admin.keyring</code>, or <code>/etc/ceph/ceph.client.&lt;username&gt;.keyring</code>, if you created a new user. <code>ceph</code> automatically searches keyrings in <code>/etc/ceph</code> directory.</p>
+<blockquote>
+<p>You can see all authentication keyrings by using <code>ceph auth ls</code> command.</p>
+<p>Do not use <code>admin</code> keyring in public clusters.</p>
+</blockquote>
+<p>From here, Ceph hosts are no longer required. All commands are executed in a Ceph client node.</p>
+<h2 id="creating-a-rbd">Creating a RBD</h2>
+<h3 id="creating-a-pool-ceph-pool">Creating a Pool <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></h3>
+<p>To create a RBD, you first need to create a pool, as all RBDs should be assigned into a pool.
+Follow <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> and <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> to create a pool and a RBD:</p>
+<pre><code class="language-sh">$ ceph osd pool create testpool
+pool 'testpool' created
+</code></pre>
+<blockquote>
+<p>Just in case&hellip; you need to set <code>mon_allow_pool_delete</code> config option to true to delete a pool, with the following commands <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>:</p>
+<pre><code class="language-sh">ceph tell mon.* injectargs --mon_allow_pool_delete true
+</code></pre>
+<p>It was supposed to reload monitor daemons after adding the configuration <code>mon_allow_pool_delete</code> in <code>/etc/ceph/ceph.conf</code> configuration file, but this <code>injectargs</code> subcommand enables runtime argument injection.</p>
+</blockquote>
+<p>Then, use the <code>rbd</code> tool to initialize the pool for use by RBD <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>:</p>
+<pre><code class="language-sh">$ rbd pool init &lt;pool-name&gt;
+</code></pre>
+<p>This makes the given pool usable by RBD. To check it, type:</p>
+<pre><code class="language-sh">$ ceph osd pool ls detail
+...
+pool 2 'rbd' replicated ... application rbd  # &lt;-- this pool is for rbd
+</code></pre>
+<h3 id="creating-a-rbd-ceph-rbd-ceph-rbd2">Creating a RBD <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></h3>
+<p>Now create a RBD with the following command:</p>
+<pre><code class="language-sh">$ rbd create --size &lt;megabytes&gt; &lt;pool-name&gt;/&lt;image-name&gt;
+</code></pre>
+<p>For example, <code>rbd create --size 2048 testpool/testimage</code> creates a 2GB block device image named <code>testimage</code> in <code>testpool</code> pool.</p>
+<blockquote>
+<p>You can get information of the create image via:</p>
+<ul>
+<li><code>rbd ls</code>: list all images. If want to list images in a specific pool, append the poolname.</li>
+<li><code>rbd info &lt;image-name&gt;</code>: retrieve image information:</li>
+</ul>
+<pre><code class="language-sh">rbd info testimage
+rbd image 'testimage':
+       size 16 MiB in 4 objects
+       order 22 (4 MiB objects)
+       snapshot_count: 0
+       id: 8635aeee3f08
+       block_name_prefix: rbd_data.8635aeee3f08
+       format: 2
+       features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+       op_features:
+       flags:
+       create_timestamp: Thu Mar  4 16:09:01 2021
+       access_timestamp: Thu Mar  4 16:09:01 2021
+       modify_timestamp: Thu Mar  4 16:09:01 2021
+</code></pre>
+</blockquote>
+<h2 id="using-ceph-rbd-for-qemu-vm-storage-virtio">Using Ceph RBD for QEMU VM Storage (<code>virtio</code>)</h2>
+<p>Now a Ceph RBD image is ready. You can use this image as a storage backend of a QEMU VM.</p>
+<p>You can use <code>krbd</code> kernel module or <code>librbd</code> userspace library to use the RBD image.</p>
+<figure>
+    <img src="/assets/images/210304/ceph-rbd-flow.jpg"
+         alt="image"/> <figcaption>
+            <p>Software stack for Ceph RBD I/O. <a href="https://subscription.packtpub.com/book/virtualization_and_cloud/9781784393502/2/ch02lvl1sec19/working-with-ceph-block-device">[src]</a></p>
+        </figcaption>
+</figure>
+
+<h3 id="using-krbd-kernel-module">Using <code>krbd</code> kernel module</h3>
+<p>Following <a href="https://docs.ceph.com/en/latest/start/quick-rbd/#configure-a-block-device">this step</a>, map the image to a block device:</p>
+<pre><code class="language-sh">rbd map &lt;image-name&gt; [--name &lt;client.admin&gt;] [-m &lt;mon-ip&gt;] [-k /path/to/ceph.client.admin.keyring] [-p &lt;pool-name&gt;]
+</code></pre>
+<p>All arguments except <code>image-name</code> are optional. if IP addresses of monitors are not given, <code>rbd</code> infers it using <code>/etc/ceph/ceph.conf</code> (in <a href="#config-file-setup">the previous setup</a>, we configured <code>/etc/ceph/ceph.conf</code> with <code>mon_host</code> value). The default value of <code>pool-name</code> is <code>rbd</code>.</p>
+<p>For example, if you created a RBD image via <code>rbd create --size ... testpool/testimage</code>, you can map the image via <code>rbd map testimage -p testpool</code>.</p>
+<pre><code class="language-sh">$ rbd map testimage -p testpool
+/dev/rbd0
+</code></pre>
+<p>Now you can access the image via <code>/dev/rbd0</code> device.</p>
+<pre><code class="language-sh">$ qemu-system-x86_64 ... \
+  -drive format=raw,id=rbd1,file=/dev/rbd0,if=none \
+  -device virtio-blk-pci,driver=rbd1,id=virtioblk0
+</code></pre>
+<h3 id="using-librbd-library">Using <code>librbd</code> library</h3>
+<!-- This requires additional libraries installed:
+```sh
+$ apt install librados-dev librbd-dev
+$ dnf install librados2-devel librbd-devel
+``` -->
+<p>According to <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>, there is no need to map an image as a block device on the host (here, the host means the host kernel from the view of virtual machines, not the Ceph host) since QEMU 0.15, and it attaches an image as a virtual block device directly via <code>librbd</code>.
+Without doubt, it could increase performance as I/O path does not include <code>krbd</code> kernel module, thus reducing context switches.</p>
+<pre><code class="language-sh">$ qemu-system-x86_64 ... \
+  -drive format=rbd,id=rbd1,file=rbd:&lt;pool-name&gt;/&lt;image-name&gt;,if=none \
+  -device virtio-blk-pci,drive=rbd1,id=virtioblk0
+</code></pre>
+<h2 id="using-ceph-rbd-for-qemu-vm-storage-spdk-vhost">Using Ceph RBD for QEMU VM Storage (<code>SPDK vhost</code>)</h2>
+<h3 id="building-spdk">Building SPDK</h3>
+<p>This requires <code>SPDK</code>.</p>
+<p>SPDK manual is well maintained and following it would be enough <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>:</p>
+<pre><code class="language-sh">$ git clone https://github.com/spdk/spdk
+$ cd spdk; git submodule update --init
+$ ./scripts/pkgdep.sh --all
+$ apt install librados-dev librbd-dev /* or */ dnf install librados2-devel librbd-devel
+$ ./configure --with-rbd
+$ make
+</code></pre>
+<p>SPDK applications including <code>vhost</code> requires hugepages:</p>
+<pre><code class="language-sh">$ HUGEMEM=4096 ./scripts/setup.sh
+</code></pre>
+<blockquote>
+<p>vhost requires at least 4GB (<code>HUGEMEM=4096</code>) of hugepages.</p>
+</blockquote>
+<p>This setup script is for allocating hugepages and binding <code>vfio-pci/uio_pci_generic</code> kernel module to NVMe devices, however, I use this script only for hugepages allocation.
+If you are using any NVMe devices, use <code>PCI_BLOCKED</code> argument not to bind <code>vfio-pci/uio_pci_generic</code> to those devices. <code>setup.sh help</code> explains how to use the argument very well.</p>
+<h3 id="spdk-configuration">SPDK Configuration</h3>
+<figure>
+    <img src="/assets/images/210304/vhost-target.png"
+         alt="image"/> <figcaption>
+            <p>QEMU/SPDK vhost data flow. <a href="https://spdk.io/doc/vhost.html">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>SPDK vhost process is a local storage service as a process running on the host OS. As the vhost process serves a storage service to VMs, the host kernel is no longer involved in the entire I/O process.
+For Ceph RBD backend, SPDK vhost uses <code>librbd</code> to access bdev.</p>
+<p>For a VM to work, the following components need to be created:</p>
+<ul>
+<li>SPDK vhost process</li>
+<li>SPDK bdev (Ceph RBD backend)</li>
+<li><code>vhost-scsi</code> or <code>vhost-user-blk</code> controller</li>
+</ul>
+<h3 id="starting-spdk-vhost-target-process">Starting SPDK vhost target process</h3>
+<pre><code class="language-sh">$ ./build/bin/vhost -S /var/tmp -m 0x3
+</code></pre>
+<blockquote>
+<p>The above command will start vhost on CPU cores 0 and 1 (cpumask 0x3) with all future socket files placed in /var/tmp.
+<code>vhost</code> will fully occupy given CPU cores for I/O polling <sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup>.</p>
+</blockquote>
+<p>cpumask 0x3 means <code>b0011</code>, which means two vhost reactor threads run on core 0 and 1, respectively; if you want to use more cores for vhost or modify core target, we should use cpumask properly. For example:</p>
+<ul>
+<li>cpumask 0x7: <code>b0111</code>: use three CPU cores 0, 1, and 2</li>
+<li>cpumask 0x10: <code>b1010</code>: use two CPU cores 1 and 3</li>
+</ul>
+<p>Be aware again that each thread polls and occupies the entire core.</p>
+<p><code>-S</code> specifies a directory that vhost sockets will be created; vhost clients (e.g. QEMU) seem to connect to the vhost process via this socket.</p>
+<h3 id="creating-a-vhost-device-with-ceph-rbd-backend-spdk-ceph-rbd">Creating a vhost device with Ceph RBD backend <sup id="fnref:10"><a href="#fn:10" class="footnote-ref" role="doc-noteref">10</a></sup></h3>
+<p>Use <code>spdk/scripts/rpc.py</code> and <code>bdev_rbd_create</code> command to create a SPDK RBD bdev: <code>./scripts/rpc.py bdev_rbd_create &lt;pool-name&gt; &lt;image-name&gt; &lt;block-size&gt;</code>. For example:</p>
+<pre><code class="language-sh">$ ./scripts/rpc.py bdev_rbd_create testpool testimage 512
+Ceph0
+</code></pre>
+<p>Ceph RBD images are accessed via <code>librbd</code>.
+Created bdev <code>CephX</code> is managed by SPDK vhost process as illustrated in vhost data flow, and no block devices in <code>/dev</code> is shown.</p>
+<h3 id="creating-a-vhost-controller-and-a-vhost-blk-device-for-qemu-vms-spdk-ceph-rbd-controller">Creating a vhost controller and a vhost-blk device for QEMU VMs <sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup>.</h3>
+<p>Use <code>spdk/scripts/rpc.py</code> and <code>vhost_create_blk_controller</code> command to create a vhost-blk device that can be used by QEMU (or use <code>vhost_create_scsi_controller</code> command to create <code>vhost-scsi</code> device).</p>
+<pre><code class="language-sh">$ ./scripts/rpc.py vhost_create_blk_controller --cpumask 0x1 vhost.1 Ceph0
+</code></pre>
+<p>The RPC command attaches <code>Ceph0</code> bdev to the <code>vhost.1</code> vhost-blk controller.
+The manual says the above command creates a vhost-blk device exposing <code>Ceph0</code> device, and the device will be accessible to QEMU via <code>/var/tmp/vhost.1</code>, which means there is still no kernel-level block devices in <code>/dev</code> directory.</p>
+<h3 id="launching-a-qemu-vm-with-spdk-vhost">Launching a QEMU VM with SPDK vhost</h3>
+<p>Using vhost exposes devices via sockets, not block devices in <code>/dev</code> directory, so QEMU has to access the devices in another way: socket.</p>
+<p>Instead of using <code>-drive</code> argument, we can put a character device indicating the created device socket:</p>
+<pre><code class="language-sh">$ qemu-system-x86_64 ... \
+  -object memory-backend-file,id=mem,size=1G,mem-path=/dev/hugepages,share=on \
+  -numa node,memdev=mem \
+  -chardev socket,id=char1,path=/var/tmp/vhost.1 \
+  -device vhost-user-blk-pci,id=vhostblk0,chardev=char1
+</code></pre>
+<p>I understand that the given memory-backend-file is used for the shared hugepage memory containing virtqueues and I/O buffers, however, I do not understand why it should be same with the entire VM&rsquo;s memory size and also should be followed by <code>-numa</code> option so far.</p>
+<pre><code class="language-sh"># in VM
+$ lspci -nnn
+00:03.0 SCSI storage controller: Red Hat, Inc. Virtio block device
+        Subsystem: Red Hat, Inc. Virtio block device
+        ...
+$ fdisk -l
+...
+Disk /dev/vda: 20 GiB, 21474836480 bytes, 41943040 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+</code></pre>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/cephadm/client-setup/">Basic Ceph Client Setup</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/rados/operations/user-management/">Ceph User Management</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/rados/operations/pools/">Ceph Pool</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/start/quick-rbd/">Ceph Block Device Quick Start</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://medium.com/opsops/how-to-remove-a-pool-in-ceph-without-resarting-mons-820cd5f5841">How to remove a pool in Ceph without restarting mons</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/rbd/rados-rbd-cmds/">Ceph Basic Block Device Commands</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/rbd/qemu-rbd/">QEMU and Ceph Block Devices</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p><a href="https://spdk.io/doc/getting_started.html">SPDK Getting Started</a> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9" role="doc-endnote">
+<p><a href="https://spdk.io/doc/vhost.html">SPDK vhost Taret</a> <a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:10" role="doc-endnote">
+<p><a href="https://spdk.io/doc/bdev.html#bdev_config_rbd">SPDK Ceph RBD</a> <a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:11" role="doc-endnote">
+<p><a href="https://spdk.io/doc/vhost.html#vhost_vdev_create">SPDK Create a vhost device</a> <a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+    <a href="/tags/spdk/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#spdk</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-12-23/analyzing-ceph-network-module/" class="block">Analyzing Ceph Network Module</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2020-12-23/analyzing-ceph-network-module/">Analyzing Ceph Network Module</a>
+        <br />
+        
+        <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+        <br />
+        
+        <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/">Deploying a Ceph Development Environment Cluster</a>
+        <br />
+        
+        <a href="/2020-08-30/introduction-to-ceph/">Introduction to Ceph</a>
+        <br />
+        
+        <a href="/2020-11-09/building-container-image-inside-container-using-buildah/">Building Container Image inside Container using Buildah</a>
+        <br />
+        
+        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
