@@ -82,7 +82,7 @@
     },
     "headline": "Using Ceph RBD as a QEMU Storage | Better Tomorrow with Computer Science","datePublished": "2021-03-04T14:40:00+09:00",
     "dateModified": "2021-03-04T14:40:00+09:00",
-    "wordCount":  1537 ,
+    "wordCount":  1663 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -432,6 +432,23 @@ Created bdev <code>CephX</code> is managed by SPDK vhost process as illustrated 
 </code></pre>
 <p>The RPC command attaches <code>Ceph0</code> bdev to the <code>vhost.1</code> vhost-blk controller.
 The manual says the above command creates a vhost-blk device exposing <code>Ceph0</code> device, and the device will be accessible to QEMU via <code>/var/tmp/vhost.1</code>, which means there is still no kernel-level block devices in <code>/dev</code> directory.</p>
+<p>Note that <code>--cpumask</code> argument for <code>vhost_create_blk_controller</code> command must be a subset of <code>vhost</code> cpumask: if you run <code>vhost</code> with cpumask 0x3, vhost_create_blk_controller can use cpumask 0x1, 0x2, or 0x3. Otherwise, for example:</p>
+<pre><code class="language-sh"># Try to pin a controller to core 2, while vhost is running in core 0 and 1 (cpumask 0x3).
+$ ./scripts/rpc.py vhost_create_blk_controller --cpumask 0x4 vhost.1 Ceph0
+...
+Got JSON-RPC error response
+response:
+{
+    &quot;code&quot;: -32602,
+    &quot;message&quot;: &quot;Invalid argument&quot;
+}   
+
+# from stdout of vhost binary
+[2021-03-05 10:18:42.774560] bdev_rbd.c: 696:bdev_rbd_create: *ERROR*: Failed to init rbd device
+[2021-03-05 10:19:11.943456] bdev_rbd.c: 719:bdev_rbd_create: *NOTICE*: Add Ceph0 rbd disk to lun
+[2021-03-05 10:19:34.791038] vhost.c: 913:vhost_parse_core_mask: *ERROR*: one of selected cpu is outside of core mask(=3)
+[2021-03-05 10:19:34.791077] vhost.c: 950:vhost_dev_register: *ERROR*: cpumask 0x4 is invalid (core mask is 0x3)
+</code></pre>
 <h3 id="launching-a-qemu-vm-with-spdk-vhost">Launching a QEMU VM with SPDK vhost</h3>
 <p>Using vhost exposes devices via sockets, not block devices in <code>/dev</code> directory, so QEMU has to access the devices via sockets.
 Instead of using <code>-drive</code> argument, we can put a character device indicating the created device socket:</p>
