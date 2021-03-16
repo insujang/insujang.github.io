@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Wed, 10 Mar 2021 17:01:00 +0900</lastBuildDate><atom:link href="/tags/kvm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 Mar 2021 12:24:00 +0900</lastBuildDate><atom:link href="/tags/kvm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Virtio and Vhost Architecture - Part 2</title>
+      <link>/2021-03-15/virtio-and-vhost-architecture-part-2/</link>
+      <pubDate>Mon, 15 Mar 2021 12:24:00 +0900</pubDate>
+      
+      <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
+      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.</description>
+    </item>
+    
     <item>
       <title>Virtio and Vhost Architecture - Part 1</title>
       <link>/2021-03-10/virtio-and-vhost-architecture-part-1/</link>

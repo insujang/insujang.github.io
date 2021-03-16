@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Virtio and Vhost Architecture - Part 2 | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="This post explains overheads of virtio, and introduce vhost that increases performance of virtio.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Virtio and Vhost Architecture - Part 2",
+      "item":"/2021-03-15/virtio-and-vhost-architecture-part-2/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2021-03-15/virtio-and-vhost-architecture-part-2/"
+    },
+    "headline": "Virtio and Vhost Architecture - Part 2 | Better Tomorrow with Computer Science","datePublished": "2021-03-15T12:24:00+09:00",
+    "dateModified": "2021-03-15T12:24:00+09:00",
+    "wordCount":  1468 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "This post explains overheads of virtio, and introduce vhost that increases performance of virtio."
+}
+</script><meta property="og:title" content="Virtio and Vhost Architecture - Part 2 | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2021-03-15/virtio-and-vhost-architecture-part-2/" />
+
+
+
+
+<meta property="og:description" content="This post explains overheads of virtio, and introduce vhost that increases performance of virtio." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2021-03-15T12:24:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2021-03-15T12:24:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="linux" />
+
+<meta property="article:tag" content="virtualization" />
+
+<meta property="article:tag" content="kvm" />
+
+
+
+
+
+<meta property="og:see_also" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
+
+<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
+
+<meta property="og:see_also" content="/2020-07-15/fedora-silverblue/" />
+
+<meta property="og:see_also" content="/2020-02-09/introduction-to-programming-infiniband/" />
+
+<meta property="og:see_also" content="/2020-01-25/building-mellanox-ofed-from-source/" />
+
+<meta property="og:see_also" content="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Virtio and Vhost Architecture - Part 2</h1>
+    <div class="mr-6 my-2">
+    <span>Mar 15, 2021</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.</p>
+<h2 id="virtio-review--vhost-introduction">Virtio Review &amp; Vhost Introduction</h2>
+<figure>
+    <img src="/assets/images/210310/virtio-net-qemu.png"
+         alt="image"/> <figcaption>
+            <p>virtio-net example diagram. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>VirtI/O is implemented with virtqueues, shared by the guest and QEMU process.</li>
+<li>When the guest rings a doorbell after inserting requests into the virtqueue, <strong>the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd</strong>.</li>
+<li>QEMU process reads the request from the shared virtqueue, <strong>and handles it</strong>. After completion, QEMU puts the result into the virtqueue and injects an IRQ through irqfd to the guest (4, 5, 6).</li>
+<li>When the guest execution is resumed, the request I/O operation is done and virtio device driver gets result data from the virtqueue (7, 8, 5).</li>
+</ul>
+<p>Here, during request handling by QEMU process, several unnecessary context switches happen: to forward the execution context to QEMU process, the guest operating system at first generates a VM-exit, moving to host kernel space, and again to QEMU process via ioeventfd.
+Then, the QEMU process accesses a tap device (for virtio-net) or a block cdevice (for virtio-blk), forwarding its execution context to host kernel space again.</p>
+<p>To reduce context switch overheads, vhost has been introduced to move the location of virtqueue from QEMU process to kernel space.</p>
+<figure>
+    <img src="/assets/images/210310/vhost-net-qemu.png"
+         alt="image"/> <figcaption>
+            <p>vhost-net example diagram. Note that virtqueue is in kernel space. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Note I/O requests are handled by vhost-net kernel module, not QEMU process (only setup is done by QEMU process). Only one context switch from the guest kernel space to the host kernel space is required, and any context switches between the host kernel space and host user space (QEMU) is no longer necessary.
+In other words, vhost is a in-kernel virtio device emulation.</p>
+<blockquote>
+<p>As it only affects back-end device emulation, there is no modification in the guest side: it still uses virtio front-end device driver to access the device.</p>
+</blockquote>
+<p>vhost kernel module is implemented in <code>linux/drivers/vhost</code>, and control plane is implemented in <code>qemu/hw/virtio/vhost*</code>:</p>
+<pre><code class="language-c">// qemu/hw/virtio/vhost-backend.c
+
+static int vhost_kernel_call(struct vhost_dev *dev, unsigned long int request,
+                             void *arg) {
+  int fd = (uintptr_t) dev-&gt;opaque;
+  return ioctl(fd, request, arg);
+}
+
+static int vhost_kernel_net_set_backend(struct vhost_dev *dev,
+                                        struct vhost_vring_file *file) {
+  return vhost_kernel_call(dev, VGOST_NET_SET_BACKEND, file);
+}
+
+static int vhost_kernel_set_vring_base(struct vhost_dev *dev,
+                                       struct vhost_vring_state *ring) {
+  return vhost_kernel_call(dev, VHOST_SET_VRING_BASE, ring);
+}
+/* and many other functions */
+
+static const VhostOps kernel_ops = {
+  .backend_type = VHOST_BACKEND_TYPE_KERNEL,
+  .vhost_backend_init = vhost_kernel_init,
+  ...,
+  .vhost_set_vring_addr = vhost_kernel_set_vring_addr,
+  .vhost_set_vring_base = vhost_kernel_set_vring_base,
+  ...
+};
+
+// qemu/hw/virtio/vhost.c
+static int vhost_virtqueue_set_addr(struct vhost_dev *dev,
+                                    struct vhost_virtqueue *vq,
+                                    unsigned idx, bool enable_log) {
+  struct bhost_vring_addr addr;
+  if (dev-&gt;vhost_ops-&gt;vhost_vq_get_addr) {
+    dev-&gt;vhost_ops-&gt;vhost_vq_get_addr(dev, &amp;addr, vq);
+  }
+  addr.index = idx;
+  addr.log_guest_addr = vq-&gt;used_phys;
+  addr.flags = enable_log ? (1 &lt;&lt; VHOST_VRING_F_LOG) : 0;
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_addr(dev, &amp;addr);
+  return 0;
+}
+/* also many other functions here too */
+
+static int vhost_virtqueue_start(...) {
+  ...
+  vq-&gt;num = virtio_queue_get_num(vdev, idex);
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_num(dev, &amp;state);
+  state.num = virtio_queue_get_last_avail_idx(vdev, idx);
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_base(dev, &amp;state);
+  ...
+  vhost_virtqueue_set_addr(dev, vq, vhost_vq_index, dev-&gt;log_enabled);
+  
+  file.fd = event_notifier_get_fd(virtio_queue_get_host_notifier(vvq));
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_kick(dev, &amp;file);
+  ...
+}
+
+int vhost_dev_start(struct vhost_dev *hdev, VirtIODevice *vdev) {
+  ...
+  hdev-&gt;vhost_ops-&gt;vhost_set_mem_table(hdev, hdev-&gt;mem);
+  for (i = 0; i hdev-&gt;nvqs; ++i) {
+    vhost_virtqueue_start(hdev, vdev, hdev-&gt;vqs + i, hdev-&gt;vq_index + i);
+  }
+  hdev-&gt;vhost_ops-&gt;vhost_dev_start(hdev, true);
+  ...
+}
+</code></pre>
+<h3 id="dataplane-sharing">Dataplane Sharing</h3>
+<p>In <a href="/2021-03-10/virtio-and-vhost-architecture-part-1">the previous post</a>, I said that Red Hat calls communication with the shared memory (e.g. virtqueue) <em>dataplane</em>.
+In virtio scenario, sharing memory regions between QEMU process and the guest was simple; but how to share memory area between the guest and the host kernel?</p>
+<p>A virtio front-end device driver running in the guest operating system creates virtqueues.</p>
+<pre><code class="language-c">// linux/drivers/virtio/virtio_ring.c
+
+struct virtqueue *vring_new_virtqueue(...) {
+  struct vring_virtqueue *vq;
+  vq = kmalloc(sizeof(*vq), GFP_KERNEL);
+  ...
+}
+</code></pre>
+<p>How QEMU process know the moment of virtqueue (plus vrings) creation and call <code>ioctl()</code> to register the vrings to vhost-net kernel module?
+When virtio-net front-end device driver initializes the device, the status of virtio-net is changed and this is notified to QEMU process:</p>
+<pre><code class="language-c">// qemu/hw/net/virtio-net.c
+
+static NetClientInfo net_virtio_info = {
+  ...,
+  .link_status_changed = virtio_net_set_link_status,
+};
+
+static void virtio_net_set_link_status(NetClientState *nc) {
+  ...
+  virtio_net_set_status(vdev, vdev-&gt;status);
+}
+
+static void virtio_net_set_status(struct VirtIODevice *vdev, uint8_t status) {
+  ...
+  virtio_net_vhost_status(n, status);
+  ...
+}
+
+static void virtio_net_vhost_status(VirtIONet *n, uint8_t status) {
+  ...
+  vhost_net_start(vdev, n-&gt;nic-&gt;ncs, queues);
+}
+
+// qemu/hw/net/vhost_net.c
+int vhost_net_start(VirtIODevice *dev, NetClientState *ncs, int total_queues) {
+  ...
+  for (i = 0; i &lt; total_queues; i++) {
+    NetClientState *peer = qemu_get_peer(ncs, i);
+    vhost_net_start_one(get_vhost_net(peer), dev);
+    if (peer-&gt;vring_enable) {
+      vhost_set_vring_enable(peer, peer-&gt;vring_enable);
+    }
+  }
+  ...
+}
+
+static int vhost_net_start_one(struct vhost_net *net, VirtIODevice *dev) {
+  ...
+  vhost_dev_enable_notifiers(&amp;net-&gt;dev, dev);
+  vhost_dev_start(&amp;net-&gt;dev, dev);
+  ...
+}
+
+// qemu/hw/virtio/vhost.c
+int vhost_dev_start(struct vhost_dev *hdev, VirtIODevice *vdev) {
+  ...
+  hdev-&gt;vhost_ops-&gt;vhost_set_mem_table(hdev, hdev-&gt;mem);
+  for (i = 0; i &lt;hdev-&gt;nvqs; ++i) {
+    vhost_virtqueue_start(hdev, vdev, hdev-&gt;vqs + i, hdev-&gt;vq_index + i);
+  }
+
+  if (hdev-&gt;vhost_ops-&gt;vhost_dev_start) {
+    hdev-&gt;vhost_ops-&gt;vhost_dev_start(hdev, true);
+  }
+  ...
+}
+
+static int vhost_virtqueue_start(struct vhost_dev* dev,
+                                 struct VirtIODevice *vdev,
+                                 struct vhost_virtqueue *vq,
+                                 unsigned idx) {
+  ...
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_num(dev, &amp;state);
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_base(dev, &amp;state);
+  ...
+  /* this internally calls dev-&gt;vhost_ops-&gt;vhost_set_vring_addr() */
+  vhost_virtqueue_set_addr(dev, vq, vhost_vq_index, dev-&gt;log_enabled);
+  dev-&gt;vhost_ops-&gt;vhost_set_vring_kick(dev, &amp;file);
+}
+</code></pre>
+<p>and the QEMU here passes vring information to <code>vhost-net</code> kernel module via vhost kernel <code>ioctl()</code> operations.
+These requests are handled by <code>vhost</code> kernel module:</p>
+<pre><code class="language-c">// linux/drivers/vhost/vhost.c
+long vhost_dev_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *argp) {
+  ...
+  switch (ioctl) {
+  case VHOST_SET_MEM_TABLE: /* implementation omitted */
+  case VHOST_SET_LOG_BASE:  /* ... */
+  ...
+  }
+}
+
+long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *argp) {
+  u32 idx = array_index_nospec(idx, d-&gt;nvqs);
+  struct vhost_virtqueue *vq = d-&gt;vqs[idx];
+
+  if (ioctl == VHOST_SET_VRING_NUM ||
+      ioctl == VHOST_SET_VRING_ADDR) {
+      return vhost_vring_set_num_addr(d, vq, ioctl, argp);
+    }
+
+  switch (ioctl) {
+  case VHOST_SET_VRING_BASE: /* ... */
+  case VHOST_SET_VRING_KICK: /* ... */
+  case VHOST_SET_VRING_CALL: /* ... */
+  ...
+  }
+}
+</code></pre>
+<h3 id="handling-io-requests">Handling I/O Requests</h3>
+<p>Vhost still needs a kick from the guest virtio front-end device driver. When kicked, KVM VM-exit handler handles this kick. Different from virtio that the execution context is forward to QEMU userspace process via ioeventfd, this kick directly notifies <em>vhost kernel module</em>, so that vhost kernel module handles the I/O requests in kernel space without any context switches between host userspace and host kernel space.</p>
+<blockquote>
+<p>Other posts <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> say that ioeventfd is used for notification, however, I could not find any implementation in vhost kernel module that receives ioeventfd notification.</p>
+</blockquote>
+<pre><code class="language-c">// linux/drivers/vhost/net.c
+static int vhost_net_open(struct inode *inode, struct file *f) {
+  ...
+  n-&gt;vqs[VHOST_NET_VQ_TX].vq.handle_kick = handle_tx_kick;
+  n-&gt;vqs[VHOST_NET_VQ_RX].vq.handle_kick = handle_rx_kick;
+  ...
+}
+
+void vhost_dev_init(...) {
+  ...
+  for (i = 0; i &lt; dev-&gt;nvqs; ++i) {
+    vhost_vq_reset(dev, vq);
+    if (vq-&gt;handle_kick) {
+      vhost_poll_init(&amp;vq-&gt;poll, vq-&gt;handle_kick, EPOLLIN, dev);
+    }
+  }
+}
+
+/* Init poll structure */
+void vhost_poll_init(struct vhost_poll *poll, vhost_work_fn_t *fn,
+                     __poll_t mask, struct vhost_dev *dev) {
+  init_waitqueue_func_entry(&amp;poll-&gt;wait, vhost_poll_wakeup);
+  init_poll_funcptr(&amp;poll-&gt;table, vhost_poll_func);
+  vhost_work_init(&amp;poll-&gt;work, fn);   // kernel worker polls, and execute the given function when it receives an event.
+}
+</code></pre>
+<p>where the given function to be called <code>handle_tx_kick</code>:</p>
+<pre><code class="language-c">// linux/drivers/vhost/net.c
+handle_tx_kick()
+  handle_tx()
+    handle_tx_copy()
+
+static void handle_tx_copy(struct vhost_net *net, struct socket *sock) {
+  ...
+  do {
+    head = get_tx_bufs(net, nvq, &amp;msg, &amp;out, &amp;in, &amp;len, &amp;busyloop_intr);
+    /* On Error, stop handling until the next kick. */
+    if (unlikely(head &lt; 0))
+      break;
+    /* Nothing new? Wait for eventfd to tell us they refilled. */
+    if (head == vq-&gt;num) {
+      vhost_enable_notify(&amp;net-&gt;dev, vq);
+    }
+
+    ...
+    sock-&gt;ops-&gt;sendmsg(sock, &amp;msg, len);
+done:
+    vq-&gt;heads[nvq-&gt;done_idx].id = cpu_to_vhost32(vq, head);
+    vq-&gt;heads[nvq-&gt;done_idx].len = 0;
+  } while(likely(!vhost_exceeds_weight(vq, ++send_pkts, total_len)));
+
+  vhost_tx_batch(net, nvq, sock, &amp;msg);
+} 
+</code></pre>
+<p>After handling the I/O requests, vhost sends a signal to the guest with irqfd (or eventfd in the comment?):</p>
+<pre><code class="language-c">// linux/drivers/vhost/vhost.c
+/* This actually signals the guest, using eventfd */
+void vhost_signal(struct vhost_dev *dev, struct vhost_virtqueue *vq) {
+  /* Signal the Guest tell them we used something up. */
+  if (vq-&gt;call_ctx.ctx &amp;&amp; vhost_notify(dev, vq))
+    eventfd_signal(vq-&gt;call_ctx.ctx, 1);
+}
+
+/* And here's the combo meal deal. Supersize me! */
+void vhost_add_used_and_signal(struct vhost_dev *dev,
+                               struct vhost_virtqueue *vq,
+                               unsigned int head, int len) {
+  vhost_add_used(vq, head, len);
+  vhost_signal(dev, vq);
+}
+
+// linux/drivers/vhost/net.c
+vhost_tx_batch()
+  vhost_net_signal_used()
+    vhost_add_used_add_signal_n()
+      vhost_add_used_and_signal()
+</code></pre>
+<p>where <code>vhost_tx_batch()</code> is called by <code>handle_tx_copy()</code> described above.</p>
+<h2 id="summary">Summary</h2>
+<figure>
+    <img src="/assets/images/210315/KVM_QEMU_virtIO_vhostnet.png"
+         alt="image"/> <figcaption>
+            <p>vhost-net I/O flow. I could not specifically find ioeventfd/irqfd implementation in vhost kernel module integrated in modern Linux (v5.0). <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">[Source (Korean)]</a></p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>vhost implements vhost kernel module, and moves I/O request handling job from QEMU process to kernel module to reduce the overall number of context switches.</li>
+<li>virtqueue is created by the guest operating system, which is registered by QEMU to vhost kernel module; hence virtqueue is shared by the guest operating system and the host operating system.</li>
+<li>When virtio front-end device driver inserts I/O requests into the virtqueue and kicks, the vhost kernel module receives the I/O requests. Instead of forwarding the execution context to QEMU, the vhost kernel module directly handles the submitted I/O requests using underlying network/block devices (1, 2, 3?, 4).</li>
+<li>When vhost kernel module finishes its execution, it signals to the guest operating system that the operation is done via ioeventfd (in illustration, was irqfd). And then, KVM resumes guest execution, and the virtio front-end device driver running in the guest operating system receives the result from the virtqueue (6?, 7, 8, 5).</li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">Ssup2 Blog: I/O Virtualization Software (Korean)</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="http://blog.vmsplice.net/2011/09/qemu-internals-vhost-architecture.html">QEMU Internals: Vhost Architecture</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+    <a href="/tags/virtualization/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#virtualization</a>
+    
+    <a href="/tags/kvm/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#kvm</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2021-03-10/virtio-and-vhost-architecture-part-1/" class="block">Virtio and Vhost Architecture - Part 1</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2021-03-10/virtio-and-vhost-architecture-part-1/">Virtio and Vhost Architecture - Part 1</a>
+        <br />
+        
+        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
+        <br />
+        
+        <a href="/2020-07-15/fedora-silverblue/">Introduction to Fedora Silverblue</a>
+        <br />
+        
+        <a href="/2020-02-09/introduction-to-programming-infiniband/">Introduction to Programming Infiniband RDMA</a>
+        <br />
+        
+        <a href="/2020-01-25/building-mellanox-ofed-from-source/">Building Mellanox OFED from source code</a>
+        <br />
+        
+        <a href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/">Using Ceph RBD as a QEMU Storage</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
