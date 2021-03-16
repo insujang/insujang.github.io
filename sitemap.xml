@@ -5,7 +5,56 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2021-03-04T14:40:00+09:00</lastmod>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/kvm/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/linux/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/study/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/2021-03-10/virtio-and-vhost-architecture-part-1/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/virtualization/</loc>
+    <lastmod>2021-03-10T17:01:00+09:00</lastmod>
   </url>
   
   
@@ -18,28 +67,7 @@
   
   
   <url>
-    <loc>/posts/</loc>
-    <lastmod>2021-03-04T14:40:00+09:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>/tags/spdk/</loc>
-    <lastmod>2021-03-04T14:40:00+09:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/study/</loc>
-    <lastmod>2021-03-04T14:40:00+09:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2021-03-04T14:40:00+09:00</lastmod>
   </url>
   
@@ -117,13 +145,6 @@
   
   <url>
     <loc>/2020-08-27/introduction-to-flatpak/</loc>
-    <lastmod>2020-08-27T17:22:00+09:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/linux/</loc>
     <lastmod>2020-08-27T17:22:00+09:00</lastmod>
   </url>
   

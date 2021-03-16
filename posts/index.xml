@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Thu, 04 Mar 2021 14:40:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Mar 2021 17:01:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Virtio and Vhost Architecture - Part 1</title>
+      <link>/2021-03-10/virtio-and-vhost-architecture-part-1/</link>
+      <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
+      
+      <guid>/2021-03-10/virtio-and-vhost-architecture-part-1/</guid>
+      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).</description>
+    </item>
+    
     <item>
       <title>Using Ceph RBD as a QEMU Storage</title>
       <link>/2021-03-04/using-ceph-rbd-as-a-qemu-storage/</link>

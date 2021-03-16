@@ -7,7 +7,43 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Thu, 04 Mar 2021 14:40:00 +0900</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Mar 2021 17:01:00 +0900</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>kvm</title>
+      <link>/tags/kvm/</link>
+      <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
+      
+      <guid>/tags/kvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>/tags/linux/</link>
+      <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
+      
+      <guid>/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>study</title>
+      <link>/tags/study/</link>
+      <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
+      
+      <guid>/tags/study/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>virtualization</title>
+      <link>/tags/virtualization/</link>
+      <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
+      
+      <guid>/tags/virtualization/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>ceph</title>
       <link>/tags/ceph/</link>
@@ -23,15 +59,6 @@
       <pubDate>Thu, 04 Mar 2021 14:40:00 +0900</pubDate>
       
       <guid>/tags/spdk/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>study</title>
-      <link>/tags/study/</link>
-      <pubDate>Thu, 04 Mar 2021 14:40:00 +0900</pubDate>
-      
-      <guid>/tags/study/</guid>
       <description></description>
     </item>
     
@@ -68,15 +95,6 @@
       <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
       
       <guid>/tags/flatpak/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>/tags/linux/</link>
-      <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
-      
-      <guid>/tags/linux/</guid>
       <description></description>
     </item>
     

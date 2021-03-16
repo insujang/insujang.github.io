@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kvm on Better Tomorrow with Computer Science</title>
+    <link>/tags/kvm/</link>
+    <description>Recent content in kvm on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Wed, 10 Mar 2021 17:01:00 +0900</lastBuildDate><atom:link href="/tags/kvm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Virtio and Vhost Architecture - Part 1</title>
+      <link>/2021-03-10/virtio-and-vhost-architecture-part-1/</link>
+      <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
+      
+      <guid>/2021-03-10/virtio-and-vhost-architecture-part-1/</guid>
+      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).</description>
+    </item>
+    
+  </channel>
+</rss>
