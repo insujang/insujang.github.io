@@ -84,7 +84,7 @@
     },
     "headline": "Virtio and Vhost Architecture - Part 1 | Better Tomorrow with Computer Science","datePublished": "2021-03-10T17:01:00+09:00",
     "dateModified": "2021-03-10T17:01:00+09:00",
-    "wordCount":  2476 ,
+    "wordCount":  2477 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -815,8 +815,8 @@ static void virtio_blk_rw_complete(void *opaque, int ret) {
 </figure>
 
 <ul>
-<li>VirtI/O is implemented with virtqueues, shared by the guest and QEMU (1).</li>
-<li>When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd (2, 3).</li>
+<li>VirtI/O is implemented with virtqueues, shared by the guest and QEMU process.</li>
+<li>When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd (1, 2, 3).</li>
 <li>QEMU process reads the request from the shared virtqueue, and handles it. After completion, QEMU puts the result into the virtqueue and injects an IRQ through irqfd to the guest (4, 5, 6).</li>
 <li>When the guest execution is resumed, the request I/O operation is done and virtio device driver gets result data from the virtqueue (7, 8, 5).</li>
 </ul>
