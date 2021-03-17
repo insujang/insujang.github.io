@@ -84,7 +84,7 @@
     },
     "headline": "Virtio and Vhost Architecture - Part 2 | Better Tomorrow with Computer Science","datePublished": "2021-03-15T12:24:00+09:00",
     "dateModified": "2021-03-15T12:24:00+09:00",
-    "wordCount":  1468 ,
+    "wordCount":  1618 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -506,8 +506,18 @@ static void handle_tx_copy(struct vhost_net *net, struct socket *sock) {
       vhost_enable_notify(&amp;net-&gt;dev, vq);
     }
 
+    /* For simplicity, TX batching is only enabled if
+     * sndbuf is unlimited.
+     */
+    if (sock_can_batch) {
+      vhost_net_build_xdp(nvq, &amp;msg.msg_iter);
+      /* if no error */ goto done;
+    }
+    
+    /* If we can't build XDP buff */
     ...
     sock-&gt;ops-&gt;sendmsg(sock, &amp;msg, len);
+
 done:
     vq-&gt;heads[nvq-&gt;done_idx].id = cpu_to_vhost32(vq, head);
     vq-&gt;heads[nvq-&gt;done_idx].len = 0;
@@ -516,6 +526,13 @@ done:
   vhost_tx_batch(net, nvq, sock, &amp;msg);
 } 
 </code></pre>
+<p>Note that XDP (eXpress Data Path) is out of context of this post. Please refer to <a href="https://developers.redhat.com/blog/2018/12/06/achieving-high-performance-low-latency-networking-with-xdp-part-1/">the Red Hat blog</a> for introduction.</p>
+<p>XDP is supported by Linux since version 4.8: For older version of Linux kernel, it just uses <code>sock-&gt;ops-&gt;sendmsg()</code>.</p>
+<blockquote>
+<p><em>But the kernel community never sleeps and the holy grail of kernel-based networking performance has been found under the name of XDP: the eXpress Data Path.</em>
+<em>This technology allows you to implement net networking features via custom extended BFS (eBPF) programs attached to the kernel packet processing deep down the stack, killing the overhead of socket buffers (SKBs) management, reducing the per-packet memory management overhead, and allowing more-effective bulking.</em></p>
+<p><strong>From <a href="https://developers.redhat.com/blog/2018/12/06/achieving-high-performance-low-latency-networking-with-xdp-part-1/">XDP: From zero to 14Mpps</a></strong></p>
+</blockquote>
 <p>After handling the I/O requests, vhost sends a signal to the guest with irqfd (or eventfd in the comment?):</p>
 <pre><code class="language-c">// linux/drivers/vhost/vhost.c
 /* This actually signals the guest, using eventfd */
