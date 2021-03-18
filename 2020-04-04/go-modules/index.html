@@ -84,7 +84,7 @@
     },
     "headline": "Go Modules: an Alternative to GOPATH for Package Distribution | Better Tomorrow with Computer Science","datePublished": "2020-04-04T19:27:00+09:00",
     "dateModified": "2020-04-04T19:27:00+09:00",
-    "wordCount":  1065 ,
+    "wordCount":  1062 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -244,7 +244,7 @@
         <p>This post introduces Go modules, introduced in Go version 1.11.</p>
 <h2 id="go-modules">Go Modules?</h2>
 <p>Go 1.11 introduces a new dependency mangement system, <em>Go modules</em> (That&rsquo;s why Go uses the environment variable name <code>GO111MODULE</code>: indicating to use Go 1.11 module).</p>
-<p>Google introduced Go module as <em>an alternative to GOPATH for versioning and package distribution</em>. At first I did not understand what does it means specifically. Here is my explanaion.</p>
+<p>Google introduced Go module as <em>an alternative to GOPATH for versioning and package distribution</em>. At first I did not understand what it means specifically. Here is my explanaion.</p>
 <h2 id="importing-packages-without-go-modules">Importing Packages without Go Modules</h2>
 <p>Go programmers can import third-party packages (i.e. libraries in C/C++) in their programs. For example, you can use Google&rsquo;s comparison package <code>github.com/google/go-cmp/cmp</code> as:</p>
 <pre><code class="language-go">package main
@@ -410,7 +410,7 @@ main.go:3:8: cannot find package &quot;insujang.github.io/testproject/test&quot;
 <p>Aside from versioning support, this is one of main advantages of using Go module.</p>
 <h2 id="go111module-behaviors">GO111MODULE: Behaviors</h2>
 <p>Until now, I explicitly set <code>GO111MODULE</code> environment variable for every Go operations. Without variable set, the default value of <code>GO111MODULE</code> is <code>auto</code>, which behaves as follows:</p>
-<p><img src="/assets/images/200404/go111module.png" alt="go111module">{: width=&ldquo;800px&rdquo;} <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p><img src="/assets/images/200404/go111module.png" alt="go111module"> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
 <p>As Go version increases, it seems Google is <em>incrementally</em> adopting Go module in default circumstance. Since Go 1.13, if the project has <code>go.mod</code> file, Go uses Go module regardless of whether it is in <code>$GOPATH</code> or not. Before that, Go used the legacy GOPATH mode if the project is in <code>$GOPATH</code>.</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
