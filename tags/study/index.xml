@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Mon, 15 Mar 2021 12:24:00 +0900</lastBuildDate><atom:link href="/tags/study/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Mar 2021 11:20:00 +0900</lastBuildDate><atom:link href="/tags/study/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Testing Ceph RBD Performance with Virtualization</title>
+      <link>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</link>
+      <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
+      
+      <guid>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</guid>
+      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.</description>
+    </item>
+    
     <item>
       <title>Virtio and Vhost Architecture - Part 2</title>
       <link>/2021-03-15/virtio-and-vhost-architecture-part-2/</link>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Testing Ceph RBD Performance with Virtualization | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Testing Ceph RBD Performance with Virtualization",
+      "item":"/2021-03-24/testing-ceph-rbd-performance-with-virtualization/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2021-03-24/testing-ceph-rbd-performance-with-virtualization/"
+    },
+    "headline": "Testing Ceph RBD Performance with Virtualization | Better Tomorrow with Computer Science","datePublished": "2021-03-24T11:20:00+09:00",
+    "dateModified": "2021-03-24T11:20:00+09:00",
+    "wordCount":  1099 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "This post explains how I measured Ceph RBD performance with block\/network virtualization technology (virtio and vhost), and the result."
+}
+</script><meta property="og:title" content="Testing Ceph RBD Performance with Virtualization | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" />
+
+
+
+
+<meta property="og:description" content="This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2021-03-24T11:20:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2021-03-24T11:20:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="linux" />
+
+<meta property="article:tag" content="ceph" />
+
+<meta property="article:tag" content="virtualization" />
+
+
+
+
+
+<meta property="og:see_also" content="/2021-03-15/virtio-and-vhost-architecture-part-2/" />
+
+<meta property="og:see_also" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
+
+<meta property="og:see_also" content="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" />
+
+<meta property="og:see_also" content="/2020-12-23/analyzing-ceph-network-module/" />
+
+<meta property="og:see_also" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" />
+
+<meta property="og:see_also" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Testing Ceph RBD Performance with Virtualization</h1>
+    <div class="mr-6 my-2">
+    <span>Mar 24, 2021</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.</p>
+<p>VM execution is done through qemu-system-x86_64, without using libvirt.</p>
+<ul>
+<li>Host: Fedora 33 (Linux kernel 5.10.19)</li>
+<li>Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)</li>
+</ul>
+<pre><code># Qemu general configuration
+qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \
+    -m 2048 -smp 2 -cpu host \
+    -vnc :0 \
+    -hda disk.qcow2 \
+    &lt;append configuration-specific options&gt;
+</code></pre>
+<p>Performance is measured with <code>fio</code> running on the guest VM with the following configuration file:</p>
+<pre><code># Latency measurement
+[global]
+bs=4K
+iodepth=1
+direct=1
+group_reporting
+time_based
+runtime=120
+numjobs=1
+name=latencytest
+rw=randrw
+rwmixread=90
+
+# Throughput measurement
+[global]
+bs=4K
+iodepth=64
+direct=1
+group_reporting
+time_base
+runtime=120
+numjobs=1
+name=throughputtest
+rw=randrw
+rwmixread=90
+</code></pre>
+<h2 id="access-through-network">Access through network</h2>
+<p>A VM can access a Ceph RBD via its network. <code>virtio-net</code> and <code>vhost-net</code> can be used to virtualize guest network.</p>
+<p>In this case, <code>fio</code> running on the VM can be tested in two ways such like  a normal Ceph client uses:</p>
+<ul>
+<li>via <code>librbd</code>: <code>fio</code> provides <code>rbd</code> ioengine, which uses <code>librbd</code>.
+<pre><code>[rbdtest]
+ioengine=rbd
+clientname=admin
+pool=rbd
+rbdname=test
+</code></pre>
+</li>
+<li>via <code>krbd</code>: mount a rbd image to a device <code>/dev/rbd0</code> on the guest operating system, and use <code>libaio</code> as <code>fio</code>&rsquo;s ioengine.
+<pre><code>[krbdtest]
+ioengine=libaio
+filename=/dev/rbd0
+</code></pre>
+</li>
+</ul>
+<h3 id="11-virtio-net">1.1. virtio-net</h3>
+<p>With <code>virtio-net</code>, a guest VM directly accesses a Ceph RBD image via network.</p>
+<pre><code>&lt;qemu general configuration&gt;
+-netdev type=user,id=net0 \
+-device virtio-net-pci,netdev=net0,mac=&lt;mac&gt; 
+</code></pre>
+<blockquote>
+<p>Note that <code>-netdev</code> option can be replaced with <code>-nic</code>: <code>-nic user,model=virtio-net-pci,mac=&lt;mac&gt;</code>.  Refer to <a href="https://wiki.qemu.org/Documentation/Networking#The_-nic_option">this</a>.</p>
+<p>Just for reference, <code>-netdev</code> and <code>-nic</code> are more modern ways than <code>-net</code> command line option.</p>
+</blockquote>
+<h3 id="12-vhost-net">1.2. vhost-net</h3>
+<p>To use <code>vhost-net</code>, the host kernel should be built with <code>CONFIG_VHOST_NET</code> enabled.</p>
+<pre><code class="language-sh">$ lsmod | grep vhost
+vhost_net              32768  1
+tun                    57344  3 vhost_net
+tap                    28672  1 vhost_net
+vhost                  57344  2 vhost_net
+</code></pre>
+<p>We at first create a bridge to connect tap device to network. I will use NAT networking to provide network to a guest VM, as described below:</p>
+<figure>
+    <img src="/assets/images/210318/libvirt-virtual-network-nat.png"
+         alt="image"/> <figcaption>
+            <p>Virtual network example. Here libvirt implements a virtual network switch with DHCP feature with dnsmasq. <a href="https://kb.novaordis.com/index.php/KVM_Virtual_Networking_Concepts">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>It can be created with <code>brctl</code>, however, it has been deprecated and recommended to use <code>ip</code> instead <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<pre><code class="language-sh">$ ip link add br0 type bridge
+$ ip addr add 192.168.122.1/24 broadcast 192.168.122.255 dev br0
+$ ip link set br0 up
+</code></pre>
+<p>Then, create a script named <code>qemu-ifup</code> that can be used by QEMU to attach a tap device that will be created to the bridge:</p>
+<pre><code>#!/bin/sh
+set -x
+
+switch=br0
+
+if [ -n &quot;$1&quot; ]; then
+    ip tuntap add $1 mode tap
+    ip link set $1 up
+    sleep 0.5s
+    ip link set $1 master $switch
+    exit 0
+else
+    echo &quot;Error: no interface specified&quot;
+    exit 1
+fi
+</code></pre>
+<p>Then, it is now ready to run a VM:</p>
+<pre><code>&lt;qemu general configuration&gt;
+-netdev type=tap,id=net0,vhost=on,script=/path/to/qemu-ifup \
+-device virtio-net-pci,netdev=net0,mac=&lt;mac&gt;
+</code></pre>
+<p>You can check whether vhost-net is used or not <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. On the host terminal, type:</p>
+<pre><code class="language-sh">$ ip -d tuntap
+tap0: tap one_queue vnet_hdr
+        Attached to processes:qemu-system-x86(6919)
+</code></pre>
+<p>A VM then cannot access to the network due to lack of DHCP feature. Either use dnsmasq, or manual IP assignment is required.</p>
+<p>Using dnsmasq is well explained in here <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, and static IP assignment is also explained in here <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
+I will follow the latter, with an additional works to be done.</p>
+<p>I wanted to make a virtual network with subnet 192.168.122.0/24, so that I added <code>192.168.122.1</code> address to the bridge. Following it, change a guest VM&rsquo;s network configuration. Note that, Ubuntu 20.04 manages its network configuration with <code>netplan</code> utility, so some legacy ways such as using <code>systemd-resolved</code> or <code>/etc/networking</code> no longer work. Instead, modify a configuration file in <code>/etc/netplan/00-installer-config.yaml</code>:</p>
+<pre><code class="language-yaml">network:
+    ethernets:
+    enp0s2:
+        dhcp4: true
+    version: 2
+</code></pre>
+<p>to</p>
+<pre><code class="language-yaml">network:
+    ethernets:
+    enp0s2:
+        addresses: [192.168.122.100/24]
+        gateway: 192.168.122.1
+        nameservers:
+        addresses: [8.8.8.8]
+    version:
+</code></pre>
+<p>which means, it has a static IP <code>192.168.122.100</code> and use the bridge in the host as its gateway.
+After modifying it, apply it with:</p>
+<pre><code class="language-sh">$ sudo netplan apply
+$ ip addr
+...
+2: enp0s2 : ...
+    link/ether ....
+    inet 192.168.11.1200/24 brd 192.168.122.255 scope global enp0s2
+    ...
+$ ip route
+default via 192.168.122.1 dev enp0s2 proto static
+192.168.122.0/24 dev enp0s2 proto kernel scope link src 192.168.122.100
+</code></pre>
+<h2 id="access-through-block-device">Access through block device</h2>
+<p>When QEMU mounts a rbd image via <code>librbd</code> to the VM, then a VM can access a Ceph RBD via the device. <code>virtio-blk</code> and <code>vhost-scsi</code> can be used.</p>
+<p>In this case, <code>fio</code> running on the VM can be tested with <code>krbd</code> only:</p>
+<pre><code>[krbdtest]
+ioengine=libaio
+filename=/dev/rbd0
+</code></pre>
+<h3 id="21-virtio-blk">2.1. virtio-blk</h3>
+<p>With <code>virtio-blk</code>, QEMU uses librbd to mount rbd image to VM device <code>/dev/vda</code>.</p>
+<pre><code>&lt;qemu general configuration&gt;
+-drive format=rbd,id=rbd0,file=rbd:rbd/test,if=none,cache=directsync \
+-device virtio-blk-pci,drive=rbd0,id=virtioblk0
+</code></pre>
+<blockquote>
+<p>Note that cache option can vary, and refer to <a href="https://documentation.suse.com/sles/11-SP4/html/SLES-kvm4zseries/cha-qemu-cachemodes.html">this</a> for more options. Here I used <code>directsync</code> to measure latency correctly, otherwise it uses kernel cache and write performance is shown incorrectly.</p>
+</blockquote>
+<h3 id="22-vhost-scsi">2.2. vhost-scsi</h3>
+<p>To use <code>vhost-scsi</code>, you need <code>vhost-scsi</code> kernel module enabled.</p>
+<pre><code class="language-sh">$ lsmod | grep vhost
+vhost_scsi             45056  5
+vhost                  57344  1 vhost_scsi
+target_core_mod       417792  14 target_core_file,target_core_iblock,iscsi_target_mod,vhost_scsi,target_core_pscsi,target_core_user
+</code></pre>
+<p>Your QEMU configuration should be like <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>:</p>
+<pre><code>&lt;qemu general configuration&gt;
+-device vhost-scsi-pci,wwpn=naa.number,event_idx=off
+</code></pre>
+<p><code>vhost</code> moves context switch between host user space and host kernel space, which means a Ceph RBD image must also be mounted to the host kernel via <code>krbd</code>:</p>
+<pre><code class="language-sh">$ rbd map test -p rbd
+/dev/rbd0
+</code></pre>
+<p>Now create a SCSI LUN (Logical Unit Number):</p>
+<pre><code class="language-sh">$ sudo targetcli
+targetcli shell version 2.1.53
+Copyright 2011-2013 by Datera, Inc and others.
+For help on commands, type 'help'.
+
+/&gt; backstores/block create name=rbd0 dev=/dev/rbd0
+Created block storage object rbd0 using /dev/rbd0.
+/&gt; /vhost create
+Created target naa.5001405b3bafbfbd.
+Created TPG 1.
+/&gt; /vhost/naa.5001405b3bafbfbd/tpg1/luns create /backstores/block/rbd0
+Created LUN 0.
+/&gt; ls
+o- / ......................................................................................................... [...]
+  o- backstores .............................................................................................. [...]
+  | o- block .................................................................................. [Storage Objects: 1]
+  | | o- rbd0 ........................................................... [/dev/rbd0 (20.0GiB) write-thru activated]
+  | |   o- alua ................................................................................... [ALUA Groups: 1]
+  | |     o- default_tg_pt_gp ....................................................... [ALUA state: Active/optimized]
+  | o- fileio ................................................................................. [Storage Objects: 0]
+  | o- pscsi .................................................................................. [Storage Objects: 0]
+  | o- ramdisk ................................................................................ [Storage Objects: 0]
+  o- iscsi ............................................................................................ [Targets: 0]
+  o- loopback ......................................................................................... [Targets: 0]
+  o- vhost ............................................................................................ [Targets: 1]
+    o- naa.5001405b3bafbfbd .............................................................................. [TPGs: 1]
+      o- tpg1 .................................................................. [naa.5001405f58d02fbc, no-gen-acls]
+        o- acls .......................................................................................... [ACLs: 0]
+        o- luns .......................................................................................... [LUNs: 1]
+          o- lun0 ...................................................... [block/rbd0 (/dev/rbd0) (default_tg_pt_gp)]
+</code></pre>
+<p>In this case, <code>naa.5001405b3bafbfbd</code> is a wwn. Put it in the QEMU configuration value for the key <code>wwpn</code> (BTW, what these acronyms stand for? I don&rsquo;t know).</p>
+<p>When you use scsi for your VM, the disk is shown as <code>/dev/sda</code>, not <code>/dev/rbd0</code>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="http://www.linux-kvm.org/page/Networking#private_virtual_bridge">KVM Configuring Guest Networking</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.redhat.com/en/blog/hands-vhost-net-do-or-do-not-there-no-try">Red Hat blob: Hands on vhost-net: Do. Or do not. There is no try</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://www.tecmint.com/setup-a-dns-dhcp-server-using-dnsmasq-on-centos-rhel/">How to Setup a DNS/DHCP Server Using dnsmasq on CentOS/RHEL 8/7</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/">How to Assign Static IP Address on Ubuntu 20.04 LTS</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="http://people.redhat.com/bcodding/pnfs/nfs/scsi/2016/07/13/pnfs_scsi_testing_vhost_setup_for_VMs/">pNFS SCSI Testing: Vhost Setup for KVM</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://wiki.libvirt.org/page/Vhost-scsi_target">libvirt Vhost-scsi Target</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+    <a href="/tags/virtualization/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#virtualization</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/" class="block">Virtio and Vhost Architecture - Part 2</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/">Virtio and Vhost Architecture - Part 2</a>
+        <br />
+        
+        <a href="/2021-03-10/virtio-and-vhost-architecture-part-1/">Virtio and Vhost Architecture - Part 1</a>
+        <br />
+        
+        <a href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/">Using Ceph RBD as a QEMU Storage</a>
+        <br />
+        
+        <a href="/2020-12-23/analyzing-ceph-network-module/">Analyzing Ceph Network Module</a>
+        <br />
+        
+        <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+        <br />
+        
+        <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/">Deploying a Ceph Development Environment Cluster</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
