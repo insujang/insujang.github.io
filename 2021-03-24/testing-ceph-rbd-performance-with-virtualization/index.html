@@ -377,9 +377,9 @@ I will follow the latter, with an additional works to be done.</p>
     ethernets:
     enp0s2:
         addresses: [192.168.122.100/24]
-        gateway: 192.168.122.1
+        gateway4: 192.168.122.1
         nameservers:
-        addresses: [8.8.8.8]
+            addresses: [8.8.8.8]
     version:
 </code></pre>
 <p>which means, it has a static IP <code>192.168.122.100</code> and use the bridge in the host as its gateway.
