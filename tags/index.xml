@@ -7,13 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Wed, 24 Mar 2021 11:20:00 +0900</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Apr 2021 16:19:00 +0900</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ceph</title>
       <link>/tags/ceph/</link>
-      <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
+      <pubDate>Fri, 23 Apr 2021 16:19:00 +0900</pubDate>
       
       <guid>/tags/ceph/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>study</title>
+      <link>/tags/study/</link>
+      <pubDate>Fri, 23 Apr 2021 16:19:00 +0900</pubDate>
+      
+      <guid>/tags/study/</guid>
       <description></description>
     </item>
     
@@ -23,15 +32,6 @@
       <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
       
       <guid>/tags/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>study</title>
-      <link>/tags/study/</link>
-      <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
-      
-      <guid>/tags/study/</guid>
       <description></description>
     </item>
     

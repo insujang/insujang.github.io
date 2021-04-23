@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Wed, 24 Mar 2021 11:20:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Apr 2021 16:19:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reconfiguring Ceph</title>
+      <link>/2021-04-23/reconfiguring-ceph/</link>
+      <pubDate>Fri, 23 Apr 2021 16:19:00 +0900</pubDate>
+      
+      <guid>/2021-04-23/reconfiguring-ceph/</guid>
+      <description>Configuring Ceph Ceph daemons use /etc/ceph/ceph.</description>
+    </item>
+    
     <item>
       <title>Testing Ceph RBD Performance with Virtualization</title>
       <link>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</link>
