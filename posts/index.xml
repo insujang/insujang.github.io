@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Fri, 23 Apr 2021 16:19:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Apr 2021 09:02:00 +0900</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using Intel I/OAT DMA</title>
+      <link>/2021-04-26/using-intel-i/oat-dma/</link>
+      <pubDate>Mon, 26 Apr 2021 09:02:00 +0900</pubDate>
+      
+      <guid>/2021-04-26/using-intel-i/oat-dma/</guid>
+      <description>I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.</description>
+    </item>
+    
     <item>
       <title>Reconfiguring Ceph</title>
       <link>/2021-04-23/reconfiguring-ceph/</link>
