@@ -84,7 +84,7 @@
     },
     "headline": "Using Intel I\/OAT DMA | Better Tomorrow with Computer Science","datePublished": "2021-04-26T09:02:00+09:00",
     "dateModified": "2021-04-26T09:02:00+09:00",
-    "wordCount":  1721 ,
+    "wordCount":  1761 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -382,6 +382,7 @@ if (timeout == 0) {
 /* after that call dma_unmap_page to unmap the mapped pages */
 </code></pre>
 <h3 id="using-spdk-spdk-sample-spdk-env-spdk-ioat">Using SPDK <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup></h3>
+<p><a href="https://spdk.io/">SPDK (Software Development Performance Kit)</a> supports user-space device management and is usually used for low-latency high-performance NVMe devices, but can be also used for hig performance I/OAT DMA devices by eliminating kernel - user space context switches for DMA operations.</p>
 <h4 id="1-initializing-spdk--allocating-ioat-channel">1. Initializing SPDK &amp; Allocating I/OAT Channel</h4>
 <p>To use SPDK, first we should initialize the SPDK environment using:</p>
 <pre><code class="language-c">/* Initialize the default value of opts. */
