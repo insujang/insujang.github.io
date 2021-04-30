@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Using Intel IOAT DMA | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Using Intel IOAT DMA",
+      "item":"/2021-04-26/using-intel-ioat-dma/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2021-04-26/using-intel-ioat-dma/"
+    },
+    "headline": "Using Intel IOAT DMA | Better Tomorrow with Computer Science","datePublished": "2021-04-26T09:02:00+09:00",
+    "dateModified": "2021-04-26T09:02:00+09:00",
+    "wordCount":  1761 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "I\/OAT (I\/O Acceleration Technology) 1 Intel I\/OAT is a set of technologies for improving I\/O performance."
+}
+</script><meta property="og:title" content="Using Intel IOAT DMA | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2021-04-26/using-intel-ioat-dma/" />
+
+
+
+
+<meta property="og:description" content="I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2021-04-26T09:02:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2021-04-26T09:02:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="linux" />
+
+<meta property="article:tag" content="spdk" />
+
+<meta property="article:tag" content="ioat" />
+
+<meta property="article:tag" content="dma" />
+
+
+
+
+
+<meta property="og:see_also" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" />
+
+<meta property="og:see_also" content="/2021-03-15/virtio-and-vhost-architecture-part-2/" />
+
+<meta property="og:see_also" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
+
+<meta property="og:see_also" content="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" />
+
+<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
+
+<meta property="og:see_also" content="/2020-07-15/fedora-silverblue/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Using Intel IOAT DMA</h1>
+    <div class="mr-6 my-2">
+    <span>Apr 26, 2021</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <h2 id="ioat-io-acceleration-technology-ioat">I/OAT (I/O Acceleration Technology) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></h2>
+<p>Intel I/OAT is a set of technologies for improving I/O performance.
+This post specifically illustrates how to use Intel QuickData Technology, which enables data copy by the chipset instead of the CPU, to move data more efficiently and provide fast throughput.</p>
+<h3 id="using-linux-dma-engine">Using Linux DMA Engine</h3>
+<p>I/OAT (specifically QuickData Technology) is implemented as <a href="https://github.com/torvalds/linux/tree/master/drivers/dma/ioat"><code>ioatdma</code> kernel module</a> in Linux, and integrated into the Linux DMA subsystem.
+As it is managed by the Linux DMA subsystem, it does not have its own interface but should be accessed via Linux DMA engine APIs <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>There are a lot of examples, specifically for Xilinx AXIDMA; one is <a href="https://github.com/bperez77/xilinx_axidma/tree/master/driver">here</a>.
+There is also a manual from Xilinx <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
+<figure>
+    <img src="/assets/images/210426/dma-software-high-level.jpg"
+         alt="image"/> <figcaption>
+            <p>Linux DMA software high level diagram. <a href="https://forums.xilinx.com/xlnx/attachments/xlnx/ELINUX/44060/1/Linux%20DMA%20from%20User%20Space-public.pdf">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Here, we need to implement <strong>DMA proxy device driver</strong> to provide DMA service to userspace processes, or <strong>DMA engine client device driver</strong>.
+A guide for DMA engine client is in <a href="https://www.kernel.org/doc/html/latest/driver-api/dmaengine/client.html">[here]</a> and <a href="https://www.kernel.org/doc/html/latest/crypto/async-tx-api.html">[here (async TX)]</a>.</p>
+<h4 id="1-allocating-a-dma-slave-channel-sourcehttpsgithubcomtorvaldslinuxblobv56driversdmadmaenginecl722">1. Allocating a DMA slave channel <a href="https://github.com/torvalds/linux/blob/v5.6/drivers/dma/dmaengine.c#L722">[source]</a></h4>
+<pre><code class="language-c">// @dev:  pointer to client device structure
+// @name: slave channel name
+struct dma_chan *dma_request_chan(struct device *dev, const char *name);
+struct dma_Chan *dma_request_chan_by_mask(const dma_cap_mask_t *mask);
+</code></pre>
+<blockquote>
+<p>While <a href="https://github.com/bperez77/xilinx_axidma/blob/master/driver/axidma_dma.c#L649">Xilinx AXIDMA code</a> uses <code>dma_request_slave_channel()</code>, it is recommended to use <code>dma_request_chan()</code>: it returns a channel based on <code>dma_slave_map</code> matching table.</p>
+</blockquote>
+<p>Linux DMA subsystem internally manages <code>dma_device_list</code> and automatically find a proper DMA device.
+Personally, I use <code>dma_request_chan_by_mask</code> (have no idea how to use <code>dma_request_chan</code>). The following code gets a <code>struct dma_chan</code> for <code>DMA_MEMCPY</code> functionality.</p>
+<pre><code class="language-c">#include &lt;linux/dmaengine.h&gt;
+
+dma_cap_mask_t mask;
+struct dma_chan *chan = NULL;
+
+dma_cap_zero(mask);
+dma_cap_set(DMA_MEMCPY, mask);
+
+chan = dma_request_chan_by_mask(&amp;mask);
+if (IS_ERR_OR_NULL(chan)) { /* handle error */ }
+...
+</code></pre>
+<h4 id="2-preparing-dma-transfer">2. Preparing DMA transfer</h4>
+<p>After creating a channel, we prepare DMA transfer.
+First, map pages/memory regions for DMA to get <code>dma_attr_t</code>, which contains a BUS address:</p>
+<pre><code class="language-c">// Used to map kernel virtual address
+dma_addr_t dma_map_single(struct device *dev, void *ptr,
+        size_t size, enum dma_data_direction dir);
+// Used to map struct page
+dma_addr_t dma_map_page(struct device *dev, struct page *page,
+        size_t offset, size_t size, enum dma_data_direction dir);
+// Used to map physical address
+dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
+        size_t size, enum dma_data_direction dir);
+</code></pre>
+<blockquote>
+<p>All examples use <code>kmalloc()</code> to get a memory buffer for DMA. It does not have to be a kernel memory (and the size limit is way low); instead, we can use CMA (Contiguous Memory Allocator) <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> or device physical address (e.g. using Non Volatile Memory and/or <code>devdax</code>).</p>
+</blockquote>
+<pre><code class="language-c">struct page *page = /* get page */;
+size_t src_offset = 0x1000;
+size_t dst_offset = 0x100000;
+size_t size = 0x3000;
+dma_addr_t src = dma_map_page(chan-&gt;device-&gt;dev, page, src_offset, size, DMA_TO_DEVICE);
+dma_addr_t dst = dma_map_page(chan-&gt;device-&gt;dev, page, dst_offset, size, DMA_FROM_DEVICE);
+</code></pre>
+<p>The first argument <code>(struct device *)</code> refers to a DMA device, and <code>struct dma_chan</code> contains a device pointer (<code>chan-&gt;device-&gt;dev</code>) and you shoud always use it for the first argument.</p>
+<p>The last argument is a DMA direction; you can use <code>DMA_BIDIRECTIONAL</code>.
+Although it is not clear, but what I understand is that <code>DMA_TO_DEVICE</code> means the data at the target address will be <em>read by the DMA device</em>, and <code>DMA_FROM_DEVICE</code> means the data at the target address will be <em>written by the DMA device</em>.</p>
+<p>After mapping the buffer, we now get a descriptor for transaction.</p>
+<pre><code class="language-c">struct dma_async_tx_descriptor *dmaengine_prep_slave_sg(
+            struct dma_chan *chan, struct scatterlist *sgl,
+            unsigned int sg_len, enum dma_data_direction direction,
+            unsigned long flags);
+
+struct dma_async_tx_descriptor *dmaengine_prep_dma_cyclic(
+            struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
+            size_t period_len, enum dma_data_direction direction);
+
+struct dma_async_tx_descriptor *dmaengine_prep_interleaved_dma(
+            struct dma_chan *chan, struct dma_interleaved_template *xt,
+            unsigned long flags);
+
+struct dma_async_tx_descriptor *dmaengine_prep_dma_memcpy(
+            struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
+            size_t len, unsigned long flags);
+...
+</code></pre>
+<p>There are several interface to getting a descriptor, but as of now I am not sure what is different. For now I use <code>DMA_MEMCPY</code>, I use <code>dmaengine_prep_dma_memcpy()</code> function.</p>
+<pre><code class="language-c">struct dma_async_tx_descriptor *chan_desc;
+enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
+chan_desc = dmaengine_prep_dma_memcpy(chan, dst, src, size, flags);
+if (IS_ERR_OR_NULL(chan_desc)) { /* handle error */ }
+</code></pre>
+<h4 id="3-configuring-completion-callback">3. Configuring Completion Callback</h4>
+<p>Before submitting a request, we first should configure completion: when a DMA is completed, a completion callback will be called.</p>
+<pre><code class="language-c">static dma_callback(void *completion) {
+    complete(completion);
+}
+
+struct completion comp;
+
+init_completion(&amp;comp);
+chan_desc-&gt;callback = dma_callback;
+chan_desc-&gt;callback_param = &amp;comp;
+</code></pre>
+<h4 id="4-submitting-a-request">4. Submitting a Request</h4>
+<p>Submissison consists of two steps: (1) submit, and (2) issue pending requests.</p>
+<p><code>dmaengine_submit()</code> just pushes a request into the queue, and it will be not handled by the DMA engine until it is issued, which requires the second step with <code>dma_async_issue_pending()</code>.</p>
+<pre><code class="language-c">dma_cookie_t cookie;
+cookie = dmaengine_submit(chan_desc);
+dma_async_issue_pending(chan);
+</code></pre>
+<p>where <code>dma_cookie_t</code> is used to check the progress of DMA engine activity via other DMA engine calls, e.g.:</p>
+<pre><code class="language-c">enum dma_status dma_async_is_tx_complete(struct dma_chan *chan,
+            dma_cookie_t cookie, dma_cookie_t *last, dma_cookie_t *used);
+enum dma_status dma_async_is_complete(dma_cookie_t cookie,
+            dma_cookie_t last_complete, dma_cookie_t last_used);
+enum dma_status dma_async_wait(struct dma_chan *chan, dma_cookie_t cookie);
+enum dma_status dma_wait_for_async_tx(struct dma_tx_descriptor *tx);
+</code></pre>
+<h4 id="5-waiting-for-completion">5. Waiting for Completion</h4>
+<p>Honestly, I am not sure what is different between <code>dma_async_is_tx_complete()</code> and <code>dma_async_is_complete()</code>. Need further investigation. I also saw that my reference uses <code>wait_for_completion()</code> instead of <code>dma_async_wait()</code>, and have no idea either what is difference between those two.</p>
+<pre><code class="language-c">unsigned long timeout = wait_for_completion_timeout(&amp;comp, msecs_to_jiffies(5000));
+enum dma_status status = dma_async_is_tx_complete(chan, cookie, NULL, NULL);
+
+if (timeout == 0) {
+    printk(KERN_WARNING &quot;DMA timed out.\n&quot;);
+} else if (status != DMA_COMPLETE) {
+    printk(KERN_INFO &quot;DMA returned completion status of: %s\n&quot;,
+            status == DMA_ERROR ? &quot;error&quot; : &quot;in progress&quot;);
+} else {
+    printk(KERN_INFO &quot;DMA completed!\n&quot;);
+}
+
+/* after that call dma_unmap_page to unmap the mapped pages */
+</code></pre>
+<h3 id="using-spdk-spdk-sample-spdk-env-spdk-ioat">Using SPDK <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup></h3>
+<p><a href="https://spdk.io/">SPDK (Software Development Performance Kit)</a> supports user-space device management and is usually used for low-latency high-performance NVMe devices, but can be also used for hig performance I/OAT DMA devices by eliminating kernel - user space context switches for DMA operations.</p>
+<h4 id="1-initializing-spdk--allocating-ioat-channel">1. Initializing SPDK &amp; Allocating I/OAT Channel</h4>
+<p>To use SPDK, first we should initialize the SPDK environment using:</p>
+<pre><code class="language-c">/* Initialize the default value of opts. */
+void spdk_env_opts_init(struct spdk_env_opts *opts);
+/* Initialize or reinitialize the environment library.
+ * For initialization, this must be called prior to using any other functions
+ * in this library.
+ */
+int spdk_env_init(const struct spdk_env_opts *opts);
+</code></pre>
+<pre><code class="language-c">struct spdk_env_opts opts;
+spdk_env_opts_init(&amp;opts);
+/* modify opts.* as you want */
+spdk_env_init(&amp;opts);
+</code></pre>
+<p>And then, use <code>spdk_ioat_probe()</code> to probe I/OAT DMA devices. Before calling it, target I/OAT devices should be setup with UIO/VFIO with <code>scripts/setup.sh</code> <a href="https://spdk.io/doc/getting_started.html">src</a>:</p>
+<pre><code class="language-sh">$ sudo scripts/setup.sh
+</code></pre>
+<pre><code class="language-c">/* Callback for spdk_ioat_probe() enumeration. */
+typedef bool (*spdk_ioat_probe_cb)(void *cb_ctx, struct spdk_pci_device *pci_dev);
+/**
+ * Callback for spdk_ioat_probe() to report a device that has been attached to
+ * the userspace I/OAT driver.
+ */
+typedef void (*spdk_ioat_attach_cb)(void *cb_ctx, struct spdk_pci_device *pci_dev,
+                                    struct spdk_ioat_chan *ioat);
+
+/** 
+ * Enumerate the I/OAT devices attached to the system and attach the userspace
+ * I/OAT driver to them if desired.
+ */
+int spdk_ioat_probe(void *cb_ctx, spdk_ioat_probe_cb probe_cb, spdk_ioat_attach_cb attach_cb);
+</code></pre>
+<p><code>spdk_ioat_probe</code>() probes all I/OAT devices and calls <code>probe_cb()</code> callback function for each probed device, and also tries to attach the device into the userspace process with <code>attach_cb()</code>, if the corresponding <code>probe_cb()</code> returns <code>true</code> for the device.</p>
+<pre><code class="language-c">struct spdk_ioat_chan *ioat_chan = NULL;
+
+static bool probe_cb(void *cb_ctx, struct spdk_pci_deivce *pci_device) {
+    if (ioat_chan) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+static void attach_cb(volid *cb_ctx, struct spdk_pci_device *pci_device, struct spdk_ioat_chan *ioat) {
+    // Check if that device/channel supports copy operations
+    if (!(spdk_ioat_get_dma_capabilities(ioat) &amp; SPDK_IOAT_ENGINE_COPY_SUPPORTED)) {
+        return;
+    }
+
+    ioat_chan = ioat;
+    printf(&quot;Attaching to the ioat device!\n&quot;);
+}
+
+if (spdk_ioat_probe(NULL, probe_cb, attach_cb)) { /* handle error */ }
+</code></pre>
+<p><code>probe_cb()</code> returns true if there is no attached <code>spdk_ioat_chan</code> channel. Then <code>spdk_ioat_probe()</code> calls <code>attach_cb()</code> for the device that <code>probe_cb</code> returns true, then <code>attach_cb()</code> checks the memory copy capability and attach it.</p>
+<h4 id="2-dma-transfer-and-configuring-completion-callback">2. DMA Transfer and Configuring Completion Callback</h4>
+<p>SPDK requires to call <code>spdk_ioat_build_copy()</code> to build a DMA request, and then flush it into the device via <code>spdk_ioat_flush()</code>. You can use <code>spdk_ioat_submit_copy()</code> to do thw two at once for one request.</p>
+<pre><code class="language-c">/* Signature for callback function invoked whan a request is completed. */
+typedef void (*spdk_ioat_req_cb)(void *arg);
+/** 
+ * Build a DMA engine memory copy request (a descriptor).
+ * The caller must also explicitly call spdk_ioat_flush to submit the
+ * descriptor, possibly after building additional descriptors.
+ */
+int spdk_ioat_build_copy(struct spdk_ioat_chan *chan,
+                         void *cb_arg, spdk_ioat_req_cb cb_fn,
+                         void *dst, const void *src, uint64_t nbytes);
+
+/* Flush previously built descriptors. */
+void spdk_ioat_flush(struct spdk_ioat_chan *chan);
+
+/* Build and submit a DMA engine memory copy request. */
+int spdk_ioat_submit_copy(struct spdk_ioat_chan *chan,
+                          void *cb_arg, spdk_ioat_req_cb cb_fn,
+                          void *dst, const void *src, uint64_t nbytes);
+</code></pre>
+<p><code>spdk_ioat_build_copy()</code> and <code>spdk_ioat_submit_copy()</code> receives <code>void *cb_arg</code> and <code>spdk_ioat_req_cb cb_fn</code>, the callback function to be called with a given argument pointer. The callback function will be called when a request is completed, and the userspace process can use it to determine when operation is done. Simple implementation can be:</p>
+<pre><code class="language-c">bool copy_done = false;
+static op_done_cb(void *arg) {
+    *(bool*)arg = true;
+}
+
+spdk_ioat_submit_copy(ioat_chan,
+                      &amp;copy_done,   // optional
+                      op_done_cb,   // optional: if given, will be called by ioat_process_channel_events().
+                      dst,
+                      src,
+                      io_size);
+
+int result;
+do {
+    result = spdk_ioat_process_events(ioat_chan);
+} while (result == 0);
+
+assert(copy_done); // must be true!
+</code></pre>
+<p>Note that the target buffer (both <code>src</code> and <code>dst</code>) must be DMAable; you should use <code>spdk_mem_register()</code>:</p>
+<pre><code>/**
+ * Register the specified memory region for address translation.
+ * The memory region must map to pinned huge pages (2MB or greater).
+ */
+int spdk_mem_register(void *vaddr, size_t len);
+
+void *dev_addr = mmap(NULL, device_size, PROT_READ | PROT_WRITE,
+                      MAP_SHARED, fd, 0);
+spdk_mem_register(dev_addr, device_size);
+
+/* e.g. void *src = dev_addr + 0x1000; */
+</code></pre>
+<p>As the device is handled by a userspace process, not the kernel, the process cannot receive an interrupt but should poll the completion to check whether the submitted operation is completed.
+<code>spdk_ioat_process_events()</code> is the function for this purpose.</p>
+<pre><code class="language-c">/**
+ * Check for completed requests on an I/OAT channel.
+ * \return number of events handled on success, negative errno on failure.
+ */
+int spdk_ioat_process_events(struct spdk_ioat_chan *chan);
+</code></pre>
+<p><code>spdk_ioat_process_events()</code> immediately returns how many requests are completed. You can use the returned value or <code>copy_done</code> variable in the example above to check whether the operation is completed.</p>
+<p>Note that, <code>op_done_cb()</code> callback will be called by <code>spdk_ioat_process_events()</code>:</p>
+<pre><code class="language-c">int spdk_ioat_process_events(struct spdk_ioat_chan *ioat) {
+    return ioat_process_channel_events(ioat);
+}
+
+static int ioat_process_channel_events(struct spdk_ioat_chan *ioat) {
+    
+    uint64_t status = *ioat-&gt;comp_update;
+    uint64_t completed_descriptor = status &amp; SPDK_IOAT_CHANSTS_COMPLETED_DESCRIPTOR_MASK;
+    if (completed_descriptor == ioat-&gt;last_seen) {
+        return 0;
+    }
+
+    do {
+        uint32_t tail = ioat_get_ring_index(ioat, ioat-&gt;tail);
+        struct ioat_descriptor *desc = &amp;ioat-&gt;ring[tail];
+
+        // Here, the given callback function is called.
+        if (desc-&gt;callback_fn) {
+            desc-&gt;callback_fn(desc-&gt;callback_arg);
+        }
+
+        hw_desc_phys_addr = desc-&gt;phys_addr; // This breaks the loop
+        ioat-&gt;tail++;
+        events_count++;
+    } while(hw_desc_phys_addr != completed_descriptor);
+
+    ioat-&gt;last_seen = hw_desc_phys_addr;
+
+    return events_count;
+}
+</code></pre>
+<p>so that you should call <code>spdk_ioat_process_events()</code> to get notified.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.intel.com/content/www/us/en/wireless-network/accel-technology.html">Intel I/O Acceleration Technology</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.kernel.org/doc/html/latest/driver-api/dmaengine/index.html">Linux DMAEngine Documentation</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://forums.xilinx.com/xlnx/attachments/xlnx/ELINUX/44060/1/Linux%20DMA%20from%20User%20Space-public.pdf">Xilinx Linux DMA from User Space</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.slideshare.net/kerneltlv/continguous-memory-allocator-in-the-linux-kernel">SlideShare: Contiguous Memory Allocator in the Linux Kernel</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://programmersought.com/article/21516169763/">Programmer Sought: SPDK Sample Code Analysis</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://github.com/spdk/spdk/blob/v21.01/include/spdk/env.h">SPDK Github: env.h</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://github.com/spdk/spdk/blob/v21.01.1/include/spdk/ioat.h">SPDK Github: ioat.h</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+    <a href="/tags/spdk/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#spdk</a>
+    
+    <a href="/tags/ioat/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ioat</a>
+    
+    <a href="/tags/dma/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#dma</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2021-04-23/reconfiguring-ceph/" class="block">Reconfiguring Ceph</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/">Testing Ceph RBD Performance with Virtualization</a>
+        <br />
+        
+        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/">Virtio and Vhost Architecture - Part 2</a>
+        <br />
+        
+        <a href="/2021-03-10/virtio-and-vhost-architecture-part-1/">Virtio and Vhost Architecture - Part 1</a>
+        <br />
+        
+        <a href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/">Using Ceph RBD as a QEMU Storage</a>
+        <br />
+        
+        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
+        <br />
+        
+        <a href="/2020-07-15/fedora-silverblue/">Introduction to Fedora Silverblue</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

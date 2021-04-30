@@ -9,11 +9,11 @@
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 26 Apr 2021 09:02:00 +0900</lastBuildDate><atom:link href="/tags/ioat/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Using Intel I/OAT DMA</title>
-      <link>/2021-04-26/using-intel-i/oat-dma/</link>
+      <title>Using Intel IOAT DMA</title>
+      <link>/2021-04-26/using-intel-ioat-dma/</link>
       <pubDate>Mon, 26 Apr 2021 09:02:00 +0900</pubDate>
       
-      <guid>/2021-04-26/using-intel-i/oat-dma/</guid>
+      <guid>/2021-04-26/using-intel-ioat-dma/</guid>
       <description>I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.</description>
     </item>
     
