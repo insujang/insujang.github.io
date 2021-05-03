@@ -84,7 +84,7 @@
     },
     "headline": "Libvirt VM Network Accessibility | Better Tomorrow with Computer Science","datePublished": "2021-05-03T16:47:00+09:00",
     "dateModified": "2021-05-03T16:47:00+09:00",
-    "wordCount":  722 ,
+    "wordCount":  726 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -302,7 +302,7 @@ $ virsh net-start default
 </code></pre>
 <p>If <code>&lt;vm-name&gt;</code> VM is already running, restart it. Then it will have a given static IP address.</p>
 <h3 id="2-configuring-port-forwarding">2. Configuring port forwarding</h3>
-<p>Now a virtual machine has a static IP address; follow <a href="https://wiki.libvirt.org/page/Networking#Forwarding_Incoming_Connections">this guide</a> to configure port forwarding.</p>
+<p>Now a virtual machine has a static IP address; follow <a href="https://wiki.libvirt.org/page/Networking#Forwarding_Incoming_Connections">this guide</a> to configure port forwarding <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <p>I used <a href="https://github.com/saschpe/libvirt-hook-qemu">a Python script (Libvirt port-forwarding hook)</a> for port-forwarding.</p>
 <pre><code class="language-sh">$ git clone https://github.com/saschpe/libvirt-hook-qemu
 $ cd libvirt-hook-qemu
@@ -345,7 +345,7 @@ MASQUERADE  tcp  --  192.168.122.10       192.168.122.10       tcp dpt:rxapi
 </figure>
 
 <p>Routed mode provides so-called flat networking: both host and virtual machines can be in the same network.
-<a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">This blog post</a> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> explained how to created a network in routed mode.</p>
+<a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">This blog post</a> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> explained how to created a network in routed mode.</p>
 <pre><code class="language-sh">$ sysctl -w net.ipv4.ip_forward = 1
 $ virsh net-define &lt;network.xml&gt;
 $ virsh net-start &lt;network-name&gt;
@@ -374,7 +374,10 @@ $ virsh net-start &lt;network-name&gt;
 <p><a href="https://www.cyberciti.biz/faq/linux-kvm-libvirt-dnsmasq-dhcp-static-ip-address-configuration-for-guest-os/">KVM Libvirt Assign Static Guest IP Addresses using DHCP on the Virtual Machine</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">KVM Creating a Guest VM on a Network in Routed Mode</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://wiki.libvirt.org/page/Networking">libvirt: Networking</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">KVM Creating a Guest VM on a Network in Routed Mode</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
