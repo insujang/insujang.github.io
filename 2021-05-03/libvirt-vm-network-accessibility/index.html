@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Libvirt VM Network Accessibility | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/icon_hu64421c6c7700f606f0ad45d807017b09_5843_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Libvirt VM Network Accessibility",
+      "item":"/2021-05-03/libvirt-vm-network-accessibility/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2021-05-03/libvirt-vm-network-accessibility/"
+    },
+    "headline": "Libvirt VM Network Accessibility | Better Tomorrow with Computer Science","datePublished": "2021-05-03T16:47:00+09:00",
+    "dateModified": "2021-05-03T16:47:00+09:00",
+    "wordCount":  722 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/images/icon.png"
+        }
+        },
+    "description": "Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:"
+}
+</script><meta property="og:title" content="Libvirt VM Network Accessibility | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/images/icon.png">
+
+
+<meta property="og:url" content="/2021-05-03/libvirt-vm-network-accessibility/" />
+
+
+
+
+<meta property="og:description" content="Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:" />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2021-05-03T16:47:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2021-05-03T16:47:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="linux" />
+
+<meta property="article:tag" content="vm" />
+
+<meta property="article:tag" content="libvirt" />
+
+
+
+
+
+<meta property="og:see_also" content="/2021-04-26/using-intel-ioat-dma/" />
+
+<meta property="og:see_also" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" />
+
+<meta property="og:see_also" content="/2021-03-15/virtio-and-vhost-architecture-part-2/" />
+
+<meta property="og:see_also" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
+
+<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
+
+<meta property="og:see_also" content="/2020-07-15/fedora-silverblue/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Libvirt VM Network Accessibility</h1>
+    <div class="mr-6 my-2">
+    <span>May 3, 2021</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>Libvirt provides virtual networking <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> to VMs with a virtual network switch, which is implemented with a bridge by default:</p>
+<pre><code class="language-sh">$ ip addr
+...
+20: virbr0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 52:54:00:e9:7b:57 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+</code></pre>
+<p>libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</p>
+<h2 id="nat-mode">NAT mode</h2>
+<figure>
+    <img src="/assets/images/210503/libvirt-network-nat.png"
+         alt="image"/> <figcaption>
+            <p>Libvirt NAT mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Network Address Transltion (NAT) mode translates addresses in the virtual network switch.
+It enables network access from virtual machines, while prevents access to those machines; since private network is used inside the host server, and all communications are done with the host IP address (any nodes in the public network cannot know virtual machine&rsquo;s private IP addresses).</p>
+<p>This is a default type if we do not specify the mode to the interface:</p>
+<pre><code>$ virsh net-list
+...
+$ virsh net-edit &lt;network-name&gt;
+&lt;network&gt;
+  &lt;name&gt;default&lt;/name&gt;
+  &lt;uuid&gt;e478ae74-d717-400b-99f3-b3893b779eca&lt;/uuid&gt;
+  &lt;forward mode='nat'/&gt;
+  &lt;bridge name='virbr0' stp='on' delay='0'/&gt;
+...
+</code></pre>
+<p>With <em>port-forwarding</em>, processes running in a virtual machine can be accessed by others.
+First, we need to assign a static IP address, and then bind host-guest ports for forwarding.</p>
+<h3 id="1-assigning-static-ip-address">1. Assigning static IP address</h3>
+<p>Instead of modifying network configuration of a guest operating system, we can modify libvirt network configuration to provide static IP address when a one is requested via DHCP <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>First, you can find out a MAC address assigned to a virtual machine:</p>
+<pre><code class="language-sh"># you can list all virtual machines in this node via 'virsh list --all'.
+$ virsh dumpxml &lt;vm-name&gt; | grep -i '&lt;mac'
+      &lt;mac address='52:54:00:2a:94:f7'/&gt;
+</code></pre>
+<p>Then, modify the libvirt network configuration to assign a static IP address to the MAC address:</p>
+<pre><code class="language-sh">$ virsh net-edit &lt;network-name&gt;
+&lt;network&gt;
+  ...
+  &lt;ip address='192.168.122.1' netmask='255.255.255.0'&gt;
+    &lt;dhcp&gt;
+      &lt;range start='192.168.122.2' end='192.168.122.254'/&gt;
+      &lt;host mac='52:54:00:2a:94:f7' name='&lt;vm-name&gt;' ip='192.168.122.10'/&gt; # Add this line; &lt;vm-name&gt; will be assigned a static IP 192.168.122.10.
+    &lt;/dhcp&gt;
+  &lt;/ip&gt;
+&lt;/netwrrk&gt;
+</code></pre>
+<p>Then, restart DHCP service by:</p>
+<pre><code class="language-sh">$ virsh net-destroy default
+$ virsh net-start default
+</code></pre>
+<p>If <code>&lt;vm-name&gt;</code> VM is already running, restart it. Then it will have a given static IP address.</p>
+<h3 id="2-configuring-port-forwarding">2. Configuring port forwarding</h3>
+<p>Now a virtual machine has a static IP address; follow <a href="https://wiki.libvirt.org/page/Networking#Forwarding_Incoming_Connections">this guide</a> to configure port forwarding.</p>
+<p>I used <a href="https://github.com/saschpe/libvirt-hook-qemu">a Python script (Libvirt port-forwarding hook)</a> for port-forwarding.</p>
+<pre><code class="language-sh">$ git clone https://github.com/saschpe/libvirt-hook-qemu
+$ cd libvirt-hook-qemu
+$ &lt;edit hooks.json&gt;
+$ sudo make install
+</code></pre>
+<p>The command above installs hooks Python script and configuration data (hooks.json) into <code>/etc/libvirt/hooks</code>, which will be executed when we start a new VM.</p>
+<p>For example, I have a VM named <code>testvm</code>, and I want to bind port 22 in the VM to port 10000 in the host:</p>
+<pre><code class="language-sh">$ cat hooks.json
+{
+    &quot;testvm&quot;: {
+        &quot;interface&quot;: &quot;virbr0&quot;,
+        &quot;private_ip&quot;: &quot;192.168.122.10&quot;,
+        &quot;port_map&quot;: {
+            &quot;tcp&quot;: [[10000, 22]]
+        }
+    }
+}
+$ sudo make install
+$ sudo systemctl restart libvirtd
+</code></pre>
+<p>This command will install hooks and restart <code>libvirtd</code> service to reload the hook. Then when we start the VM <code>testvm</code>, it will forward any incoming network packets in port 10000 on the host to the guest port 22:</p>
+<pre><code>$ ssh insujang@&lt;host-ip&gt; -p 10000
+insu@&lt;host-ip&gt;'s password:  # This will open a secure shell connected to the VM, not the host
+
+$ iptables -L -t nat
+...
+Chain SNAT-&lt;vm-name&gt; (1 references)
+target     prot opt source               destination
+SNAT       tcp  --  192.168.122.10       anywhere             tcp dpt:ssh to:&lt;host-ip&gt;
+MASQUERADE  tcp  --  192.168.122.10       192.168.122.10       tcp dpt:rxapi
+...
+</code></pre>
+<h2 id="routed-mode">Routed mode</h2>
+<figure>
+    <img src="/assets/images/210503/libvirt-network-routed.png"
+         alt="image"/> <figcaption>
+            <p>Libvirt routed mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Routed mode provides so-called flat networking: both host and virtual machines can be in the same network.
+<a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">This blog post</a> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> explained how to created a network in routed mode.</p>
+<pre><code class="language-sh">$ sysctl -w net.ipv4.ip_forward = 1
+$ virsh net-define &lt;network.xml&gt;
+$ virsh net-start &lt;network-name&gt;
+</code></pre>
+<p>When you create a VM, specify source network to:</p>
+<pre><code>virt-install \
+...
+--network network=&lt;network-name&gt;
+</code></pre>
+<p>Or edit the existing VM to:</p>
+<pre><code>$ virsh edit &lt;vm-name&gt;
+...
+&lt;interface type='network'&gt;
+  &lt;source network='&lt;network-name&gt;' /&gt;  # here, modify the source network
+  ...
+&lt;/interface&gt;
+</code></pre>
+<p>Then, the DHCP server will provide a new IP address or you can assign a static IP address in the VM that is in the same subnet with the host IP address.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://wiki.libvirt.org/page/VirtualNetworking">libvirt: Virtual Networking</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.cyberciti.biz/faq/linux-kvm-libvirt-dnsmasq-dhcp-static-ip-address-configuration-for-guest-os/">KVM Libvirt Assign Static Guest IP Addresses using DHCP on the Virtual Machine</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">KVM Creating a Guest VM on a Network in Routed Mode</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    
+    <a href="/tags/vm/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#vm</a>
+    
+    <a href="/tags/libvirt/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#libvirt</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2021-04-26/using-intel-ioat-dma/" class="block">Using Intel IOAT DMA</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2021-04-26/using-intel-ioat-dma/">Using Intel IOAT DMA</a>
+        <br />
+        
+        <a href="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/">Testing Ceph RBD Performance with Virtualization</a>
+        <br />
+        
+        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/">Virtio and Vhost Architecture - Part 2</a>
+        <br />
+        
+        <a href="/2021-03-10/virtio-and-vhost-architecture-part-1/">Virtio and Vhost Architecture - Part 1</a>
+        <br />
+        
+        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
+        <br />
+        
+        <a href="/2020-07-15/fedora-silverblue/">Introduction to Fedora Silverblue</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
