@@ -84,7 +84,7 @@
     },
     "headline": "Accelerating Ceph RPM Packaging: Using Multithreaded Compression | Better Tomorrow with Computer Science","datePublished": "2020-11-07T19:07:00+09:00",
     "dateModified": "2020-11-07T19:07:00+09:00",
-    "wordCount":  1485 ,
+    "wordCount":  1486 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -318,20 +318,20 @@ else
     rpm_version=$version
     rpm_release=0
 fi
+...
+
+# populate files with version strings
+echo &quot;including src/.git_version, ceph.spec&quot;
+
+(git rev-parse HEAD ; echo $version) 2&gt; /dev/null &gt; src/.git_version
+
+for spec in ceph.spec.in; do
+   cat $spec |
+       sed &quot;s/@PROJECT_VERSION@/$rpm_version/g&quot; |
+       sed &quot;s/@RPM_RELEASE@/$rpm_release/g&quot; |
+       sed &quot;s/@TARBALL_BASENAME@/ceph-$version/g&quot; &gt; `echo $spec | sed 's/.in$//'`
+done
 </code></pre>
-</blockquote>
-<p>&hellip;</p>
-<h1 id="populate-files-with-version-strings">populate files with version strings</h1>
-<p>echo &ldquo;including src/.git_version, ceph.spec&rdquo;</p>
-<p>(git rev-parse HEAD ; echo $version) 2&gt; /dev/null &gt; src/.git_version</p>
-<p>for spec in ceph.spec.in; do
-cat $spec |
-sed &ldquo;s/@PROJECT_VERSION@/$rpm_version/g&rdquo; |
-sed &ldquo;s/@RPM_RELEASE@/$rpm_release/g&rdquo; |
-sed &ldquo;s/@TARBALL_BASENAME@/ceph-$version/g&rdquo; &gt; <code>echo $spec | sed 's/.in$//'</code>
-done</p>
-<blockquote>
-<pre><code></code></pre>
 </blockquote>
 <p>By default, packaging a Ceph RPM with <code>ceph.spec</code> downloads archived source code from <code>https://download.ceph.com/tarballs/ceph-&lt;version&gt;.tar.bz2</code>, most of which are not provided since 2016 (Recently, they only provides <code>tar.gz</code>, not <code>tar.bz2</code>).
 It also requires customized archived source code to be uploaded to the server, preventing cloned source code to be used for RPM package build.
