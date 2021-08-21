@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Analyzing Ceph Bluestore Initialization | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="This post explains how Ceph OSD (Object Store Device) daemon initializes BlueStore.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Analyzing Ceph Bluestore Initialization",
+      "item":"/2020-11-25/analyzing-ceph-bluestore-initialization/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2020-11-25/analyzing-ceph-bluestore-initialization/"
+    },
+    "headline": "Analyzing Ceph Bluestore Initialization | Better Tomorrow with Computer Science","datePublished": "2020-11-25T09:51:00+09:00",
+    "dateModified": "2020-11-25T09:51:00+09:00",
+    "wordCount":  578 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "This post explains how Ceph OSD (Object Store Device) daemon initializes BlueStore."
+}
+</script><meta property="og:title" content="Analyzing Ceph Bluestore Initialization | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2020-11-25/analyzing-ceph-bluestore-initialization/" />
+
+
+
+
+<meta property="og:description" content="This post explains how Ceph OSD (Object Store Device) daemon initializes BlueStore." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2020-11-25T09:51:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2020-11-25T09:51:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="ceph" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" />
+
+<meta property="og:see_also" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+
+<meta property="og:see_also" content="/2020-08-30/introduction-to-ceph/" />
+
+<meta property="og:see_also" content="/2020-11-09/building-container-image-inside-container-using-buildah/" />
+
+<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
+
+<meta property="og:see_also" content="/2020-08-24/dynamic-kubelet-configuration/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Analyzing Ceph Bluestore Initialization</h1>
+    <div class="mr-6 my-2">
+    <span>Nov 25, 2020</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post explains how Ceph OSD (Object Store Device) daemon initializes BlueStore.
+Heavily referenced <a href="https://www.programmersought.com/article/9514716200/">a blog post from ProgrammerSought</a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
+Analyzed on <a href="https://github.com/ceph/ceph/tree/v16.0.0">Ceph v16.0.0</a>.</p>
+<h2 id="1-ceph-osd-main">1. Ceph OSD <code>main()</code></h2>
+<p>When a Ceph OSD launches, it determines the type of object store and initialize the corresponding file system.</p>
+<p><a href="https://github.com/ceph/ceph/blob/v16.0.0/src/ceph_osd.cc#L272"><code>src/ceph_osd.cc main()</code></a></p>
+<pre><code class="language-cpp">bool mkfs = false;
+...
+if (ceph_argparse_flag(args, i, &quot;--mkfs&quot;, (char*)NULL)) {
+  mkfs = true;
+}
+...
+
+std::string data_path = g_conf().get_val&lt;std::string&gt;(&quot;osd_data&quot;);
+...
+
+// the store
+std::string store_type;
+{
+  char fn[PATH_MAX];
+  snprintf(fn, sizeof(fn), &quot;%s/type&quot;, data_path.c_str());
+  int fd = ::open(fn, O_RDONLY|O_CLOEXEC);
+  if (fd &gt;= 0) {
+    bufferlist bl;
+    bl.read_fd(fd, 64);
+    if (bl.length()) {
+      store_type = string(bl.c_str(), bl.length() - 1);  // drop \n
+      dout(5) &lt;&lt; &quot;object store type is &quot; &lt;&lt; store_type &lt;&lt; dendl;
+    }
+    ::close(fd);
+  } else if (mkfs) {
+    store_type = g_conf().get_val&lt;std::string&gt;(&quot;osd_objectstore&quot;);
+  } else {
+    // hrm, infer the type
+    snprintf(fn, sizeof(fn), &quot;%s/current&quot;, data_path.c_str());
+    struct stat st;
+    if (::stat(fn, &amp;st) == 0 &amp;&amp; S_ISDIR(st.st_mode)) {
+      derr &lt;&lt; &quot;missing 'type' file, inferring filestore from current/ dir&quot;
+          &lt;&lt; dendl;
+      store_type = &quot;filestore&quot;;
+    } else {
+      snprintf(fn, sizeof(fn), &quot;%s/block&quot;, data_path.c_str());
+      if (::stat(fn, &amp;st) == 0 &amp;&amp; S_ISLNK(st.st_mode)) {
+        derr &lt;&lt; &quot;missing 'type' file, inferring bluestore from block symlink&quot;
+            &lt;&lt; dendl;
+        store_type = &quot;bluestore&quot;;
+      } else {
+        derr &lt;&lt; &quot;missing 'type' file and unable to infer osd type&quot; &lt;&lt; dendl;
+        forker.exit(1);
+      }
+    }
+  }
+}
+
+std::string journal_path = g_conf().get_val&lt;std::string&gt;(&quot;osd_journal&quot;);
+uint32_t flags = g_conf().get_val&lt;uint64_t&gt;(&quot;osd_os_flags&quot;);
+ObjectStore *store = ObjectStore::create(g_ceph_context,
+                                         store_type,
+                                         data_path,
+                                         journal_path,
+                                         flags);
+...
+
+OSD *osdptr = nullptr;
+osdptr = new OSD(g_ceph_context,
+      store,
+      whoami,
+      ms_cluster,
+      ms_public,
+      ms_hb_front_client,
+      ms_hb_back_client,
+      ms_hb_front_server,
+      ms_hb_back_server,
+      ms_objecter,
+      &amp;mc,
+      data_path,
+      journal_path,
+      poolctx);
+osdptr-&gt;pre_init();
+osdptr-&gt;init();
+osdptr-&gt;final_init();
+...
+</code></pre>
+<blockquote>
+<p><code>g_conf()</code> gets a configuration value from Ceph configuration file. By default, its location is <code>/etc/ceph/ceph.conf</code>, however, it can be overridden by <code>-c</code> of <code>--config</code> argument given to the Ceph OSD daemon.
+Currently <code>cephadm</code> launches daemons in containers, the file is located in the container.</p>
+<pre><code class="language-sh">$ podman exec -it ceph-&lt;fsid&gt;-osd.0 cat /etc/ceph/ceph.conf
+# minimal ceph.conf for &lt;fsid&gt;
+[global]
+        fsid = &lt;fsid&gt;
+        mon_host = [v2:&lt;mon_ip&gt;:3300/0,v1:&lt;mon_ip&gt;:6789/0]
+</code></pre>
+</blockquote>
+<p>Assuming <code>store_type == &quot;bluestore&quot;</code>, <code>ObjectStore::create()</code> creates a new <code>BlueStore</code> class instance and returns it for the variable <code>store</code>.</p>
+<p><code>src/os/ObjectStore.cc ObjectStore::create()</code></p>
+<pre><code class="language-cpp">ObjectStore *ObjectStore::create(CephContext *cct,
+				 const string&amp; type,
+				 const string&amp; data,
+				 const string&amp; journal,
+				 osflagbits_t flags) {
+  ...
+  #if defined(WITH_BLUESTORE)
+  if (type == &quot;bluestore&quot;) {
+    return new BlueStore(cct, data);  /* src/os/BlueStore.cc */
+  }
+  #endif
+  ...
+}
+</code></pre>
+<p>The class <code>BlueStore</code> is defined in <code>src/os/bluestore/BlueStore.h</code> (don&rsquo;t understand a <code>virtual</code> keyword is not used for <code>~BlueStore()</code> destructor though):</p>
+<p><code>src/os/bluestore/BlueStore.h</code></p>
+<pre><code class="language-cpp">class BlueStore : public ObjectStore, public md_config_obs_t {
+  BlueStore(CephContext *cct, const std::string&amp; path);
+  BlueStore(CephContext *cct, const std::string&amp; path, uint64_t min_alloc_size);
+  ~BlueStore() override;
+  ...
+};
+</code></pre>
+<p>This <code>BlueStore</code> instance is stored in <code>store</code> private variable of the OSD class.
+<code>src/osd/OSD.h</code></p>
+<pre><code class="language-cpp">class OSD : public Dispatcher, public md_config_obs_t {
+  ...
+  ObjectStore *store;
+}
+
+OSD::OSD(CephContext* cct_,
+         ObjectStore* store_,
+         ...)
+  : ...,
+    store(store_),
+    ... 
+</code></pre>
+<h2 id="2-osd-init">2. OSD <code>init()</code></h2>
+<p>Actual initialization operations are done in <code>OSD::init()</code>:</p>
+<p><code>src/osd/OSD.cc</code>:</p>
+<pre><code class="language-cpp">int OSD::init() {
+  ...
+  string val;
+  store-&gt;read_meta(&quot;require_osd_release&quot;, &amp;val);
+  last_require_osd_release = ceph_release_from_name(val);
+
+  // mount.
+  store-&gt;mount();
+  ...
+
+  // read superblock
+  read_superblock();
+
+  // load up &quot;current&quot; osdmap
+  get_osdmap();
+  osdmap = get_map(superblock.current_epoch);
+  set_osdmap(osdmap);
+  ...
+
+  check_osdmap_features();
+
+  clear_temp_objects();
+
+  // load up pgs (as they previously existed)
+  load_pgs();
+
+  dout(2) &lt;&lt; &quot;superblock: I am osd.&quot; &lt;&lt; superblock.whoami &lt;&lt; dendl;
+}
+</code></pre>
+<h2 id="3-mount-bluestore-device">3. Mount Bluestore Device</h2>
+<p><code>src/os/bluestore/BlueStore.h</code></p>
+<pre><code class="language-cpp">class BlueStore : public ObjectStore, public md_config_obs_t {
+  int mount() override { return _mount(); }
+  ...
+};
+</code></pre>
+<p><code>src/os/bluestore/BlueStore.cc</code></p>
+<pre><code class="language-cpp">int BlueStore::mount() {
+  if (cct-&gt;_conf-&gt;bluestore_fsck_on_mount) {
+    fsck(cct-&gt;_conf-&gt;bluestore_fsck_on_mount_deep);
+  }
+  ...
+
+  _open_db_and_around(false); // Open RocksDB by calling BlueStore::_open_db()
+  _upgrade_super();
+  _open_collections();
+  _reload_logger();
+  _kv_start();
+  _dferred_replay();
+  ...
+
+  mounted = true;
+  return 0;
+}
+</code></pre>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/9514716200/">Bluestore&ndash;bluefs initialization part of the source code analysis</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/" class="block">Analyzing Ceph Restful Module and Boost ASIO</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-11-09/building-container-image-inside-container-using-buildah/" class="block">Building Container Image inside Container using Buildah</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+        <br />
+        
+        <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/">Deploying a Ceph Development Environment Cluster</a>
+        <br />
+        
+        <a href="/2020-08-30/introduction-to-ceph/">Introduction to Ceph</a>
+        <br />
+        
+        <a href="/2020-11-09/building-container-image-inside-container-using-buildah/">Building Container Image inside Container using Buildah</a>
+        <br />
+        
+        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
+        <br />
+        
+        <a href="/2020-08-24/dynamic-kubelet-configuration/">Dynamic Kubelet Configuration</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

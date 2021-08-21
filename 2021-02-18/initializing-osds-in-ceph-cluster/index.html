@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Initializing OSDs in Ceph Cluster | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Although Ceph provides a document to install Ceph cluster 1, it does not work in my machine, specifically adding OSDs.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Initializing OSDs in Ceph Cluster",
+      "item":"/2021-02-18/initializing-osds-in-ceph-cluster/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2021-02-18/initializing-osds-in-ceph-cluster/"
+    },
+    "headline": "Initializing OSDs in Ceph Cluster | Better Tomorrow with Computer Science","datePublished": "2021-02-18T16:11:00+09:00",
+    "dateModified": "2021-02-18T16:11:00+09:00",
+    "wordCount":  566 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "Although Ceph provides a document to install Ceph cluster 1, it does not work in my machine, specifically adding OSDs."
+}
+</script><meta property="og:title" content="Initializing OSDs in Ceph Cluster | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2021-02-18/initializing-osds-in-ceph-cluster/" />
+
+
+
+
+<meta property="og:description" content="Although Ceph provides a document to install Ceph cluster 1, it does not work in my machine, specifically adding OSDs." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2021-02-18T16:11:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2021-02-18T16:11:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="ceph" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-12-23/analyzing-ceph-network-module/" />
+
+<meta property="og:see_also" content="/2020-12-11/analyzing-ceph-network-module-3/" />
+
+<meta property="og:see_also" content="/2020-12-10/analyzing-ceph-network-module-2/" />
+
+<meta property="og:see_also" content="/2020-12-05/analyzing-ceph-network-module-1/" />
+
+<meta property="og:see_also" content="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/" />
+
+<meta property="og:see_also" content="/2020-11-25/analyzing-ceph-bluestore-initialization/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Initializing OSDs in Ceph Cluster</h1>
+    <div class="mr-6 my-2">
+    <span>Feb 18, 2021</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>Although Ceph provides a document to install Ceph cluster <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, it does not work in my machine, specifically adding OSDs. This post explains how I configured a Ceph cluster with <code>cephadm</code>.</p>
+<h2 id="document-works-until-cluster-bootstrap">Document works until cluster bootstrap</h2>
+<pre><code class="language-sh">$ sudo dnf install -y cephadm
+$ sudo cephadm bootstrap --mon-ip &lt;mon-ip&gt;
+</code></pre>
+<p>Initial step for ceph cluster initialization <code>bootstrap</code> works perfectly, and you can easily check whether the cluster is initialized with <code>ceph status</code>:</p>
+<pre><code class="language-sh">$ sudo cephadm shell - ceph status
+  cluster:
+    id:     6e107ae8-70de-11eb-9fbe-b06ebf35abc6
+    health: HEALTH_WARN
+            OSD count 0 &lt; osd_pool_default_size 3 
+
+  services:
+    mon: 1 daemons, quorum insujang.fedora
+    mgr: insujang.fedora.fvzxyn(active) 
+    osd: 0 osds: 0 up, 0 in
+  ...
+</code></pre>
+<h2 id="deploying-osds">Deploying OSDs</h2>
+<p>I think there are several ways of deploying OSDs, and major guides suggest two ways: 1. <code>ceph orch</code> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, and 2. <code>ceph-volume</code> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<h3 id="ceph-orch-cephadm-install"><code>ceph orch</code> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></h3>
+<p>As suggested in the official cephadm installation document, we can use <code>ceph orch</code> command to deploy OSD, as follows:</p>
+<blockquote>
+<p>You can easily use <code>cephadm shell -- ceph</code> as just <code>ceph</code> with the following alias:</p>
+<p><code>alias ceph='cephadm shell -- ceph</code></p>
+</blockquote>
+<pre><code class="language-sh">$ cephadm shell -- ceph orch device ls
+$ cephadm shell -- ceph orch apply osd --all-available-devices
+</code></pre>
+<p>This works perfectly.</p>
+<h3 id="ceph-volume-ceph-volume-redhat"><code>ceph-volume</code> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></h3>
+<p>It does not work due to RADOS permission problem, and I still do not know how to solve it. Therefore, don&rsquo;t use this method to deploy OSDs.</p>
+<pre><code class="language-sh">$ cephadm shell -- ceph-volume lvm prepare --bluestore --data $VG_NAME/$LV_NAME
+Running command: /usr/bin/ceph-authtool --gen-print-key
+Running command: /usr/bin/ceph --cluster ceph --name client.bootstrap-osd --keyring /var/lib/ceph/bootstrap-osd/ceph.keyring -i - osd new 7b68bd6f-594e-4b08-97ec-54d2af98d29f 
+ stderr: [errno 13] RADOS permission denied (error connecting to the cluster) 
+--&gt;  RuntimeError: Unable to create a new OSD id
+</code></pre>
+<p>The reason I tried this method is that, I wanted to use a partitioned disk and assign each partition to several OSDs; and <a href="https://forum.proxmox.com/threads/ceph-osd-creation-using-a-partition.58170/">this article</a> suggested to use <code>ceph-volume</code>.</p>
+<p>However, I could not solve RADOS permission problem and decided not to use <code>ceph-volume</code> for this purpose.</p>
+<h3 id="ceph-orch-for-partitions"><code>ceph orch</code> for partitions</h3>
+<p>I instead decided to manually create logical volumes and <code>ceph orch</code> to deploy OSDs for the partitions.</p>
+<p><code>ceph orch apply osd --all-available-devices</code> cannot be used for partitions; it would allocate the whole device to an OSD. Instead, we should use <code>ceph orch daemon add osd &lt;host&gt;:&lt;devpath&gt;</code> command.</p>
+<pre><code class="language-sh">$ sudo pvcreate /dev/sdb # check with pvdisplay
+$ sudo vgcreate cephvg /dev/sdb # check with vgdisplay
+$ sudo lvcreate --name cephlv1 --size 32G cephvg # check with lvdisplay
+$ sudo lvcreate --name cephlv2 --size 32G cephvg
+$ sudo lvcreate --name cephlv3 --size 32G cephvg
+</code></pre>
+<p>Now you can see three logical volumes as follows:</p>
+<pre><code class="language-sh">$ sudo lvdisplay
+  --- Logical volume --- 
+  LV Path                /dev/cephvg/cephlv1 
+  LV Name                cephlv1
+  VG Name                cephvg
+  ...
+</code></pre>
+<p>Deploy OSDs with the created logical volumes:</p>
+<pre><code class="language-sh">$ cephadm shell -- ceph orch daemon add osd insujang.fedora:/dev/cephvg/cephlv1
+Created osd(s) 0 on host 'insujang.fedora'
+$ cephadm shell -- ceph orch daemon add osd insujang.fedora:/dev/cephvg/cephlv2
+Created osd(s) 1 on host 'insujang.fedora'
+$ cephadm shell -- ceph orch daemon add osd insujang.fedora:/dev/cephvg/cephlv3
+Created osd(s) 2 on host 'insujang.fedora'
+</code></pre>
+<pre><code class="language-sh">$ cephadm shell -- ceph status
+...
+  services:
+    mon: 1 daemons, quorum insujang.fedora (age 26h)
+    mgr: insujang.fedora.fvzxyn(active, since 26h)
+    osd: 3 osds: 3 up (since 36m), 3 in (since 36m)
+</code></pre>
+<h2 id="resetting-device">Resetting Device</h2>
+<p>Just note: after resetting a cluster, deviecs remain as <em>unavailable</em>.
+To reset the device, do the following:</p>
+<pre><code>$ cephadm shell - ceph orch device zap &lt;host&gt; &lt;device&gt; --force
+</code></pre>
+<p><a href="https://docs.ceph.com/en/latest/cephadm/osd/?highlight=orch%20device%20zap#erase-devices-zap-devices">[Source]</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/cephadm/install/">Deploying a New Ceph Cluster</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/administration_guide/using-the-ceph-volume-utility-to-deploy-osds">Using the <code>ceph-volume</code> Utility to Deploy OSDs</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" class="block">Using Ceph RBD as a QEMU Storage</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-12-23/analyzing-ceph-network-module/" class="block">Analyzing Ceph Network Module</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2020-12-23/analyzing-ceph-network-module/">Analyzing Ceph Network Module</a>
+        <br />
+        
+        <a href="/2020-12-11/analyzing-ceph-network-module-3/">Analyzing Ceph Network Module 3</a>
+        <br />
+        
+        <a href="/2020-12-10/analyzing-ceph-network-module-2/">Analyzing Ceph Network Module 2</a>
+        <br />
+        
+        <a href="/2020-12-05/analyzing-ceph-network-module-1/">Analyzing Ceph Network Module 1</a>
+        <br />
+        
+        <a href="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/">Analyzing Ceph Restful Module and Boost ASIO</a>
+        <br />
+        
+        <a href="/2020-11-25/analyzing-ceph-bluestore-initialization/">Analyzing Ceph Bluestore Initialization</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

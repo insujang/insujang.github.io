@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Analyzing Ceph Network Module 3 | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Eureka is a elegant and powerful theme for Hugo.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Analyzing Ceph Network Module 3",
+      "item":"/2020-12-11/analyzing-ceph-network-module-3/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2020-12-11/analyzing-ceph-network-module-3/"
+    },
+    "headline": "Analyzing Ceph Network Module 3 | Better Tomorrow with Computer Science","datePublished": "2020-12-11T15:28:00+09:00",
+    "dateModified": "2020-12-11T15:28:00+09:00",
+    "wordCount":  1224 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "Eureka is a elegant and powerful theme for Hugo."
+}
+</script><meta property="og:title" content="Analyzing Ceph Network Module 3 | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2020-12-11/analyzing-ceph-network-module-3/" />
+
+
+
+
+<meta property="og:description" content="" />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2020-12-11T15:28:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2020-12-11T15:28:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="ceph" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-12-10/analyzing-ceph-network-module-2/" />
+
+<meta property="og:see_also" content="/2020-12-05/analyzing-ceph-network-module-1/" />
+
+<meta property="og:see_also" content="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/" />
+
+<meta property="og:see_also" content="/2020-11-25/analyzing-ceph-bluestore-initialization/" />
+
+<meta property="og:see_also" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" />
+
+<meta property="og:see_also" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Analyzing Ceph Network Module 3</h1>
+    <div class="mr-6 my-2">
+    <span>Dec 11, 2020</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <figure>
+    <img src="/assets/images/201205/ceph-network-upper.png"
+         alt="image"/> <figcaption>
+            <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>In the previous posts <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, I illustrated how we establishes a connection between a server and a client using <code>AsyncMessenger</code> functions.</p>
+<p>However, in high level Ceph architecture, there are some more abstracted APIs that are useful for specific purpose, e.g., accessing ceph-mon or ceph-osd, etc.
+This post illustrates how <code>MonClient</code> is implemented.</p>
+<h2 id="monclient"><code>MonClient</code></h2>
+<p>MonClient, considering its name, is a class that can be used to connect a Ceph monitor daemon.</p>
+<p>Which client library a user uses to use Ceph, all libraries use <code>MonClient</code> to get a cluster map of the Ceph cluster from a Ceph monitor daemon.</p>
+<ul>
+<li><code>librados</code>: <code>librados::RadosClient</code> has a <code>MonClient</code> class instance to access the daemon.</li>
+<li><code>librgw</code>: <code>RGWRados</code> uses <code>librados::IoCtx</code> and <code>librados::Rados</code>, which uses <code>librados::RadosClient</code> to connect to RADOS.</li>
+<li><code>librbd</code>: <code>librbd::ImageCtx</code> uses <code>librados::IoCtx</code> to connect to RADOS.</li>
+<li><code>libcephfs</code>: <code>Client</code> uses <code>MonClient</code> directly to connect to RADOS.</li>
+</ul>
+<figure>
+    <img src="/assets/images/201211/ceph-network-monclient-flow.png"
+         alt="image"/> <figcaption>
+            <p><code>MonClient</code> internal execution flow. It internally uses <code>AsyncMessenger</code> for communication, which has been illustrated in the previous post. Note the bold function calls <code>Messenger::connect_to()</code> and <code>AsyncConnection::send_message()</code>.</p>
+        </figcaption>
+</figure>
+
+<h3 id="1-connecting-to-a-monitor">1. Connecting to a monitor</h3>
+<p>A client needs to provide an information about a target monitor daemon.
+There are several ways to provide the information:</p>
+<ul>
+<li>use <code>--mon-host-override &lt;ip&gt;</code> command-line argument or <code>mon_host_override</code> config option.</li>
+<li>use a file located in the path specified by <code>monmap</code> config option.</li>
+<li>use <code>fsid</code> config option (which I don&rsquo;t know much).</li>
+<li>use <code>mon_host</code> config option.</li>
+</ul>
+<p><code>src/mon/MonClient.cc</code></p>
+<pre><code class="language-cpp">int MonMap::build_initial(CephContext *cct, bool for_mkfs, ostream&amp; errout) {
+  const auto&amp; conf = cct-&gt;_conf;
+
+  // mon_host_override?
+  auto mon_host_override = conf.get_val&lt;std::string&gt;(&quot;mon_host_override&quot;);
+  if (!mon_host_override.empty()) {
+    init_with_ips(mon_host_override, for_mkfs, &quot;noname-&quot;);
+    // or
+    init_with_hosts(mon_host_override, for_mkfs, &quot;noname-&quot;);
+  }
+
+  // or, cct?
+  auto addrs = cct-&gt;get_mon_addrs();
+  init_with_addrs(*addrs, for_mkfs, &quot;noname-&quot;);
+
+  // or, file?
+  const auto monmap = conf.get_val&lt;std::string&gt;(&quot;monmap&quot;);
+  init_with_monmap(monmap, errout);
+
+  // fsid from conf (omitted)
+
+  // -m foo?
+  const auto mon_host = conf.get_val&lt;std::string&gt;(&quot;mon_host&quot;);
+  init_with_ips(mon_host, for_mkfs, &quot;noname-&quot;);
+  // or
+  init_with_hosts(mon_host, for_mkfs, &quot;noname-&quot;);
+  ...
+}
+
+void MonMap::init_with_addrs(const std::vector&lt;entity_addrvec_t&gt;&amp; addrs, bool for_mkfs, std::string_view prefix) {
+  for (auto&amp; addr: addrs) {
+    add(name, addr, 0);
+  }
+}
+
+// In src/mon/MonMap.h
+void add (const mon_info_t&amp; m) {
+  ...
+  mon_info[m.name] = m;
+  ranks.push_back(m.name);
+  calc_addr_mons();
+}
+
+void calc_addr_mons() {
+  addr_mons.clear();
+  for (auto&amp; p : mon_info) {
+    for (Auto&amp; a : p.second.public_addrs.v) {
+      addr_mons[a] = p.first; // type of addr_mons: std::map&lt;entity_addr_t, std::string&gt;
+    }
+  }
+}
+</code></pre>
+<p>In <code>RadosClient::connect()</code> it just creates an <code>AsyncMessenger</code> class instance by calling <code>Messenger::create_client_messenger()</code>.
+Interestingly, an actual connection is not established in <code>RadosClient::connect()</code>. A connection seems to be established whenever a client sends a command.
+So whenever you call <code>RadosClient::mon_command()</code> or <code>RadosClient::mon_command::async()</code>, it connects to the monitor that has <em>the closest rank</em> by calling <code>AsyncMessenger::connect_to_mon(monmap.get_addrs(...))</code>.</p>
+<p><code>src/mon/MonClient.h</code>, <code>src/mon/MonClient.cc</code></p>
+<pre><code class="language-cpp">class MonClient : public Dispatcher, public AuthClient, public AuthServer {
+public:
+  template&lt;typename CompletionToken&gt;
+  auto start_mon_command(const std::vector&lt;std::string&gt;&amp; cmd, const cepb::buffer::list&amp; inbl, CompletionToken&amp;&amp; token) {
+    boost::asio::async_completion&lt;CompletionToken, CommandSig&gt; init(token);
+    auto h = CommandCompletion::create(service.get_executor(), std::move(init.completion_handler));
+    auto r = new MonCommand(*this, ++last_mon_command_tid, std::move(h));
+    r-&gt;cmd = cmd;
+    r-&gt;inbl = inbl;
+    mon_commands.emplace(r-&gt;tid, r);
+    _send_command();
+  }
+  return init.result.get();
+  ...
+};
+
+// In src/mon/MonClient.cc
+void MonClient::_send_command(MonCommand *r) {
+  ...
+  r-&gt;target_con = messenger-&gt;connect_to_mon(monmap.get_addrs(r-&gt;target_rank), true /* anon */);
+  r-&gt;target_session.reset(new MonConnection(cct, r-&gt;target_con, 0, *auth_registry));
+  r-&gt;target_session-&gt;start(monmap.get_epoch(), entity_name);
+
+  MCommand *m = new MCommand(monmap.fsid);
+  m-&gt;set_tid(r-&gt;tid);
+  m-&gt;cmd = r-&gt;cmd;
+  m-&gt;set_data(r-&gt;inbl);
+  r-&gt;target_session-&gt;queue_command(m);
+}
+</code></pre>
+<p><code>MonConnection::queue_command()</code> actually does not use a queue; instead, it stores the message into the pending variable <code>pending_tell_command</code>:</p>
+<p><code>src/mon/MonClient.h</code></p>
+<pre><code class="language-cpp">class MonConnection {
+  ...
+  void queue_command(Message *m) {
+    pending_tell_command = m;
+  }
+};
+</code></pre>
+<p>The stored pending command will be executed <em><strong>after</strong></em> authentication is done.
+This is a bit tricky that I could not fully understand it yet. Ceph seems to use <code>Protocol</code> class for authentication.</p>
+<figure>
+    <img src="/assets/images/201211/ceph-network-auth-protocol-flow.png"
+         alt="image"/> <figcaption>
+            <p>Authentication handling function execution flow. Protocol class is implemented with a lot of preprocessors that I could not follow the execution well.</p>
+        </figcaption>
+</figure>
+
+<p>Here, the diagram above explains how the stored <code>pending_tell_command</code> is sent to the server. After authentication is done, several nested callback handlers are executed, and <code>MonConnection</code> calls <code>AsyncConnection::send_message2()</code> to send the stored command to the server at last.</p>
+<h3 id="2-sending-a-monitor-command">2. Sending a monitor command</h3>
+<p>I found out that <code>AsyncConnection::send_message2()</code> is used to send a command to the server. Let&rsquo;s dig into this function.</p>
+<figure>
+    <img src="/assets/images/201211/ceph-network-sendmsg-flow.png"
+         alt="image"/> <figcaption>
+            <p>Sending message flow.</p>
+        </figcaption>
+</figure>
+
+<p><code>AsyncConnection::send_message2()</code> has been inherited from its parent class <code>Connection</code> (src/msg/Connection.h), which calls a pure virtual function <code>send_message()</code>. In this case, <code>AsyncConnection::send_message()</code> will be called.</p>
+<p><code>src/msg/async/AsyncConnection.cc</code></p>
+<pre><code class="language-cpp">int AsyncConnection::send_message(Message *m) {
+  ...
+  if (!m-&gt;get_priority()) {
+    m-&gt;set_priority(async_msgr-&gt;get_Default_send_priority());
+  }
+  m-&gt;get_header().src = async_msgr-&gt;get_myname();
+  m-&gt;set_connection(this);
+  ...
+
+  protocol-&gt;send_message(m);
+  return 0;
+}
+</code></pre>
+<p>It again uses <code>Protocol</code> class instance to send a message.</p>
+<p><code>src/msg/async/ProtocolV2.cc</code>, <code>src/msg/async/AsyncConnection.cc</code></p>
+<pre><code class="language-cpp">// in src/msg/async/ProtocolV2.cc
+void ProtocolV2::send_message(Message *m) {
+  ...
+  m-&gt;queue_start = ceph::mono_clock::now();
+  m-&gt;trace.event(&quot;async enqueueing message&quot;);
+  out_queue[m-&gt;get_priority()].emplace_back(out_queue_entry_t{is_prepared, m});
+  if (((!replacing &amp;&amp; can_wirte) || state == STANDBY) &amp;&amp; !write_in_progress) {
+    write_in_progress = true;
+    connection-&gt;center-&gt;dispatch_event_external(connection-&gt;write_handler);
+  }
+}
+
+// in src/msg/async/AsyncConnection.cc
+AsyncConnection::AsyncConnection(...) : ... {
+  ...
+  write_handler = new C_handler_write(this); // This callback is used by ProtocolV2::send_message().
+  ...
+}
+
+class C_handle_write : public EventCallback {
+  AsyncConnectionRef conn;
+
+ public:
+  explicit C_handle_write(AsyncConnectionRef c): conn(c) {}
+  void do_request(uint64_t fd) override {
+    conn-&gt;handle_write();
+  }
+}
+
+void AsyncConnection::handle_write() {
+  protocol-&gt;write_event();
+}
+
+// in src/msg/async/ProtocolV2.cc
+void ProtocolV2::write_event() {
+  ...
+  do {
+    // deduced type: ProtocolV2::out_queue_entry_t
+    const auto out_entry = _get_next_outgoing();
+    ...
+
+    // send message or requeue messages amy not encode message
+    if (!out_entry.is_prepared) {
+      prepare_send_message(connection-&gt;get_features(), out_entry.m);
+    }
+
+    r = write_message(out_entry.m, more);
+  } while (can_write);
+  write_in_progress = false;
+  ...
+}
+
+ssize_t ProtocolV2::write_message(Message *m, bool more) {
+  ...
+  ceph_msg_header &amp;header = m-&gt;get_header();
+  ceph_msg_footer &amp;footer = m-&gt;get_footer();
+  ceph_msg_header2 header2 {header.seq,      header.tid,
+                            header.type,     header.priority,
+                            header.version,
+                            init_le32(0),    header.data_off,
+                            init_le64(ack_sqe),
+                            footer.flags,    header.compat_version,
+                            header.reserved};
+
+  // deduced type: MessageFrame
+  auto message = MessageFrame::Encode(header2, m-&gt;get_payload(), m-&gt;get_middle(), m-&gt;get_data());
+  append_frame(message); // The message is appended to connection-&gt;outgoing_bl here.
+  ssize_t rc = connection-&gt;_try_send(more);
+  ...
+  return rc;
+}
+
+template &lt;class F&gt;
+bool ProtocolV2::append_frame(F&amp; frame) {
+  ceph::bufferlist bl;
+  bl = frame.get_buffer(tx_frame_asm);
+  connection-&gt;outgoing_bl.append(bl);
+  return true;
+}
+
+// in src/msg/async/AsyncConnection.cc
+ssize_t AsyncConnection::_try_send(bool more) {
+  ...
+  ssize_t r = cs.send(outgoing_bl, more);
+  ...
+}
+</code></pre>
+<p>Again, <code>ProtocolV2::send_message()</code> uses <code>EventCenter::dispatch_event_external()</code> function to pass the job to a seperate worker thread. Through the write handler of <code>AsyncConnection</code>, <code>ProtocolV2::write_message()</code> is responsible to build a message and send it.</p>
+<p><code>ProtocolV2::write_message()</code> builds an encoded message using <code>MessageFrame::Encode()</code> static function, appends it into an <code>outgoing_bl</code> (buffer variable) of <code>AsyncConnection</code> class variable by calling <code>ProtocolV2::append_frame()</code>, and sends it by calling <code>AsyncConection::_try_send()</code>.</p>
+<p>In the function <code>AsyncConnection::_try_send()</code>, the class instance uses <code>ConnectedSocket</code> (variable name: cs) to send a message to the remote peer. Here, if we specified a network stack as POSIX, <code>PosixConnectedSocketImpl</code> (defined in src/msg/async/PosixStack.cc) is used for its internal implementation:</p>
+<p><code>src/msg/async/Stack.h</code></p>
+<pre><code class="language-cpp">class ConnectedSocket {
+  std::unique_ptr&lt;ConnectedSocketImpl&gt; _csi;
+
+ public:
+  ssize_t send(ceph::buffer::list &amp;bl, bool more) {
+    return _csi-&gt;send(bl, more);
+  }
+  ...
+};
+</code></pre>
+<p><code>src/msg/async/PosixStack.cc</code></p>
+<pre><code class="language-cpp">int PosixWorker::connect(const entity_addr_t &amp;addr, const SocketOptions &amp;opts, ConnectedSocket *socket) {
+  ...
+  *socket = ConnectedSocket(
+      std::unique_ptr&lt;PosixConnectedSocketImpl&gt;(new PosixConnectedSocketImpl(net, addr, sd, !opts.nonblock)));
+  return 0;
+}
+</code></pre>
+<p>So, calling <code>cs.send()</code> eventually calls <code>PosixConnectedSocketImpl::send()</code>, which calls <code>::sendmsg()</code> system call until all bytes are transferred.</p>
+<p><code>src/msg/async/PosixStack.cc</code></p>
+<pre><code class="language-cpp">class PosixConnectedSocketImpl final : public ConnectedSocketImpl {
+  ...
+ public:
+  ...
+  ssize_t send(ceph::buffer::list &amp;bl, bool more) override {
+    ...
+    ssize_t r = do_sendmsg(_fd, msg, msglen, left_pbrs || more);
+    ...
+  }
+
+  #ifndef _WIN32
+  static ssize_t do_sendmsg(int fd, struct msghdr &amp;msg, unsigned len, bool more) {
+    size_t sent = 0;
+    while (1) {
+      MSGR_SIGPIPE_STOPPER;
+      ssize_t r = ::sendmsg(fd, &amp;msg, MSG_NOSIGNAL | (more ? MSG_MORE : 0));
+      if (r &lt; 0) {
+        int err = ceph_sock_errno();
+        if (err == EINTR) {
+          continue;
+        } else if (err == EAGAIN) {
+          break;
+        }
+        return -err;
+      }
+
+      sent += r;
+      if (len == sent) break;
+      ...
+    }
+    return (ssize_t)sent;
+  }
+  #endif
+</code></pre>
+<p>Note that all transmission is done by a seperate worker thread, hence an asynchronous manner from the viewpoint of the main thread.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="http://insujang.github.io/2020-12-05/analyzing-ceph-network-module-1/">Analyzing Ceph Network Module 1</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="http://insujang.github.io/2020-12-10/analyzing-ceph-network-module-2/">Analyzing Ceph Network Module 2</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2020-12-23/analyzing-ceph-network-module/" class="block">Analyzing Ceph Network Module</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-12-10/analyzing-ceph-network-module-2/" class="block">Analyzing Ceph Network Module 2</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2020-12-10/analyzing-ceph-network-module-2/">Analyzing Ceph Network Module 2</a>
+        <br />
+        
+        <a href="/2020-12-05/analyzing-ceph-network-module-1/">Analyzing Ceph Network Module 1</a>
+        <br />
+        
+        <a href="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/">Analyzing Ceph Restful Module and Boost ASIO</a>
+        <br />
+        
+        <a href="/2020-11-25/analyzing-ceph-bluestore-initialization/">Analyzing Ceph Bluestore Initialization</a>
+        <br />
+        
+        <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+        <br />
+        
+        <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/">Deploying a Ceph Development Environment Cluster</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

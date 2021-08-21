@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Analyzing Ceph Network Module 1 | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="Eureka is a elegant and powerful theme for Hugo.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Analyzing Ceph Network Module 1",
+      "item":"/2020-12-05/analyzing-ceph-network-module-1/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2020-12-05/analyzing-ceph-network-module-1/"
+    },
+    "headline": "Analyzing Ceph Network Module 1 | Better Tomorrow with Computer Science","datePublished": "2020-12-05T15:37:00+09:00",
+    "dateModified": "2020-12-05T15:37:00+09:00",
+    "wordCount":  1281 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "Eureka is a elegant and powerful theme for Hugo."
+}
+</script><meta property="og:title" content="Analyzing Ceph Network Module 1 | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2020-12-05/analyzing-ceph-network-module-1/" />
+
+
+
+
+<meta property="og:description" content="" />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2020-12-05T15:37:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2020-12-05T15:37:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="ceph" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/" />
+
+<meta property="og:see_also" content="/2020-11-25/analyzing-ceph-bluestore-initialization/" />
+
+<meta property="og:see_also" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" />
+
+<meta property="og:see_also" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+
+<meta property="og:see_also" content="/2020-08-30/introduction-to-ceph/" />
+
+<meta property="og:see_also" content="/2020-11-09/building-container-image-inside-container-using-buildah/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Analyzing Ceph Network Module 1</h1>
+    <div class="mr-6 my-2">
+    <span>Dec 5, 2020</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>The series of &ldquo;analyzing ceph network module&rdquo; posts explains how Ceph daemons communicate with each other.
+This post explains the network architecture overview.</p>
+<p>A Ceph storage cluster consists of roughly four types of daemons: OSD Daemons (osd), Ceph Monitors (mon), Ceph Managers (mgr), and Ceph Metadata Servers (mds).</p>
+<p>Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:</p>
+<figure>
+    <img src="/assets/images/201205/ceph-stack.png"
+         alt="image"/> <figcaption>
+            <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>But, how specifically those libraries (<code>librbd</code>, <code>librgw</code>, <code>libcephfs</code>, <code>librados</code>) are implemented to communicate with underlying Ceph daemons in RADOS?
+How the daemons communicate with each other to manage the Ceph cluster?
+This post summarizes posts regarding this question into one <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.</p>
+<h2 id="1-ceph-client-network-architecture-overview">1. Ceph Client Network Architecture Overview</h2>
+<figure>
+    <img src="/assets/images/201205/ceph-network-upper.png"
+         alt="image"/> <figcaption>
+            <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
+        </figcaption>
+</figure>
+
+<p>Ceph clients use <code>Messenger</code> class (currently the only used Messenger is <code>AsyncMessenger</code>) to talk to the Ceph cluster.
+Ceph users can use the Ceph cluster by using either <code>librgw</code>, <code>librbd</code>, cephfs (either ceph kernel or <code>ceph-fuse</code>, I will explain latter only), or <code>librados</code>. All libraries except cephfs use <code>librados</code> in their underlying system, which uses <code>AsyncMessenger</code> for communication.</p>
+<p>As you can see, <code>MonClient</code> and <code>MgrClient</code>, which are used to connect to <code>ceph-mon</code> or <code>ceph-mgr</code>, also use <code>AsyncMessenger</code>.
+In other words, all daemons also use <code>Messenger</code> class to communicate with each other.</p>
+<p>Detailed communication flow will be explained later.</p>
+<h2 id="2-ceph-network-module-internal-architecture">2. Ceph Network Module Internal Architecture</h2>
+<figure>
+    <img src="/assets/images/201205/ceph-network-module.png"
+         alt="image"/> <figcaption>
+            <p>Ceph network architecture.</p>
+        </figcaption>
+</figure>
+
+<p>To understand how clients and daemons communicate, we first know the internal network architecture that is used in Ceph.
+The figure above is a roughly drawn Ceph network architecture class diagram. Note that it is not a pure UML class diagram; the types of arrows mean:</p>
+<ol>
+<li>solid line with white block arrow: indicates class inheritance.</li>
+<li>solid line with line arrow: indicates ownership.</li>
+<li>dot line with line arrow: indicates reference.</li>
+</ol>
+<figure>
+    <img src="/assets/images/201205/ceph-network-flow.png"
+         alt="image"/> <figcaption>
+            <p>Ceph network function execution flow. The flow includes asynchronous ones too, so you should not consider y-axis as a timeline.</p>
+        </figcaption>
+</figure>
+
+<p>The classes that I will focus on are 1. <code>AsyncMessenger</code>, 2. <code>NetworkStack</code> and <code>Worker</code>, 3. <code>Processor</code>, 4. <code>EventCenter</code>, and 5. <code>AsyncConnection</code>.
+Those classes are entangled and interact with each other to implement an asynchronous network mechanism.</p>
+<h3 id="1-asyncmeseenger">1. AsyncMeseenger</h3>
+<blockquote>
+<p>AsyncMessenger is represented for maintaining a set of asynchronous connections,
+it may own a bind address and the accepted connections will be managed by AsyncMessenger.</p>
+<p><em>ceph/src/msg/async/AsyncMessenger.h</em></p>
+</blockquote>
+<p><code>AsyncMessenger</code> manages the connections with <code>ceph::unordered_map&lt;entity_addrvec_t, AsyncConnectionRef&gt; conns</code> after establishing a connection via <code>Processor</code> class.</p>
+<p>In its constructor, it prepares a lower network control plane by initializing <code>NetworkStack</code> and <code>Processor</code> classes.
+<code>AsyncMessenger</code> is the owner of the classes and is responsible to manage them.</p>
+<pre><code class="language-cpp">AsyncMessenger::AsyncMessenger(CephContext *cct, entity_name_t name,
+                               const std::string &amp;type, std::string mname, uint64_t _nonce) {
+  ...
+  auto single = &amp;cct-&gt;lookup_or_create_singleton_object&lt;StackSingleton&gt;(
+    &quot;AsyncMessenger::NetworkStack::&quot; + transport_type, true, cct);
+  // NetworkStack::create() is called in StackSingleton::ready().
+  single-&gt;ready(transport_type);
+  stack = single-&gt;stack.get();
+  stack-&gt;start();
+  ...
+  unsigned processor_num = 1;
+  if (stack-&gt;support_local_listen_table())
+    processor_num = stack-&gt;get_num_worker();
+  for (unsigned i = 0; i &lt; processor_num; ++i)
+    processors.push_back(new Processor(this, stack-&gt;get_worker(i), cct));
+}
+</code></pre>
+<h3 id="2-networkstack-and-worker">2. NetworkStack and Worker</h3>
+<p><code>NetworkStack</code> is an abstracted class of currently used network stack. Ceph provides posix, RDMA, and DPDK network stack.
+This post only explains posix network stack: use POSIX socket API (<code>bind()</code>, <code>listen()</code>, <code>send()</code>, <code>recv()</code>, etc).</p>
+<p><code>NetworkStack</code> constructor internally creates <code>Worker</code> class instances running in seperate threads. Worker threads make the main thread free from blocked wait mechanism (such as <code>epoll_wait()</code>).
+<code>NetworkStack</code> is the owner of all corresponding <code>Worker</code> instances and is responsible to manage them.</p>
+<p><code>src/msg/async/Stack.h</code></p>
+<pre><code class="language-cpp">class NetworkStack {
+  std::string type;
+  // Overridden by PosixStack, RDMAStack, and DPDKStack.
+  virtual Worker* create_worker(CephContext *c, unsigned i) = 0;
+  
+ protected:
+  std::vector&lt;Wroker*&gt; workers;
+  explicit NetworkStack(CephContext *c, const std::string &amp;t);
+
+ public:
+  static std::shared_ptr&lt;NetworkStack&gt; create(CephContext *c, const std::string &amp;type);
+};
+
+// Static function. Stack can only be instantiated through this function.
+std::shared_ptr&lt;NetworkStack&gt; NetworkStack::create(CephContext *c, const std::string &amp;t) {
+  std::shared_ptr&lt;NetworkStack&gt; stack = nullptr;
+  // Create a proper stack regarding the type t
+  if (t == &quot;posix&quot;)
+    stack.reset(new PosixNetworkStack(c, t));
+  ...
+
+  const int InitEventNumber = 5000;
+  for (unsigned worker_id = 0; worker_id &lt; stack-&gt;num_workers; ++worker_id) {
+    // Calls PosixNetworkStack-&gt;create_worker(), which creates a new PosixWorker.
+    Worker *w = stack-&gt;create_worker(c, worker_id);
+    w-&gt;center.init(InitEventNumber, worker_id, t);
+    stack-&gt;workers.push_back(w);
+  }
+
+  return stack;
+}
+</code></pre>
+<p>Threads are not created in <code>NetworkStack</code> constructor, but in <code>NetworkStack::start()</code>. <code>AsyncMessenger</code> calls the function after creating a <code>NetworkStack</code> class instance.</p>
+<p><code>src/msg/async/Stack.cc</code>, <code>src/msg/async/PosixStack.h</code></p>
+<pre><code class="language-cpp">void NetworkStack::start() {
+  ...
+  for (unsigned i = 0; i &lt; num_workers; ++i) {
+    if (workers[i]-&gt;is_init())
+      continue;
+    std::function&lt;void ()&gt; thread = add_thread(i);
+    spawn_worker(i, std::move(thread));
+  }
+}
+
+std::function&lt;void ()&gt; NetworkStack::add_thread(unsigned worker_id) {
+  Worker *w = workers[worker_id];
+  return [this, w]() {
+    ...
+    while (!w-&gt;done) {
+      // Calls epoll_wait with EpollDriver.
+      w-&gt;center.process_events(EventMaxWaitUs, &amp;dur);
+    }
+    w-&gt;reset();
+    w-&gt;destroy();
+  };
+}
+
+void PosixNetworkStack::spawn_worker(unsigned i, std::function&lt;void ()&gt; &amp;&amp;func) override {
+  threads.resize(i+1);
+  threads[i] = std::thread(func);
+}
+</code></pre>
+<p>I will explain later, but this post assumes we are using Epoll for event handling mechanism. <code>w-&gt;center.process_events()</code> internally calls <code>epoll_wait()</code>, which is blocked, and wakes up when it receives an event.</p>
+<p>When it receives a callback, it calls <code>do_request()</code> function of the given callback reference variable, which in this case, <code>listen_handler</code> variable of <code>Processor</code> class instance.</p>
+<p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<pre><code class="language-cpp">class Processor::C_processor_accept : public EventCallback {
+  Processor *pro;
+
+ public:
+  explicit C_processor_accept(Processor *p): pro(p) {}
+  void do_request(uint64_t id) override {
+    pro-&gt;accept();
+  }
+};
+
+Processor::Processor(AsyncMessenger *r, Worker *w, CephContext *c)
+  : msgr(r), net(c), worker(w), listen_handler(new C_processor_accept(this)) {}
+</code></pre>
+<h3 id="3-processor">3. Processor</h3>
+<p><code>Processor</code> is managed by <code>AsyncMessenger</code>, and is responsible for</p>
+<ol>
+<li>bind and listen a socket,</li>
+<li>create a callback instance when an asynchronous event arrives,</li>
+<li>and accept a request for connection establishment.</li>
+</ol>
+<p><code>src/msg/async/AsyncMessenger.cc</code></p>
+<pre><code class="language-cpp">int Processor::bind(const entity_addrvec_t &amp;bind_addrs,
+                    const std::set&lt;int&gt;&amp; avoid_ports,
+                    entity_addrvec_t* bound_addrs) {
+  ...
+  for (unsigned k = 0; k &lt; bind_addrs.v.size(); ++k) {
+    auto&amp; listen_addr = bound_addrs-&gt;v[k];
+
+    worker-&gt;center.submit_to(worker-&gt;center.get_id(),
+        [this, k, &amp;listen_addr, &amp;opts, &amp;r]() {
+          // In this case, it calls PosixWorker::listen().
+          worker-&gt;listen(listen_addr, k, opts, &amp;listen_sockets[k]);
+        },
+        false
+    );
+  }
+  ...
+}
+
+int Processor::start() {
+  ...
+  worker-&gt;center.submit_to(worker-&gt;center.get_id(),
+      [this]() {
+        for (auto&amp; listen_socket : listen_sockets) {
+          worker-&gt;center.create_file_event(listen_socket.fd(), EVENT_READABLE, listen_handler);
+        }
+      },
+      false
+  );
+}
+</code></pre>
+<p><code>Processor:accept()</code> is called when a connection request arrives, by <code>listen_handler</code> member variable of <code>Processor</code> class instance.</p>
+<pre><code class="language-cpp">void Processor::accept() {
+  ...
+  ConnectedSocket cli_socket;
+  Worker *w = worker;
+  listen_socket.accept(&amp;cli_socket, opts, &amp;addr, w);
+  msgr-&gt;add_accept(w, std::move(cli_socket), msgr-&gt;get_myaddrs().v[listen_socket.get_addr_slot()], addr);
+  ...
+}
+</code></pre>
+<h3 id="4-eventcenter">4. EventCenter</h3>
+<p>As you saw earlier, <code>Processor</code> uses <code>EventCenter</code> to register its callback handler for asynchronous events. <code>EventCenter</code> manages asynchronous event mechanism by using <code>EventDriver</code>, which is inherited by <code>EpollDriver</code>, <code>DPDKDriver</code>, <code>KqueueDriver</code>, and <code>SelectDriver</code>.
+In Linux, <code>EpollDriver</code> is used by default.</p>
+<p>When <code>Processor</code> class is started by <code>AsyncMessenger</code>, it calls <code>create_file_event()</code> of <code>EventCenter</code> class.
+It internally calls driver&rsquo;s <code>add_event()</code>, which calls <code>epoll_add()</code> in <code>EpollDriver</code>.</p>
+<p><code>src/msg/async/AsyncMessenger.cc</code>, <code>src/msg/async/Event.cc</code>, <code>src/msg/async/EventEpoll.cc</code></p>
+<pre><code class="language-cpp">void Processor::start() {
+  worker-&gt;center.submit_to(worker-&gt;center.get_id(), [this]() {
+    ...
+    worker-&gt;center.create_file_event(listen_socket.fd(), EVENT_READABLE, listen_handler);
+  }, false);
+}
+
+int EventCenter::create_file_event(int fd, int mask, EventCallbackRef ctxt) {
+  ...
+  driver-&gt;add_event(fd, event-&gt;mask, mask);
+  ...
+}
+
+
+int EpollDriver::add_event(int fd, int cur_mask, int add_mask) {
+  struct epoll_event ee;
+  int op = cur-mask == EVENT_NONE ? EPOLL_CTL_ADD : EPOLL_CTL_MOD;
+
+  ee.events = EPOLLET;
+  if (add_mask &amp; EVENT_READABLE) ee.events |= EPOLLIN;
+  if (add_mask &amp; EVENT_WRITABLE) ee.events |= EPOLLOUT;
+  ee.data.u64 = 0;
+  ee.data.fd = fd;
+  epoll_ctl(epfd, op, fd, &amp;ee);
+  ...
+}
+</code></pre>
+<blockquote>
+<p>Note that executing <code>epoll_ctl</code> while another thread already called <code>epoll_wait</code> makes no problem.
+Refer to <a href="https://stackoverflow.com/a/39979042">this</a>.</p>
+<blockquote>
+<p><em>While one thread is blocked in a call to epoll_pwait(), it is possible for another thread to add a file descriptor to the waited-upon epoll instance.</em></p>
+</blockquote>
+<p>Therefore, while worker threads are already waiting epoll_wait() to be returned, we can add a file descriptor into the epoll.</p>
+</blockquote>
+<h3 id="5-asyncconnection">5. AsyncConnection</h3>
+<p>This class is not explained in this post. After a connection is established, <code>Processor::accept()</code> creates a <code>ConnectedSocket</code> and <code>AsyncConnection</code> class instance.</p>
+<p>Will be discussed in the next post.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://sketch2sky.com/2017/12/11/ceph-asyncmessenger%E6%A8%A1%E5%9D%97%E7%AE%80%E6%9E%90/">Ceph ASyncMessenger 简析 I</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="http://blog.wjin.org/posts/ceph-async-messenger.html">Ceph Async Messenger</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://mahatic.com/2018/11/04/ceph-async-messenger/">Ceph ASync Messenger</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/43365361621/">Ceph async network communication source code analysis 1</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/4493505512/">Ceph AsyncMessenger source analysis (below)</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/48264588038/">Ceph network module - AsyncMessenger data structure analysis</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://www.programmersought.com/article/93104587967/">Ceph network module - AsyncMessenger code flow analysis</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2020-12-10/analyzing-ceph-network-module-2/" class="block">Analyzing Ceph Network Module 2</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/" class="block">Analyzing Ceph Restful Module and Boost ASIO</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/">Analyzing Ceph Restful Module and Boost ASIO</a>
+        <br />
+        
+        <a href="/2020-11-25/analyzing-ceph-bluestore-initialization/">Analyzing Ceph Bluestore Initialization</a>
+        <br />
+        
+        <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+        <br />
+        
+        <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/">Deploying a Ceph Development Environment Cluster</a>
+        <br />
+        
+        <a href="/2020-08-30/introduction-to-ceph/">Introduction to Ceph</a>
+        <br />
+        
+        <a href="/2020-11-09/building-container-image-inside-container-using-buildah/">Building Container Image inside Container using Buildah</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

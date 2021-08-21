@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Analyzing Ceph Restful Module and Boost ASIO | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+
+<meta name="description"
+  content="This post explains how Ceph Restful Module communicates with the other Ceph daemons.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Analyzing Ceph Restful Module and Boost ASIO",
+      "item":"/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/"
+    },
+    "headline": "Analyzing Ceph Restful Module and Boost ASIO | Better Tomorrow with Computer Science","datePublished": "2020-11-30T11:09:00+09:00",
+    "dateModified": "2020-11-30T11:09:00+09:00",
+    "wordCount":  1426 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "This post explains how Ceph Restful Module communicates with the other Ceph daemons."
+}
+</script><meta property="og:title" content="Analyzing Ceph Restful Module and Boost ASIO | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2020-11-30/analyzing-ceph-restful-module-and-boost-asio/" />
+
+
+
+
+<meta property="og:description" content="This post explains how Ceph Restful Module communicates with the other Ceph daemons." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2020-11-30T11:09:00&#43;09:00" />
+
+
+<meta property="article:modified_time" content="2020-11-30T11:09:00&#43;09:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="ceph" />
+
+
+
+
+
+<meta property="og:see_also" content="/2020-11-25/analyzing-ceph-bluestore-initialization/" />
+
+<meta property="og:see_also" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" />
+
+<meta property="og:see_also" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" />
+
+<meta property="og:see_also" content="/2020-08-30/introduction-to-ceph/" />
+
+<meta property="og:see_also" content="/2020-11-09/building-container-image-inside-container-using-buildah/" />
+
+<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Analyzing Ceph Restful Module and Boost ASIO</h1>
+    <div class="mr-6 my-2">
+    <span>Nov 30, 2020</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post explains how Ceph Restful Module communicates with the other Ceph daemons.</p>
+<h2 id="1-ceph-restful-module">1. Ceph RESTful Module</h2>
+<p>Ceph RESTful module is a <code>ceph-mgr-dashboard</code> module, though which clients can access the Ceph cluster over an SSL-secured connection<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
+The Ceph API service is available at the same URL as the regular Ceph Dashboard under the <code>/api</code> bas path: <code>http(s)://&lt;server_addr&gt;:&lt;server_port&gt;/api</code>.
+I wonder how <code>ceph-mgr</code> establishes connections with the other daemons and handles RESTful API requests <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<h2 id="2-api-handler">2. API Handler</h2>
+<p>I first start from the API callback functions.
+<code>ceph-mgr</code> uses Python code in <code>src/pybind/mgr/dashboard/controllers</code> to handle requests through RESTful API, which is bound to the main <code>ceph-mgr</code> c++ implemention through pybind11 <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
+<ul>
+<li>auth (<code>/api/auth</code>): <code>src/pybind/mgr/dashboard/controllers/auth.py</code></li>
+<li>cephfs (<code>/api/cephgs</code>): <code>src/pybind/mgr/dashboard/controllers/cephfs.py</code></li>
+<li>cluster configuration (<code>/api/cluster_conf</code>): <code>src/pybind/mgr/dashboard/controllers/cluster_configuration.py</code></li>
+<li>crush rule (<code>/api/crush_rule</code>): <code>src/pybind/mgr/dashboard/controllers/crush_rule.py</code></li>
+<li>grafana (<code>/api/grafana</code>): <code>src/pybind/mgr/dashboard/controllers/grafana.py</code></li>
+<li>health (<code>/api/health</code>): <code>src/pybind/mgr/dashboard/controllers/health.py</code></li>
+<li>host (<code>/api/host</code>): <code>src/pybind/mgr/dashboard/controllers/host.py</code>
+&hellip;</li>
+</ul>
+<p>In each Python code, there is a class that handles its own RESTful API group:
+for instance, auth module has three endpoints: <code>POST /api/auth</code>, <code>POST /api/auth/check</code>, and <code>POST /api/auth/logout</code>:</p>
+<p><code>src/pybind/mgr/dashboard/controllers/auth.py</code></p>
+<pre><code class="language-python">@ApiController('/auth', secure=False)
+class Auth(RESTController):
+  def create(self, username, password):   # Seems to handle POST /api/auth
+    ...                                   # Not understand why it lacks @RESTController.Collection('POST') pragma
+
+  @RESTController.Collection('POST')
+  def logout(self):                       # Seems to handle POST /api/auth/logout
+    ...
+
+  @RESTController.Collection('POST', query_params=['token'])
+  def check(self, token):                 # Seems to handle POST /api/auth/check
+    ...
+</code></pre>
+<p>Similarly, for OSD APIs, the following APIs are provided:</p>
+<ul>
+<li><code>GET /api/osd</code></li>
+<li><code>POST /api/osd</code></li>
+<li><code>GET /api/osd/flags</code>: Display OSD flags</li>
+<li><code>PUT /api/osd/flags</code>: Sets OSD flags for the entire cluster.</li>
+<li><code>GET /api/osd/{svc_id}</code>: Returns collected data about an OSD.</li>
+<li><code>PUT /api/osd/{svc_id}</code></li>
+<li><code>PUT /api/osd/{svc_id}/mark</code>: Mark OSD flags (out, in, down, lost, &hellip;)</li>
+<li><code>POST /api/osd/{svc_id}/destroy</code>: Make OSD as being destroyed.</li>
+<li>&hellip;</li>
+</ul>
+<p>These APIs are handled by functions in <code>src/pybind/mgr/dashboard/controllers/osd.py</code>:</p>
+<p><code>src/pybind/mgr/dashboard/controllers/osd.py</code></p>
+<pre><code class="language-python">@ApiController('/osd', Scope.OSD)
+class Osd(RESTController):
+  def list(self):                   # handle GET /api/osd
+    ...
+
+  @handle_send_command_error('osd')
+  def get(self, svc_id):            # handle GET /api/osd/{svc_id}
+    ...
+
+  def set(self, svc_id, device_class):  # handle POST /api/osd/{svc_id}
+    old_device_class = CephService.send_command('mon', 'osd crush get-device-class',
+                                                ids=[svc_id])
+    old_device_class = old_device_class[0]['device_class']
+    if old_device_class != device_class:
+        CephService.send_command('mon', 'osd crush rm-device-class',
+                                  ids=[svc_id])
+        if device_class:
+            CephService.send_command('mon', 'osd crush set-device-class', **{
+                'class': device_class,
+                'ids': [svc_id]
+            })
+
+  @RESTController.Resource('PUT')
+  def mark(self, svc_id, action):   # handle PUT /api/osd/{svc_id}/mark
+    ...
+
+  @RESTController.Resource('POST')
+  def destroy(self, svc_id):        # handle PUT /api/osd/{svc_id}/destroy
+    CephService.send_command(
+        'mon', 'osd destroy-actual', id=int(svc_id), yes_i_really_mean_it=True)
+
+  ...
+
+@ApiController('/osd/flags', Scope.OSD)
+class OsdFlagsController(RESTController):
+  ...
+</code></pre>
+<h2 id="3-approaching-other-ceph-daemons">3. Approaching other Ceph Daemons</h2>
+<h3 id="cephservicesend_command"><code>CephService.send_command</code></h3>
+<p>You can easily see the API handler functions use <code>CephService.send_command</code> to get data from or set data to other daemons.
+As Ceph monitors manage the entire cluster map, APIs regarding OSD seems to transfer an order to the monitor to update the map.</p>
+<p>It calls <code>mgr.send_command</code>, which calls <code>self._ceph_send_command</code>:</p>
+<p><code>src/pybind/mgr/mgr_module.py</code></p>
+<pre><code class="language-python">class MgrModule(ceph_module.BaseMgrModule, MgrModuleLoggingMixin):
+  ...
+
+  def send_command(self, *args, **kwargs):
+  &quot;&quot;&quot;
+  Called by the plugin to send a command to the mon
+  cluster.
+  &quot;&quot;&quot;
+  self._ceph_send_command(*args, **kwargs)
+</code></pre>
+<p>and <code>_ceph_send_command</code> is bounded into c++ function <code>ceph_send_command</code> through pybind in <code>src/mgr/BaseMgrModule.cc</code>:</p>
+<p><code>src/mgr/BaseMgrModule.cc</code></p>
+<pre><code class="language-cpp">PyMethodDef BaseMgrModule_methods[] = {
+  ...
+
+  {&quot;_ceph_send_command&quot;, (PyCFunction)ceph_send_command, METH_VARARGS,
+   &quot;Send a mon command&quot;},
+}
+
+static PyObject*
+ceph_send_command(BaseMgrModule *self, PyObject *args) {
+  char *type, *name, *cmd_json, *tag;
+  PyArg_ParseTuple(args, &quot;Ossss:ceph_send_command&quot;,
+    &amp;completion, &amp;type, &amp;name, &amp;cmd_json, &amp;tag);
+  if (std::string(type) == &quot;mon&quot;) {
+    ...
+    self-&gt;py_modules-&gt;get_monc().start_mon_command(...);
+  } else if (std::string(type) == &quot;osd&quot;) {
+    ...
+    self-&gt;py_modules-&gt;get_objecter().osd_command(...);
+  } else if (std::string(type) == &quot;mds&quot;) {
+    ...
+    self-&gt;py_modules-&gt;get_client().mds_command(...);
+  } else if (std::string(type) == &quot;pg&quot;) {
+    ...
+    self-&gt;py_modules-&gt;get_objecter().pg_command(...);
+  }
+}
+</code></pre>
+<h3 id="activepymodules"><code>ActivePyModules</code></h3>
+<p>The type of <code>self-&gt;py_modules</code> is <code>ActivePyModules</code> (<code>src/mgr/ActivePyModules.h</code>), which is initialized by <code>PyModuleRegistry</code>:
+<code>src/mgr/PyModuleRegistry.cc</code></p>
+<pre><code class="language-cpp">void PyModuleRegistry::active_start(
+            DaemonStateIndex &amp;ds, ClusterState &amp;cs,
+            const std::map&lt;std::string, std::string&gt; &amp;kv_store,
+            MonClient &amp;mc, LogChannelRef clog_, LogChannelRef audit_clog_,
+            Objecter &amp;objecter_, Client &amp;client_, Finisher &amp;f,
+            DaemonServer &amp;server) {
+  active_modules.reset(new ActivePyModules(
+        module_config, kv_store, ds, cs, mc,
+        clog_, audit_clog_, objecter_, client_, f, server,
+        *this));
+  
+  for (const auto &amp;i : modules) {
+    active_modules-&gt;start_one(i.second);
+  }
+}
+</code></pre>
+<p>The <code>PyModuleRegistry::active_start()</code> function is called when initializing <code>Mgr</code>:</p>
+<p><code>src/mgr/Mgr.cc</code>:</p>
+<pre><code class="language-cpp">Mgr::Mgr(MonClient *monc_, const MgrMap&amp; mgrmap,
+         PyModuleRegistry *py_module_registry_,
+	 Messenger *clientm_, Objecter *objecter_,
+	 Client* client_, LogChannelRef clog_, LogChannelRef audit_clog_) :
+  monc(monc_),
+  objecter(objecter_),
+  client(client_),
+  client_messenger(clientm_),
+  finisher(g_ceph_context, &quot;Mgr&quot;, &quot;mgr-fin&quot;),
+  digest_received(false),
+  py_module_registry(py_module_registry_),
+  cluster_state(monc, nullptr, mgrmap),
+  server(monc, finisher, daemon_state, cluster_state, *py_module_registry,
+         clog_, audit_clog_),
+  clog(clog_),
+  audit_clog(audit_clog_),
+  initialized(false),
+  initializing(false) { ... }
+
+void Mgr::init() {
+  ...
+
+  py_module_registry-&gt;active_start(daemon_state, cluster_state,
+      kv_store, *monc, clog, audit_clog, *objecter, *client,
+      finisher, server);
+  ...
+}
+</code></pre>
+<h3 id="mgrstandby"><code>MgrStandby</code></h3>
+<p>So basically objecter, monc, and client that are used for communication is passed during Mgr initialization.
+Actual <code>Mgr</code> creation code is in <code>MgrStandby</code> and <code>MgrStandby</code> is the one that actually creates objecter, monc, and client:</p>
+<p><code>src/mgr/MgrStandby.cc</code></p>
+<pre><code class="language-cpp">MgrStandby::MgrStandby(int argc, const char** argv)
+    : Dispatcher(g_ceph_context),
+      monc{g_ceph_context, poolctx},
+      client_messenger(
+          Messenger::create(g_ceph_context,
+                            cct-&gt;_conf.get_val&lt;std::string&gt;(&quot;ms_type&quot;),
+                            entity_name_t::MGR(),
+                            &quot;mgr&quot;,
+                            Messenger::get_pid_nonce())),
+      objecter{g_ceph_context, client_messenger.get(), &amp;monc, poolctx},
+      client{client_messenger.get(), &amp;monc, &amp;objecter},
+      mgrc(g_ceph_context, client_messenger.get(), &amp;monc.monmap),
+      log_client(g_ceph_context,
+                 client_messenger.get(),
+                 &amp;monc.monmap,
+                 LogClient::NO_FLAGS),
+      clog(log_client.create_channel(CLOG_CHANNEL_CLUSTER)),
+      audit_clog(log_client.create_channel(CLOG_CHANNEL_AUDIT)),
+      finisher(g_ceph_context, &quot;MgrStandby&quot;, &quot;mgrsb-fin&quot;),
+      timer(g_ceph_context, lock),
+      py_module_registry(clog),
+      active_mgr(nullptr),
+      orig_argc(argc),
+      orig_argv(argv),
+      available_in_map(false) {}
+
+void MgrStandby::handle_mgr_map(ref_t&lt;MMgrMap&gt; mmap) {
+  auto&amp; map = mmap-&gt;get_map();
+  dout(4) &lt;&lt; &quot;received map epoch &quot; &lt;&lt; map.get_epoch() &lt;&lt; dendl;
+  const bool active_in_map = map.active_gid == monc.get_global_id();
+  dout(4) &lt;&lt; &quot;active in map: &quot; &lt;&lt; active_in_map &lt;&lt; &quot; active is &quot;
+          &lt;&lt; map.active_gid &lt;&lt; dendl;
+  ...
+
+  if (active_in_map) {
+    if (!active_mgr) {
+      dout(1) &lt;&lt; &quot;Activating!&quot; &lt;&lt; dendl;
+      active_mgr.reset(new Mgr(&amp;monc, map, &amp;py_module_registry,
+                              client_messenger.get(), &amp;objecter, &amp;client, clog,
+                              audit_clog));
+      ...
+    }
+  }
+
+  ...
+}
+
+bool MgrStandby::ms_dispatch2(const ref_t&lt;Message&gt;&amp; m) {
+  if (m-&gt;get_type() == MSG_MGR_MAP) {
+    handle_mgr_map(ref_cast&lt;MMgrMap&gt;(m));
+  }
+  ...
+}
+</code></pre>
+<blockquote>
+<p><code>MgrStandby</code> does not initialize <code>Mgr</code> class instance when it is created.
+Until a message is dispatched (via <code>ms_dispatch2</code>, a function inherited from <code>Dispatcher</code> class), <code>active_mgr</code> remains <code>nullptr</code>, and it is initialized when <code>ms_dispatch2</code> handle is executed.
+Still, <code>MgrStandby</code> is responsible for creating objecter, monc, client, and <code>Mgr</code>.</p>
+</blockquote>
+<p><code>src/mgr/MgrStandby.h</code></p>
+<pre><code class="language-cpp">class MgrStandby : public Dispatcher, public md_config_obs_t {
+  ...
+  
+protected:
+  ceph::async::io_context_pool poolctx;
+  MonClient monc;
+  std::unique_ptr&lt;Messenger&gt; client_messenger;
+  Objecter objecter;
+  Client client;
+
+  MgrClient mgrc;
+
+  PyModuleRegistry py_module_registry;
+  std::shared_ptr&lt;Mgr&gt; active_mgr;
+
+  ...
+};
+</code></pre>
+<p>Maybe initializing all clients would be similar, so let&rsquo;s see how <code>MonClient monc</code> is initialized.</p>
+<h3 id="initializing-monclient">Initializing MonClient</h3>
+<p><code>src/mon/MonClient.h</code></p>
+<pre><code class="language-cpp">class MonClient : public Dispatcher,
+                  public AuthClient,
+                  public AuthServer /* for mgr, osd, mds */ {
+private:
+  Messenger *messenger;
+
+  std::unique_ptr&lt;MonConnection&gt; active_con;
+  std::map&lt;entity_addrvec_t, MonConnection&gt; pending_cons;
+
+  boost::asio::io_context&amp; service;
+  boost::asio::io_context::strand finish_strand{service};
+
+  ...
+public:
+  MonClient(CephContext *cct_, boost::asio::io_context&amp; service);
+}
+</code></pre>
+<p>Note that <code>monc</code> is intialized as <code>monc{g_ceph_context, poolctx}</code>, where <code>poolctx</code> is a type <code>ceph::async::io_context_pool</code>, where the type of the second parameter for <code>MonClient</code> constructor is <code>boost::asio::io_context</code>.
+<code>ceph::async::io_context_pool</code> overrode its operator so that it automatically returns the refernece of its internal variable <code>boost::asio::io_context ioctx</code>:</p>
+<p><code>src/common/async/context_pool.h</code></p>
+<pre><code class="language-cpp">namespace ceph::async {
+class io_context_pool {
+  ...
+
+  operator boost::asio::io_context&amp;() {
+    return ioctx;
+  }
+};
+}
+</code></pre>
+<h3 id="start_mon_command-internal"><code>start_mon_command</code> Internal</h3>
+<p>So it seems that <code>ceph-mgr</code> and <code>ceph-monitor</code> connects to each other with <strong>boost asio</strong>.
+<code>MonClient::start_mon_command</code> uses this <code>boost::asio::io_context service</code> variable to asynchronously communicate with ceph monitors:</p>
+<p><code>src/mon/MonClient.h</code></p>
+<pre><code class="language-cpp">class MonClient {
+public:
+  template&lt;typename CompletionToken&gt;
+  auto start_mon_command(const std::string&amp; mon_name,
+                         const std::vector&lt;std::string&gt;&amp; cmd,
+                         const ceph::buffer::list&amp; inbl,
+                         CompletionToke&amp;&amp; token) {
+    boost::asio::async_completion&lt;CompletionToken, CommandSig&gt; init(token);
+    auto h = CommandCompletion::create(service.get_executor(), std::move(init.completion_handler));
+    if (!initialized || stopping) {
+      ceph::async::post(std::move(h), monc_errc::shutting_down, std::string{}, bufferlist{});
+    } else {
+      auto r = new MonCommand(*this, ++last_mon_command_tid, std::move(h));
+      mon_commands.emplace(r-&gt;tid, r);
+      _send_command(r);
+    }
+    
+    return init.result.get();
+  }
+};
+</code></pre>
+<p>Looking at <code>_send_command</code>:</p>
+<p><code>src/mon/MonClient.cc</code></p>
+<pre><code class="language-cpp">void MonClient::_send_Command(MonCommand *r) {
+  ...
+
+  // Implementation varies for different release of Ceph. The following code is for Octopus or later.
+  r-&gt;target_con = messenger-&gt;connect_to_mon(monmap.get_addrs(r-&gt;target_name), true /* anon */);
+  r-&gt;target_session.reset(new MonConnection(cct, r-&gt;target_con, 0, &amp;auth_registry));
+  r-&gt;target_session-&gt;start(monmap.get_epoch(), entity_name);
+
+  MComamnd *m = new MCommand(monmap.fsid);
+  m-&gt;set_tid(r-&gt;tid);
+  m-&gt;cmd = r-&gt;cmd;
+  m-&gt;set_data(r-&gt;inbl);
+  r-&gt;target_session-&gt;queue_command(m);
+  return;
+}
+</code></pre>
+<p>It creates a new <code>MonConnection</code> and enqueue the given command.
+In <code>MonConnection::start()</code>, it send several headers including a keepalive packet and authentication data, etc.</p>
+<p>Interesting point is <code>MonConnection::queue_command</code>: it just stores the given command pointer to the pending command pointer:</p>
+<pre><code class="language-cpp">class MonConnection {
+  ...
+
+  void queue_command(Message *m) {
+    pending_tell_command = m;
+  }
+};
+</code></pre>
+<p>It is not a queue but anyway.. It temporarily stores a message and sends it only after authentication is done.</p>
+<p><code>src/mon/MonClient.cc</code></p>
+<pre><code class="language-cpp">int MonClient::handle_auth_done(...) {
+  if (con-&gt;get_peer_type() == CEPH_ENTITY_TYPE_MON) {
+    if (con-&gt;is_anon()) {
+      for (auto&amp; i : mon_commands) {
+        if (i.second-&gt;target_con == con) {
+          return i.secod-&gt;target_session-&gt;handle_auth_done(...);
+        }
+      }
+    }
+  }
+}
+
+int MonConnection::handle_auth_done(...) {
+  ...
+  int auth_err = auth-&gt;handle_response(...);
+  if (auth_err &gt;= 0) {
+    state = State::HAVE_SESSION;
+  }
+  con-&gt;set_last_keepalive_ack(auth_start);
+
+  if (pending_tell_command) {
+    con-&gt;send_message2(std::move(pending_tell_command));
+  }
+  return auth_err;
+}
+</code></pre>
+<p><code>Connection::send_message2</code> is defined in <code>src/msg/Connection.h</code>, which calls a pure virtual function <code>Connection::send_message</code>.
+Again, an inherited class <code>AsyncConnection</code> is used:</p>
+<p><code>src/msg/async/AsyncConnection.cc</code></p>
+<pre><code class="language-cpp">int AsyncConnection::send_message(Message *m) {
+  ...
+
+  protocol-&gt;send_message(m);
+}
+</code></pre>
+<blockquote>
+<p><code>protocol</code>. What is it?
+<code>messenger-&gt;connect_to_mon()</code> function also uses <code>protocol</code> in its function call stack.
+It is defined in <code>src/msg/async/Protocol.h</code> and has virtual class methods;
+currently ProtocolV1 (legacy) and ProtocolV2 (default) inherit the Protocol class and are used <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+<p>This means, all actual communication is managed by this Protocol class instance.</p>
+</blockquote>
+<h3 id="boost-executor-and-sending-message">Boost Executor and Sending Message</h3>
+<p>We are slighly deviated from the main road: <code>MonClient::start_mon_command</code> uses <code>boost::asio::async_completion&lt;CompletionToken, CommandSig&gt;</code> and <code>MonCommand</code>.</p>
+<p><code>src/mon/MonClient.h</code></p>
+<pre><code class="language-cpp">template &lt;typename CompletionToken&gt;
+  auto start_mon_command(const std::string&amp; mon_name,
+                         const std::vector&lt;std::string&gt;&amp; cmd,
+                         const ceph::buffer::list&amp; inbl,
+                         CompletionToken&amp;&amp; token) {
+  boost::asio::async_completion&lt;CompletionToken, CommandSig&gt; init(token);
+
+  auto h = CommandCompletion::create(service.get_executor(),
+					 std::move(init.completion_handler));
+  auto r = new MonCommand(*this, ++last_mon_command_tid, std::move(h));
+  _send_command(r);
+}
+</code></pre>
+<p>How these two classes are used together?</p>
+<p>TBD</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/mgr/restful/">RESTful module</a>
+[msgrv2]: <a href="https://archive.fosdem.org/2019/schedule/event/ceph_msgrv2/attachments/slides/3374/export/events/attachments/ceph_msgrv2/slides/3374/fosdem19_ceph_msgr2_rdias.pdf">Ceph Wire Protocol Revisied Messenger v2</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/mgr/ceph_api/">Ceph RESTful API</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://github.com/pybind/pybind11">Github Repsitory: pybind11</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://docs.ceph.com/en/latest/rados/configuration/msgr2/">Ceph Messenger V2</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/ceph/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#ceph</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2020-12-05/analyzing-ceph-network-module-1/" class="block">Analyzing Ceph Network Module 1</a>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2020-11-25/analyzing-ceph-bluestore-initialization/" class="block">Analyzing Ceph Bluestore Initialization</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2020-11-25/analyzing-ceph-bluestore-initialization/">Analyzing Ceph Bluestore Initialization</a>
+        <br />
+        
+        <a href="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/">Accelerating Ceph RPM Packaging: Using Multithreaded Compression</a>
+        <br />
+        
+        <a href="/2020-11-03/deploying-a-ceph-development-environment-cluster/">Deploying a Ceph Development Environment Cluster</a>
+        <br />
+        
+        <a href="/2020-08-30/introduction-to-ceph/">Introduction to Ceph</a>
+        <br />
+        
+        <a href="/2020-11-09/building-container-image-inside-container-using-buildah/">Building Container Image inside Container using Buildah</a>
+        <br />
+        
+        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+#--------------------------------------------------------------------------
+# .htaccess redirects file. Generated using hugo-redirect:
+#
+#     https://github.com/gcc42/hugo-redirect
+# 
+# DO NOT add more rules manually. For instructions on adding more
+# redirect rules here, see Readme.md on the above link.
+#--------------------------------------------------------------------------
+
+
+
+
+Redirect 301 /about    /
