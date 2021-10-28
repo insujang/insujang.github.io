@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).">
@@ -84,7 +84,7 @@
     },
     "headline": "Virtio and Vhost Architecture - Part 1 | Better Tomorrow with Computer Science","datePublished": "2021-03-10T17:01:00+09:00",
     "dateModified": "2021-03-10T17:01:00+09:00",
-    "wordCount":  2477 ,
+    "wordCount":  2469 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -250,9 +250,8 @@
 <p>Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization.
 It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, which means a device driver that is aware of virtualization is required.
 Compared to full-virtualized devices which uses trap for actual I/O operations, paravirtualized devices can reduce a lot of wasted cycles with direct communication between guest and host, hence it is faster.</p>
-<figure>
-    <img src="/assets/images/210310/fullvirt-vs-paravirt.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/fullvirt-vs-paravirt.png"
+         alt="image"/><figcaption>
             <p>Full virtualized device (left) vs para-virtualized device (right) flow. Para-drivers use hypercall (vmcall) to directly communicate with hypervisor without trap mechanism. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></p>
         </figcaption>
 </figure>
@@ -278,9 +277,8 @@ void nic_write_buffer(char *buf, int size) {
 <li><strong>Back-end virtio drivers</strong>: implented in the hypervisor. It accepts I/O requests from a front-end driver and perform the corresponding I/O operations via a physical device.</li>
 <li><strong>Transport</strong>: Communication between front-end drivers and back-end drivers is done through a queue called <strong>virtqueue</strong> (or transport, vring, virtio-ring, etc).</li>
 </ul>
-<figure>
-    <img src="/assets/images/210310/virtio-architecture.gif"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/virtio-architecture.gif"
+         alt="image"/><figcaption>
             <p>virtio framework architecture diagram. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></p>
         </figcaption>
 </figure>
@@ -626,9 +624,8 @@ struct vring_used {
   vring_used_elem_t ring[];
 }
 </code></pre>
-<figure>
-    <img src="/assets/images/210310/virtio-descriptor-table.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/virtio-descriptor-table.png"
+         alt="image"/><figcaption>
             <p>virtqueue internal data example. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">[Source]</a></p>
         </figcaption>
 </figure>
@@ -766,9 +763,8 @@ A virtio front-end device driver running on the guest operating system puts data
 This is because the guest operating system **allocates its virtqueues in the shared memory** shared with QEMU userspace process.
 Red Hat calls data communication that uses these shared memory regions as **data plane**, and communication used for the process of setting them up as **control plane** [^virtio-net-vhost-net].
 
-<figure>
-    <img src="/assets/images/210310/virtio-net-qemu.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/virtio-net-qemu.png"
+         alt="image"/><figcaption>
             <p>virtio-net example architecture. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
         </figcaption>
 </figure>
@@ -807,9 +803,8 @@ static void virtio_blk_rw_complete(void *opaque, int ret) {
 }
 </code></pre>
 <h2 id="summary-io-virtualization">Summary <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup></h2>
-<figure>
-    <img src="/assets/images/210310/KVM_QEMU_virtIO_Process.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/KVM_QEMU_virtIO_Process.png"
+         alt="image"/><figcaption>
             <p>VirtI/O process diagram overview. <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">[Source (Korean)]</a></p>
         </figcaption>
 </figure>
@@ -825,28 +820,28 @@ static void virtio_blk_rw_complete(void *opaque, int ret) {
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://programmersought.com/article/38004209835/">Virtualization technology implementation - KVM I/O virtualization</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://programmersought.com/article/38004209835/">Virtualization technology implementation - KVM I/O virtualization</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">IBM Developer: Virtio: An I/O Virtualization Framework for Linux</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">IBM Developer: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://programmersought.com/article/58091005566/">ProgrammerSought: IO Virtualization - virtio-blk front-end Driver Analysis</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://programmersought.com/article/58091005566/">ProgrammerSought: IO Virtualization - virtio-blk front-end Driver Analysis</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://programmersought.com/article/11831007453/">ProgrammerSought: IO Virtualization - virtio Introduction and Code Analysis</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://programmersought.com/article/11831007453/">ProgrammerSought: IO Virtualization - virtio Introduction and Code Analysis</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf">CMU Lecture Slide: Virtio: An I/O Virtualization Framework for Linux</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf">CMU Lecture Slide: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p><a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">Red Hat Blog: Virtqueues and Virtio Ring: How the Data Travles</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">Red Hat Blog: Virtqueues and Virtio Ring: How the Data Travles</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:7" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/83465096784/">ProgrammerSought: eventfd in QEMU-ioeventfd</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.programmersought.com/article/83465096784/">ProgrammerSought: eventfd in QEMU-ioeventfd</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:8" role="doc-endnote">
-<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">Ssup2 Blog: I/O Virtualization Software (Korean)</a> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">Ssup2 Blog: I/O Virtualization Software (Korean)</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

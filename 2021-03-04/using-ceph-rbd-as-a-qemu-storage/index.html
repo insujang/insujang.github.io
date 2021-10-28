@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="This post explains how we can use a Ceph RBD as a QEMU storage.">
@@ -84,7 +84,7 @@
     },
     "headline": "Using Ceph RBD as a QEMU Storage | Better Tomorrow with Computer Science","datePublished": "2021-03-04T14:40:00+09:00",
     "dateModified": "2021-03-04T14:40:00+09:00",
-    "wordCount":  1663 ,
+    "wordCount":  1652 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -339,9 +339,8 @@ rbd image 'testimage':
 <h2 id="using-ceph-rbd-for-qemu-vm-storage-virtio">Using Ceph RBD for QEMU VM Storage (<code>virtio</code>)</h2>
 <p>Now a Ceph RBD image is ready. You can use this image as a storage backend of a QEMU VM.</p>
 <p>You can use <code>krbd</code> kernel module or <code>librbd</code> userspace library to use the RBD image.</p>
-<figure>
-    <img src="/assets/images/210304/ceph-rbd-flow.jpg"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210304/ceph-rbd-flow.jpg"
+         alt="image"/><figcaption>
             <p>Software stack for Ceph RBD I/O. <a href="https://subscription.packtpub.com/book/virtualization_and_cloud/9781784393502/2/ch02lvl1sec19/working-with-ceph-block-device">[src]</a></p>
         </figcaption>
 </figure>
@@ -392,9 +391,8 @@ $ make
 <p>This setup script is for allocating hugepages and binding <code>vfio-pci/uio_pci_generic</code> kernel module to NVMe devices, however, I use this script only for hugepages allocation.
 If you are using any NVMe devices, use <code>PCI_BLOCKED</code> argument not to bind <code>vfio-pci/uio_pci_generic</code> to those devices. <code>setup.sh help</code> explains how to use the argument very well.</p>
 <h3 id="spdk-configuration">SPDK Configuration</h3>
-<figure>
-    <img src="/assets/images/210304/vhost-target.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210304/vhost-target.png"
+         alt="image"/><figcaption>
             <p>QEMU/SPDK vhost data flow. <a href="https://spdk.io/doc/vhost.html">[src]</a></p>
         </figcaption>
 </figure>
@@ -477,37 +475,37 @@ I/O size (minimum/optimal): 512 bytes / 512 bytes
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/cephadm/client-setup/">Basic Ceph Client Setup</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/cephadm/client-setup/">Basic Ceph Client Setup</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/rados/operations/user-management/">Ceph User Management</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/rados/operations/user-management/">Ceph User Management</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/rados/operations/pools/">Ceph Pool</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/rados/operations/pools/">Ceph Pool</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/start/quick-rbd/">Ceph Block Device Quick Start</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/start/quick-rbd/">Ceph Block Device Quick Start</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p><a href="https://medium.com/opsops/how-to-remove-a-pool-in-ceph-without-resarting-mons-820cd5f5841">How to remove a pool in Ceph without restarting mons</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://medium.com/opsops/how-to-remove-a-pool-in-ceph-without-resarting-mons-820cd5f5841">How to remove a pool in Ceph without restarting mons</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/rbd/rados-rbd-cmds/">Ceph Basic Block Device Commands</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/rbd/rados-rbd-cmds/">Ceph Basic Block Device Commands</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:7" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/rbd/qemu-rbd/">QEMU and Ceph Block Devices</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/rbd/qemu-rbd/">QEMU and Ceph Block Devices</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:8" role="doc-endnote">
-<p><a href="https://spdk.io/doc/getting_started.html">SPDK Getting Started</a> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://spdk.io/doc/getting_started.html">SPDK Getting Started</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:9" role="doc-endnote">
-<p><a href="https://spdk.io/doc/vhost.html">SPDK vhost Taret</a> <a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://spdk.io/doc/vhost.html">SPDK vhost Taret</a>&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:10" role="doc-endnote">
-<p><a href="https://spdk.io/doc/bdev.html#bdev_config_rbd">SPDK Ceph RBD</a> <a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://spdk.io/doc/bdev.html#bdev_config_rbd">SPDK Ceph RBD</a>&#160;<a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:11" role="doc-endnote">
-<p><a href="https://spdk.io/doc/vhost.html#vhost_vdev_create">SPDK Create a vhost device</a> <a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://spdk.io/doc/vhost.html#vhost_vdev_create">SPDK Create a vhost device</a>&#160;<a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

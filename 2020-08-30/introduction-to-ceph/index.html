@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="Ceph is an open-source distributed software platform 1 2.">
@@ -84,7 +84,7 @@
     },
     "headline": "Introduction to Ceph | Better Tomorrow with Computer Science","datePublished": "2020-08-30T14:16:00+09:00",
     "dateModified": "2020-08-30T14:16:00+09:00",
-    "wordCount":  923 ,
+    "wordCount":  917 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -243,23 +243,20 @@
     <div class="content">
         <p>Ceph is an open-source distributed software platform <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
 It mainly focuses on scale-out file system including storage distribution and availability.</p>
-<figure>
-    <img src="/assets/images/200830/ceph-overview.jpg"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/ceph-overview.jpg"
+         alt="image"/><figcaption>
             <p>Ceph Cluster Overview. <a href="https://www.slideshare.net/LarryCover/ceph-open-source-storage-software-optimizations-on-intel-architecture-for-cloud-workloads">[Source]</a></p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/assets/images/200830/ceph-overview2.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/ceph-overview2.png"
+         alt="image"/><figcaption>
             <p>Ceph Cluster Overview. <a href="https://medium.com/@pk0752/ceph-the-next-generation-store-67f7c51780d3">[Source]</a></p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/assets/images/200830/ceph-components.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/ceph-components.png"
+         alt="image"/><figcaption>
             <p>Ceph Cluster Overview. <a href="https://en.wikipedia.org/wiki/Ceph_(software)">[Source]</a></p>
         </figcaption>
 </figure>
@@ -271,9 +268,8 @@ It mainly focuses on scale-out file system including storage distribution and av
 <li>Ceph protocols: communication procotols between the nodes and clients.</li>
 </ul>
 <h2 id="1-ceph-client-architecture">1. Ceph Client Architecture</h2>
-<figure>
-    <img src="/assets/images/200830/ceph-stack.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/ceph-stack.png"
+         alt="image"/><figcaption>
             <p>Ceph client library architecture. <a href="https://docs.ceph.com/docs/master/architecture/">[Source]</a></p>
         </figcaption>
 </figure>
@@ -281,9 +277,8 @@ It mainly focuses on scale-out file system including storage distribution and av
 <p>Ceph clients can be categorized into three types (apps, host/VM, and clients), and four ways of accessing a Ceph storage cluster are provided: libRADOS, RADOSGW (object storage), RBD (block storage), or CephFS (file storage).</p>
 <h3 id="object-storage-vs-block-storage-vs-file-storage">Object storage vs block storage vs file storage</h3>
 <p>I am not clear how to distinguish those terms, so here is my summarized thought and references for understanding.</p>
-<figure>
-    <img src="/assets/images/200830/storage-interface-type.jpg"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/storage-interface-type.jpg"
+         alt="image"/><figcaption>
             <p>Explaining three different storage interface type. <a href="https://blogs.saphana.com/2015/03/10/cloud-infrastructure-2-enterprise-grade-storage-cloud-spod/">[Source]</a></p>
         </figcaption>
 </figure>
@@ -305,9 +300,8 @@ It mainly focuses on scale-out file system including storage distribution and av
 <h3 id="ceph-object-storage-daemons-osds-srcosdhttpsgithubcomcephcephtreemastersrcosd">Ceph Object Storage Daemons (OSDs) (<a href="https://github.com/ceph/ceph/tree/master/src/osd"><code>/src/osd</code></a>)</h3>
 <p>OSDs are reponsible for storing objects on a local file system on behalf of Ceph clients.
 Also, Ceph OSDs use the CPU, memory, and networking of Ceph cluster nodes for data replication, erasure coding, recovery, monitoring and reporting functions <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
-<figure>
-    <img src="/assets/images/200830/ceph-readwrite-flow.jpg"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/ceph-readwrite-flow.jpg"
+         alt="image"/><figcaption>
             <p>Ceph read-write flow. RADOS layer in the client nodes sends data to the primary OSD. <a href="https://www.slideshare.net/LarryCover/ceph-open-source-storage-software-optimizations-on-intel-architecture-for-cloud-workloads">[Source]</a></p>
         </figcaption>
 </figure>
@@ -316,9 +310,8 @@ Also, Ceph OSDs use the CPU, memory, and networking of Ceph cluster nodes for da
 User data is stored as objects (it seems not the same with frontend object storage RADOSGW) in a backend object store.</p>
 <h3 id="backend-object-store-filestore-vs-bluestore">Backend Object Store: Filestore vs Bluestore</h3>
 <p>Initially Ceph utilized Filestore, but now it has been replaced by more efficient object store Bluestore.</p>
-<figure>
-    <img src="/assets/images/200830/ceph-object-store.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/200830/ceph-object-store.png"
+         alt="image"/><figcaption>
             <p>Two types of Ceph object stores. <a href="https://ceph.io/community/bluestore-default-vs-tuned-performance-comparison/">[Source]</a></p>
         </figcaption>
 </figure>
@@ -346,22 +339,22 @@ It maintains maps of the cluster state, including the monitor map, manager map, 
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://ceph.io">Ceph</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://ceph.io">Ceph</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://github.com/ceph/ceph">Github: Ceph</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://github.com/ceph/ceph">Github: Ceph</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/architecture_guide/index">Red Hat: Red Hat Ceph Architecture (v3)</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/architecture_guide/index">Red Hat: Red Hat Ceph Architecture (v3)</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://www.snia.org/sites/default/files/SDC/2017/presentations/General_Session/Weil_Sage%20_Red_Hat_Goodbye_XFS_Building_a_new_faster_storage_backend_for_Ceph.pdf">Goodbye, XFS: Building a new, faster storage backend for Ceph</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.snia.org/sites/default/files/SDC/2017/presentations/General_Session/Weil_Sage%20_Red_Hat_Goodbye_XFS_Building_a_new_faster_storage_backend_for_Ceph.pdf">Goodbye, XFS: Building a new, faster storage backend for Ceph</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p><a href="https://www.oddeye.co/blog/ceph-why-to-use-bluestore/">OddEye - Ceph: Why to Use BlueStore</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.oddeye.co/blog/ceph-why-to-use-bluestore/">OddEye - Ceph: Why to Use BlueStore</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p><a href="https://docs.ceph.com/docs/mimic/start/intro/">Intro to Ceph</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/docs/mimic/start/intro/">Intro to Ceph</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

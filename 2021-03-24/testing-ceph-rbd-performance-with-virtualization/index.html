@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.">
@@ -84,7 +84,7 @@
     },
     "headline": "Testing Ceph RBD Performance with Virtualization | Better Tomorrow with Computer Science","datePublished": "2021-03-24T11:20:00+09:00",
     "dateModified": "2021-03-24T11:20:00+09:00",
-    "wordCount":  1099 ,
+    "wordCount":  1093 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -323,9 +323,8 @@ tap                    28672  1 vhost_net
 vhost                  57344  2 vhost_net
 </code></pre>
 <p>We at first create a bridge to connect tap device to network. I will use NAT networking to provide network to a guest VM, as described below:</p>
-<figure>
-    <img src="/assets/images/210318/libvirt-virtual-network-nat.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210318/libvirt-virtual-network-nat.png"
+         alt="image"/><figcaption>
             <p>Virtual network example. Here libvirt implements a virtual network switch with DHCP feature with dnsmasq. <a href="https://kb.novaordis.com/index.php/KVM_Virtual_Networking_Concepts">[Source]</a></p>
         </figcaption>
 </figure>
@@ -464,22 +463,22 @@ o- / ...........................................................................
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="http://www.linux-kvm.org/page/Networking#private_virtual_bridge">KVM Configuring Guest Networking</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="http://www.linux-kvm.org/page/Networking#private_virtual_bridge">KVM Configuring Guest Networking</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://www.redhat.com/en/blog/hands-vhost-net-do-or-do-not-there-no-try">Red Hat blob: Hands on vhost-net: Do. Or do not. There is no try</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.redhat.com/en/blog/hands-vhost-net-do-or-do-not-there-no-try">Red Hat blob: Hands on vhost-net: Do. Or do not. There is no try</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://www.tecmint.com/setup-a-dns-dhcp-server-using-dnsmasq-on-centos-rhel/">How to Setup a DNS/DHCP Server Using dnsmasq on CentOS/RHEL 8/7</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.tecmint.com/setup-a-dns-dhcp-server-using-dnsmasq-on-centos-rhel/">How to Setup a DNS/DHCP Server Using dnsmasq on CentOS/RHEL 8/7</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/">How to Assign Static IP Address on Ubuntu 20.04 LTS</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/">How to Assign Static IP Address on Ubuntu 20.04 LTS</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p><a href="http://people.redhat.com/bcodding/pnfs/nfs/scsi/2016/07/13/pnfs_scsi_testing_vhost_setup_for_VMs/">pNFS SCSI Testing: Vhost Setup for KVM</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="http://people.redhat.com/bcodding/pnfs/nfs/scsi/2016/07/13/pnfs_scsi_testing_vhost_setup_for_VMs/">pNFS SCSI Testing: Vhost Setup for KVM</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p><a href="https://wiki.libvirt.org/page/Vhost-scsi_target">libvirt Vhost-scsi Target</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://wiki.libvirt.org/page/Vhost-scsi_target">libvirt Vhost-scsi Target</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

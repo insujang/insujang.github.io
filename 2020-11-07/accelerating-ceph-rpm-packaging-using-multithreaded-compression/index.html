@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="This post explains how we can accelerate buildig a Ceph RPM package.">
@@ -84,7 +84,7 @@
     },
     "headline": "Accelerating Ceph RPM Packaging: Using Multithreaded Compression | Better Tomorrow with Computer Science","datePublished": "2020-11-07T19:07:00+09:00",
     "dateModified": "2020-11-07T19:07:00+09:00",
-    "wordCount":  1486 ,
+    "wordCount":  1482 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -435,9 +435,8 @@ export CEPH_MFLAGS_JOBS=&quot;-j$CEPH_SMP_NCPUS&quot;
 <p>Therefore, building phase is parallelized, and not a problem.</p>
 <p>However, as the final step, <code>rpmbuild</code> builds a package with built binaries and libraries with compression.
 By default, <code>rpmbuild</code> uses <strong>level 2 XZ compression</strong> to build a RPM package, which only uses one core.</p>
-<figure>
-    <img src="/assets/images/201107/rpmbuild-1core.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201107/rpmbuild-1core.png"
+         alt="image"/><figcaption>
             <p><code>rpmbuild</code> only uses one core for packaging step. This becomes a huge bottleneck for Ceph RPM packaging. Current <code>rpmbuild</code> version is 4.14.2.</p>
         </figcaption>
 </figure>
@@ -471,9 +470,8 @@ I want to change it to use just multithreading. Then compression type must be <c
 <pre><code class="language-sh">$ rpmbuild --define &quot;_binary_payload w2T16.xzdio&quot; --rebuild ceph-16.0.0-6971.g6352099561.el8.src.rpm
 $ &lt;output omitted&gt;
 </code></pre>
-<figure>
-    <img src="/assets/images/201107/rpmbuild-16cores.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201107/rpmbuild-16cores.png"
+         alt="image"/><figcaption>
             <p><code>rpmbuild</code> with the overriden <code>_binary_payload</code> uses nearly all 16 cores.</p>
         </figcaption>
 </figure>
@@ -494,16 +492,16 @@ I used <code>rpmbuild</code> 4.14.2 so I was not get any benefit from the commit
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://github.com/ceph/ceph">Ceph</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://github.com/ceph/ceph">Ceph</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://en.wikipedia.org/wiki/RPM_Package_Manager">RPM Package Manager</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://en.wikipedia.org/wiki/RPM_Package_Manager">RPM Package Manager</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://rpm-packaging-guide.github.io">RPM Packaging Guide</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://rpm-packaging-guide.github.io">RPM Packaging Guide</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://linuxreviews.org/Comparison_of_Compression_Algorithms">Comparison of Compression Algorithms</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://linuxreviews.org/Comparison_of_Compression_Algorithms">Comparison of Compression Algorithms</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

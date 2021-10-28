@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="This post explains overheads of virtio, and introduce vhost that increases performance of virtio.">
@@ -84,7 +84,7 @@
     },
     "headline": "Virtio and Vhost Architecture - Part 2 | Better Tomorrow with Computer Science","datePublished": "2021-03-15T12:24:00+09:00",
     "dateModified": "2021-03-15T12:24:00+09:00",
-    "wordCount":  1618 ,
+    "wordCount":  1616 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -247,9 +247,8 @@
     <div class="content">
         <p>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.</p>
 <h2 id="virtio-review--vhost-introduction">Virtio Review &amp; Vhost Introduction</h2>
-<figure>
-    <img src="/assets/images/210310/virtio-net-qemu.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/virtio-net-qemu.png"
+         alt="image"/><figcaption>
             <p>virtio-net example diagram. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
         </figcaption>
 </figure>
@@ -263,9 +262,8 @@
 <p>Here, during request handling by QEMU process, several unnecessary context switches happen: to forward the execution context to QEMU process, the guest operating system at first generates a VM-exit, moving to host kernel space, and again to QEMU process via ioeventfd.
 Then, the QEMU process accesses a tap device (for virtio-net) or a block cdevice (for virtio-blk), forwarding its execution context to host kernel space again.</p>
 <p>To reduce context switch overheads, vhost has been introduced to move the location of virtqueue from QEMU process to kernel space.</p>
-<figure>
-    <img src="/assets/images/210310/vhost-net-qemu.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210310/vhost-net-qemu.png"
+         alt="image"/><figcaption>
             <p>vhost-net example diagram. Note that virtqueue is in kernel space. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
         </figcaption>
 </figure>
@@ -558,9 +556,8 @@ vhost_tx_batch()
 </code></pre>
 <p>where <code>vhost_tx_batch()</code> is called by <code>handle_tx_copy()</code> described above.</p>
 <h2 id="summary">Summary</h2>
-<figure>
-    <img src="/assets/images/210315/KVM_QEMU_virtIO_vhostnet.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210315/KVM_QEMU_virtIO_vhostnet.png"
+         alt="image"/><figcaption>
             <p>vhost-net I/O flow. I could not specifically find ioeventfd/irqfd implementation in vhost kernel module integrated in modern Linux (v5.0). <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">[Source (Korean)]</a></p>
         </figcaption>
 </figure>
@@ -575,10 +572,10 @@ vhost_tx_batch()
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">Ssup2 Blog: I/O Virtualization Software (Korean)</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">Ssup2 Blog: I/O Virtualization Software (Korean)</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="http://blog.vmsplice.net/2011/09/qemu-internals-vhost-architecture.html">QEMU Internals: Vhost Architecture</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="http://blog.vmsplice.net/2011/09/qemu-internals-vhost-architecture.html">QEMU Internals: Vhost Architecture</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

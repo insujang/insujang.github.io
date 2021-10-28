@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="This post explains how we can deploy a Ceph development cluster from Ceph source code.">
@@ -84,7 +84,7 @@
     },
     "headline": "Deploying a Ceph Development Environment Cluster | Better Tomorrow with Computer Science","datePublished": "2020-11-03T13:09:00+09:00",
     "dateModified": "2020-11-03T13:09:00+09:00",
-    "wordCount":  681 ,
+    "wordCount":  678 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -256,9 +256,8 @@ For this, make an empty directory anywhere with any name.</p>
 $ git clone https://github.com/ricardoasmarques/ceph-dev-docker
 $ mkdir ceph-ccache
 </code></pre>
-<figure>
-    <img src="/assets/images/201103/cephdev-1.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201103/cephdev-1.png"
+         alt="image"/><figcaption>
             <p>Required directories. ceph: cloned ceph repository, ceph-ccache: an empty directory for ccache, and ceph-dev-docker: cloned ceph-dev-docker repository. You can freely specify the name of directories and the location.</p>
         </figcaption>
 </figure>
@@ -272,9 +271,8 @@ All required packages will be installed in this container, Ceph will be compiled
 <p>The shell script builds a Docker container image with <code>docker build</code>, and run it.</p>
 <p>Once completed, you are in ther container with <code>zsh</code>. Check whether <code>/ceph</code> is properly mounted.
 There are several pre-implemented scripts in <code>/shared/bin</code> in the container for Ceph deployment.</p>
-<figure>
-    <img src="/assets/images/201103/cephdev-2.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201103/cephdev-2.png"
+         alt="image"/><figcaption>
             <p>Environment in the container. You will use the script in <code>/shared/bin</code> to deploy a Ceph cluster.</p>
         </figcaption>
 </figure>
@@ -291,9 +289,8 @@ I prefer this way since I do not have to install packages in the host machine th
 <p>Running Ceph is also wrapped in a sciprt: <code>start-ceph.sh</code>. It uses <code>vstart.sh</code>, a Ceph utility that deploys fake local cluster for development purpose <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. Once you are accustomed with the Ceph internal architecture, you can manually run <code>vstart.sh</code> for deployment.</p>
 <p>The script runs **3 OSDs, 3 monitors, 3 metadata servers (MDSs), 1 manager, and 1 RADOS gateway (RGW).
 You can manipulate the number of daemons with <code>OSD,MDS,MON,RGW</code> enviornment variables as specified in <a href="https://docs.ceph.com/en/latest/dev/dev_cluster_deployement/">[the manual]</a>. The <code>start-ceph.sh</code> overrode the number of RGW from 0 to 1 <a href="https://github.com/ceph/ceph/blob/master/src/vstart.sh#L117">[src]</a>.</p>
-<figure>
-    <img src="/assets/images/201103/cephdev-3.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201103/cephdev-3.png"
+         alt="image"/><figcaption>
             <p>Running Ceph cluster.</p>
         </figcaption>
 </figure>
@@ -307,9 +304,8 @@ For Ceph dashboard features, refer to <a href="https://docs.ceph.com/en/latest/m
 Docker network is isolated from the host. hence you cannot directly access to Docker network namespace even if you are using <code>--net=host</code> container configuration.
 Refer to <a href="https://github.com/docker/for-win/issues/6736">[this]</a>.</p>
 </blockquote>
-<figure>
-    <img src="/assets/images/201103/cephdev-4.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201103/cephdev-4.png"
+         alt="image"/><figcaption>
             <p>Ceph dashboard.</p>
         </figcaption>
 </figure>
@@ -337,18 +333,16 @@ ccache make -j
 </code></pre>
 <p>where configuration arguments are given to CMake.
 Similarly, we can put the arguments into VSCode Cmake tool configuration:</p>
-<figure>
-    <img src="/assets/images/201103/cephdev-5.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201103/cephdev-5.png"
+         alt="image"/><figcaption>
             <p>CMake tool configuration arguments to build Ceph.</p>
         </figcaption>
 </figure>
 
 <p>For ccache usage, I add one more argument: <code>-DCMAKE_CXX_COMPILER_LAUNCHER=ccache</code>.
 Refer to <a href="https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/">this post</a> for more details.</p>
-<figure>
-    <img src="/assets/images/201103/cephdev-6.png"
-         alt="image"/> 
+<figure><img src="/assets/images/201103/cephdev-6.png"
+         alt="image"/>
 </figure>
 
 <p>Now I can directly build Ceph in VSCode!</p>
@@ -356,13 +350,13 @@ Refer to <a href="https://cristianadam.eu/20200113/speeding-up-c-plus-plus-githu
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://github.com/ceph/ceph">Ceph</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://github.com/ceph/ceph">Ceph</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://github.com/ricardoasmarques/ceph-dev-docker">ceph-dev-docker</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://github.com/ricardoasmarques/ceph-dev-docker">ceph-dev-docker</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://docs.ceph.com/en/latest/dev/dev_cluster_deployement/">Ceph: Deploying a Development Cluster</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.ceph.com/en/latest/dev/dev_cluster_deployement/">Ceph: Deploying a Development Cluster</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="Eureka is a elegant and powerful theme for Hugo.">
@@ -84,7 +84,7 @@
     },
     "headline": "Analyzing Ceph Network Module | Better Tomorrow with Computer Science","datePublished": "2020-12-23T11:38:00+09:00",
     "dateModified": "2020-12-23T11:38:00+09:00",
-    "wordCount":  3270 ,
+    "wordCount":  3263 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -243,9 +243,8 @@
     <div class="content">
         <p>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.</p>
 <p>Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:</p>
-<figure>
-    <img src="/assets/images/201205/ceph-stack.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201205/ceph-stack.png"
+         alt="image"/><figcaption>
             <p>High level Ceph architecture. <a href="https://docs.ceph.com/en/latest/architecture/">[src]</a></p>
         </figcaption>
 </figure>
@@ -254,9 +253,8 @@
 Even after reading those, I was not clear how they work.
 Therefore, I visualize the execution flow for network communication of Ceph and summarizes the concept here.</p>
 <h2 id="1-ceph-network-architecture-overview">1. Ceph Network Architecture Overview</h2>
-<figure>
-    <img src="/assets/images/201223/ceph-network-overview.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201223/ceph-network-overview.png"
+         alt="image"/><figcaption>
             <p>Ceph network class diagram.</p>
         </figcaption>
 </figure>
@@ -276,16 +274,14 @@ Therefore, I visualize the execution flow for network communication of Ceph and 
 <li><code>NetworkStack</code> and <code>Worker</code></li>
 <li><code>EventCenter</code> and <code>EventDriver</code></li>
 </ul>
-<figure>
-    <img src="/assets/images/201223/ceph-network-osd-init.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201223/ceph-network-osd-init.png"
+         alt="image"/><figcaption>
             <p>Function execution flow diagram when OSD accepts a connection and communicate.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/assets/images/201223/ceph-network-radosclient-connect.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/201223/ceph-network-radosclient-connect.png"
+         alt="image"/><figcaption>
             <p>Function execution flow diagram when a client connects to a peer server and communicate using <code>librados</code>.</p>
         </figcaption>
 </figure>
@@ -1130,25 +1126,25 @@ int EpollDriver::add_event(int fd, int cur_mask, int add_mask) {
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://sketch2sky.com/2017/12/11/ceph-asyncmessenger%E6%A8%A1%E5%9D%97%E7%AE%80%E6%9E%90/">Ceph ASyncMessenger 简析 I</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://sketch2sky.com/2017/12/11/ceph-asyncmessenger%E6%A8%A1%E5%9D%97%E7%AE%80%E6%9E%90/">Ceph ASyncMessenger 简析 I</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="http://blog.wjin.org/posts/ceph-async-messenger.html">Ceph Async Messenger</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="http://blog.wjin.org/posts/ceph-async-messenger.html">Ceph Async Messenger</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://mahatic.com/2018/11/04/ceph-async-messenger/">Ceph ASync Messenger</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://mahatic.com/2018/11/04/ceph-async-messenger/">Ceph ASync Messenger</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/43365361621/">Ceph async network communication source code analysis 1</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.programmersought.com/article/43365361621/">Ceph async network communication source code analysis 1</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/4493505512/">Ceph AsyncMessenger source analysis (below)</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.programmersought.com/article/4493505512/">Ceph AsyncMessenger source analysis (below)</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/48264588038/">Ceph network module - AsyncMessenger data structure analysis</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.programmersought.com/article/48264588038/">Ceph network module - AsyncMessenger data structure analysis</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:7" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/93104587967/">Ceph network module - AsyncMessenger code flow analysis</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.programmersought.com/article/93104587967/">Ceph network module - AsyncMessenger code flow analysis</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

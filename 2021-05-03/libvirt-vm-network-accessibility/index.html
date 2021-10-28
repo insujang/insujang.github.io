@@ -51,8 +51,8 @@
 </script>
 
 
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_2.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_2.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
 
 <meta name="description"
   content="Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:">
@@ -84,7 +84,7 @@
     },
     "headline": "Libvirt VM Network Accessibility | Better Tomorrow with Computer Science","datePublished": "2021-05-03T16:47:00+09:00",
     "dateModified": "2021-05-03T16:47:00+09:00",
-    "wordCount":  726 ,
+    "wordCount":  722 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -255,9 +255,8 @@
 </code></pre>
 <p>libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</p>
 <h2 id="nat-mode">NAT mode</h2>
-<figure>
-    <img src="/assets/images/210503/libvirt-network-nat.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210503/libvirt-network-nat.png"
+         alt="image"/><figcaption>
             <p>Libvirt NAT mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking">[Source]</a></p>
         </figcaption>
 </figure>
@@ -337,9 +336,8 @@ MASQUERADE  tcp  --  192.168.122.10       192.168.122.10       tcp dpt:rxapi
 ...
 </code></pre>
 <h2 id="routed-mode">Routed mode</h2>
-<figure>
-    <img src="/assets/images/210503/libvirt-network-routed.png"
-         alt="image"/> <figcaption>
+<figure><img src="/assets/images/210503/libvirt-network-routed.png"
+         alt="image"/><figcaption>
             <p>Libvirt routed mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking">[Source]</a></p>
         </figcaption>
 </figure>
@@ -368,16 +366,16 @@ $ virsh net-start &lt;network-name&gt;
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://wiki.libvirt.org/page/VirtualNetworking">libvirt: Virtual Networking</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://wiki.libvirt.org/page/VirtualNetworking">libvirt: Virtual Networking</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://www.cyberciti.biz/faq/linux-kvm-libvirt-dnsmasq-dhcp-static-ip-address-configuration-for-guest-os/">KVM Libvirt Assign Static Guest IP Addresses using DHCP on the Virtual Machine</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.cyberciti.biz/faq/linux-kvm-libvirt-dnsmasq-dhcp-static-ip-address-configuration-for-guest-os/">KVM Libvirt Assign Static Guest IP Addresses using DHCP on the Virtual Machine</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://wiki.libvirt.org/page/Networking">libvirt: Networking</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://wiki.libvirt.org/page/Networking">libvirt: Networking</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">KVM Creating a Guest VM on a Network in Routed Mode</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/">KVM Creating a Guest VM on a Network in Routed Mode</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
