@@ -1,0 +1,30 @@
+@inproceedings{10.1145/3477132.3483565,
+author = {Kim, Jongyul and Jang, Insu and Reda, Waleed and Im, Jaeseong and Canini, Marco and Kosti\'{c}, Dejan and Kwon, Youngjin and Peter, Simon and Witchel, Emmett},
+title = {LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism},
+year = {2021},
+isbn = {9781450387095},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3477132.3483565},
+doi = {10.1145/3477132.3483565},
+abstract = {In multi-tenant systems, the CPU overhead of distributed file systems (DFSes) is increasingly
+a burden to application performance. CPU and memory interference cause degraded and
+unstable application and storage performance, in particular for operation latency.
+Recent client-local DFSes for persistent memory (PM) accelerate this trend. DFS offload
+to SmartNICs is a promising solution to these problems, but it is challenging to fit
+the complex demands of a DFS onto simple SmartNIC processors located across PCIe.We
+present LineFS, a SmartNIC-offloaded, high-performance DFS with support for client-local
+PM. To fully leverage the SmartNIC architecture, we decompose DFS operations into
+execution stages that can be offloaded to a parallel datapath execution pipeline on
+the SmartNIC. LineFS offloads CPU-intensive DFS tasks, like replication, compression,
+data publication, index and consistency management to a Smart-NIC. We implement LineFS
+on the Mellanox BlueField Smart-NIC and compare it to Assise, a state-of-the-art PM
+DFS. LineFS improves latency in LevelDB up to 80% and throughput in Filebench up to
+79%, while providing extended DFS availability during host system failures.},
+booktitle = {Proceedings of the ACM SIGOPS 28th Symposium on Operating Systems Principles},
+pages = {756–771},
+numpages = {16},
+keywords = {SmartNIC offload, Distributed file system},
+location = {Virtual Event, Germany},
+series = {SOSP '21}
+}
