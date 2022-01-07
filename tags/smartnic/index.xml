@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>smartnic on Better Tomorrow with Computer Science</title>
+    <link>/tags/smartnic/</link>
+    <description>Recent content in smartnic on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
+    <lastBuildDate>Thu, 06 Jan 2022 20:53:00 -0500</lastBuildDate><atom:link href="/tags/smartnic/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Configuring NVIDIA BlueField2 SmartNIC</title>
+      <link>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</link>
+      <pubDate>Thu, 06 Jan 2022 20:53:00 -0500</pubDate>
+      
+      <guid>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</guid>
+      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores.</description>
+    </item>
+    
+  </channel>
+</rss>

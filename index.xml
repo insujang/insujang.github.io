@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Mon, 03 May 2021 16:47:00 +0900</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 06 Jan 2022 20:53:00 -0500</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Configuring NVIDIA BlueField2 SmartNIC</title>
+      <link>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</link>
+      <pubDate>Thu, 06 Jan 2022 20:53:00 -0500</pubDate>
+      
+      <guid>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</guid>
+      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores.</description>
+    </item>
+    
     <item>
       <title>Libvirt VM Network Accessibility</title>
       <link>/2021-05-03/libvirt-vm-network-accessibility/</link>

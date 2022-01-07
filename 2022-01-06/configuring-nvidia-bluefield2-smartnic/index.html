@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Configuring NVIDIA BlueField2 SmartNIC | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
+
+<meta name="description"
+  content="SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Configuring NVIDIA BlueField2 SmartNIC",
+      "item":"/2022-01-06/configuring-nvidia-bluefield2-smartnic/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2022-01-06/configuring-nvidia-bluefield2-smartnic/"
+    },
+    "headline": "Configuring NVIDIA BlueField2 SmartNIC | Better Tomorrow with Computer Science","datePublished": "2022-01-06T20:53:00-05:00",
+    "dateModified": "2022-01-06T20:53:00-05:00",
+    "wordCount":  1995 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores."
+}
+</script><meta property="og:title" content="Configuring NVIDIA BlueField2 SmartNIC | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2022-01-06/configuring-nvidia-bluefield2-smartnic/" />
+
+
+
+
+<meta property="og:description" content="SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2022-01-06T20:53:00-05:00" />
+
+
+<meta property="article:modified_time" content="2022-01-06T20:53:00-05:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="bluefield" />
+
+<meta property="article:tag" content="smartnic" />
+
+
+
+
+
+<meta property="og:see_also" content="/2021-05-03/libvirt-vm-network-accessibility/" />
+
+<meta property="og:see_also" content="/2021-04-26/using-intel-ioat-dma/" />
+
+<meta property="og:see_also" content="/2021-04-23/reconfiguring-ceph/" />
+
+<meta property="og:see_also" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" />
+
+<meta property="og:see_also" content="/2021-03-15/virtio-and-vhost-architecture-part-2/" />
+
+<meta property="og:see_also" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Configuring NVIDIA BlueField2 SmartNIC</h1>
+    <div class="mr-6 my-2">
+    <span>Jan 6, 2022</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores. NVIDIA BlueField2 equips 8 ARM Cortex A-72 cores, which can be used to process offloaded functions. This functions are not limited to packet processing, but can also be more complicated applications, e.g., file system, etc.</p>
+<p>This post talks about how to configure NVIDIA BlueField2 SmartNIC, on CloudLab r7525 machines.</p>
+<!-- > Regarding CloudLab, please refer to [this paper](https://www.usenix.org/conference/atc19/presentation/duplyakin).
+>
+> Regarding NVIDIA BlueField2 SmartNIC/DPU, please refer to [NVIDIA DPU introduction page](https://www.nvidia.com/en-us/networking/products/data-processing-unit/). -->
+<h1 id="initial-setup">Initial Setup</h1>
+<p>First, install Mellanox OFED device drivers from <a href="https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed">here</a>. Current latest version is 5.5-1.0.3.2 and LTS version is 4.9-4.1.7.0, but I used 5.4-3.1.0.0 version.</p>
+<p>Once you untar the archive, run <code>mlnxofedinstall</code> to install:</p>
+<pre><code class="language-sh">$ sudo ./mlnxofedinstall --without-fw-update
+...
+$ sudo /etc/init.d/openibd restart
+Unloading HCA drvier:                [ OK ]
+Loading HCA driver and Access Layer: [ OK ]
+</code></pre>
+<p>Now, you will see a new network interface <code>tmfifo_net0</code>, managed by rshim host driver. You can access BlueField via this interface.</p>
+<blockquote>
+<p>NVIDIA and Mellanox explains BlueField can be accessed via rshim USB and rshim PCIe, which are managed by kernel modules named <code>rshim_usb.ko</code> and <code>rshim_pcie.ko</code>, respectively, according to the Section 2.7 of <a href="https://gzhls.at/blob/ldb/a/d/7/5/6feb2c83f400953e7788c2093f2bc6730b72.pdf">the following manual</a>.
+But it seems to be changed, and there is no kernel modules installed named <code>rshim*</code> and just a process <code>/usr/sbin/rhsim</code> is used, managed by systemd.</p>
+<pre><code class="language-sh">$ lsmod | grep -i rshim
+(nothing)
+$ modinfo rshim
+modinfo: ERROR: Module rshim not found.
+$ systemctl status rshim
+● rshim.service - rshim driver for BlueField SoC
+     Loaded: loaded (/lib/systemd/system/rshim.service; enabled; vendor preset: enabled)
+    Active: active (running) since Thu 2022-01-06 10:31:28 EST; 11h ago
+      Docs: man:rshim(8)
+  Main PID: 465131 (rshim)
+     Tasks: 6 (limit: 618624)
+    Memory: 2.8M
+    CGroup: /system.slice/rshim.service
+            └─465131 /usr/sbin/rshim
+...
+</code></pre>
+</blockquote>
+<p>the source of which is open in <a href="https://github.com/Mellanox/rshim-user-space">here</a>.</p>
+<p>The other endpoint of <code>tmfifo_net0</code> is in BlueField, and its IPv4 address is <code>192.168.100.2/24</code>, hence you can use ssh to access BlueField via this address. First, we need to assign an address.</p>
+<pre><code class="language-sh">$ ip addr add 192.168.100.1/24 dev tmfifo_net0
+$ ping 192.168.100.2 # check whether it is properly configured
+PING 192.168.100.2 (192.168.100.2) 56(84) bytes of data.
+64 bytes from 192.168.100.2: icmp_seq=1 ttl=64 time=0.821 ms
+...
+$ ssh ubuntu@192.168.100.2
+ubuntu@192.168.100.2's password: ubuntu
+</code></pre>
+<blockquote>
+<p>By default username and password are both <code>ubuntu</code>.</p>
+</blockquote>
+<p>You are now in Linux running on BlueField2 ARM CPU.</p>
+<pre><code class="language-sh">$ lscpu
+Architecture:                    aarch64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+CPU(s):                          8
+On-line CPU(s) list:             0-7
+Thread(s) per core:              1
+Core(s) per socket:              8
+Socket(s):                       1
+NUMA node(s):                    1
+Vendor ID:                       ARM
+Model:                           0
+Model name:                      Cortex-A72
+...
+</code></pre>
+<h1 id="configuring-embedded-cpu-function-ownership-ecpf-mode">Configuring Embedded CPU Function Ownership (ECPF) Mode</h1>
+<p>NVIDIA BlueField2 SmartNIC has three modes of operation as of now <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
+<ol>
+<li>Separated host mode (symmetric model)</li>
+<li>Embedded function (ECPF)</li>
+<li>Restricted mode</li>
+</ol>
+<p>To check which mode a SmartNIC is running on, use the following command in the host:</p>
+<pre><code class="language-sh">$ mst start
+$ mst status -v # identify the MST device
+$ mlxconfig -d /dev/mst/mtXXXXX_pciconf0 q | grep -i internal_cpu_model
+INTERNAL_CPU_MODEL                  EMBEDDED_CPU(1)
+</code></pre>
+<p>If you see <code>SEPARATED_HOST(0)</code>, you can change it by:</p>
+<pre><code class="language-sh">$ mlxconfig -d /dev/mst/mtXXXXX_pciconf0 s INTERNAL_CPU_MODEL=1
+$ mlxconfig -d /dev/mst/mtXXXXX_pciconf0.1 s INTERNAL_CPU_MODEL=1
+$ # restart the server
+</code></pre>
+<figure><img src="/assets/images/220106/smartnic-modes.jpeg"
+         alt="image"/><figcaption>
+            <p>BlueField2 SmartNIC modes (Separated and ECPF mode). <a href="https://community.mellanox.com/s/article/BlueField-SmartNIC-Modes">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>In separated host mode, the host CPU and ARM CPU are like separate nodes, but sharing the same NIC.
+In ECPF mode, however, all communications between the host server and the outer world go through the SmartNIC ARM.
+For more detailed information, refer to <a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-dpdk-rig-for-dive-part-ii-change-mode-of-operation-a994f0f0e543">this post</a><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<blockquote>
+<p>NVIDIA document says ECPF mode is a default (Two years ago Mellanox said separated mode was a default mode. Not sure which one is actual), but anyway I will use ECPF mode.</p>
+</blockquote>
+<p>When in ECPF ownership mode, BlueField uses netdev representors to map each one of the host side physical and virtual functions <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
+You can see a lot of network interfaces in BlueField:</p>
+<pre><code class="language-sh">$ ip link
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: tmfifo_net0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 00:1a:ca:ff:ff:01 brd ff:ff:ff:ff:ff:ff
+3: oob_net0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc fq_codel state DOWN mode DEFAULT group default qlen 1000
+    link/ether 0c:42:a1:a4:89:ea brd ff:ff:ff:ff:ff:ff
+4: p0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether 0c:42:a1:a4:89:e4 brd ff:ff:ff:ff:ff:ff
+5: p1: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc mq master ovs-system state DOWN mode DEFAULT group default qlen 1000
+    link/ether 0c:42:a1:a4:89:e5 brd ff:ff:ff:ff:ff:ff
+6: pf0hpf: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether d2:d4:df:81:68:1f brd ff:ff:ff:ff:ff:ff
+7: pf1hpf: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether c6:ee:a2:c6:fa:e2 brd ff:ff:ff:ff:ff:ff
+8: en3f0pf0sf0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether fe:18:2b:c7:14:b8 brd ff:ff:ff:ff:ff:ff
+9: enp3s0f0s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 02:9e:0f:d4:58:dc brd ff:ff:ff:ff:ff:ff
+10: en3f1pf1sf0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether fe:1f:d8:0d:c7:f1 brd ff:ff:ff:ff:ff:ff
+11: enp3s0f1s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 02:fb:ba:ee:89:92 brd ff:ff:ff:ff:ff:ff
+12: ovs-system: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether ca:e4:08:3d:0f:fc brd ff:ff:ff:ff:ff:ff
+13: ovsbr1: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 0c:42:a1:a4:89:e4 brd ff:ff:ff:ff:ff:ff
+14: ovsbr2: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+</code></pre>
+<p>The naming convention for the representors is as follows, according to the DOCA documentation <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>:</p>
+<ul>
+<li>Uplink representors: p&lt;portnum&gt;</li>
+<li>PF rerpesentors: pf&lt;portnum&gt;hpf</li>
+<li>VF representors: pf&lt;portnum&gt;vf&lt;funcnum&gt;</li>
+</ul>
+<figure><img src="/assets/images/220106/kernel_representors_model.png"
+         alt="image"/><figcaption>
+            <p>BlueField2 kernel representors model. The red arrow demonstrates a packet flow through the representors, while the green arrow demonstrates the packet flow wheen steering rules are offloaded to the embedded switch (E-switch). <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>As mentioned before, all communications from the host go through SmartNIC ARM cores, and the virtual switch in Open vSwitch running on the ARM cores allows it.</p>
+<pre><code class="language-sh">$ systemctl status openvswitch-switch.service
+● openvswitch-switch.service - LSB: Open vSwitch switch
+     Loaded: loaded (/etc/init.d/openvswitch-switch; generated)
+     Active: active (exited) since Wed 2021-07-21 19:00:40 UTC; 13h ago
+       Docs: man:systemd-sysv-generator(8)
+    Process: 2374 ExecStart=/etc/init.d/openvswitch-switch start (code=exited, status=0/SUCCESS)
+...
+$ ovs-vsctl show
+    Bridge ovsbr1
+        Port pf0hpf
+            Interface pf0hpf
+        Port ovsbr1
+            Interface ovsbr1
+                type: internal
+        Port en3f0pf0sf0
+            Interface en3f0pf0sf0
+        Port p0
+            Interface p0
+    Bridge ovsbr2
+        Port p1
+            Interface p1
+        Port en3f1pf1sf0
+            Interface en3f1pf1sf0
+        Port ovsbr2
+            Interface ovsbr2
+                type: internal
+        Port pf1hpf
+            Interface pf1hpf
+    ovs_version: &quot;2.14.1&quot;
+</code></pre>
+<blockquote>
+<p>NVIDIA BlueField2 supports OVS offloading using NVIDIA ASAP2 (Accelerated Switching and Packet Processing) technology. Refer to <a href="https://docs.nvidia.com/networking/pages/viewpage.action?pageId=64306624">this</a> for more information.</p>
+</blockquote>
+<p>Note that there is no VF representors in my environment; instead, it has SF representors. First I thought it is a <code>subfunction</code>, but it is a unique name called <code>scalable function</code> that NVIDIA uses only for BlueField-2 DPUs <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+<figure><img src="/assets/images/220106/sf-vf-co-exist.png"
+         alt="image"/><figcaption>
+            <p>Scalable Functions (SFs) co-exist with PCIe SR-IOV virtual functions, and they do not need enabling PCIe SR-IOV. Each SF has its own dedicated queues which are neither shared nor stolen from the parent PCIe function. <a href="https://docs.nvidia.com/networking/display/BlueFieldDPUOSv370/Scalable+Functions">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<h1 id="configuring-smartnic-network-connectivity">Configuring SmartNIC Network Connectivity</h1>
+<p>As of now, Linux on SmartNIC cannot access to another SmartNIC on another machine, nor even to the host except through rshim layer.</p>
+<h2 id="host-connection">Host Connection</h2>
+<p>As I don&rsquo;t use a DHCP server, I should manually assign IPv4 addresses to SF, according to <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html#verifying-connection-from-host-to-bluefield">the manual</a>.</p>
+<pre><code class="language-sh"># on the SmartNIC Linux
+$ ovs-vsctl show
+    Bridge ovsbr1
+        Port en3f0pf0sf0
+            Interface en3f0pf0sf0
+    ...
+$ ip link
+8: en3f0pf0sf0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq master ovs-system state UP group default qlen 1000
+    link/ether fe:18:2b:c7:14:b8 brd ff:ff:ff:ff:ff:ff
+9: enp3s0f0s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 02:9e:0f:d4:58:dc brd ff:ff:ff:ff:ff:ff
+...
+$ ip addr add 192.168.10.2/24 dev enp3s0f0s0
+
+# on the host Linux
+$ ip link
+...
+15: ens5f0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 0c:42:a1:a4:89:e0 brd ff:ff:ff:ff:ff:ff
+$ ip addr add 192.168.10.1/24 dev ens5f0
+</code></pre>
+<p>Refer to <a href="https://forums.developer.nvidia.com/t/network-access-in-the-embedded-mode/184356/2">this answer</a> to find out why there are two similar network interfaces:</p>
+<blockquote>
+<p>There are two representors for each one of the DPU&rsquo;s network ports: one for the uplink, and another one for the host side PF (the PF representor created even if the PF is not probed on the host side).</p>
+<p>If you check <code>mlnx-sf -a show</code> on the DPU you&rsquo;ll see the kernel netdev and the representor names for the DPU itself.
+The <code>Representor netdev</code> devices are already connected (added to) the OVS bridge by default, so we only need to use netplan to assign an IP address to <code>enp3s0f1s0</code> or <code>enp3s0f0s0</code> (or both) and that should work.</p>
+</blockquote>
+<p>Note that the following is my result of <code>mlnx-sf -a show</code> run on SmartNIC Linux:</p>
+<pre><code class="language-sh">$ mlnx-sf -a show
+
+SF Index: pci/0000:03:00.0/229408
+  Parent PCI dev: 0000:03:00.0
+  Representor netdev: en3f0pf0sf0
+  Function HWADDR: 02:9e:0f:d4:58:dc
+  Auxiliary device: mlx5_core.sf.2
+    netdev: enp3s0f0s0
+    RDMA dev: mlx5_2
+
+SF Index: pci/0000:03:00.1/294944
+  Parent PCI dev: 0000:03:00.1
+  Representor netdev: en3f1pf1sf0
+  Function HWADDR: 02:fb:ba:ee:89:92
+  Auxiliary device: mlx5_core.sf.3
+    netdev: enp3s0f1s0
+    RDMA dev: mlx5_3
+</code></pre>
+<p>That&rsquo;s why I put an IP address to the device <code>enp3s0f0s0</code>, not <code>en3f0pf0sf0</code>.</p>
+<p>Now it is possible to ping each other.</p>
+<pre><code class="language-sh"># on the SmartNIC Linux
+$ ping 192.168.10.1 -c 2
+PING 192.168.10.1 (192.168.10.1) 56(84) bytes of data.
+64 bytes from 192.168.10.1: icmp_seq=1 ttl=64 time=51.8 ms
+64 bytes from 192.168.10.1: icmp_seq=2 ttl=64 time=0.114 ms
+
+# on the host Linux
+$ ping 192.168.10.2 -c 2
+PING 192.168.10.2 (192.168.10.2) 56(84) bytes of data.
+64 bytes from 192.168.10.2: icmp_seq=1 ttl=64 time=33.7 ms
+64 bytes from 192.168.10.2: icmp_seq=2 ttl=64 time=0.143 ms
+</code></pre>
+<h2 id="connecting-multiple-nodes">Connecting Multiple Nodes</h2>
+<p>If host PFs are in the same subnet, they are reachable as well. For example,</p>
+<ol>
+<li>Node 1 host: <code>ens5f0</code>: 192.168.10.1/24</li>
+<li>Node 1 SmartNIC: <code>enp3s0f0s0</code>: 192.168.10.2/24</li>
+<li>Node 2 host: <code>ens5f0</code>: 192.168.10.3/24</li>
+<li>Node 2 SmartNIC: <code>enp3s0f0s0</code>: 192.168.10.4/24</li>
+</ol>
+<p>Ping from 1 to 2 (host to SmartNIC in the same machine):</p>
+<pre><code class="language-sh">$ ping 192.168.10.2 -c 2
+PING 192.168.10.2 (192.168.10.2) 56(84) bytes of data.
+64 bytes from 192.168.10.2: icmp_seq=1 ttl=64 time=15.5 ms
+64 bytes from 192.168.10.2: icmp_seq=2 ttl=64 time=0.133 ms
+</code></pre>
+<p>Ping from 1 to 3 (host to another host):</p>
+<pre><code class="language-sh">$ ping 192.168.10.3 -c 2
+PING 192.168.10.3 (192.168.10.3) 56(84) bytes of data.
+64 bytes from 192.168.10.3: icmp_seq=1 ttl=64 time=94.4 ms
+64 bytes from 192.168.10.3: icmp_seq=2 ttl=64 time=0.078 ms
+</code></pre>
+<p>Ping from 1 to 4 (host to SmartNIC in another machine):</p>
+<pre><code class="language-sh">$ ping 192.168.10.4 -c 2
+PING 192.168.10.4 (192.168.10.4) 56(84) bytes of data.
+64 bytes from 192.168.10.4: icmp_seq=1 ttl=64 time=0.403 ms
+64 bytes from 192.168.10.4: icmp_seq=2 ttl=64 time=25.6 ms
+</code></pre>
+<p>Ping from 2 to 3 (SmartNIC to another host):</p>
+<pre><code class="language-sh">$ ping 192.168.10.3 -c 2
+PING 192.168.10.3 (192.168.10.3) 56(84) bytes of data.
+64 bytes from 192.168.10.3: icmp_seq=1 ttl=64 time=97.2 ms
+64 bytes from 192.168.10.3: icmp_seq=2 ttl=64 time=0.087 ms
+</code></pre>
+<p>Ping from 2 to 4 (SmartNIC to another SmartNIC):</p>
+<pre><code class="language-sh">$ ping 192.168.10.4 -c 2
+PING 192.168.10.4 (192.168.10.4) 56(84) bytes of data.
+64 bytes from 192.168.10.4: icmp_seq=1 ttl=64 time=0.217 ms
+64 bytes from 192.168.10.4: icmp_seq=2 ttl=64 time=0.187 ms
+</code></pre>
+<h1 id="enable-nat-for-network-in-smartnic-linux">Enable NAT for Network in SmartNIC Linux</h1>
+<p>In CloudLab configuration, only <code>eno1</code> interface in the host is connected to the Internet. Hence, SmartNIC Linux needs to go through the host Linux to access the Internet.
+<a href="https://medium.com/codex/getting-your-hands-dirty-with-mellanox-bluefield-2-dpus-deployed-in-cloudlabs-clemson-facility-bcb4e689c7e6">This post</a> well explains how to setup NAT between them <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>, so I just summarized the way here.</p>
+<pre><code class="language-sh"># On the host
+$ echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+$ iptables -t nat -A POSTROUTING -o eno1 -j MASQUERADE
+
+# In case IP forwarding is not working
+$ iptables -A FORWARD -o eno1 -j ACCEPT
+$ iptables -A FORWARD -m state --state ESTABLISHED,RELATED -i eno1 - j ACCEPT
+
+# On the SmartNIC
+$ echo &quot;nameserver 8.8.8.8&quot; | sudo tee /etc/resolv.conf
+</code></pre>
+<pre><code class="language-sh"># On the SmartNIC
+$ ping google.com -c 2
+PING google.com (74.125.21.100) 56(84) bytes of data.
+64 bytes from yv-in-f100.1e100.net (74.125.21.100): icmp_seq=1 ttl=108 time=7.19 ms
+64 bytes from yv-in-f100.1e100.net (74.125.21.100): icmp_seq=2 ttl=108 time=6.93 ms
+</code></pre>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://docs.nvidia.com/networking/display/BlueFieldSWv36011699/Modes+of+Operation">NVIDIA BlueField DPU Family Software Documentation: DPU Operation</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-dpdk-rig-for-dive-part-ii-change-mode-of-operation-a994f0f0e543">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-on Tutorial Part 2: Change Mode of Operation and Install DPDK</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">NVIDIA DOCA vSwitch and Representors Model</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://docs.nvidia.com/networking/display/BlueFieldDPUOSv370/Scalable+Functions">NVIDIA BlueField DPU OS Platform Documentation: Scalable Functions</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://medium.com/codex/getting-your-hands-dirty-with-mellanox-bluefield-2-dpus-deployed-in-cloudlabs-clemson-facility-bcb4e689c7e6">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-on Tutorial Part 1: Install Drivers and Access the SmartNIC</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/bluefield/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#bluefield</a>
+    
+    <a href="/tags/smartnic/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#smartnic</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2021-05-03/libvirt-vm-network-accessibility/" class="block">Libvirt VM Network Accessibility</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2021-05-03/libvirt-vm-network-accessibility/">Libvirt VM Network Accessibility</a>
+        <br />
+        
+        <a href="/2021-04-26/using-intel-ioat-dma/">Using Intel IOAT DMA</a>
+        <br />
+        
+        <a href="/2021-04-23/reconfiguring-ceph/">Reconfiguring Ceph</a>
+        <br />
+        
+        <a href="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/">Testing Ceph RBD Performance with Virtualization</a>
+        <br />
+        
+        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/">Virtio and Vhost Architecture - Part 2</a>
+        <br />
+        
+        <a href="/2021-03-10/virtio-and-vhost-architecture-part-1/">Virtio and Vhost Architecture - Part 1</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
