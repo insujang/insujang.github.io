@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Implementing Basic RPC with C&#43;&#43;20 | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
+
+<meta name="description"
+  content="This post explains how a basic RPC framework can be implemented by using modern C&#43;&#43; functionalities.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Implementing Basic RPC with C++20",
+      "item":"/2022-03-12/implementing-basic-rpc-with-c-20/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2022-03-12/implementing-basic-rpc-with-c-20/"
+    },
+    "headline": "Implementing Basic RPC with C\u002b\u002b20 | Better Tomorrow with Computer Science","datePublished": "2022-03-12T10:40:00-05:00",
+    "dateModified": "2022-03-12T10:40:00-05:00",
+    "wordCount":  1476 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "This post explains how a basic RPC framework can be implemented by using modern C\u002b\u002b functionalities."
+}
+</script><meta property="og:title" content="Implementing Basic RPC with C&#43;&#43;20 | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2022-03-12/implementing-basic-rpc-with-c-20/" />
+
+
+
+
+<meta property="og:description" content="This post explains how a basic RPC framework can be implemented by using modern C&#43;&#43; functionalities." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2022-03-12T10:40:00-05:00" />
+
+
+<meta property="article:modified_time" content="2022-03-12T10:40:00-05:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="study" />
+
+<meta property="article:tag" content="rpc" />
+
+<meta property="article:tag" content="c&#43;&#43;" />
+
+<meta property="article:tag" content="template" />
+
+
+
+
+
+<meta property="og:see_also" content="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/" />
+
+<meta property="og:see_also" content="/2022-01-06/configuring-nvidia-bluefield2-smartnic/" />
+
+<meta property="og:see_also" content="/2021-05-03/libvirt-vm-network-accessibility/" />
+
+<meta property="og:see_also" content="/2021-04-26/using-intel-ioat-dma/" />
+
+<meta property="og:see_also" content="/2021-04-23/reconfiguring-ceph/" />
+
+<meta property="og:see_also" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Implementing Basic RPC with C&#43;&#43;20</h1>
+    <div class="mr-6 my-2">
+    <span>Mar 12, 2022</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post explains how a basic RPC framework can be implemented by using modern C++ functionalities.
+The explanation in this post is heavily inspired from:</p>
+<ul>
+<li><a href="https://github.com/evenleo/simple-rpc">simple-rpc</a> by evenleo</li>
+<li><a href="https://github.com/button-chen/buttonrpc_cpp14/">buttonrpc-cpp14</a> by button-chen</li>
+</ul>
+<h1 id="c-features-used">C++ Features used</h1>
+<h2 id="parameter-pack-parameter-pack">Parameter Pack <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></h2>
+<p>Parameter pack is similar to C variadic arguments that are used in <code>printf()</code> family:</p>
+<pre><code class="language-c">int printf(char *format, ...);
+</code></pre>
+<p>which is implemented with <code>va_</code> variadic function API <a href="https://github.com/lattera/glibc/blob/master/stdio-common/printf.c">[src]</a>:</p>
+<pre><code class="language-c">int printf(const char* format, ...) {
+    va_list arg;
+    int done;
+
+    va_start(arg, format);
+    done = vfprintf(stdout, format, arg);
+    va_end(arg);
+
+    return done;
+}
+</code></pre>
+<blockquote>
+<p>Refer to <a href="https://www.cprogramming.com/tutorial/c/lesson17.html">this article</a> to see more about <code>va_list</code>.</p>
+</blockquote>
+<p>But parameter pack is used to specify <strong>zero or more template arguments</strong>:</p>
+<pre><code class="language-c++">template &lt;typename... Types&gt; struct Tuple {};
+Tuple&lt;&gt; t0;
+Tuple&lt;int&gt; t1;
+Tuple&lt;int, float&gt; t2;
+</code></pre>
+<p>where all <code>t0</code>, <code>t1</code>, <code>t2</code> are valid.</p>
+<p>Parameter pack can be used to specify arbitrary number of function arguments. As types can be various, it is suitable to represent arguments altogether in one pack.
+Therefore, the following template function <code>wrapperFunction</code> can be instantiated with any function type:</p>
+<pre><code class="language-c++">template &lt;typename ReturnType, typename... Args&gt;
+void wrapperFunction(std::function&lt;R(Args...)&gt;&amp;&amp; func) { ... }
+
+int test1(int a, double b);    wrapperFunction(test1); // ReturnType: int, Args: &lt;int, double&gt;
+std::string test2();           wrapperFunction(test2); // ReturnType: std::string, Args: None
+std::vector&lt;int&gt; test3(int a); wrapperFunction(test3); // ReturnType: std::vector&lt;int&gt;, Args: &lt;int&gt;
+</code></pre>
+<h2 id="pack-expansion-parameter-pack">Pack Expansion <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></h2>
+<p>This is what I could not undestand well. The reference says:</p>
+<blockquote>
+<p>A pattern followed by an ellipsis, in which the name of at least one parameter pack appears at least once, <strong>is expanded into zero or more comma-separated instantiations of the pattern</strong>, where the name of the parameter pack is replaced by each of the elements from the pack, in order.</p>
+</blockquote>
+<pre><code class="language-c++">template &lt;typename... Us&gt; void f(Us... pargs) {}
+template &lt;typename... Ts&gt; void g(Ts... args) {
+    f(&amp;args...);
+}
+g(1, 0.2, &quot;a&quot;);
+</code></pre>
+<p>Here, <code>&amp;args...</code> is a pack expansion (a pattern <code>&amp;args</code> followed by an ellipsis). Therefore, the pattern is expanded to each of the elements from the pack.
+In other words, <code>Ts...</code> expand to <code>int E1, double E2, const char* E3</code>, and <code>&amp;args...</code> expands to <code>&amp;E1, &amp;E2, &amp;E3</code> (reference marks are expanded to each of the elements), which makes <code>Us...</code> be deduced as <code>int*, double*, const char**</code>.</p>
+<p>This pack expansion can be used to feed arguments with <code>std::integer_sequence</code> explained right below.</p>
+<h2 id="fold-expression-fold-expression">Fold Expression <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></h2>
+<p>This reduces or folds a parameter pack over a binary operator. This is also quite hard to understand, but it can be used to apply the same operator to all parameters in a pack.</p>
+<pre><code class="language-c++">template &lt;typename... Args&gt;
+bool all(Args... args) { return (... &amp;&amp; args); }
+bool b = all(true, true, true, false);
+</code></pre>
+<p>This example from the reference uses unary left fold <code>(... op pack)</code> in <code>return (... &amp;&amp; args);</code> statement. This expands the expression as: <code>(((args1 &amp;&amp; args2) &amp;&amp; args3) &amp;&amp; args4)</code>, which makes <code>b</code> false since <code>args4</code> is given as <code>false</code>.</p>
+<h2 id="stdinteger_sequence-integer-sequence"><code>std::integer_sequence</code> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></h2>
+<p>The class template represents <strong>a compile-time sequence of integers</strong>. The reference also indicates that: <strong>when used as an argument to a function template, the parameter pack can be deduced and used in pack expanson</strong>.</p>
+<pre><code class="language-c++">template &lt;typename T, T... ints&gt;
+void print_sequence(std::integer_sequence&lt;T, ints...&gt; int_seq) {
+    std::cout &lt;&lt; &quot;The sequence of size &quot; &lt;&lt; int_seq.size() &lt;&lt; &quot;: &quot;;
+    ((std::cout &lt;&lt; ints &lt;&lt; ' ' ), ...);
+    std::cout &lt;&lt; &quot;\n&quot;;
+}
+
+print_sequence(std::integer_sequence&lt;unsigned, 9, 2, 5&gt;{});
+-&gt; The sequence of size 3: 9 2 5
+</code></pre>
+<p>Here, fold expression is used in <code>((std::cout &lt;&lt; ints &lt;&lt; ' '), ...);</code>. <code>ints</code> is a parameter pack, and <strong><code>,</code> is an operator</strong>. This unary left fold expands the statements to <code>std::cout &lt;&lt; int1 &lt;&lt; ' ' ints2 &lt;&lt; ' ' ints3 &lt;&lt; ' '</code> (check <a href="https://stackoverflow.com/q/53330713">this question</a> for more detail about expanding with <code>,</code> operator).</p>
+<p>This integer sequence is used to specify each argument&rsquo;s index in a tuple, with <a href="https://en.cppreference.com/w/cpp/utility/tuple/tuple_size"><code>std::tuple_size</code> constant expression</a>:</p>
+<pre><code class="language-c++">template &lt;typename Func, typename Tuple, std::size_t... I&gt;
+auto invoke(Func&amp;&amp; func, Tuple&amp;&amp; tuple, std::index_sequence&lt;I...&gt;) {
+    return func(std::get&lt;I&gt;(std::forward&lt;Tuple&gt;(tuple))...);
+}
+
+using ArgsTuple = std::tuple&lt;typename std::decay_t&lt;std::remove_reference_t&lt;Args&gt;&gt;...&gt;;
+auto tuple = std::make_tuple&lt;ArgsTuple&gt;(/* ... */);
+invoke(function, tuple, std::make_index_sequence&lt;std::tuple_size_v&lt;ArgsTuple&gt;&gt;{});
+</code></pre>
+<p>where <code>Tuple</code> can be any types of tuple (note that tuple is a template class that accepts arbitrary types of data, e.g. <code>std::tuple&lt;int, double, std::string&gt;</code>). <code>std::make_index_sequence&lt;N&gt;</code> generates a integer sequence starting from 0, and it is used to get specific items from the tuple with <code>std::get&lt;I&gt;(tuple)</code>. This pattern is expanded with a following ellipsis to all parameter pack in <code>I</code>, the size of which is the same to the size of tuple type <code>ArgsTuple</code>.</p>
+<h1 id="implementing-rpc">Implementing RPC</h1>
+<p>Basic mechanism of RPC (Remote Procedure Call) is as follows.</p>
+<ol>
+<li>Map functions with unique function names.</li>
+<li>Serialize function name and arguments that are used to execute function in remote side</li>
+<li>Transfer serialized data to the remote node</li>
+<li>In the remote side, deserialize data.</li>
+<li>Execute requested function with deserialized function arguments.</li>
+</ol>
+<h2 id="serialization">Serialization</h2>
+<p>We first serialize arbitrary number of arguments into byte stream. For this purpose, <code>std::tuple</code> is used as a temporary container of arguments, since STL containers are template classes so we could utilize template functionalities such as pack expansion, fold expression. The type of tuple can be defined with pack expansion:</p>
+<pre><code class="language-c++">template &lt;typename... Args&gt;
+std::vector&lt;uint8_t&gt; serialize(const std::string&amp; function_name, Args&amp;&amp;... arguments) {
+    using ArgsTuple = std::tuple&lt;typename std::decay_t&lt;std::remove_reference_v&lt;Args&gt;&gt;...&gt;;
+    ArgsTuple tuple = std::make_tuple(arguments...);
+}
+</code></pre>
+<p>Assume that <code>Args...</code> is <code>&lt;int, int, double&gt;</code>, then ArgsTuple is expanded as <code>std::tuple&lt;int, int, double&gt;</code> thanks to pack expansion, which can contain every arguments in one container.</p>
+<p>Now we serialize each item in the tuple container by using fold expression and <code>std::integer_sequence</code>:</p>
+<pre><code class="language-c++">template &lt;typename... Args&gt;
+std::vector&lt;uint8_t&gt; serialize(/* omitted */) {
+    ...
+    msgpack::Packer packer{};
+    [&amp;]&lt;typename Tuple, std::size_t... I&gt;(Tuple&amp;&amp; tuple, std::index_sequence&lt;I...&gt;) {
+        (packer(std::get&lt;I&gt;(tuple)), ...);
+    } (std::forward&lt;ArgsTuple&gt;(tuple),
+       std::make_index_sequence&lt;std::tuple_size_v&lt;std::remove_reference_t&lt;ArgsTuple&gt;&gt;&gt;{});
+}
+</code></pre>
+<blockquote>
+<p>Here, I used a new feature in C++20: lambdas can have a list of template parameters. Before C++20, it was impossible so that another function (usually named as <code>_impl</code>) is required:</p>
+<pre><code class="language-c++">template&lt;typename... Args&gt;
+std::vector&lt;uint8_t&gt; serialize(/* omitted */) {
+  ...
+  msgpack::Packer packer{};
+  serialize_impl(packer,
+                 std::forward&lt;ArgsTuple&gt;(tuple),
+                 std::make_index_sequence&lt;std::tuple_size_v&lt;std::remove_reference_t&lt;ArgsTuple&gt;&gt;&gt;{});
+}
+
+template&lt;typename Tuple, std::size_t... I&gt;
+void serialize_impl(msgpack::Packer&amp; packer, Tuple&amp;&amp; tuple, std::index_sequence&lt;I...&gt;) {
+  (packer(std::get&lt;I&gt;(tuple)), ...);
+  ...    
+}
+</code></pre>
+<p>For more information, refer to <a href="https://www.fluentcpp.com/2021/03/05/stdindex_sequence-and-its-improvement-in-c20/">this article</a> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+</blockquote>
+<p>To feed each argument into the serializer (named <code>packer</code>), fold expression is used: <code>(packer(std::get&lt;I&gt;(tuple)), ...);</code>; for each index <code>I</code> (0 to # of arguments - 1), it calls <code>operator()</code> of <code>packer</code> to feed the corresponding argument.
+It may look different in terms of serializer; I used <a href="https://github.com/mikeloomisgg/cppack">cppack</a>, a msgpack implementation, and it uses <code>operator()</code> to de/serialize, like <a href="https://github.com/USCiLab/cereal">cereal</a>.</p>
+<h2 id="deserialization">Deserialization</h2>
+<p>Deserialization is more complex, since we need a function signature and extract arguments from the given byte stream in the exact same order.</p>
+<p>First, I registered functions to be called with the following register function:</p>
+<pre><code class="language-c++">template &lt;typename R, typename... Args&gt;
+void callProxy(std::function&lt;R(Args...)&gt;&amp;&amp; func,
+               msgpack::Unpacker&amp; unpacker) {
+    ...
+}
+
+std::map&lt;std::string, std::function&lt;void(msgpack::Unpacker&amp;)&gt;&gt; functions;
+
+template &lt;typename R, typename... Args&gt;
+bool registerFunction(const std::string&amp; function_name,
+                      R (*function)(Args...)) {
+}
+    functions[function_name] = std::bind(&amp;callProxy, function, std::placeholders::_1);
+
+int testFunction(int a, int b) { ... }
+registerFunction(&quot;testFunction&quot;, testFunction);
+</code></pre>
+<blockquote>
+<p>It is quite tricky, that it is <code>callProxy</code> function that is stored in <code>functions</code> map, not functions given by users. This is because of various function signatures; function map cannot store various signatures in one map.</p>
+<p>For example, we might want to implement a template map:</p>
+<pre><code class="language-c++">template &lt;typename ReturnType, typename... Args&gt;
+std::map&lt;std::string, std::function&lt;ReturnType(Args...)&gt;&gt; functions;
+</code></pre>
+<p>This implementation actually creates several maps when we register functions, so if we use <code>registerFunction</code> twice like:</p>
+<pre><code class="language-c++">int test1(int a, int b);
+double test2(int a, double b);
+registerFunction(&quot;test1&quot;, test1);
+registerFunction(&quot;test2&quot;, test2);
+</code></pre>
+<p>Actually two maps are created during runtime: <code>std::map&lt;std::string, std::function&lt;double(int, double)&gt;&gt;</code> and <code>std::map&lt;std::string, std::function&lt;int(int, int)&gt;&gt;</code>. To prevent such problem, we use <code>callProxy</code> function.</p>
+</blockquote>
+<p>We use <code>std::bind</code> to bind user&rsquo;s function into <code>callProxy</code>. The second argument of <code>std::bind</code> is fed to the first argument of <code>callProxy</code>, so when a bound function is called, it does not have to be given again.
+We have to pass <code>msgpack::Unpacker&amp;</code> since only a placeholder is bound for this place.</p>
+<p>Later when we call the function, the code would be:</p>
+<pre><code class="language-c++">msgpack::Unpacker unpacker(data);
+auto func = functions[function_name]; // func must be callProxy with bound user's function.
+func(unpacker);
+</code></pre>
+<p>Now, we can call <code>callProxy</code> function with its name. We have to extract arguments from <code>msgpack::Unpacker</code> to call user function.
+Since <code>callProxy</code> already has <code>typename... Args</code> parameter pack, we could apply similar strategy that we used for serialization:</p>
+<pre><code class="language-c++">template &lt;typename R, typename... Args&gt;
+void callProxy(std::function&lt;R(Args...)&gt;&amp;&amp; func,
+               msgpack::Unpacker&amp; unpacker) {
+    using ArgsTuple = std::tuple&lt;typename std::decay_t&lt;std::remove_reference_t&lt;Args&gt;&gt;...&gt;;
+    ArgsTuple tuple;
+    R result = [&amp;]&lt;typename Tuple, std::size_t... I&gt;
+               (Tuple&amp;&amp; tuple, std::index_sequence&lt;I...&gt;) -&gt; R {
+        (unpacker(std::get&lt;I&gt;(tuple)), ...);
+        return func(std::get&lt;I&gt;(std::forward&lt;Tuple&gt;(tuple))...);
+    }(std::forward&lt;ArgsTuple&gt;(tuple), 
+      std::make_index_sequence&lt;std::tuple_size_v&lt;ArgsTuple&gt;&gt;{});
+    // Send result back
+}
+</code></pre>
+<p>By implementing a type <code>ArgsTuple</code> with the parameter pack <code>Args...</code>, we can ask deserializer (<code>unpacker</code>) to extract each argument from the byte stream with fold expression: <code>(unpacker(std::get&lt;I&gt;(tuple)), ...);</code>. Note that <code>std::get&lt;I&gt;(tuple)</code> returns a reference, so it can be used to <em>set</em> the value into the tuple.</p>
+<p>Then we can feed arguments in the tuple into the function by using pack expansion, and assuming we provide correct byte stream, it should work.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://en.cppreference.com/w/cpp/language/parameter_pack">CPPreference: Parameter Pack (Since C++11)</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://en.cppreference.com/w/cpp/language/fold">CPPreference: Fold Expression (Since C++17)</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://en.cppreference.com/w/cpp/utility/integer_sequence">CPPreference: Integer Sequence (Since C++14)</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.fluentcpp.com/2021/03/05/stdindex_sequence-and-its-improvement-in-c20/">std::index_sequence and its Improvement in C++20</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    
+    <a href="/tags/rpc/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#rpc</a>
+    
+    <a href="/tags/c&#43;&#43;/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#c&#43;&#43;</a>
+    
+    <a href="/tags/template/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#template</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/" class="block">Open vSwitch in NVIDIA BlueField SmartNIC</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/">Open vSwitch in NVIDIA BlueField SmartNIC</a>
+        <br />
+        
+        <a href="/2022-01-06/configuring-nvidia-bluefield2-smartnic/">Configuring NVIDIA BlueField2 SmartNIC</a>
+        <br />
+        
+        <a href="/2021-05-03/libvirt-vm-network-accessibility/">Libvirt VM Network Accessibility</a>
+        <br />
+        
+        <a href="/2021-04-26/using-intel-ioat-dma/">Using Intel IOAT DMA</a>
+        <br />
+        
+        <a href="/2021-04-23/reconfiguring-ceph/">Reconfiguring Ceph</a>
+        <br />
+        
+        <a href="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/">Testing Ceph RBD Performance with Virtualization</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
