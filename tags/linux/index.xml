@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Mon, 03 May 2021 16:47:00 +0900</lastBuildDate><atom:link href="/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 16 Mar 2022 23:37:00 -0500</lastBuildDate><atom:link href="/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using RDMA CM</title>
+      <link>/2022-03-16/using-rdma-cm/</link>
+      <pubDate>Wed, 16 Mar 2022 23:37:00 -0500</pubDate>
+      
+      <guid>/2022-03-16/using-rdma-cm/</guid>
+      <description>Years before, I posted how to use libibverbs for RDMA communication.</description>
+    </item>
+    
     <item>
       <title>Libvirt VM Network Accessibility</title>
       <link>/2021-05-03/libvirt-vm-network-accessibility/</link>

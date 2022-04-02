@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Sat, 12 Mar 2022 10:40:00 -0500</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 16 Mar 2022 23:37:00 -0500</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using RDMA CM</title>
+      <link>/2022-03-16/using-rdma-cm/</link>
+      <pubDate>Wed, 16 Mar 2022 23:37:00 -0500</pubDate>
+      
+      <guid>/2022-03-16/using-rdma-cm/</guid>
+      <description>Years before, I posted how to use libibverbs for RDMA communication.</description>
+    </item>
+    
     <item>
       <title>Implementing Basic RPC with C&#43;&#43;20</title>
       <link>/2022-03-12/implementing-basic-rpc-with-c-20/</link>

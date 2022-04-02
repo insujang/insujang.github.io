@@ -5,7 +5,42 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2022-03-12T10:40:00-05:00</lastmod>
+    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/linux/</loc>
+    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/rdma/</loc>
+    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/2022-03-16/using-rdma-cm/</loc>
+    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
   </url>
   
   
@@ -25,13 +60,6 @@
   
   
   <url>
-    <loc>/posts/</loc>
-    <lastmod>2022-03-12T10:40:00-05:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>/tags/rpc/</loc>
     <lastmod>2022-03-12T10:40:00-05:00</lastmod>
   </url>
@@ -40,13 +68,6 @@
   
   <url>
     <loc>/tags/study/</loc>
-    <lastmod>2022-03-12T10:40:00-05:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2022-03-12T10:40:00-05:00</lastmod>
   </url>
   
@@ -96,13 +117,6 @@
   
   <url>
     <loc>/2021-05-03/libvirt-vm-network-accessibility/</loc>
-    <lastmod>2021-05-03T16:47:00+09:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/linux/</loc>
     <lastmod>2021-05-03T16:47:00+09:00</lastmod>
   </url>
   
@@ -327,13 +341,6 @@
   
   <url>
     <loc>/tags/mellanox/</loc>
-    <lastmod>2020-02-09T19:58:00+09:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/rdma/</loc>
     <lastmod>2020-02-09T19:58:00+09:00</lastmod>
   </url>
   
