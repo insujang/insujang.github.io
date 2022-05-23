@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: November 1, 2021}}
+\fancyfoot[R]{\footnotesize{Last updated: May 01, 2022}}
 
 
 \urlstyle{same}
@@ -71,7 +71,7 @@
   \vspace{-1pt}\item
     \begin{tabularx}{0.97\textwidth}[t]{X@{\hspace{20pt}}r}
       \textbf{#1} & #2 \\
-      \textit{\small#3} & \small #4 \\
+      \small#3 & \small #4 \\
     \end{tabularx}\vspace{-3pt}
 }
 
@@ -113,14 +113,14 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{Korea Advanced Institute of Science and Technology (KAIST)} & Daejeon, Republic of Korea \\
-        \textit{\small Master of Science in Computer Science (GPA: 3.98 / 4.30)} & \small Mar 2016 -- Feb 2018 \\
+        \textit{\small Master of Science in Computer Science} & \small Mar 2016 -- Feb 2018 \\
         \small Advisor: Dr. Jaehyuk Huh  \\
         % \multicolumn{2}{X}{\small Thesis: Secure I/O Architecture for Isolated Heterogeneous Computing with Hardware Assisted Trusted Execution Environment} \\
     \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{Sungkyunkwan University (SKKU)} & Seoul, Republic of Korea \\
-        \textit{\small Bachelor of Science in Computer Engineering (GPA: 4.24 / 4.50)} & \small Mar 2011 -- Feb 2016 \\
+        \textit{\small Bachelor of Science in Computer Engineering} & \small Mar 2011 -- Feb 2016 \\
     \end{tabularx}\vspace{-5pt}
   \resumeSubHeadingListEnd
 
@@ -134,17 +134,23 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Research Assistant}{}
-    {Computer Architecture and Systems Lab, KAIST (Advisor: Dr. Youngjin Kwon)}{Jan 2020 -- Jul 2020}
+    \resumeSubheading{Graduate Student Research Assistant (GSRA)}{University of Michigan}
+    {Studing an efficient system architecture for distributed deep learning training.}{Sep 2021 -- Present}
+    
+    \resumeSubheading{Research Assistant}{KAIST}
+    {Implemented Hyperloop to use it as a baseline of LineFS, wihch offloads replicated transaction into Infiniband adaptors.
+    Studied Infiniband RDMA architecture and witnessed the benefits of offloading. LineFS paper has been published to SOSP21 and won the best paper award.}{Jan 2020 -- Jul 2020}
 
-    \resumeSubheading{Graduate Research Assistant}{}
-    {Computer Architecture and Systems Lab, KAIST (Advisor: Dr. Jaehyuk Huh)}{Mar 2016 -- Feb 2018}
+    \resumeSubheading{Graduate Research Assistant}{KAIST}
+    {Designed a HW-SW codesigned architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
+    and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.
+    HIX paper has been published to ASPLOS19.}{Mar 2016 -- Feb 2018}
 
-    \resumeSubheading{Undergraduate Research Assistant}{}
-    {Networking Lab, Sungkyunkwan University (Advisor: Dr. Hyunseung Choo)}{May 2014 -- Jul 2015}
+    \resumeSubheading{Undergraduate Research Assistant}{SKKU}
+    {Designed and implemented an inaudible communication system that can be implemented with commodity smartphones.}{May 2014 -- Jul 2015}
 
-    \resumeSubheading{Undergraduate Research Asssitant}{}
-    {M2M Lab, Purdue University (Advisor: Dr. Eric T. Matson)}{Jul 2014 -- Aug 2014}
+    \resumeSubheading{Undergraduate Research Asssitant}{Purdue University}
+    {Designed and implemented a HARMS (Human, Agent, Robot, Machine, Sensor) based collective robot system.}{Jul 2014 -- Aug 2014}
 
     % \resumeSubheading
     %   {Computer Architecture and Systems Lab, KAIST}{Daejeon, Republic of Korea}
@@ -177,11 +183,11 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
   \resumeSubHeadingListEnd
 
 %-----------PATENTS-----------------
-\section{Patents}
-\begin{enumerate}[leftmargin=*]
-  \item \small \textbf{Insu Jang}, Taehoon Kim, and Jaehyuk Huh. \textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''} \textit{Republic of Korea Patent No. 10-2105760}. Filed June 19, 2018, Issued December 30, 2019.
-  \item \small \textbf{Insu Jang}, Songhee Ryu, Gyuhyeon Jeon, Hyun Lee, Myoungbeom Chung, and Hyunseung Choo. \textbf{``Data Communication Method using Inaudible Frequency Band.''} \textit{Republic of Korea Patent No. 10-1560798}. Filed February 23, 2015, Issued October 16, 2015.
-\end{enumerate}
+% \section{Patents}
+% \begin{enumerate}[leftmargin=*]
+%   \item \small \textbf{Insu Jang}, Taehoon Kim, and Jaehyuk Huh. \textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''} \textit{Republic of Korea Patent No. 10-2105760}. Filed June 19, 2018, Issued December 30, 2019.
+%   \item \small \textbf{Insu Jang}, Songhee Ryu, Gyuhyeon Jeon, Hyun Lee, Myoungbeom Chung, and Hyunseung Choo. \textbf{``Data Communication Method using Inaudible Frequency Band.''} \textit{Republic of Korea Patent No. 10-1560798}. Filed February 23, 2015, Issued October 16, 2015.
+% \end{enumerate}
 
 %-----------WORK EXPERIENCE-----------------
 \section{Work Experience}
@@ -264,15 +270,16 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %--------PROGRAMMING SKILLS------------
 \section{Technical Skills}
  \resumeSubHeadingListStart
-  \resumeItem{Languages}{C, C++14, Python, Go, Markdown, \LaTeX}
+  \resumeItem{Languages}{C, C++20, Python, Go, Markdown, \LaTeX}
   \resumeItem{Frameworks}{CUDA, Intel SGX, Kubernetes, RDMA, Android, Ceph, Linux, QEMU, KVM}
  \resumeSubHeadingListEnd
 
 \section{References}
-  \resumeSubHeadingListStart
-    \resumeItem{Jaehyuk Huh}{Professor, KAIST. jhhuh@kaist.ac.kr}
-    \resumeItem{Youngjin Kwon}{Assistant Professor, KAIST. yjkwon@kaist.ac.kr}
-    \resumeItem{Mosharaf Chowdhury}{Morris Wellman Assistant Professor, University of Michigan. mosharaf@umich.edu}
-  \resumeSubHeadingListEnd
+Available upon request.
+  % \resumeSubHeadingListStart
+  %   \resumeItem{Jaehyuk Huh}{Professor, KAIST. jhhuh@kaist.ac.kr}
+  %   \resumeItem{Youngjin Kwon}{Assistant Professor, KAIST. yjkwon@kaist.ac.kr}
+  %   \resumeItem{Mosharaf Chowdhury}{Morris Wellman Assistant Professor, University of Michigan. mosharaf@umich.edu}
+  % \resumeSubHeadingListEnd
 
 \end{document}
