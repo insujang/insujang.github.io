@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Parallelism in Distributed Deep Learning | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
+
+<meta name="description"
+  content="Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Parallelism in Distributed Deep Learning",
+      "item":"/2022-06-11/parallelism-in-distributed-deep-learning/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2022-06-11/parallelism-in-distributed-deep-learning/"
+    },
+    "headline": "Parallelism in Distributed Deep Learning | Better Tomorrow with Computer Science","datePublished": "2022-06-11T19:33:00-04:00",
+    "dateModified": "2022-06-11T19:33:00-04:00",
+    "wordCount":  1262 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning."
+}
+</script><meta property="og:title" content="Parallelism in Distributed Deep Learning | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2022-06-11/parallelism-in-distributed-deep-learning/" />
+
+
+
+
+<meta property="og:description" content="Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2022-06-11T19:33:00-04:00" />
+
+
+<meta property="article:modified_time" content="2022-06-11T19:33:00-04:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="dl" />
+
+<meta property="article:tag" content="distributed" />
+
+<meta property="article:tag" content="parallelism" />
+
+
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Parallelism in Distributed Deep Learning</h1>
+    <div class="mr-6 my-2">
+    <span>Jun 11, 2022</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning.
+Since mid 2010, people have been thinking about accelerating deep learning with scale-out, and distributd deep learning has been introduced.
+<a href="https://www.cs.cmu.edu/~feixia/files/ps.pdf">Parameter server</a> is one of the well-known architecture for distributed deep learning.</p>
+<p>Recent days, many parallelization mechanisms, the way of distributing computation to multiple workers, have been introduced.
+First one was to split batches into several microbatches and distributed it, namely <em>data parallelism</em>, which the parameter server architecture is for. But there are more parallelisms that are being used: tensor parallelism, and (pipeline) model parallelism.</p>
+<p>This post introduces such three types of parallelism: <strong>data parallelism, tensor parallelism, and pipeline parallelism</strong>.
+For clear understanding, I use the following terms across the post:</p>
+<ul>
+<li>Parameters: model layer&rsquo;s weights.</li>
+<li>Output: results of forward pass.</li>
+<li>Gradients: results of backward propagation.</li>
+</ul>
+<figure><img src="/assets/images/220611/weight.png"
+         alt="image"/><figcaption>
+            <p>Simple neural network layer example. <a href="https://deepai.org/machine-learning-glossary-and-terms/weight-artificial-neural-network">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<h1 id="data-parallelism">Data Parallelism</h1>
+<p>Data parallelism refers to parallelism that slices a big batch into several microbatches, and distributed it into the workers.</p>
+<p>We have to increase batch size to increase accelerator utilization, however, it might not fit into accelerator&rsquo;s memory due to large amount of inputs and computed outputs.
+Data parallelism is based on this observation; by slicing batch by N, each accelerator would only handles 1/N inputs and only generates 1/N outputs.</p>
+<ul>
+<li>With data parallelism, <strong>parameters (weight)</strong> are replicated to all accelerators, and all of them performs the same computation.</li>
+<li>If training is done with synchronous stochastic gradient (SGD), backpropagation results or gradients should be aggregated and parameters should be updated. We can use <strong>parameter server architecture</strong>, or recently introduced <strong>all-reduce</strong> by Baidu can also be used.</li>
+<li>If total batch size (or global batch size) is too large, it may affect the convergence rate <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Hence, data parallelism cannot be used for infinite scale-out.</li>
+</ul>
+<h2 id="parameter-server">Parameter Server</h2>
+<figure><img src="/assets/images/220611/parameter_server.png"
+         alt="image"/><figcaption>
+            <p>An example of parameter server architecture. A centralized parameter server takes gradients, updates parameters, and distributes them to workers. <a href="https://proceedings.neurips.cc/paper/2012/file/6aca97005c68f1206823815f66102863-Paper.pdf">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Parameter server is developed by Google and introduced in their DistBelief paper<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> published in NIPS 2012.
+It is a very famous architecture for data parallelism.</p>
+<h2 id="all-reduce">All-Reduce</h2>
+<figure><img src="/assets/images/220611/allreduce.png"
+         alt="image"/><figcaption>
+            <p>All Reduce operation. <a href="https://tech.preferred.jp/en/blog/technologies-behind-distributed-deep-learning-allreduce/">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>As the number of parameters grow, parameter server becomes bottleneck, making high performance accelerators under-utilized.
+Baidu brung ring-based all-reduce algorithm into distributed machine learning area; such collective communication came from MPI field<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
+The idea is to perform updates without using centralized server, by communicating directly with each other accelerators.</p>
+<blockquote>
+<p>Refer to the reference blog <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> for more detail.</p>
+</blockquote>
+<p>All-reduce operation can be decomposed and implemented with reduce-scatter and all-gather, other MPI techniques in HPC field <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. <a href="https://developer.nvidia.com/nccl">NVIDIA Collective Communication Library (NCCL)</a> includes this version of implementation, in a ring-based manner.</p>
+<p>Collective communication algorithms have been analyzed for decades, and this paper is one of those <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> (Section 2.3).
+For instance, the cost of operation can be modeled by $A \times \alpha + B \times N \beta + C \times N \gamma$, where $\alpha$ is the time for a message be transferred (imagine sending a 0 byte message; it should be transferred through some medium), $\beta$ is the time to process one byte of data, and $\gamma$ is the cost to perform the reduction operation per byte, and N is the size of message. Each factor is called latency ($A \times \alpha$), bandwidth ($B \times N \beta$), and computation factor ($C \times N \gamma$), respectively.</p>
+<p>For ring based all-reduce operation, factors are as follows:</p>
+<ul>
+<li>latency factor: $2(p-1) \alpha$</li>
+<li>bandwidth factor: $2 \frac{p-1}{p}N \beta$</li>
+<li>computation factor: $\frac{p-1}{p}N \gamma$</li>
+</ul>
+<p>where $p$ is the number of processes.</p>
+<p><strong>Explaination</strong>: if we have $p$ numer of processes, each data should be partitioned into $p$ chunks, the size of each of which is $\frac{N}{p}$, and $p-1$ data exchange should happen. There are two (send and receive) messages involved for each data exchange, so latency factor is $2(p-1)$.</p>
+<p>Data is transferred using a logical ring communication pattern, namely $p_0 \rightarrow p_1 \rightarrow &hellip; \rightarrow p_{p-1} \rightarrow p_p$. The reduce-scatter operation performs such logical ring communication pattern in $p-1$ iterations, making bandwidth factor $(p-1) \times \frac{N}{p} = \frac{p-1}{p}N$ for reduce-scatter operation.
+Following all-gather operation also transfers data across the logical ring, the amount of data to be transferred is the same with reduce-scatter. Hence, overall bandwidth factor becomes $2 \times \frac{p-1}{p}N$.</p>
+<h1 id="tensor-parallelism-model-parallelism">Tensor Parallelism <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></h1>
+<p>Tensor parallelism and pipeline model parallelism can be grouped as model parallelism, since it slices models into smaller chunks.
+While pipeline model parallelism distributes layers in a model, tensor parallelism slices each layer and distributes the chunks into multiple accelerators.</p>
+<blockquote>
+<p>It is also called intra-layer model parallelism, because it is a type of model parallelism within a layer by slicing parameters.</p>
+</blockquote>
+<figure><img src="/assets/images/220611/tensor_parallel.png"
+         alt="image"/><figcaption>
+            <p>Illustration of tensor model parallel partition from Megatron-LM. <a href="https://developer.nvidia.com/blog/scaling-language-model-training-to-a-trillion-parameters-using-megatron/">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Megatron-LM is an example paper that describes such tensor parallelism. You can see that a transformer layer has been sliced to two half chunk with tensor partitioning, which can be distributed to two accelerators.</p>
+<ul>
+<li>Tensor parallelism could be a good alternative to data parallelism to avoid inefficient large batch size problem, and can be used together.</li>
+<li>Unlike data parallelism that all accelerators need to have replicated parameters, parameters are distributed along with input in tensor parallelism.</li>
+<li>Tensor parallelism and data parallelism can be grouped as <em>intra-layer parallelism</em>, since they slice a tensor into multiple chunks, without affecting other layers. Imagine image classification training, whether the input tensor is 4D (width * height * color depth * batch, e.g. for ResNet: 224 * 224 * 3 * 1024 if batch is 1024). Slicing batch dimension is data parallelism (e.g. each of 4 accelerator handles 256 batches), and slicing width or height dimension is tensor parallelism (e.g. each of 4 accelerator handles 112 * 112 * 3 input).</li>
+</ul>
+<h1 id="pipeline-model-parallelism-model-parallelism">Pipeline Model Parallelism <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></h1>
+<p>Pipeline parallelism has been introduced by Google to reduce underutilization from layer model parallelism.</p>
+<figure><img src="/assets/images/220611/model_parallel.png"
+         alt="image"/><figcaption>
+            <p>Illustration of pipeline model parallelism from GPipe. <a href="https://ai.googleblog.com/2019/03/introducing-gpipe-open-source-library.html">[Source]</a></p>
+        </figcaption>
+</figure>
+
+<p>Model parallelism means that, a model is splitted into several groups of layers (or stages), and each accelerator handles one stage (Figure (b)).
+It effectively reduces memory usage of each accelerator, however, it has critical drawback: all but one accelerators are idle at a time.
+GPipe mitigates this underutilization issue by adopting pipeline; it divides a batch into smaller micro-batches (e.g. $F_{0,0}, F_{0,1}$), and perform model parallelism independently for each micro-batch input.</p>
+<p>The underutilized area is called <em>bubble</em>, and more recent works for less bubble include <a href="https://dl.acm.org/doi/abs/10.1145/3341301.3359646">Pipedream (SOSP19): use asynchronous gradient update</a>, <a href="https://dl.acm.org/doi/abs/10.1145/3437801.3441593">DAPPLE (PPoPP21)</a>, and <a href="https://dl.acm.org/doi/abs/10.1145/3458817.3476145">Chiemra (SC21): adopt replicated bidirectional pipeline</a> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> <sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup>.</p>
+<ul>
+<li>Pipeline parallelism, unlike the former two, is inter-layer parallelism; it distributes whole layers into multiple accelerators.</li>
+<li>For this reason, <a href="https://arxiv.org/abs/2201.12023">Alpa (OSDI22)</a> re-organize parallelism into <em>intra-OP parallelism (data+tensor)</em> and <em>inter-OP parallelism (pipeline)</em> <sup id="fnref:10"><a href="#fn:10" class="footnote-ref" role="doc-noteref">10</a></sup>.</li>
+<li>By its nature, pipeline parallelism cannot achieve 100% utilization. But <a href="https://arxiv.org/abs/2201.11990">3d parallelism</a> formulates that 81% and 90% utilization can be achieve with the number of micro-batches 4x or 8x the number of pipeline stages <sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup>.</li>
+</ul>
+<h1 id="hybrid-parallelism">Hybrid Parallelism</h1>
+<p>Recently, more papers are focusing on <em>combining</em> all of these parallelism, namely hybrid parallelism, to support bigger training model more efficiently.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.semanticscholar.org/paper/The-general-inefficiency-of-batch-training-for-Wilson-Martinez/671a4a7caa303f6f87b8ac3941e0175745f9a861?p2df">The General Inefficiency of Batch Training for Gradient Descent Learning</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://proceedings.neurips.cc/paper/2012/hash/6aca97005c68f1206823815f66102863-Abstract.html">Large Scale Distributed Deep Networks</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://andrew.gibiansky.com/blog/machine-learning/baidu-allreduce/">Brining HPC Techniques to Deep Learning</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://proceedings.mlsys.org/paper/2019/hash/9b8619251a19057cff70779273e95aa6-Abstract.html">BlueConnect: Decomposing All-Reduce for Deep LEarning on Heterogeneous Network Hierarchy</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/cpe.5574?casa_token=pWlDZdB3u0AAAAAA%3Ao9nXb7LiGuPUA_Wras9tMk7sAtyQJStIb33wctpLe6LLUY1k8BVsJAJl9DtQUBaF7dga1N3IUf9JtvY6">Efficient MPI-AllReduce for Large-Scale Deep Learning on GPU-Clusters</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://huggingface.co/docs/transformers/parallelism#parallelism-overview">Hugging Face: Model Parallelism</a>
+sch&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://dl.acm.org/doi/abs/10.1145/3341301.3359646">PipeDream: Generalized Pipeline Parallelism for DNN Training</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p><a href="https://dl.acm.org/doi/abs/10.1145/3437801.3441593">DAPPLE: A Pipelined Data Parallel Approach for Training Large Models</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9" role="doc-endnote">
+<p><a href="https://dl.acm.org/doi/abs/10.1145/3458817.3476145">Chimera: Efficiently Training Large-Scale Neural Networks with Bidirectional Pipelines</a>&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:10" role="doc-endnote">
+<p><a href="https://arxiv.org/abs/2201.12023">Alpa: Automating Inter- and Intra-Operator Parallelism for Distributed Deep Learning</a>&#160;<a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:11" role="doc-endnote">
+<p><a href="https://arxiv.org/abs/2201.11990">Using DeepSpeed and Megatron to Train Megatron-Turing NLG 530B, A Large-Scale Generative Language Model</a>&#160;<a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/dl/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#dl</a>
+    
+    <a href="/tags/distributed/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#distributed</a>
+    
+    <a href="/tags/parallelism/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#parallelism</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2022-03-16/using-rdma-cm/" class="block">Using RDMA CM</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>

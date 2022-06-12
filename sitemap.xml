@@ -5,7 +5,49 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/distributed/</loc>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/dl/</loc>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/parallelism/</loc>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/2022-06-11/parallelism-in-distributed-deep-learning/</loc>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
   </url>
   
   
@@ -18,21 +60,7 @@
   
   
   <url>
-    <loc>/posts/</loc>
-    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>/tags/rdma/</loc>
-    <lastmod>2022-03-16T23:37:00-05:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2022-03-16T23:37:00-05:00</lastmod>
   </url>
   
