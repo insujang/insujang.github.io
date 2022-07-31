@@ -84,7 +84,7 @@
     },
     "headline": "Analysis of Transformer Model | Better Tomorrow with Computer Science","datePublished": "2022-07-30T23:48:00-04:00",
     "dateModified": "2022-07-30T23:48:00-04:00",
-    "wordCount":  1207 ,
+    "wordCount":  1535 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -254,9 +254,9 @@ Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" r
 <li>$h$: hidden dimension size. (GPT-2 medium: 1024)</li>
 <li>$L$: number of transformer layers. (GPT-2 medium: 24)</li>
 <li>$s$: sequence length. (GPT-2 medium: 1024)</li>
-<li>$v$: vocabulary size. (GPT-2 medium: 50,257)
-The other variables (pipeline parallel size and tensor parallel size) are not used here.</li>
+<li>$v$: vocabulary size. (GPT-2 medium: 50,257)</li>
 </ul>
+<p>The other variables (pipeline parallel size and tensor parallel size) are not used here.</p>
 <h1 id="memory-consumption">Memory Consumption</h1>
 <p>Memory consumption in training can be divided into the following four types:</p>
 <ul>
@@ -274,9 +274,9 @@ The other variables (pipeline parallel size and tensor parallel size) are not us
 <li>To calculate Q, K, and V, $W^Q, W^K, W^V$ are used. Each $W$ has dimension of [$h$, $h$], Total number of parameters is $3h^2L$. Note that this linear projection calculates all Q, K, and V for $a$ attention heads at once.</li>
 <li>The result of multiple attentions are concatenated and fed into linear projection (and dropout) before going into MLP. Total number of parameters for linear here is $h^2L$ ([$h$, $h$]). <!-- See [3D illustrated transformer layer](https://peltarion.com/blog/data-science/illustration-3d-bert) why this linear projection has such dimension. --></li>
 <li>MLP accepts the outputs from attention ($h$), casts them to $4h$ (here, the linear projection has parameters of [$h, 4h$]), applies GeLU, casts them back to $h$ (this linear projectionh as parameters of [$4h, h$]). In total, we have $8h^2L$ parameters.</li>
-<li>Word embeddings and positional encoding: The input of the entire model is calculated from word embeddings and position encoding. Numbers of parameters are $sv$ and $sh$, respectively. See <a href="https://jalammar.github.io/illustrated-gpt2/">Illustrated GPT-2</a> for more details.</li>
+<li>Word embeddings and positional encoding: The input of the entire model is calculated from word embeddings and position encoding. Numbers of parameters are $vh$ and $sh$, respectively. See <a href="https://jalammar.github.io/illustrated-gpt2/">Illustrated GPT-2</a> for more details.</li>
 </ul>
-<p>Total # parameters: $Lh^2(3 + 1 + 8) + sv + sh$. If we focus on each layer, it is $12h^2$.</p>
+<p>Total # parameters: $Lh^2(3 + 1 + 8) + vh + sh$. If we focus on each layer, it is $12h^2$.</p>
 <p>For instance, GPT-2 medium: $24 * 12 * 1024^2 + 50257 * 1024 + 1024^2 = 354,501,632$ (~345M parameters. The calculation is bigger than stated by OpenAI, like <a href="https://jalammar.github.io/illustrated-gpt2/#part-3-beyond-language-modeling">the author of the post</a> said.)</p>
 <h2 id="activation">Activation</h2>
 <p>The paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> mostly focus on reducing memory usage of activation. I borrow their analysis here (page 4).</p>
@@ -302,9 +302,9 @@ The other variables (pipeline parallel size and tensor parallel size) are not us
 <blockquote>
 <p>Gradient is stored in FP16 as well, but the optimizer keeps an FP32 copy of the parameters and FP32 copy of all the other optimizer states, according to ZeRO <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
 </blockquote>
-<p>The dimension of gradients is the same with that of the corresponding parameters. Hence, $12h^2$ per layer, or $12Lh^2+sv+sh$ for the entire model.</p>
+<p>The dimension of gradients is the same with that of the corresponding parameters. Hence, $12h^2$ per layer, or $12Lh^2+vh+sh$ for the entire model.</p>
 <p>For optimizer state, Adam, for example, holds an FP32 copy of the parameters, momentum, and variance (assuming the number of parameter is $P$, memory requirement is $4P, 4P, 4P$, respectively).</p>
-<p>Total gradient memory consumption: $2 * (12Lh^2 + s(v+h))$, and for optimizer state: $12 * (12Lh^2 + s(v+h))$.</p>
+<p>Total gradient memory consumption: $2 * (12Lh^2 + (s+v)h)$, and for optimizer state: $12 * (12Lh^2 + (s+v)h)$.</p>
 <p>For instance, GPT-2 medium: 709,003,264 bytes (676MB) for gradient, 4,254,019,584 bytes (3.96GB) for optimizer state.</p>
 <h2 id="total-memory-consumption">Total Memory Consumption</h2>
 <p>If not considering activation recomputation, peak memory consumption for GPT-2 medium with 8 microbatch would be roughly:</p>
@@ -313,23 +313,41 @@ The other variables (pipeline parallel size and tensor parallel size) are not us
 [0] NVIDIA A40       | 36'C,   0 % | 29621 / 46068 MB |
 </code></pre>
 <p>Note that actual running includes more parameters (biases), input data, kernel, internal fragmented allocated but unused buffer, etc. Tested with <a href="https://github.com/nvidia/megatron-lm">Megatron-LM code</a> (FP16, Adam, 8 microbatch size, GPT-2 medium).</p>
+<h1 id="layer-dimension">Layer Dimension</h1>
+<ul>
+<li>Model input: [$s, v, b$]. Multiplied by word embedding ([$v, h$]) (and add the position encoding [$s, h$]) to create a transformer layer input [$s, h, b$].</li>
+<li>Transformer layer input: [$s, h, b$].</li>
+<li>Q, K, and V: layer input [$s, h, b$] multiplied by weight [$h, h$] for each batch, respectively. each has [$s, h, b$]. Note that they are broken down to $a$ Q, K, and Vs, each of which has [$s, \frac{h}{a}, b$] (for GPT-2, $\frac{h}{a}$ is always 64).</li>
+<li>In self-attention, $QK^T$ has [$s, s, b$]. There are $a$ $QK^T$, so in total number of elements is $as^2b$.</li>
+<li>Softmax and dropout do not change dimension; same to that of $QK^T$: [$s, s, b$].</li>
+<li>The dimension of the attention output after multiplying V ([$s, h, b$]) on $softmax(QK^T)$ ($[s, s, b]$) is [$s, h, b$].</li>
+<li>Post attention linear projection multiplies its weight [$h, h, b$] without dimension change; the output dimension is [$s, h, b$].</li>
+<li>In MLP, linear projection casts the hidden size of the self attention output from $h$ to $4h$ by multiplying its weight of [$h, 4h, b$]. The output dimension is [$s, 4h, b$].</li>
+<li>GeLU is a element-wise operation, so the same with the input: [$s, 4h, b$].</li>
+<li>The next linear reduces the input height from $4h$ to $h$ by multiplying its weight of [$4h, h, b$]. The output dimension is [$s, h, b$].</li>
+<li>Layer normalization does not change the dimension, which makes the layer output dimension of [$s, h, b$].</li>
+</ul>
 <h1 id="flops-for-computing">FLOPs for Computing</h1>
 <p>The paper for activation optimization <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> also analyzed FLOPs calculation in Appendix A. Following their analysis, I also only consider the matrix multiplications (GEMMs: General Matrix Multiply).</p>
+<blockquote>
+<p>I don&rsquo;t know why, but the paper authors <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> multiply every number of operations by 2. Here my calculations are half of theirs.</p>
+</blockquote>
 <p>(1) for the attention block, main contributors to operations are:</p>
 <ul>
-<li><strong>key, query, and value transformation</strong>: $6sbh^2$</li>
-<li><strong>attention matrix computation ($\frac{QK^T}{\sqrt{d_k}}$)</strong>: $2s^2bh$</li>
-<li><strong>attention over values (multiply attention matrix by V to calculate $attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$)</strong>: $2s^2bh$</li>
-<li><strong>post-attention linear projection</strong>: $2sbh^2$</li>
+<li><strong>key, query, and value transformation</strong>: $3sbh^2$ ([$s, h$] * [$h, h$] * b each)</li>
+<li><strong>attention matrix computation ($\frac{QK^T}{\sqrt{d_k}}$)</strong>: $s^2bh$ ([$s, h$] * [$h, s$] * b)</li>
+<li><strong>attention over values (multiply attention matrix by V to calculate $attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$)</strong>: $s^2bh$ ([$s, s$] * [$s, h$] * b)</li>
+<li><strong>post-attention linear projection</strong>: $sbh^2$ ([$s, h$] * [$h, h$] * b)</li>
 </ul>
+<p><strong>Total computation in attention</strong>: $4sbh^2 + 2s^2bh$</p>
 <p>(2) for MLP (feed-forward):</p>
 <ul>
-<li><strong>linear projection casting hidden size $h$ to $4h$ and back to $h$</strong>: $16sbh^2$</li>
+<li><strong>linear projection casting hidden size $h$ to $4h$ and back to $h$</strong>: $8sbh^2$ ([$s, h$] * [$h, 4h$] * b and [$s, 4h$] * [$4h, h$] * b)</li>
 </ul>
-<p>For each transformer layer with (1)+(2): $24sbh^2+4s^2bh$ for forward pass, and double the number of FLOPs for back-propagation (to calculate the gradients with respect to both input and weight tensors).</p>
-<p><strong>Total FLOPs</strong>: $3*4sbh(6h+s)$.</p>
-<p>For instance, GPT-2 medium with 8 microbatches: 721,554,505,728 FLOPs (=672MFLOPs) for one iteration.
-Considering the theoretical peak performance for a NVIDIA A40 GPU is 37.42  TFLOPS/s, it would take ~17ms. Of course, actual computing requires data copy across memory hierarcy, and peak performance cannot be achieved because tensor cores are not always used, CUDA kernel launch delay, etc. Actual performance in the test system shows:</p>
+<p>For each transformer layer with (1)+(2): $12sbh^2+2s^2bh$ for forward pass, and double the number of FLOPs for back-propagation (to calculate the gradients with respect to both input and weight tensors).</p>
+<p><strong>Total FLOPs per layer</strong>: $3b*(12sh^2+2s^2h)$.</p>
+<p>For instance, GPT-2 medium with 8 microbatches: 24 * 360,777,252,864 FLOPs (=7.875 GFLOPs) for one iteration.
+Considering the theoretical peak performance for a NVIDIA A40 GPU is 37.42 TFLOPS/s, it would take ~0.2ms. Of course, actual computing requires data copy across memory hierarcy, and peak performance cannot be achieved because tensor cores are not always used, CUDA kernel launch delay, data transfer, etc. Actual performance in the test system shows:</p>
 <pre><code>iteration      100/     100 | consumed samples:          800 | elapsed time per iteration (ms): 646.3
 time (ms) | forward-compute: 255.92 | backward-compute: 280.90 | ...
 </code></pre>
