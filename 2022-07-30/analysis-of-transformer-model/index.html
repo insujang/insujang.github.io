@@ -84,7 +84,7 @@
     },
     "headline": "Analysis of Transformer Model | Better Tomorrow with Computer Science","datePublished": "2022-07-30T23:48:00-04:00",
     "dateModified": "2022-07-30T23:48:00-04:00",
-    "wordCount":  1535 ,
+    "wordCount":  1555 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -235,7 +235,7 @@
 <p>Many illustrations and analysis are based on the following papers <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
 </blockquote>
 <h1 id="transformer-based-model">Transformer-based Model</h1>
-<p>Since Google announed attention and transformer models in 2019 <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, MLP and image classification models are rapidly adopting transformer layers.
+<p>Since Google announed attention and transformer models in 2017 <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, MLP and image classification models are rapidly adopting transformer layers.
 Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, basic transformer architecture looks like this:</p>
 <figure><img src="/assets/images/220730/transformer.png"
          alt="image"/><figcaption>
@@ -333,12 +333,13 @@ Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" r
 <p>I don&rsquo;t know why, but the paper authors <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> multiply every number of operations by 2. Here my calculations are half of theirs.</p>
 </blockquote>
 <p>(1) for the attention block, main contributors to operations are:</p>
-<ul>
+<ol>
 <li><strong>key, query, and value transformation</strong>: $3sbh^2$ ([$s, h$] * [$h, h$] * b each)</li>
 <li><strong>attention matrix computation ($\frac{QK^T}{\sqrt{d_k}}$)</strong>: $s^2bh$ ([$s, h$] * [$h, s$] * b)</li>
 <li><strong>attention over values (multiply attention matrix by V to calculate $attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$)</strong>: $s^2bh$ ([$s, s$] * [$s, h$] * b)</li>
 <li><strong>post-attention linear projection</strong>: $sbh^2$ ([$s, h$] * [$h, h$] * b)</li>
-</ul>
+</ol>
+<p>Note that 1, 2, 3 can be broken down to $a$ computations since multi-head attentions are independent to each other.</p>
 <p><strong>Total computation in attention</strong>: $4sbh^2 + 2s^2bh$</p>
 <p>(2) for MLP (feed-forward):</p>
 <ul>
