@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Sat, 11 Jun 2022 19:33:00 -0400</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 30 Jul 2022 23:48:00 -0400</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analysis of Transformer Model</title>
+      <link>/2022-07-30/analysis-of-transformer-model/</link>
+      <pubDate>Sat, 30 Jul 2022 23:48:00 -0400</pubDate>
+      
+      <guid>/2022-07-30/analysis-of-transformer-model/</guid>
+      <description>This post analyzes transformer models, specifically memory and computation overhead.</description>
+    </item>
+    
     <item>
       <title>Parallelism in Distributed Deep Learning</title>
       <link>/2022-06-11/parallelism-in-distributed-deep-learning/</link>

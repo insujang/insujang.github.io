@@ -4,21 +4,42 @@
   
   
   <url>
-    <loc>/</loc>
-    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+    <loc>/2022-07-30/analysis-of-transformer-model/</loc>
+    <lastmod>2022-07-30T23:48:00-04:00</lastmod>
   </url>
   
   
   
   <url>
-    <loc>/tags/distributed/</loc>
-    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
+    <loc>/</loc>
+    <lastmod>2022-07-30T23:48:00-04:00</lastmod>
   </url>
   
   
   
   <url>
     <loc>/tags/dl/</loc>
+    <lastmod>2022-07-30T23:48:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2022-07-30T23:48:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2022-07-30T23:48:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/distributed/</loc>
     <lastmod>2022-06-11T19:33:00-04:00</lastmod>
   </url>
   
@@ -33,20 +54,6 @@
   
   <url>
     <loc>/2022-06-11/parallelism-in-distributed-deep-learning/</loc>
-    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2022-06-11T19:33:00-04:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2022-06-11T19:33:00-04:00</lastmod>
   </url>
   

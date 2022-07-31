@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang='en' ><meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+<title>Analysis of Transformer Model | Better Tomorrow with Computer Science</title>
+<link rel="stylesheet" href="/css/eureka.min.css">
+<script defer src="/js/eureka.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
+   media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
+   crossorigin>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
+   crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
+   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
+  onload="this.media='all';this.onload=null" crossorigin>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
+  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+    });
+  });
+</script>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'UA-158110335-1');
+</script>
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
+
+<meta name="description"
+  content="This post analyzes transformer models, specifically memory and computation overhead.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Analysis of Transformer Model",
+      "item":"/2022-07-30/analysis-of-transformer-model/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/2022-07-30/analysis-of-transformer-model/"
+    },
+    "headline": "Analysis of Transformer Model | Better Tomorrow with Computer Science","datePublished": "2022-07-30T23:48:00-04:00",
+    "dateModified": "2022-07-30T23:48:00-04:00",
+    "wordCount":  1207 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "Insu Jang",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/umich.png"
+        }
+        },
+    "description": "This post analyzes transformer models, specifically memory and computation overhead."
+}
+</script><meta property="og:title" content="Analysis of Transformer Model | Better Tomorrow with Computer Science" />
+<meta property="og:type" content="article" />
+
+
+<meta property="og:image" content="/umich.png">
+
+
+<meta property="og:url" content="/2022-07-30/analysis-of-transformer-model/" />
+
+
+
+
+<meta property="og:description" content="This post analyzes transformer models, specifically memory and computation overhead." />
+
+
+
+
+<meta property="og:locale" content="en" />
+
+
+
+
+<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2022-07-30T23:48:00-04:00" />
+
+
+<meta property="article:modified_time" content="2022-07-30T23:48:00-04:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="dl" />
+
+
+
+
+
+<meta property="og:see_also" content="/2022-06-11/parallelism-in-distributed-deep-learning/" />
+
+
+
+<body class="flex flex-col min-h-screen">
+  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
+    <div class="w-full max-w-screen-xl mx-auto"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap p-4">
+    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
+            <a href="/#about"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
+            <a href="/posts/"
+                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == 'Auto') {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'adjust')
+        element.firstElementChild.classList.add('fa-adjust')
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('Auto')
+        })
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-sun')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script></div>
+  </header>
+  <main class="flex-grow pt-16">
+      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+
+
+<div class="lg:pt-12"></div>
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
+    <h1 class="font-bold text-3xl text-primary-text">Analysis of Transformer Model</h1>
+    <div class="mr-6 my-2">
+    <span>Jul 30, 2022</span>
+</div>
+
+
+
+
+    
+    
+    
+
+    <div class="content">
+        <p>This post analyzes transformer models, specifically memory and computation overhead.</p>
+<p>Many transformer based models just explain themselves as a model with X-B parameters; I wanted to break it down and look into the model structure how they are stored and used in actual computing hardware.</p>
+<blockquote>
+<p>Many illustrations and analysis are based on the following papers <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+</blockquote>
+<h1 id="transformer-based-model">Transformer-based Model</h1>
+<p>Since Google announed attention and transformer models in 2019 <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, MLP and image classification models are rapidly adopting transformer layers.
+Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, basic transformer architecture looks like this:</p>
+<figure><img src="/assets/images/220730/transformer.png"
+         alt="image"/><figcaption>
+            <p>Transformer architecture.</p>
+        </figcaption>
+</figure>
+
+<blockquote>
+<p>MLP is the same with feed-forward layer in GPT. For more information about GPT specific illustration, refer to <a href="https://amaarora.github.io/2020/02/18/annotatedGPT2.html">this post</a>.</p>
+</blockquote>
+<p>For example, GPT-2 XL has 48 transformer layers, hence has 1.5B parameters <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. But how this number comes out? Which layers in the figure have parameters? And how many memory is actually required to train this model? This is the goal of the post.</p>
+<p>Following the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, I used the following variable names in the rest of the post:</p>
+<ul>
+<li>$a$: number of attention heads. (GPT-2 medium: 16)</li>
+<li>$b$: number of microbatch. (variable hyperparameter.)</li>
+<li>$h$: hidden dimension size. (GPT-2 medium: 1024)</li>
+<li>$L$: number of transformer layers. (GPT-2 medium: 24)</li>
+<li>$s$: sequence length. (GPT-2 medium: 1024)</li>
+<li>$v$: vocabulary size. (GPT-2 medium: 50,257)
+The other variables (pipeline parallel size and tensor parallel size) are not used here.</li>
+</ul>
+<h1 id="memory-consumption">Memory Consumption</h1>
+<p>Memory consumption in training can be divided into the following four types:</p>
+<ul>
+<li>model: model parameters (weights).</li>
+<li>activation: after doing forward pass, the result of computation is stored and reused in backpropagation to calculate weight gradient (Can be discarded and recomputed via activation recomputation, I ignore this technique here).</li>
+<li>gradient: calculated during backpropagation. Used to update model parameters.</li>
+<li>optimizer state: e.g. Adam optimizer uses internal states to keep gradient momentum. Optimizer state includes such optimizer-specific data.</li>
+</ul>
+<h2 id="model-parameters-or-weights">Model Parameters (or Weights)</h2>
+<blockquote>
+<p>Model parameters are stored in FP16 in mixed precision, so each parameter takes 2 bytes.</p>
+</blockquote>
+<p>From the figure, all linear projection layers have their parameters. I omitted biases and normalization for layers.</p>
+<ul>
+<li>To calculate Q, K, and V, $W^Q, W^K, W^V$ are used. Each $W$ has dimension of [$h$, $h$], Total number of parameters is $3h^2L$. Note that this linear projection calculates all Q, K, and V for $a$ attention heads at once.</li>
+<li>The result of multiple attentions are concatenated and fed into linear projection (and dropout) before going into MLP. Total number of parameters for linear here is $h^2L$ ([$h$, $h$]). <!-- See [3D illustrated transformer layer](https://peltarion.com/blog/data-science/illustration-3d-bert) why this linear projection has such dimension. --></li>
+<li>MLP accepts the outputs from attention ($h$), casts them to $4h$ (here, the linear projection has parameters of [$h, 4h$]), applies GeLU, casts them back to $h$ (this linear projectionh as parameters of [$4h, h$]). In total, we have $8h^2L$ parameters.</li>
+<li>Word embeddings and positional encoding: The input of the entire model is calculated from word embeddings and position encoding. Numbers of parameters are $sv$ and $sh$, respectively. See <a href="https://jalammar.github.io/illustrated-gpt2/">Illustrated GPT-2</a> for more details.</li>
+</ul>
+<p>Total # parameters: $Lh^2(3 + 1 + 8) + sv + sh$. If we focus on each layer, it is $12h^2$.</p>
+<p>For instance, GPT-2 medium: $24 * 12 * 1024^2 + 50257 * 1024 + 1024^2 = 354,501,632$ (~345M parameters. The calculation is bigger than stated by OpenAI, like <a href="https://jalammar.github.io/illustrated-gpt2/#part-3-beyond-language-modeling">the author of the post</a> said.)</p>
+<h2 id="activation">Activation</h2>
+<p>The paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> mostly focus on reducing memory usage of activation. I borrow their analysis here (page 4).</p>
+<blockquote>
+<ul>
+<li>Unlike model parameters, activation is proportional to the number of microbatch ($b$).</li>
+<li>Their activation analysis is per layer. Need to multiply by $L$.</li>
+<li>Their calculation is to get the amount of memory usage in <em>bytes</em>. For mask elements, only a byte per element is required, while others activations are stored in FP16 (2 bytes per element).</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>Q, K, and V matrix multiplies</strong>: only need to store shared input $2sbh$.</li>
+<li><strong>$QK^T$ matrix multiply</strong>: requires stotage of both Q and K with total size $4sbh$.</li>
+<li><strong>Softmax</strong>: softmax output with size $2as^2b$ is required for back-propagation.</li>
+<li><strong>Softmax dropout</strong>: only a mask with size $as^2b* is needed. (Note that they stated only a single byte per element is required for mask).</li>
+<li><strong>Attention over Values</strong>: need to store the dropout output ($2as^2b$) and V ($sbh$).</li>
+<li><strong>MLP</strong>: two linear layers and GeLU non-linarlity needs <em>their inputs</em> with $2sbh, 8sbh, 8sbh$, respectively, for back-propagation. dropout stores its mask with size $sbh$. Total: $19sbh$</li>
+<li><strong>Layer Norm</strong>: each layer norm stores its input with size $2sbh$ (total: $4sbh$).</li>
+</ul>
+<p>Activation memory per layer: $sbh(34+5\frac{as}{h})$</p>
+<p>For instance, GPT-2 medium with 8 microbatches: $1024 * 8 * 1024 * (34 + 5 * \frac{16 * 1024}{1024})$ = 912MB per layer. Considering that <strong>the entire</strong> model would only take 676MB, activation memory is so huge.</p>
+<h2 id="gradient-and-optimizer-state">Gradient and Optimizer State</h2>
+<blockquote>
+<p>Gradient is stored in FP16 as well, but the optimizer keeps an FP32 copy of the parameters and FP32 copy of all the other optimizer states, according to ZeRO <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+</blockquote>
+<p>The dimension of gradients is the same with that of the corresponding parameters. Hence, $12h^2$ per layer, or $12Lh^2+sv+sh$ for the entire model.</p>
+<p>For optimizer state, Adam, for example, holds an FP32 copy of the parameters, momentum, and variance (assuming the number of parameter is $P$, memory requirement is $4P, 4P, 4P$, respectively).</p>
+<p>Total gradient memory consumption: $2 * (12Lh^2 + s(v+h))$, and for optimizer state: $12 * (12Lh^2 + s(v+h))$.</p>
+<p>For instance, GPT-2 medium: 709,003,264 bytes (676MB) for gradient, 4,254,019,584 bytes (3.96GB) for optimizer state.</p>
+<h2 id="total-memory-consumption">Total Memory Consumption</h2>
+<p>If not considering activation recomputation, peak memory consumption for GPT-2 medium with 8 microbatch would be roughly:</p>
+<p>676MB (model parameters) + 21.375GB (activation) + 676MB (gradient) + 3.96GB (optimizer state) ~= 26.66GB</p>
+<pre><code>node00               Sun Jul 31 06:44:34 2022  510.60.02
+[0] NVIDIA A40       | 36'C,   0 % | 29621 / 46068 MB |
+</code></pre>
+<p>Note that actual running includes more parameters (biases), input data, kernel, internal fragmented allocated but unused buffer, etc. Tested with <a href="https://github.com/nvidia/megatron-lm">Megatron-LM code</a> (FP16, Adam, 8 microbatch size, GPT-2 medium).</p>
+<h1 id="flops-for-computing">FLOPs for Computing</h1>
+<p>The paper for activation optimization <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> also analyzed FLOPs calculation in Appendix A. Following their analysis, I also only consider the matrix multiplications (GEMMs: General Matrix Multiply).</p>
+<p>(1) for the attention block, main contributors to operations are:</p>
+<ul>
+<li><strong>key, query, and value transformation</strong>: $6sbh^2$</li>
+<li><strong>attention matrix computation ($\frac{QK^T}{\sqrt{d_k}}$)</strong>: $2s^2bh$</li>
+<li><strong>attention over values (multiply attention matrix by V to calculate $attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$)</strong>: $2s^2bh$</li>
+<li><strong>post-attention linear projection</strong>: $2sbh^2$</li>
+</ul>
+<p>(2) for MLP (feed-forward):</p>
+<ul>
+<li><strong>linear projection casting hidden size $h$ to $4h$ and back to $h$</strong>: $16sbh^2$</li>
+</ul>
+<p>For each transformer layer with (1)+(2): $24sbh^2+4s^2bh$ for forward pass, and double the number of FLOPs for back-propagation (to calculate the gradients with respect to both input and weight tensors).</p>
+<p><strong>Total FLOPs</strong>: $3*4sbh(6h+s)$.</p>
+<p>For instance, GPT-2 medium with 8 microbatches: 721,554,505,728 FLOPs (=672MFLOPs) for one iteration.
+Considering the theoretical peak performance for a NVIDIA A40 GPU is 37.42  TFLOPS/s, it would take ~17ms. Of course, actual computing requires data copy across memory hierarcy, and peak performance cannot be achieved because tensor cores are not always used, CUDA kernel launch delay, etc. Actual performance in the test system shows:</p>
+<pre><code>iteration      100/     100 | consumed samples:          800 | elapsed time per iteration (ms): 646.3
+time (ms) | forward-compute: 255.92 | backward-compute: 280.90 | ...
+</code></pre>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://arxiv.org/abs/2205.05198">Arxiv: Reducing Activation Recomputation in Large Transformer Models</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://proceedings.neurips.cc/paper/7181-attention-is-all-you-need">Attention is All you Need</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://huggingface.co/transformers/v2.2.0/pretrained_models.html">HuggingFace: Pretrained Model</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://ieeexplore.ieee.org/abstract/document/9355301">ZeRO: Memory Optimizations Toward Training Trillion Parameter Models</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    
+    <div class="my-4">
+    
+    <a href="/tags/dl/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#dl</a>
+    
+</div>
+    
+    
+    
+    
+    
+    
+    
+<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div>
+        
+    </div>
+    <div class="md:text-right mt-4 md:mt-0">
+        
+        <span class="block font-bold">Next</span>
+        <a href="/2022-06-11/parallelism-in-distributed-deep-learning/" class="block">Parallelism in Distributed Deep Learning</a>
+        
+    </div>
+</div>
+
+    
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "insujang" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+
+
+
+<div
+    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
+    <h2 class="text-lg font-semibold mb-4">See Also</h2>
+    <div class="content">
+        
+        <a href="/2022-06-11/parallelism-in-distributed-deep-learning/">Parallelism in Distributed Deep Learning</a>
+        <br />
+        
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        hljs.initHighlightingOnLoad();
+    })
+</script>
+
+      </div>
+    
+  </main>
+  <footer class="pl-scrollbar">
+    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+  </footer>
+</body>
+
+</html>
