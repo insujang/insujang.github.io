@@ -84,7 +84,7 @@
     },
     "headline": "Analysis of Transformer Model | Better Tomorrow with Computer Science","datePublished": "2022-07-30T23:48:00-04:00",
     "dateModified": "2022-07-30T23:48:00-04:00",
-    "wordCount":  1555 ,
+    "wordCount":  1605 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -287,16 +287,21 @@ Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" r
 <li>Their calculation is to get the amount of memory usage in <em>bytes</em>. For mask elements, only a byte per element is required, while others activations are stored in FP16 (2 bytes per element).</li>
 </ul>
 </blockquote>
+<p>(1) for attention</p>
 <ul>
 <li><strong>Q, K, and V matrix multiplies</strong>: only need to store shared input $2sbh$.</li>
 <li><strong>$QK^T$ matrix multiply</strong>: requires stotage of both Q and K with total size $4sbh$.</li>
 <li><strong>Softmax</strong>: softmax output with size $2as^2b$ is required for back-propagation.</li>
-<li><strong>Softmax dropout</strong>: only a mask with size $as^2b* is needed. (Note that they stated only a single byte per element is required for mask).</li>
-<li><strong>Attention over Values</strong>: need to store the dropout output ($2as^2b$) and V ($sbh$).</li>
-<li><strong>MLP</strong>: two linear layers and GeLU non-linarlity needs <em>their inputs</em> with $2sbh, 8sbh, 8sbh$, respectively, for back-propagation. dropout stores its mask with size $sbh$. Total: $19sbh$</li>
-<li><strong>Layer Norm</strong>: each layer norm stores its input with size $2sbh$ (total: $4sbh$).</li>
+<li><strong>Softmax dropout</strong>: only a mask with size $as^2b$ is needed. (Note that they stated only a single byte per element is required for mask).</li>
+<li><strong>Attention over Values</strong>: need to store the dropout output ($2as^2b$) and V ($2sbh$).</li>
+<li><strong>Post-atention linear and dropout</strong>: required to store activations ($2sbh$ and $sbh$, respectively).</li>
 </ul>
-<p>Activation memory per layer: $sbh(34+5\frac{as}{h})$</p>
+<p>(2) for MLP</p>
+<ul>
+<li><strong>Linear, GeLU, and Dropout</strong>: Two linear layers and GeLU non-linarlity needs <em>their inputs</em> with $2sbh, 8sbh, 8sbh$, respectively, for back-propagation. dropout stores its mask with size $sbh$. Total: $19sbh$</li>
+</ul>
+<p>(3) for <strong>Layer Norm</strong>: each layer norm stores its input with size $2sbh$ (total: $4sbh$).</p>
+<p>Activation memory per layer: $sbh(34+5\frac{as}{h})$ or $34sbh+5as^2b$</p>
 <p>For instance, GPT-2 medium with 8 microbatches: $1024 * 8 * 1024 * (34 + 5 * \frac{16 * 1024}{1024})$ = 912MB per layer. Considering that <strong>the entire</strong> model would only take 676MB, activation memory is so huge.</p>
 <h2 id="gradient-and-optimizer-state">Gradient and Optimizer State</h2>
 <blockquote>
@@ -347,8 +352,8 @@ Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" r
 </ul>
 <p>For each transformer layer with (1)+(2): $12sbh^2+2s^2bh$ for forward pass, and double the number of FLOPs for back-propagation (to calculate the gradients with respect to both input and weight tensors).</p>
 <p><strong>Total FLOPs per layer</strong>: $3b*(12sh^2+2s^2h)$.</p>
-<p>For instance, GPT-2 medium with 8 microbatches: 24 * 360,777,252,864 FLOPs (=7.875 GFLOPs) for one iteration.
-Considering the theoretical peak performance for a NVIDIA A40 GPU is 37.42 TFLOPS/s, it would take ~0.2ms. Of course, actual computing requires data copy across memory hierarcy, and peak performance cannot be achieved because tensor cores are not always used, CUDA kernel launch delay, data transfer, etc. Actual performance in the test system shows:</p>
+<p>For instance, GPT-2 medium with 8 microbatches: 3 * 8 * 15,032,385,536 = 360,777,252,864 FLOPs (336 GFLOPs) per layer per iteration.
+Considering the theoretical peak performance for a NVIDIA A40 GPU is 37.42 TFLOPS/s (non-tensor cores. Note peak fp16 tensor flops for A40 is 149.7 TFLOPS/s <a href="https://images.nvidia.com/content/Solutions/data-center/a40/nvidia-a40-datasheet.pdf">[datasheet]</a>), executing FP+BP for 24 layers in GPT-2 medium would take ~210ms. Of course, actual computing requires data copy across memory hierarcy, and peak performance cannot be achieved because tensor cores are not always used, CUDA kernel launch delay, data transfer, etc. Actual performance in the test system shows:</p>
 <pre><code>iteration      100/     100 | consumed samples:          800 | elapsed time per iteration (ms): 646.3
 time (ms) | forward-compute: 255.92 | backward-compute: 280.90 | ...
 </code></pre>
