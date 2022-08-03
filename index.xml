@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
-    <lastBuildDate>Sat, 30 Jul 2022 23:48:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 14:30:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing Parallelization of Attention</title>
+      <link>/2022-08-03/analyzing-parallelization-of-attention/</link>
+      <pubDate>Wed, 03 Aug 2022 14:30:00 -0400</pubDate>
+      
+      <guid>/2022-08-03/analyzing-parallelization-of-attention/</guid>
+      <description>We exploit the inherent parallelism in the multi-head attention operation to partition the self-attention block (shown in Figure 5b).</description>
+    </item>
+    
     <item>
       <title>Analysis of Transformer Model</title>
       <link>/2022-07-30/analysis-of-transformer-model/</link>

@@ -84,7 +84,7 @@
     },
     "headline": "Analysis of Transformer Model | Better Tomorrow with Computer Science","datePublished": "2022-07-30T23:48:00-04:00",
     "dateModified": "2022-07-30T23:48:00-04:00",
-    "wordCount":  1605 ,
+    "wordCount":  1627 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -322,7 +322,7 @@ Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" r
 <ul>
 <li>Model input: [$s, v, b$]. Multiplied by word embedding ([$v, h$]) (and add the position encoding [$s, h$]) to create a transformer layer input [$s, h, b$].</li>
 <li>Transformer layer input: [$s, h, b$].</li>
-<li>Q, K, and V: layer input [$s, h, b$] multiplied by weight [$h, h$] for each batch, respectively. each has [$s, h, b$]. Note that they are broken down to $a$ Q, K, and Vs, each of which has [$s, \frac{h}{a}, b$] (for GPT-2, $\frac{h}{a}$ is always 64).</li>
+<li>Q, K, and V: layer input [$s, h, b$] multiplied by weight [$h, h$] for each batch, respectively. each has [$s, h, b$]. Note that they are broken down to $a$ Q, K, and Vs, each of which has [$s, \frac{h}{a}, b$] ($\frac{h}{a}$ is called a <em>query size</em> and always 64 for all GPT-2 configuration).</li>
 <li>In self-attention, $QK^T$ has [$s, s, b$]. There are $a$ $QK^T$, so in total number of elements is $as^2b$.</li>
 <li>Softmax and dropout do not change dimension; same to that of $QK^T$: [$s, s, b$].</li>
 <li>The dimension of the attention output after multiplying V ([$s, h, b$]) on $softmax(QK^T)$ ($[s, s, b]$) is [$s, h, b$].</li>
@@ -340,11 +340,11 @@ Redrawed from the paper <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" r
 <p>(1) for the attention block, main contributors to operations are:</p>
 <ol>
 <li><strong>key, query, and value transformation</strong>: $3sbh^2$ ([$s, h$] * [$h, h$] * b each)</li>
-<li><strong>attention matrix computation ($\frac{QK^T}{\sqrt{d_k}}$)</strong>: $s^2bh$ ([$s, h$] * [$h, s$] * b)</li>
-<li><strong>attention over values (multiply attention matrix by V to calculate $attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$)</strong>: $s^2bh$ ([$s, s$] * [$s, h$] * b)</li>
-<li><strong>post-attention linear projection</strong>: $sbh^2$ ([$s, h$] * [$h, h$] * b)</li>
+<li><strong>attention matrix computation ($\frac{QK^T}{\sqrt{d_k}}$)</strong>: $s^2hb$ ([$s, \frac{h}{a}$] * [$\frac{h}{a}, s$] * b per attention head, and there are $a$ heads)</li>
+<li><strong>attention over values (multiply attention matrix by V to calculate $attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$)</strong>: $s^2bh$ ([$s, s$] * [$s, \frac{h}{a}$] * b per attention head, and there are $a$ heads)</li>
+<li><strong>post-attention linear projection</strong>: $sbh^2$ ([$s, h$] * [$h, h$] * b. Note that post-attention linear projection is done after concatenating $a$ attention heads into a single matrix of [$s, h$])</li>
 </ol>
-<p>Note that 1, 2, 3 can be broken down to $a$ computations since multi-head attentions are independent to each other.</p>
+<!-- Note that 1, 2, 3 can be broken down to $a$ computations since multi-head attentions are independent to each other. -->
 <p><strong>Total computation in attention</strong>: $4sbh^2 + 2s^2bh$</p>
 <p>(2) for MLP (feed-forward):</p>
 <ul>
@@ -391,6 +391,9 @@ time (ms) | forward-compute: 255.92 | backward-compute: 280.90 | ...
     
 <div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
     <div>
+        
+        <span class="block font-bold">Previous</span>
+        <a href="/2022-08-03/analyzing-parallelization-of-attention/" class="block">Analyzing Parallelization of Attention</a>
         
     </div>
     <div class="md:text-right mt-4 md:mt-0">
