@@ -84,7 +84,7 @@
     },
     "headline": "Analyzing Parallelization of Attention | Better Tomorrow with Computer Science","datePublished": "2022-08-03T14:30:00-04:00",
     "dateModified": "2022-08-03T14:30:00-04:00",
-    "wordCount":  762 ,
+    "wordCount":  953 ,
     "publisher": {
         "@type": "Person",
         "name": "Insu Jang",
@@ -266,8 +266,7 @@ They are independent and linear projections (matmul) in multi-head self attentio
 </ul>
 <h1 id="parallelizing-q-k-and-v">Parallelizing Q, K, and V</h1>
 <p>There are $a$ attention heads in a transformer layer, however, they are calculated and used as a single matrix altogether for efficiency in practical computation.
-To be specific, each Q, K, and V has the dimension of [$s, \frac{h}{a}, b$] (where $\frac{h}{a}$ is called <em>query size</em> and is always 64 for any GPT-2 configuration: 768/12 (GPT-2) == 1024/16 (GPT-2 medium) == 1280/20 (GPT-2 large) == 1600/25 (GPT-2 XL) == 64)
-Hence there are $a$ Q, K, and Vs in multi-head attentions.</p>
+To be specific, although Q, K, and V are stored in contiguous buffer of [$s, h, b$], each Q, K, and V has the dimension of [$s, \frac{h}{a}, b$] (where $\frac{h}{a}$ is called <em>query size</em> and is always 64 for any GPT-2 configuration: 768/12 (GPT-2) == 1024/16 (GPT-2 medium) == 1280/20 (GPT-2 large) == 1600/25 (GPT-2 XL) == 64). Buffers are reshaped to [$s, \frac{h}{a}, a, b$] and used for multi-head attention calculation.</p>
 <blockquote>
 <p>Refer to the 3D Bert model illustration from <a href="https://peltarion.com/blog/data-science/illustration-3d-bert">here</a> for understanding how it looks like.</p>
 </blockquote>
@@ -316,6 +315,17 @@ If we say the three linear projections are distributed, no communication is need
 </code></pre>
 <p><code>torch.baddbmm</code> performs a batch matrix-matrix product (or matrix multiplication with <a href="https://pytorch.org/docs/stable/notes/broadcasting.html#broadcasting-semantics">broadcasting</a>); so if batch1 is $(b \times n \times m)$ and batch2 is $(b \times m \times p)$, the input and output dimension is $(b \times n \times p)$ (first dimension $b$ is broadcasted to $(n \times m) \times (m \times p)$ matrix multiplication).</p>
 <p>Therefore, by simply adjusting the first dimension to specify how many attentions should be computed together, attention calculation can easily be parallelized. In the example above, if we have 3 attention heads ($a=3$) and 3 GPUs, we can distribute one attention calculation to each GPU by setting the first dimension to 1.</p>
+<h1 id="parallelizing-feed-forward-network-mlp">Parallelizing Feed Forward Network (MLP)</h1>
+<p>MLP layer includes two linear projections and GeLU; it can be expressed as follows (definition from the Attention paper <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>):</p>
+<p>$FFN(x) = max(0, xW_1 + b_1)W_2 + b_2$</p>
+<p>where the dimension of $x$ is [$s, h$], $W_1$ is [$h, 4h$], $W_2$ is [$4h, h$].</p>
+<figure><img src="/assets/images/220803/mlp_projection.png"
+         alt="image"/><figcaption>
+            <p>Linear projections in MLP or feed forward network. If we use column-parallelization for the first linear projection, the distribution cannot be used for parallelizing the second linear projection as it is.</p>
+        </figcaption>
+</figure>
+
+<p>There are two ways of parallelization: split input in a row-parallel manner (left), or split weight in a column-parallel manner (right). Considering that we need to perform the second linear projection with the output of the first linear projection after GeLU applied (element-wise operation), applying row-parallelization is reasonable, since it does not require communication across nodes if they already have a replicated weights. If we apply column-parallelization for the first linear projection, data should be exchanged in nodes (either every node has a replication or at least a row).</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -324,6 +334,9 @@ If we say the three linear projections are distributed, no communication is need
 </li>
 <li id="fn:2" role="doc-endnote">
 <p><a href="https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853">Transformer Explained Visually (Part 3): Multi-head Attention, Deep Dive</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf">Attention is All you Need</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
