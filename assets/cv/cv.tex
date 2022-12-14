@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: May 01, 2022}}
+\fancyfoot[R]{\footnotesize{Last updated: Dec 14, 2022}}
 
 
 \urlstyle{same}
@@ -94,12 +94,12 @@
 %----------HEADING-----------------
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
   \textbf{{\LARGE Insu Jang}} & insujang@umich.edu\\
-  4956 BBB, 2260 Hayward Street, Ann Arbor, MI 48109 & \href{https://insujang.github.io}{https://insujang.github.io} \\
+  4828 BBB, 2260 Hayward Street, Ann Arbor, MI 48109 & \href{https://insujang.github.io}{https://insujang.github.io} \\
 \end{tabular*}
 
 
 \section{Research Interests}
-System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computing, Non-Volatile Memory Systems, Serverless Computing
+System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computing
 
 %-----------EDUCATION-----------------
 \section{Education}
@@ -108,13 +108,13 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
     \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{The University of Michigan} & Ann Arbor, MI, USA \\
       \textit{\small Ph.D. Student in Computer Science and Engineering} & \small Aug 2021 -- Present \\
-      \small Advisor: Dr. Mosharaf Chowdhury  \\
+      \small Advisor: \href{https://www.mosharaf.com}{Dr. Mosharaf Chowdhury}  \\
   \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{Korea Advanced Institute of Science and Technology (KAIST)} & Daejeon, Republic of Korea \\
         \textit{\small Master of Science in Computer Science} & \small Mar 2016 -- Feb 2018 \\
-        \small Advisor: Dr. Jaehyuk Huh  \\
+        \small Advisor: \href{http://casys.kaist.ac.kr:8080/~jhuh/}{Dr. Jaehyuk Huh}  \\
         % \multicolumn{2}{X}{\small Thesis: Secure I/O Architecture for Isolated Heterogeneous Computing with Hardware Assisted Trusted Execution Environment} \\
     \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
@@ -127,18 +127,19 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------PUBLICATIONS-----------------
 \section{Publications}
 \begin{enumerate}[leftmargin=*]
-  \item \small Jongyul Kim, \textbf{Insu Jang}, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kostić, Youngjin Kwon, Simon Peter, and Emmett Witchel. \textbf{``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism.''} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2021. \textbf{Best Paper Award.}
-  \item \small \textbf{Insu Jang}, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. \textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''} \textit{International Conference on Architectural Support for Programming Languages and Operating Systems \textbf{(ASPLOS)}}, April 2019.
+  \item \small Jongyul Kim, \textbf{Insu Jang}, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kostić, Youngjin Kwon, Simon Peter, and Emmett Witchel. \href{https://dl.acm.org/doi/abs/10.1145/3477132.3483565}{\textbf{``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism.''}} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2021. \textbf{Best Paper Award.}
+  \item \small \textbf{Insu Jang}, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. \href{https://dl.acm.org/doi/abs/10.1145/3297858.3304021}{\textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''}} \textit{International Conference on Architectural Support for Programming Languages and Operating Systems \textbf{(ASPLOS)}}, April 2019.
 \end{enumerate}
 
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
     \resumeSubheading{Graduate Student Research Assistant (GSRA)}{University of Michigan}
-    {Studing an efficient system architecture for distributed deep learning training.}{Sep 2021 -- Present}
+    {Studying an efficient system architecture for distributed ML training.
+    Scrutinized Megatron-LM and DeepSpeed to understand large scale ML training.}{Sep 2021 -- Present}
     
     \resumeSubheading{Research Assistant}{KAIST}
-    {Implemented Hyperloop to use it as a baseline of LineFS, wihch offloads replicated transaction into Infiniband adaptors.
+    {Implemented Hyperloop to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband adaptors.
     Studied Infiniband RDMA architecture and witnessed the benefits of offloading. LineFS paper has been published to SOSP21 and won the best paper award.}{Jan 2020 -- Jul 2020}
 
     \resumeSubheading{Graduate Research Assistant}{KAIST}
@@ -271,7 +272,7 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 \section{Technical Skills}
  \resumeSubHeadingListStart
   \resumeItem{Languages}{C, C++20, Python, Go, Markdown, \LaTeX}
-  \resumeItem{Frameworks}{CUDA, Intel SGX, Kubernetes, RDMA, Android, Ceph, Linux, QEMU, KVM}
+  \resumeItem{Frameworks}{PyTorch, DeepSpeed, CUDA, Intel SGX, Kubernetes, RDMA, Ceph, Linux, QEMU, KVM}
  \resumeSubHeadingListEnd
 
 \section{References}
