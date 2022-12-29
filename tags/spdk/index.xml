@@ -6,7 +6,6 @@
     <description>Recent content in spdk on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 26 Apr 2021 09:02:00 +0900</lastBuildDate><atom:link href="/tags/spdk/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using Intel IOAT DMA</title>
@@ -14,7 +13,8 @@
       <pubDate>Mon, 26 Apr 2021 09:02:00 +0900</pubDate>
       
       <guid>/2021-04-26/using-intel-ioat-dma/</guid>
-      <description>I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.</description>
+      <description>I/OAT (I/O Acceleration Technology) 1 # Intel I/OAT is a set of technologies for improving I/O performance. This post specifically illustrates how to use Intel QuickData Technology, which enables data copy by the chipset instead of the CPU, to move data more efficiently and provide fast throughput.
+Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemented as ioatdma kernel module in Linux, and integrated into the Linux DMA subsystem.</description>
     </item>
     
     <item>
@@ -23,7 +23,10 @@
       <pubDate>Thu, 04 Mar 2021 14:40:00 +0900</pubDate>
       
       <guid>/2021-03-04/using-ceph-rbd-as-a-qemu-storage/</guid>
-      <description>This post explains how we can use a Ceph RBD as a QEMU storage.</description>
+      <description>This post explains how we can use a Ceph RBD as a QEMU storage. We can attach a Ceph RBD to a QEMU VM through either virtio-blk or vhost-user-blk QEMU device (vhost requires SPDK).
+Assume that a Ceph cluster is ready following the manual.
+Setting a Ceph client Configuration 1 # For a node to access a Ceph cluster, it requires some configuration:
+ Config file setup User authentication setup  This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</description>
     </item>
     
   </channel>

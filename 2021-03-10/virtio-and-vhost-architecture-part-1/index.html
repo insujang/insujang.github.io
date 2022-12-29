@@ -1,550 +1,811 @@
+
+
+
 <!DOCTYPE html>
-<html lang='en' ><meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Virtio and Vhost Architecture - Part 1 &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Virtio and Vhost Architecture - Part 1 &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.
+Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required." />
+  
+  
+  
+  <link rel="canonical" href="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.fdfd68c6d80697a222b9fc676c392570628fa823215c17e25faaeebb4afbe03ed6ccb978bbf6605b7b63b7f0c091b622850b865f49286208e8dfb5a7b3501d82.css"
+    integrity="sha512-/f1oxtgGl6IiufxnbDklcGKPqCMhXBfiX6ruu0r74D7WzLl4u/ZgW3tjt/DAkbYihQuGX0koYgjo37Wns1Adgg=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Virtio and Vhost Architecture - Part 1" />
+<meta property="og:description" content="This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.
+Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-10T17:01:00+09:00" />
+<meta property="article:modified_time" content="2021-03-10T17:01:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
 
-<title>Virtio and Vhost Architecture - Part 1 | Better Tomorrow with Computer Science</title>
-<link rel="stylesheet" href="/css/eureka.min.css">
-<script defer src="/js/eureka.min.js"></script>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Virtio and Vhost Architecture - Part 1"/>
+<meta name="twitter:description" content="This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.
+Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required."/>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload"
-  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-  as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
-   media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
-   crossorigin>
-<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
-   crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
-   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
-   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
-  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true }
-      ],
-    });
-  });
-</script>
-<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'UA-158110335-1');
-</script>
-
-
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
-
-<meta name="description"
-  content="This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1 ,
-      "name":"Posts",
-      "item":"/posts/"},{
-      "@type": "ListItem",
-      "position": 2 ,
-      "name":"Virtio and Vhost Architecture - Part 1",
-      "item":"/2021-03-10/virtio-and-vhost-architecture-part-1/"}]
-}
-</script>
-
-
-
-<script type="application/ld+json">
-{
+  
+  <script type="application/ld+json">
+  [{
     "@context": "https://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "/2021-03-10/virtio-and-vhost-architecture-part-1/"
+    "articleSection": "Posts",
+    "name": "Virtio and Vhost Architecture - Part 1",
+    "headline": "Virtio and Vhost Architecture - Part 1",
+    
+    "abstract": "This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.\nVirtio (Virtual I\/O) # Virtio is one of I\/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I\/O solution that implements a set of communication framework for I\/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required.",
+    "inLanguage": "en",
+    "url" : "\/2021-03-10\/virtio-and-vhost-architecture-part-1\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
     },
-    "headline": "Virtio and Vhost Architecture - Part 1 | Better Tomorrow with Computer Science","datePublished": "2021-03-10T17:01:00+09:00",
-    "dateModified": "2021-03-10T17:01:00+09:00",
-    "wordCount":  2469 ,
-    "publisher": {
-        "@type": "Person",
-        "name": "Insu Jang",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "/umich.png"
-        }
-        },
-    "description": "This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM)."
+    "copyrightYear": "2021",
+    "dateCreated": "2021-03-10T17:01:00\u002b09:00",
+    "datePublished": "2021-03-10T17:01:00\u002b09:00",
+    
+    "dateModified": "2021-03-10T17:01:00\u002b09:00",
+    
+    "keywords": ["study","linux","virtualization","kvm"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "2477"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
 }
-</script><meta property="og:title" content="Virtio and Vhost Architecture - Part 1 | Better Tomorrow with Computer Science" />
-<meta property="og:type" content="article" />
-
-
-<meta property="og:image" content="/umich.png">
-
-
-<meta property="og:url" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" />
-
-
-
-
-<meta property="og:description" content="This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM)." />
-
-
-
-
-<meta property="og:locale" content="en" />
-
-
-
-
-<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
-
-
-
-
-
-<meta property="article:published_time" content="2021-03-10T17:01:00&#43;09:00" />
-
-
-<meta property="article:modified_time" content="2021-03-10T17:01:00&#43;09:00" />
-
-
-
-<meta property="article:section" content="posts" />
-
-
-<meta property="article:tag" content="study" />
-
-<meta property="article:tag" content="linux" />
-
-<meta property="article:tag" content="virtualization" />
-
-<meta property="article:tag" content="kvm" />
-
-
-
-
-
-<meta property="og:see_also" content="/2020-08-27/introduction-to-flatpak/" />
-
-<meta property="og:see_also" content="/2020-07-15/fedora-silverblue/" />
-
-<meta property="og:see_also" content="/2020-02-09/introduction-to-programming-infiniband/" />
-
-<meta property="og:see_also" content="/2020-01-25/building-mellanox-ofed-from-source/" />
-
-<meta property="og:see_also" content="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" />
-
-<meta property="og:see_also" content="/2020-12-23/analyzing-ceph-network-module/" />
-
-
-
-<body class="flex flex-col min-h-screen">
-  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
-    <div class="w-full max-w-screen-xl mx-auto"><script>
-    let storageColorScheme = localStorage.getItem("lightDarkMode")
-    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
-        document.getElementsByTagName('html')[0].classList.add('dark')
-    }
 </script>
-<nav class="flex items-center justify-between flex-wrap p-4">
-    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
-    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div id="target"
-        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
-        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
-            <a href="/#about"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
-            <a href="/posts/"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
-        </div>
 
-        <div class="flex">
-            <div class="relative pt-4 md:pt-0">
-                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
-                </div>
-                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
-                    id='lightDarkOptions'>
-                    <span class="px-4 py-1 hover:text-eureka">Light</span>
-                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
-                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
-                </div>
-            </div>
-        </div>
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
     </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="z-40 flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
 
-    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+      
+
     </div>
+    
+      
+      <label id="menu-button" for="menu-controller" class="block sm:hidden">
+        <input type="checkbox" id="menu-controller" class="hidden" />
+        <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+          
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+        </div>
+        <div
+          id="menu-wrapper"
+          class="invisible fixed inset-0 z-30 m-auto h-screen w-screen cursor-default overflow-auto bg-neutral-100/50 opacity-0 backdrop-blur-sm transition-opacity dark:bg-neutral-900/50"
+        >
+          <ul
+            class="mx-auto flex w-full max-w-7xl list-none flex-col overflow-visible px-6 py-6 ltr:text-right rtl:text-left sm:px-14 sm:py-10 sm:pt-10 md:px-24 lg:px-32"
+          >
+            <li class="mb-1">
+              <span class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"
+                >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span
+              >
+            </li>
+            
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/#about"
+                    title=""
+                    >About</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/research/"
+                    title=""
+                    >Research</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/posts/"
+                    title=""
+                    >Posts</a
+                  >
+                </li>
+              
+            
+            
+          </ul>
+        </div>
+      </label>
+      
+      <ul class="hidden list-none flex-row ltr:text-right rtl:text-left sm:flex">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Virtio and Vhost Architecture - Part 1
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2021-03-10 17:01:00 &#43;0900 &#43;0900">Mar 10, 2021</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/study/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >study</a
+            >
+          
+            <a
+              href="/tags/linux/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >linux</a
+            >
+          
+            <a
+              href="/tags/virtualization/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >virtualization</a
+            >
+          
+            <a
+              href="/tags/kvm/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >kvm</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#virtio-virtual-io">Virtio (Virtual I/O)</a></li>
+        <li><a href="#architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis">Architecture   </a>
+          <ul>
+            <li><a href="#front-end-virtio">Front-end virtio</a></li>
+            <li><a href="#io-request-processing-flow-front-end-virtio-frontend-analysis">I/O Request Processing Flow (front-end) </a></li>
+            <li><a href="#kick-internal">Kick Internal</a></li>
+            <li><a href="#virtqueue-internal-virtio-ring">Virtqueue Internal </a></li>
+            <li><a href="#back-end-virtio">Back-end virtio</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary-io-virtualization">Summary </a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
-<script>
-    let element = document.getElementById('lightDarkMode')
-    if (storageColorScheme == 'Auto') {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'adjust')
-        element.firstElementChild.classList.add('fa-adjust')
-        document.addEventListener('DOMContentLoaded', () => {
-            switchMode('Auto')
-        })
-    } else if (storageColorScheme == "Dark") {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'moon')
-        element.firstElementChild.classList.add('fa-moon')
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        getcolorscheme();
-        switchBurger();
-    });
-</script></div>
-  </header>
-  <main class="flex-grow pt-16">
-      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+  </div>
+</details>
 
-
-<div class="lg:pt-12"></div>
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-    <h1 class="font-bold text-3xl text-primary-text">Virtio and Vhost Architecture - Part 1</h1>
-    <div class="mr-6 my-2">
-    <span>Mar 10, 2021</span>
-</div>
-
-
-
-
-    
-    
-    
-
-    <div class="content">
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.</p>
-<h2 id="virtio-virtual-io">Virtio (Virtual I/O)</h2>
+<h2 id="virtio-virtual-io" class="relative group">Virtio (Virtual I/O) <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#virtio-virtual-io" aria-label="Anchor">#</a></span></h2>
 <p>Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization.
 It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, which means a device driver that is aware of virtualization is required.
 Compared to full-virtualized devices which uses trap for actual I/O operations, paravirtualized devices can reduce a lot of wasted cycles with direct communication between guest and host, hence it is faster.</p>
-<figure><img src="/assets/images/210310/fullvirt-vs-paravirt.png"
-         alt="image"/><figcaption>
-            <p>Full virtualized device (left) vs para-virtualized device (right) flow. Para-drivers use hypercall (vmcall) to directly communicate with hypervisor without trap mechanism. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></p>
-        </figcaption>
-</figure>
 
-<pre><code class="language-c">// Kernels device communication with VMware (emulated, full-virtualization):
-void nic_write_buffer(char *buf, int size) {
-  for (; size &gt; 0; size--) {
-    nic_poll_ready();               // many traps
-    outb(NIC_TX_BUF, *buf++);       // many traps
-  }
-}
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/210310/fullvirt-vs-paravirt.png" alt="image" />
+        <figcaption>Full virtualized device (left) vs para-virtualized device (right) flow. Para-drivers use hypercall (vmcall) to directly communicate with hypervisor without trap mechanism. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></figcaption>
+      </figure>
+    
+  
 
-// Kernels device communication with hypervisor (hypercall, para-virtualization):
-void nic_write_buffer(char *buf, int size) {
-  vmm_write(NIC_TX_BUF, buf, size); // one trap
-}
-</code></pre>
-<p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf">[Source]</a></p>
-<h2 id="architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis">Architecture <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup></h2>
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Kernels device communication with VMware (emulated, full-virtualization):
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">nic_write_buffer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(;</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">size</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">nic_poll_ready</span><span class="p">();</span>               <span class="c1">// many traps
+</span><span class="c1"></span>    <span class="n">outb</span><span class="p">(</span><span class="n">NIC_TX_BUF</span><span class="p">,</span> <span class="o">*</span><span class="n">buf</span><span class="o">++</span><span class="p">);</span>       <span class="c1">// many traps
+</span><span class="c1"></span>  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Kernels device communication with hypervisor (hypercall, para-virtualization):
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">nic_write_buffer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vmm_write</span><span class="p">(</span><span class="n">NIC_TX_BUF</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span> <span class="c1">// one trap
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf"   target="_blank">[Source]</a></p>
+<h2 id="architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis" class="relative group">Architecture <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis" aria-label="Anchor">#</a></span></h2>
 <p>virtio can be divided into several parts: front-end drivers (para-drives in the figure) and back-end drivers (interfaces in the figure).</p>
 <ul>
 <li><strong>Front-end virtio drivers</strong>: implemented in the guest operating system as a device driver.</li>
 <li><strong>Back-end virtio drivers</strong>: implented in the hypervisor. It accepts I/O requests from a front-end driver and perform the corresponding I/O operations via a physical device.</li>
 <li><strong>Transport</strong>: Communication between front-end drivers and back-end drivers is done through a queue called <strong>virtqueue</strong> (or transport, vring, virtio-ring, etc).</li>
 </ul>
-<figure><img src="/assets/images/210310/virtio-architecture.gif"
-         alt="image"/><figcaption>
-            <p>virtio framework architecture diagram. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></p>
-        </figcaption>
-</figure>
 
-<h3 id="front-end-virtio">Front-end virtio</h3>
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/210310/virtio-architecture.gif" alt="image" />
+        <figcaption>virtio framework architecture diagram. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></figcaption>
+      </figure>
+    
+  
+
+
+<h3 id="front-end-virtio" class="relative group">Front-end virtio <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#front-end-virtio" aria-label="Anchor">#</a></span></h3>
 <p>Orange blocks in the above figure are in front-end virtio.</p>
 <p>At the top of the architecture is five types of <code>virtio_driver</code>, which represents the front-end driver in the guest operating system.
 Devices are encapsulated by the <code>virtio_device</code>, which refers to <code>virtqueue</code> objects that will be used for communication with virtio back-end drivers <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
-<p>Those three data structures are defined in <a href="(https://github.com/torvalds/linux/blob/master/include/linux/virtio.h)"><code>linux/include/linux/virtio.h</code></a>.</p>
-<pre><code class="language-c">// linux/include/linux/virtio.h
-/* virtqueue - a queue to register buffers for sending or receiving. */
-struct virtqueue {
-	struct list_head list;
-	void (*callback)(struct virtqueue *vq);
-	const char *name;
-	struct virtio_device *vdev;
-	unsigned int index;
-	unsigned int num_free;
-	void *priv;
-};
+<p>Those three data structures are defined in <a href="%28https://github.com/torvalds/linux/blob/master/include/linux/virtio.h%29"  ><code>linux/include/linux/virtio.h</code></a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/include/linux/virtio.h
+</span><span class="c1"></span><span class="cm">/* virtqueue - a queue to register buffers for sending or receiving. */</span>
+<span class="k">struct</span> <span class="n">virtqueue</span> <span class="p">{</span>
+	<span class="k">struct</span> <span class="n">list_head</span> <span class="n">list</span><span class="p">;</span>
+	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num_free</span><span class="p">;</span>
+	<span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">;</span>
+<span class="p">};</span>
 
-/* virtio_device - representation of a device using virtio */
-struct virtio_device {
-	int index;
-	bool failed;
-	bool config_enabled;
-	bool config_change_pending;
-	spinlock_t config_lock;
-	struct device dev;
-	struct virtio_device_id id;
-	const struct virtio_config_ops *config;
-	const struct vringh_config_ops *vringh_config;
-	struct list_head vqs;
-	u64 features;
-	void *priv;
-};
+<span class="cm">/* virtio_device - representation of a device using virtio */</span>
+<span class="k">struct</span> <span class="n">virtio_device</span> <span class="p">{</span>
+	<span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+	<span class="kt">bool</span> <span class="n">failed</span><span class="p">;</span>
+	<span class="kt">bool</span> <span class="n">config_enabled</span><span class="p">;</span>
+	<span class="kt">bool</span> <span class="n">config_change_pending</span><span class="p">;</span>
+	<span class="n">spinlock_t</span> <span class="n">config_lock</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">device</span> <span class="n">dev</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">virtio_device_id</span> <span class="n">id</span><span class="p">;</span>
+	<span class="k">const</span> <span class="k">struct</span> <span class="n">virtio_config_ops</span> <span class="o">*</span><span class="n">config</span><span class="p">;</span>
+	<span class="k">const</span> <span class="k">struct</span> <span class="n">vringh_config_ops</span> <span class="o">*</span><span class="n">vringh_config</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">list_head</span> <span class="n">vqs</span><span class="p">;</span>
+	<span class="n">u64</span> <span class="n">features</span><span class="p">;</span>
+	<span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">;</span>
+<span class="p">};</span>
 
-/* virtio_driver - operations for a virtio I/O driver */
-struct virtio_driver {
-	struct device_driver driver;
-	const struct virtio_device_id *id_table;
-	const unsigned int *feature_table;
-	unsigned int feature_table_size;
-	const unsigned int *feature_table_legacy;
-	unsigned int feature_table_size_legacy;
-	int (*validate)(struct virtio_device *dev);
-	int (*probe)(struct virtio_device *dev);
-	void (*scan)(struct virtio_device *dev);
-	void (*remove)(struct virtio_device *dev);
-	void (*config_changed)(struct virtio_device *dev);
-#ifdef CONFIG_PM
-	int (*freeze)(struct virtio_device *dev);
-	int (*restore)(struct virtio_device *dev);
-#endif
-};
-</code></pre>
-<p>While <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">IBM article</a> describes relationships between those data structures, it has been deprecated since Linux 2.6.35 and there is no longer <code>virtqueue_ops</code> data structure.</p>
+<span class="cm">/* virtio_driver - operations for a virtio I/O driver */</span>
+<span class="k">struct</span> <span class="n">virtio_driver</span> <span class="p">{</span>
+	<span class="k">struct</span> <span class="n">device_driver</span> <span class="n">driver</span><span class="p">;</span>
+	<span class="k">const</span> <span class="k">struct</span> <span class="n">virtio_device_id</span> <span class="o">*</span><span class="n">id_table</span><span class="p">;</span>
+	<span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">feature_table</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">feature_table_size</span><span class="p">;</span>
+	<span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">feature_table_legacy</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">feature_table_size_legacy</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">validate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">probe</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">scan</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">remove</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">config_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+<span class="cp">#ifdef CONFIG_PM
+</span><span class="cp"></span>	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">freeze</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+<span class="cp">#endif
+</span><span class="cp"></span><span class="p">};</span>
+</code></pre></div><p>While <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">IBM article</a> describes relationships between those data structures, it has been deprecated since Linux 2.6.35 and there is no longer <code>virtqueue_ops</code> data structure.</p>
 <p>Before Linux 2.6.35, it had been used like:</p>
-<pre><code class="language-c">/* DEPRECATED AND NO LONGER EXISTS IN MODERN LINUX. FOR REFERENCE ONLY */
-// linux/include/linux/virtio.h
-/**
- * @add_buf: expose buffer to other end
- * @kick: update after add_buf
- * @get_buf: get the next used buffer
- * @disable_cb: disable callbacks
- * @enable_cb: restart callbacks after disable_cb
- */
-struct virtqueue_ops {
-  int (*add_buf)(struct virtqueue *vq,
-                 struct scatterlist sg[],
-                 unsigned int out_num,
-                 unsigned int in_num,
-                 void *data);
-  void (*kick)(struct virtqueue *vq);
-  void *(*get_buf)(struct virtqueue *vq, unsigned int *len);
-  void (*disable_cb)(struct virtqueue *vq);
-  bool (*enable_cb)(struct virtqueue *vq);
-};
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* DEPRECATED AND NO LONGER EXISTS IN MODERN LINUX. FOR REFERENCE ONLY */</span>
+<span class="c1">// linux/include/linux/virtio.h
+</span><span class="c1"></span><span class="cm">/**
+</span><span class="cm"> * @add_buf: expose buffer to other end
+</span><span class="cm"> * @kick: update after add_buf
+</span><span class="cm"> * @get_buf: get the next used buffer
+</span><span class="cm"> * @disable_cb: disable callbacks
+</span><span class="cm"> * @enable_cb: restart callbacks after disable_cb
+</span><span class="cm"> */</span>
+<span class="k">struct</span> <span class="n">virtqueue_ops</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">add_buf</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span>
+                 <span class="k">struct</span> <span class="n">scatterlist</span> <span class="n">sg</span><span class="p">[],</span>
+                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">out_num</span><span class="p">,</span>
+                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">in_num</span><span class="p">,</span>
+                 <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">kick</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_buf</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">len</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">disable_cb</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">enable_cb</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+<span class="p">};</span>
 
-// linux/drivers/virtio/virtio_ring.c
-static struct virtqueue_ops vring_vq_ops = {
-  .add_buf = vring_add_buf,                   // &lt;--
-  .get_buf = vring_get_buf,
-  .kick = vring_kick,
-  .disable_cb = vring_disable_cb,
-  .enable_cb = vring_enable_cb,
-};
+<span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">virtqueue_ops</span> <span class="n">vring_vq_ops</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">.</span><span class="n">add_buf</span> <span class="o">=</span> <span class="n">vring_add_buf</span><span class="p">,</span>                   <span class="c1">// &lt;--
+</span><span class="c1"></span>  <span class="p">.</span><span class="n">get_buf</span> <span class="o">=</span> <span class="n">vring_get_buf</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">kick</span> <span class="o">=</span> <span class="n">vring_kick</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">disable_cb</span> <span class="o">=</span> <span class="n">vring_disable_cb</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">enable_cb</span> <span class="o">=</span> <span class="n">vring_enable_cb</span><span class="p">,</span>
+<span class="p">};</span>
 
-struct virtqueue *vring_new_virtqueue(...) {
-  struct vring_virtqueue *vq;
-  vq = kmalloc(sizeof(*vq) + sizeof(void*)*num, GFP_KERNEL);
-  ...
-  vq-&gt;vq.vq_ops = &amp;vring_vq_ops;
-  ...
-  return &amp;vq-&gt;vq;
-}
+<span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">vring_new_virtqueue</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">vring_virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">;</span>
+  <span class="n">vq</span> <span class="o">=</span> <span class="n">kmalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">num</span><span class="p">,</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+  <span class="p">...</span>
+  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">.</span><span class="n">vq_ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">vring_vq_ops</span><span class="p">;</span>
+  <span class="p">...</span>
+  <span class="k">return</span> <span class="o">&amp;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">;</span>
+<span class="p">}</span>
 
-// linux/drivers/block/virtio_blk.c
-static bool do_req(struct request_queue *q,
-                   struct virtio_blk *vblk,
-                   struct request *req) {
-  ...
-  vblk-&gt;vq-&gt;vq_ops-&gt;add_buf(vblk-&gt;vq, vblk-&gt;sg, out, in, vbr);
-  ...
+<span class="c1">// linux/drivers/block/virtio_blk.c
+</span><span class="c1"></span><span class="k">static</span> <span class="kt">bool</span> <span class="nf">do_req</span><span class="p">(</span><span class="k">struct</span> <span class="n">request_queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span>
+                   <span class="k">struct</span> <span class="n">virtio_blk</span> <span class="o">*</span><span class="n">vblk</span><span class="p">,</span>
+                   <span class="k">struct</span> <span class="n">request</span> <span class="o">*</span><span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq_ops</span><span class="o">-&gt;</span><span class="n">add_buf</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">,</span> <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">sg</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">in</span><span class="p">,</span> <span class="n">vbr</span><span class="p">);</span>
+  <span class="p">...</span>
 
-  return true;
-}
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
 
-static void do_virtblk_request(struct request_queue *q) {
-  ...
-  do_req(q, vblk, req);
-  ...
-  vblk-&gt;vq-&gt;vq_ops-&gt;kick(vblk-&gt;vq);
-}
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">do_virtblk_request</span><span class="p">(</span><span class="k">struct</span> <span class="n">request_queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">do_req</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">vblk</span><span class="p">,</span> <span class="n">req</span><span class="p">);</span>
+  <span class="p">...</span>
+  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq_ops</span><span class="o">-&gt;</span><span class="n">kick</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
+<span class="p">}</span>
 
-static int __devinit virtblk_probe(struct virtio_device *vdev) {
-  ...
-  // omitted definition of blk_init_queue (in linux/block/blk-core.c).
-  // Call the function pointer given as the first function argument for each queue entry.
-  vblk-&gt;dist-&gt;queue = blk_init_queue(do_virtblk_request, &amp;vblk-&gt;lock);
-  ...
-}
+<span class="k">static</span> <span class="kt">int</span> <span class="n">__devinit</span> <span class="nf">virtblk_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="c1">// omitted definition of blk_init_queue (in linux/block/blk-core.c).
+</span><span class="c1"></span>  <span class="c1">// Call the function pointer given as the first function argument for each queue entry.
+</span><span class="c1"></span>  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">dist</span><span class="o">-&gt;</span><span class="n">queue</span> <span class="o">=</span> <span class="n">blk_init_queue</span><span class="p">(</span><span class="n">do_virtblk_request</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 
-statis struct virtio_driver __refdata virtio_blk = {
-  ...
-  .probe = virtblk_probe,
-};
-</code></pre>
-<p>Now without <code>virtqueue_ops</code>, a virtio block device uses virtqueue as:</p>
-<pre><code class="language-c">// linux/drivers/virtio/virtio_ring.c
-/* virtqueue_add_sgs - expose buffers to other end (equivalent to virtqueue_ops::add_buf) */
-int virtqueue_add_sgs(struct virtqueue *_vq,
-                      struct scatterlist *sgs[],
-                      unsigned int out_sgs,
-                      unsigned int in_sgs,
-                      void *data,
-                      gfp_t gfp) {
-  ...
-}
+<span class="n">statis</span> <span class="k">struct</span> <span class="n">virtio_driver</span> <span class="n">__refdata</span> <span class="n">virtio_blk</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="p">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">virtblk_probe</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div><p>Now without <code>virtqueue_ops</code>, a virtio block device uses virtqueue as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span><span class="c1"></span><span class="cm">/* virtqueue_add_sgs - expose buffers to other end (equivalent to virtqueue_ops::add_buf) */</span>
+<span class="kt">int</span> <span class="nf">virtqueue_add_sgs</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">,</span>
+                      <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">sgs</span><span class="p">[],</span>
+                      <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">out_sgs</span><span class="p">,</span>
+                      <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">in_sgs</span><span class="p">,</span>
+                      <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
+                      <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 
-// linux/drivers/block/virtio_blk.c
-static int virtblk_add_req(struct virtqueue *vq,
-                           struct virtblk_req *vbr,
-                           struct scatterlist *data_sg,
-                           bool have_data) {
-  ...
-  return virtqueue_add_sgs(vq, sgs, num_out, num_in, vgr, GFP_ATOMIC);
-}
+<span class="c1">// linux/drivers/block/virtio_blk.c
+</span><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtblk_add_req</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span>
+                           <span class="k">struct</span> <span class="n">virtblk_req</span> <span class="o">*</span><span class="n">vbr</span><span class="p">,</span>
+                           <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">data_sg</span><span class="p">,</span>
+                           <span class="kt">bool</span> <span class="n">have_data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">return</span> <span class="n">virtqueue_add_sgs</span><span class="p">(</span><span class="n">vq</span><span class="p">,</span> <span class="n">sgs</span><span class="p">,</span> <span class="n">num_out</span><span class="p">,</span> <span class="n">num_in</span><span class="p">,</span> <span class="n">vgr</span><span class="p">,</span> <span class="n">GFP_ATOMIC</span><span class="p">);</span>
+<span class="p">}</span>
 
-static blk_status_t virtio_queue_rq(struct blk_mq_hw_ctx *hctx,
-                                    const struct blk_mq_queue_data *bd) {
-  struct request *req = bd-&gt;rq;
-  ...
+<span class="k">static</span> <span class="n">blk_status_t</span> <span class="nf">virtio_queue_rq</span><span class="p">(</span><span class="k">struct</span> <span class="n">blk_mq_hw_ctx</span> <span class="o">*</span><span class="n">hctx</span><span class="p">,</span>
+                                    <span class="k">const</span> <span class="k">struct</span> <span class="n">blk_mq_queue_data</span> <span class="o">*</span><span class="n">bd</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">request</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="n">bd</span><span class="o">-&gt;</span><span class="n">rq</span><span class="p">;</span>
+  <span class="p">...</span>
 
-  virtblk_add_req(vblk-&gt;vgs[qid].vq, vbr, vbr-&gt;sg, num);
-  ...
-  virtqueue_kick_prepare(vblk-&gt;vgs[qid].vq);
-  virtqueue_notify(vblk-&gt;vqs[qid].vq);
-  return BLK_STS_OK;
-}
+  <span class="n">virtblk_add_req</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vgs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">,</span> <span class="n">vbr</span><span class="p">,</span> <span class="n">vbr</span><span class="o">-&gt;</span><span class="n">sg</span><span class="p">,</span> <span class="n">num</span><span class="p">);</span>
+  <span class="p">...</span>
+  <span class="n">virtqueue_kick_prepare</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vgs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">);</span>
+  <span class="n">virtqueue_notify</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vqs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">BLK_STS_OK</span><span class="p">;</span>
+<span class="p">}</span>
 
-static const struct blk_mq_ops virtio_mq_ops = {
-  .queue_rq         = virtio_queue_rq,          // &lt;--
-  .commit_rqs       = virtio_commit_rqs,
-  .complete         = virtblk_request_done,
-  .init_request     = virtblk_init_request,
-#ifdef CONFIG_VIRTIO_BLK_SCSI
-  .initialize_rq_fn = virtblk_initialize_rq,
-#endif
-  .map_queues       = virtblk_map_queues,
-};
+<span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">blk_mq_ops</span> <span class="n">virtio_mq_ops</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">.</span><span class="n">queue_rq</span>         <span class="o">=</span> <span class="n">virtio_queue_rq</span><span class="p">,</span>          <span class="c1">// &lt;--
+</span><span class="c1"></span>  <span class="p">.</span><span class="n">commit_rqs</span>       <span class="o">=</span> <span class="n">virtio_commit_rqs</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">complete</span>         <span class="o">=</span> <span class="n">virtblk_request_done</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">init_request</span>     <span class="o">=</span> <span class="n">virtblk_init_request</span><span class="p">,</span>
+<span class="cp">#ifdef CONFIG_VIRTIO_BLK_SCSI
+</span><span class="cp"></span>  <span class="p">.</span><span class="n">initialize_rq_fn</span> <span class="o">=</span> <span class="n">virtblk_initialize_rq</span><span class="p">,</span>
+<span class="cp">#endif
+</span><span class="cp"></span>  <span class="p">.</span><span class="n">map_queues</span>       <span class="o">=</span> <span class="n">virtblk_map_queues</span><span class="p">,</span>
+<span class="p">};</span>
 
-static int virtblk_probe(struct virtio_device *vdev) {
-  ...
-  vblk-&gt;tag_set.ops = &amp;virtio_mq_ops;
-  ...
-}
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">virtblk_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">tag_set</span><span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">virtio_mq_ops</span><span class="p">;</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 
-static struct virtio_driver virtio_blk = {
-  ...
-  .probe = virtblk_probe,
-  ...
-};
-</code></pre>
-<h3 id="io-request-processing-flow-front-end-virtio-frontend-analysis">I/O Request Processing Flow (front-end) <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></h3>
+<span class="k">static</span> <span class="k">struct</span> <span class="n">virtio_driver</span> <span class="n">virtio_blk</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="p">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">virtblk_probe</span><span class="p">,</span>
+  <span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div><h3 id="io-request-processing-flow-front-end-virtio-frontend-analysis" class="relative group">I/O Request Processing Flow (front-end) <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#io-request-processing-flow-front-end-virtio-frontend-analysis" aria-label="Anchor">#</a></span></h3>
 <p>I/O data flow is well illustrated in 11~15 pages of <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>, while it is also obsolete and should be refined. To be summarized:</p>
 <ol>
 <li><code>virtio_driver</code> in the guest operating system calls <code>virtblk_add_req()</code>, which calls <code>virtqueue_add_sgs()</code> (was <code>virtqueue_ops::add_buf()</code>).</li>
 <li><code>virtio_driver</code> in the guest operating system calls <code>virtqueue_kick_prepare()</code> and <code>virtqueue_notify()</code> in <code>virtio_queue_rq</code> functions (was <code>virtqueue_ops::kick()</code>). Note that two functions should be called for a kick.</li>
 </ol>
-<pre><code class="language-c">// linux/drivers/virtio/virtio_ring.c
-/**
- * Instead of virtqueue_kick(), you can do:
- *    if (virtqueue_kick_prepare(vq))
- *      virtqueue_notify(vq);
- */
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span><span class="c1"></span><span class="cm">/**
+</span><span class="cm"> * Instead of virtqueue_kick(), you can do:
+</span><span class="cm"> *    if (virtqueue_kick_prepare(vq))
+</span><span class="cm"> *      virtqueue_notify(vq);
+</span><span class="cm"> */</span>
 
-// virtqueue_kick_prepare - first half of split virtqueue_kick call.
-bool virtqueue_kick_prepare(struct virtqueue *_vq);
+<span class="c1">// virtqueue_kick_prepare - first half of split virtqueue_kick call.
+</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_kick_prepare</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">);</span>
 
-// virtqueue_notify - second half of split virtqueue_kick call.
-bool virtqueue_notify(struct virtqueue *_vq);
-</code></pre>
-<ol start="3">
+<span class="c1">// virtqueue_notify - second half of split virtqueue_kick call.
+</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">);</span>
+</code></pre></div><ol start="3">
 <li>Then the back-end device driver will pop the request, handle it, and push result into <code>out</code> buffer (will be explained later, as it is not a part of front-end).</li>
 <li>When context returns to the guest operating system, <code>virtblk_done</code> of <code>virtio_driver</code> is called, which calls <code>virtqueue_get_buf()</code> (was <code>virtqueue_ops::get_buf()</code>).</li>
 </ol>
-<h3 id="kick-internal">Kick Internal</h3>
-<pre><code class="language-c">// linux/drivers/virtio/virtio_ring.c
-bool virtqueue_notify(struct virtqueue *_vq) {
-  struct vring_virtqueue *vq = to_vvq(_vq);
+<h3 id="kick-internal" class="relative group">Kick Internal <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#kick-internal" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">vring_virtqueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">to_vvq</span><span class="p">(</span><span class="n">_vq</span><span class="p">);</span>
 
-  /* Prod other side to tell it about changes. */
-  vq-&gt;notify(_vq);  // omitted exception handling code
-  return true;
-}
-</code></pre>
-<p>where <code>vq-&gt;notify()</code> is defined as:</p>
-<pre><code class="language-c">// called by vring_new_virtqueue() and vring_create_virtqueue_split().
-struct virtqueue *__vring_new_virtqueue(...,
-                                        bool (*notify)(struct virtqueue *),
-                                        void (*callback)(struct virtqueue *)) {
-  ...
-  vq-&gt;notify = notify;
-}
+  <span class="cm">/* Prod other side to tell it about changes. */</span>
+  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">(</span><span class="n">_vq</span><span class="p">);</span>  <span class="c1">// omitted exception handling code
+</span><span class="c1"></span>  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>where <code>vq-&gt;notify()</code> is defined as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// called by vring_new_virtqueue() and vring_create_virtqueue_split().
+</span><span class="c1"></span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">__vring_new_virtqueue</span><span class="p">(...,</span>
+                                        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">notify</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
+                                        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">))</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">notify</span> <span class="o">=</span> <span class="n">notify</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct virtqueue *vring_create_virtqueue
-        unsigned int index,
-        unsigned int num,
-        unsigned int vring_align,
-        struct virtio_Device *vdev,
-        bool weak_barriers,
-        bool may_reduce_num,
-        bool context,
-        bool (*notify)(struct virtqueue *),
-        bool (*callback)(struct virtqueue *),
-        const char *name) {
-  ...
-  return vring_create_virtqueue_split(...);
-}
+<span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vring_create_virtqueue</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">vring_align</span><span class="p">,</span>
+        <span class="k">struct</span> <span class="n">virtio_Device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">weak_barriers</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">may_reduce_num</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="n">context</span><span class="p">,</span>
+        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">notify</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
+        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
+        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">return</span> <span class="n">vring_create_virtqueue_split</span><span class="p">(...);</span>
+<span class="p">}</span>
 
-// linux/drivers/virtio/virtio_pci_modern.c
-static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
-                                  struct virtio_pci_vq_info *info,
-                                  unsigned index,
-                                  void (*callback)(struct virtqueue *vq),
-                                  const char *name,
-                                  bool ctx,
-                                  u16 msix_vec) {
-  ...
-  struct virtqueue *vq = vring_create_virtqueue(index, num,
-        SMP_CACHE_BYTES, &amp;vp_dev-&gt;vdev,
-        true, true, ctx,
-        vp_notify, callback, name);
-}
+<span class="c1">// linux/drivers/virtio/virtio_pci_modern.c
+</span><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">setup_vq</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_pci_device</span> <span class="o">*</span><span class="n">vp_dev</span><span class="p">,</span>
+                                  <span class="k">struct</span> <span class="n">virtio_pci_vq_info</span> <span class="o">*</span><span class="n">info</span><span class="p">,</span>
+                                  <span class="kt">unsigned</span> <span class="n">index</span><span class="p">,</span>
+                                  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">),</span>
+                                  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span>
+                                  <span class="kt">bool</span> <span class="n">ctx</span><span class="p">,</span>
+                                  <span class="n">u16</span> <span class="n">msix_vec</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">vring_create_virtqueue</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
+        <span class="n">SMP_CACHE_BYTES</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vp_dev</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span>
+        <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span>
+        <span class="n">vp_notify</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+<span class="p">}</span>
 
-// linux/drivers/virtio/virtio_pci_common.c
-/* the notify function used when creating a virt queue */
-bool vp_notify(struct virtqueue *vq) {
-  /* we write the queue's selector into the notification register to
-   * the signal the other end */
-  iowrite16(vq-&gt;index, (void __iomem *)vq-&gt;priv);
-  return true;
-}
-</code></pre>
-<!--
+<span class="c1">// linux/drivers/virtio/virtio_pci_common.c
+</span><span class="c1"></span><span class="cm">/* the notify function used when creating a virt queue */</span>
+<span class="kt">bool</span> <span class="n">vp_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
+  <span class="cm">/* we write the queue&#39;s selector into the notification register to
+</span><span class="cm">   * the signal the other end */</span>
+  <span class="n">iowrite16</span><span class="p">(</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="n">__iomem</span> <span class="o">*</span><span class="p">)</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">priv</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><!--
 >
 > - The flags field supports two flags: KVM_MEM_LOG_DIRTY_PAGES and KVM_MEM_READONLY. ... The latter can be set, if KVM_CAP_READONLY_MEM capability allows it, to make a new slot read-only. In this case, writes to this memory will be posed to userspace as KVM_EXIT_MMIO exits. [[Source]](https://www.kernel.org/doc/Documentation/virtual/kvm/api.txt)
 
@@ -574,240 +835,272 @@ bool vp_notify(struct virtqueue *vq) {
 <p>Note that writing a value into the virtio device&rsquo;s register incurs a VMexit:</p>
 <ul>
 <li>
-<p>It (a virtqueue) driver to device notifications (doorbell) method, to signal that one or more buffers have been added to the queue, and vice-versa, devices can interrupt the driver to signal used buffers. It is up to the underlying driver to provide the right method to dispatch the actual notification, for example using PCI interruptions or memory writing: The virtqueue only standardizes the semantics of it. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">[Source]</a></p>
+<p>It (a virtqueue) driver to device notifications (doorbell) method, to signal that one or more buffers have been added to the queue, and vice-versa, devices can interrupt the driver to signal used buffers. It is up to the underlying driver to provide the right method to dispatch the actual notification, for example using PCI interruptions or memory writing: The virtqueue only standardizes the semantics of it. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels"   target="_blank">[Source]</a></p>
 </li>
 <li>
-<p>For special memory regions, KVM follows a similar approach, marking memory regions as Read Only or not mapping them at all, causing a vmexit with the KVM_EXIT_MMIO reason. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
+<p>For special memory regions, KVM follows a similar approach, marking memory regions as Read Only or not mapping them at all, causing a vmexit with the KVM_EXIT_MMIO reason. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net"   target="_blank">[Source]</a></p>
 </li>
 <li>
-<p>Guest-&gt;QEMU context transition: Whenever guest context incurs a vmexit, the CPU will exit to kernel mode KVM handlers first. Then, the KVM module will determine if this particular vmexit should be handled by userspace (not that kernel KVM module will handle some particular vmexit itself rather than exposing to userspace). <strong>If so, the <code>ioctl()</code> syscall that caused the QEMU-&gt;Guest transition will return to userspace, and then we will be back at QEMU context.</strong> <a href="https://gdoc.pub/doc/e/2PACX-1vSsskD0A2XgHoZhaYLAkS7lmCOrfxkGXk1WTovWEAyeoELVdBjrE-NzD8h-NvJfKhxMpUg2aXzaD-XG">[Source]</a></p>
+<p>Guest-&gt;QEMU context transition: Whenever guest context incurs a vmexit, the CPU will exit to kernel mode KVM handlers first. Then, the KVM module will determine if this particular vmexit should be handled by userspace (not that kernel KVM module will handle some particular vmexit itself rather than exposing to userspace). <strong>If so, the <code>ioctl()</code> syscall that caused the QEMU-&gt;Guest transition will return to userspace, and then we will be back at QEMU context.</strong> <a href="https://gdoc.pub/doc/e/2PACX-1vSsskD0A2XgHoZhaYLAkS7lmCOrfxkGXk1WTovWEAyeoELVdBjrE-NzD8h-NvJfKhxMpUg2aXzaD-XG"   target="_blank">[Source]</a></p>
 </li>
 <li>
-<p>QEMU-&gt;Guest context transition: Similarly, the device notifications are a special ioctl the host can send to the KVM device (vCPU IRQ). <a href="https://www.redhat.com/en/blog/virtio-devices-and-drivers-overview-headjack-and-phone">[Source]</a></p>
+<p>QEMU-&gt;Guest context transition: Similarly, the device notifications are a special ioctl the host can send to the KVM device (vCPU IRQ). <a href="https://www.redhat.com/en/blog/virtio-devices-and-drivers-overview-headjack-and-phone"   target="_blank">[Source]</a></p>
 </li>
 </ul>
 </blockquote>
-<h3 id="virtqueue-internal-virtio-ring">Virtqueue Internal <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></h3>
+<h3 id="virtqueue-internal-virtio-ring" class="relative group">Virtqueue Internal <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#virtqueue-internal-virtio-ring" aria-label="Anchor">#</a></span></h3>
 <p>A virtqueue consists of three parts:</p>
 <ol>
 <li><strong>descriptor area</strong>: used for describing buffers. Implemented as <code>vring_desc</code> data structure.</li>
 <li><strong>driver area</strong>: data supplied by <strong>front-end</strong> driver to the back-end device. Also called avail virtqueue. Implemented as <code>vring_avail</code> data structure.</li>
 <li><strong>device area</strong>: data supplied by <strong>back-end</strong> device. Also called used virtqueue. Implemented as <code>vring_used</code> data structure.</li>
 </ol>
-<pre><code class="language-c">linux/include/uapi/linux/virtio_ring.h
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">uapi</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">virtio_ring</span><span class="p">.</span><span class="n">h</span>
 
-/* Virtio ring descriptors: 16 bytes. These can chain together via &quot;next&quot;. */
-struct vring_desc {
-  __virtio64 addr;  /* Address (guest-physical). */
-  __virtio32 len;   /* Length. */
-  __virtio16 flags; /* The flags as indicated above. */
-  __virtio16 next;  /* We chain unused descriptors via this, too */
-};
+<span class="cm">/* Virtio ring descriptors: 16 bytes. These can chain together via &#34;next&#34;. */</span>
+<span class="k">struct</span> <span class="n">vring_desc</span> <span class="p">{</span>
+  <span class="n">__virtio64</span> <span class="n">addr</span><span class="p">;</span>  <span class="cm">/* Address (guest-physical). */</span>
+  <span class="n">__virtio32</span> <span class="n">len</span><span class="p">;</span>   <span class="cm">/* Length. */</span>
+  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span> <span class="cm">/* The flags as indicated above. */</span>
+  <span class="n">__virtio16</span> <span class="n">next</span><span class="p">;</span>  <span class="cm">/* We chain unused descriptors via this, too */</span>
+<span class="p">};</span>
 
-struct vring_avail {
-  __virtio16 flags;
-  __virtio16 idx;
-  __virtio16 ring[];
-};
+<span class="k">struct</span> <span class="n">vring_avail</span> <span class="p">{</span>
+  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span>
+  <span class="n">__virtio16</span> <span class="n">idx</span><span class="p">;</span>
+  <span class="n">__virtio16</span> <span class="n">ring</span><span class="p">[];</span>
+<span class="p">};</span>
 
-struct vring_used_elem {
-  __virtio32 id;  /* Index of start of used descriptor chain. */
-  __virtio32 len; /* Total length of the descriptor chain which was used (written to) */
-};
+<span class="k">struct</span> <span class="n">vring_used_elem</span> <span class="p">{</span>
+  <span class="n">__virtio32</span> <span class="n">id</span><span class="p">;</span>  <span class="cm">/* Index of start of used descriptor chain. */</span>
+  <span class="n">__virtio32</span> <span class="n">len</span><span class="p">;</span> <span class="cm">/* Total length of the descriptor chain which was used (written to) */</span>
+<span class="p">};</span>
 
-typedef struct vring_used_elem __attribute__((aligned(VRING_USED_ALIGN_SIZE)))
-      vring_used_elem_t;
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">vring_used_elem</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">aligned</span><span class="p">(</span><span class="n">VRING_USED_ALIGN_SIZE</span><span class="p">)))</span>
+      <span class="n">vring_used_elem_t</span><span class="p">;</span>
 
-struct vring_used {
-  __virtio16 flags;
-  __virtio16 idx;
-  vring_used_elem_t ring[];
-}
-</code></pre>
-<figure><img src="/assets/images/210310/virtio-descriptor-table.png"
-         alt="image"/><figcaption>
-            <p>virtqueue internal data example. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">[Source]</a></p>
-        </figcaption>
-</figure>
+<span class="k">struct</span> <span class="n">vring_used</span> <span class="p">{</span>
+  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span>
+  <span class="n">__virtio16</span> <span class="n">idx</span><span class="p">;</span>
+  <span class="n">vring_used_elem_t</span> <span class="n">ring</span><span class="p">[];</span>
+<span class="p">}</span>
+</code></pre></div>
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/210310/virtio-descriptor-table.png" alt="image" />
+        <figcaption>virtqueue internal data example. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">[Source]</a></figcaption>
+      </figure>
+    
+  
+
 
 <p>Since a virtqueue can be separated into those three areas, we call it as a <em>split virtqueue</em>.</p>
 <blockquote>
-<p>There is another type of virtqueue that can be inferred from here: <code>virtqueue_packed</code>. For more information regarding this, refer to <a href="https://www.redhat.com/en/blog/packed-virtqueue-how-reduce-overhead-virtio">this post</a>.</p>
+<p>There is another type of virtqueue that can be inferred from here: <code>virtqueue_packed</code>. For more information regarding this, refer to <a href="https://www.redhat.com/en/blog/packed-virtqueue-how-reduce-overhead-virtio"   target="_blank">this post</a>.</p>
 </blockquote>
-<h3 id="back-end-virtio">Back-end virtio</h3>
+<h3 id="back-end-virtio" class="relative group">Back-end virtio <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#back-end-virtio" aria-label="Anchor">#</a></span></h3>
 <p>According to <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>, when a client (the guest) writes data to the address, it will trigger a VM-exit with reason <code>EPT_MICONFIGURATION</code> page fault abnormality, forwarding the execution context from the guest operating system to KVM VM-exit handler.
 If the KVM finds that this address falls within the registered ioeventfd address range, it will notify QEMU by writing the associated eventfd.</p>
 <p><code>vp_notify()</code> is called by virtio front-end device driver in the guest operating system, an interrupt occurs and the execution context has been forwarded from the guest operating system to QEMU userspace process via <strong>ioeventfd</strong> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.
 QEMU uses <code>kvm_set_ioeventfd_mmio()</code> and <code>kvm_set_ioeventfd_pio()</code> functions to register ioeventfds to KVM with specific address, then later KVM will forward the execution context when the guest writes this address space.</p>
-<pre><code class="language-c"># qemu/hw/accel/kvm-all.c
-static int kvm_set_ioeventfd_mmio(int fd, hwaddr addr, uint32_t val,
-                                  bool assign, uint32_t size, bool datamatch) {
-  struct kvm_ioeventfd iofd = {
-    .datamatch = datamatch ? adjust_ioeventfd_endianness(val, size) : 0;
-    .addr = addr,
-    .len = size,
-    .flags = 0,
-    .fd = fd,
-  };
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp"># qemu/hw/accel/kvm-all.c
+</span><span class="cp"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">kvm_set_ioeventfd_mmio</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">hwaddr</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">,</span>
+                                  <span class="kt">bool</span> <span class="n">assign</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">datamatch</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">kvm_ioeventfd</span> <span class="n">iofd</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">datamatch</span> <span class="o">=</span> <span class="n">datamatch</span> <span class="o">?</span> <span class="n">adjust_ioeventfd_endianness</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">.</span><span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">,</span>
+  <span class="p">};</span>
 
-  kvm_vm_ioctl(kvm_state, KVM_IOEVENTFD, &amp;iofd);
-}
+  <span class="n">kvm_vm_ioctl</span><span class="p">(</span><span class="n">kvm_state</span><span class="p">,</span> <span class="n">KVM_IOEVENTFD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iofd</span><span class="p">);</span>
+<span class="p">}</span>
 
-static void kvm_mem_ioeventfd_add(MemoryListener *listener,
-                                  MemoryRegionSection *section,
-                                  bool match_data, uint64_t data,
-                                  EventNotifier *e) {
-  int fd = event_notifier_get_fd(e);
-  kvm_set_ioeventfd_mmio(fd, section-&gt;offset_within_address_space,
-                         data, true, int128_get64(section-&gt;size), match_data);
-  ...
-}
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">kvm_mem_ioeventfd_add</span><span class="p">(</span><span class="n">MemoryListener</span> <span class="o">*</span><span class="n">listener</span><span class="p">,</span>
+                                  <span class="n">MemoryRegionSection</span> <span class="o">*</span><span class="n">section</span><span class="p">,</span>
+                                  <span class="kt">bool</span> <span class="n">match_data</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">data</span><span class="p">,</span>
+                                  <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">event_notifier_get_fd</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+  <span class="n">kvm_set_ioeventfd_mmio</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">section</span><span class="o">-&gt;</span><span class="n">offset_within_address_space</span><span class="p">,</span>
+                         <span class="n">data</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">int128_get64</span><span class="p">(</span><span class="n">section</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">),</span> <span class="n">match_data</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 
-static int kvm_init(MachineState *ms) {
-  ...
-  if (kvm_eventfds_allowed) {
-    s-&gt;memory_listener.listener.eventfd_add = kvm_mem_ioeventfd_add;
-    s-&gt;memory_listener.listener.eventfd_del = kvm_mem_ioeventfd_del;
-  }
-  memory_listener_register(&amp;kvm_io_listener, &amp;address_space_io);
-  memory_listener_register(&amp;kvm_coalesced_pio_listener, &amp;address_space_io);
-  ...
-}
-</code></pre>
-<p>where I guess ioeventfd comes from virtio area:</p>
-<pre><code class="language-c">// qemu/hw/virtio/virtio-bus.c
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">kvm_init</span><span class="p">(</span><span class="n">MachineState</span> <span class="o">*</span><span class="n">ms</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">kvm_eventfds_allowed</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">memory_listener</span><span class="p">.</span><span class="n">listener</span><span class="p">.</span><span class="n">eventfd_add</span> <span class="o">=</span> <span class="n">kvm_mem_ioeventfd_add</span><span class="p">;</span>
+    <span class="n">s</span><span class="o">-&gt;</span><span class="n">memory_listener</span><span class="p">.</span><span class="n">listener</span><span class="p">.</span><span class="n">eventfd_del</span> <span class="o">=</span> <span class="n">kvm_mem_ioeventfd_del</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">memory_listener_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kvm_io_listener</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_space_io</span><span class="p">);</span>
+  <span class="n">memory_listener_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kvm_coalesced_pio_listener</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_space_io</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>where I guess ioeventfd comes from virtio area:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// qemu/hw/virtio/virtio-bus.c
+</span><span class="c1"></span>
+<span class="cm">/*
+</span><span class="cm"> * This function switches ioeventfd on/off in the device.
+</span><span class="cm"> * The caller must set or clear the handlers for the EventNotifier.
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">virtio_bus_set_host_notifier</span><span class="p">(</span><span class="n">VirtioBusState</span> <span class="o">*</span><span class="n">bus</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">assign</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">VirtioBusClass</span> <span class="o">*</span><span class="n">k</span> <span class="o">=</span> <span class="n">VIRTIO_BUS_GET_CLASS</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
+  <span class="n">DeviceState</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">DEVICE</span><span class="p">(</span><span class="n">BUS</span><span class="p">(</span><span class="n">bus</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">);</span>
 
-/*
- * This function switches ioeventfd on/off in the device.
- * The caller must set or clear the handlers for the EventNotifier.
- */
-int virtio_bus_set_host_notifier(VirtioBusState *bus, int n, bool assign) {
-  VirtioBusClass *k = VIRTIO_BUS_GET_CLASS(bus);
-  DeviceState *proxy = DEVICE(BUS(bus)-&gt;parent);
+  <span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span> <span class="o">=</span> <span class="n">virtio_bus_get_device</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
+  <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">virtio_get_queue</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">notifier</span> <span class="o">=</span> <span class="n">virtio_queue_get_host_notifier</span><span class="p">(</span><span class="n">vq</span><span class="p">);</span>
 
-  VirtIODevice *vdev = virtio_bus_get_device(bus);
-  VirtQueue *vq = virtio_get_queue(vdev, n);
-  EventNotifier *notifier = virtio_queue_get_host_notifier(vq);
+  <span class="n">r</span> <span class="o">=</span> <span class="n">event_notifier_init</span><span class="p">(</span><span class="n">notifier</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">k</span><span class="o">-&gt;</span><span class="n">ioeventfd_assign</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">notifier</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+  <span class="n">virtio_queue_set_host_notifier_enabled</span><span class="p">(</span><span class="n">vq</span><span class="p">,</span> <span class="n">assign</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 
-  r = event_notifier_init(notifier, 1);
-  k-&gt;ioeventfd_assign(proxy, notifier, n, true);
-  virtio_queue_set_host_notifier_enabled(vq, assign);
-  ...
-}
+<span class="c1">// qemu/hw/virtio/virtio-pci.c
+</span><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtio_pci_ioeventfd_assign</span><span class="p">(</span><span class="n">DeviceState</span> <span class="o">*</span><span class="n">d</span><span class="p">,</span> <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">notifier</span><span class="p">,</span>
+                                       <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">assign</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">VirtIOPCIProxy</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">to_virtio_pci_proxy</span><span class="p">(</span><span class="n">d</span><span class="p">);</span>
+  <span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span> <span class="o">=</span> <span class="n">virtio_bus_get_device</span><span class="p">(</span><span class="o">&amp;</span><span class="n">proxy</span><span class="o">-&gt;</span><span class="n">bus</span><span class="p">);</span>
+  <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">virtio_get_queue</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
 
-// qemu/hw/virtio/virtio-pci.c
-static int virtio_pci_ioeventfd_assign(DeviceState *d, EventNotifier *notifier,
-                                       int n, bool assign) {
-  VirtIOPCIProxy *proxy = to_virtio_pci_proxy(d);
-  VirtIODevice *vdev = virtio_bus_get_device(&amp;proxy-&gt;bus);
-  VirtQueue *vq = virtio_get_queue(vdev, n);
+  <span class="n">MemoryRegion</span> <span class="o">*</span><span class="n">modern_mr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">proxy</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">.</span><span class="n">mr</span><span class="p">;</span>
+  <span class="n">hwaddr</span> <span class="n">modern_addr</span> <span class="o">=</span> <span class="n">virtio_pci_queue_mem_multi</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span> <span class="o">*</span>
+                       <span class="n">virtio_get_queue_index</span><span class="p">(</span><span class="n">vq</span><span class="p">);</span>
+  <span class="n">memory_region_add_eventfd</span><span class="p">(</span><span class="n">modern_mr</span><span class="p">,</span> <span class="n">modern_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="nb">false</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">notifier</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 
-  MemoryRegion *modern_mr = &amp;proxy-&gt;notify.mr;
-  hwaddr modern_addr = virtio_pci_queue_mem_multi(proxy) *
-                       virtio_get_queue_index(vq);
-  memory_region_add_eventfd(modern_mr, modern_addr, 0,
-                            false, n, notifier);
-  ...
-}
+<span class="c1">// qemu/softmmu/memory.c
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">memory_region_add_eventfd</span><span class="p">(</span><span class="n">MemoryRegion</span> <span class="o">*</span><span class="n">mr</span><span class="p">,</span>
+                               <span class="n">hwaddr</span> <span class="n">addr</span><span class="p">,</span>
+                               <span class="kt">unsigned</span> <span class="n">size</span><span class="p">,</span>
+                               <span class="kt">bool</span> <span class="n">match_data</span><span class="p">,</span>
+                               <span class="kt">uint64_t</span> <span class="n">data</span><span class="p">,</span>
+                               <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">MemoryRegionIoeventfd</span> <span class="n">mrfd</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">addr</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">int128_make64</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span>
+    <span class="p">.</span><span class="n">addr</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">int128_make64</span><span class="p">(</span><span class="n">size</span><span class="p">),</span>
+    <span class="p">.</span><span class="n">match_data</span> <span class="o">=</span> <span class="n">match_data</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="p">,</span>
+  <span class="p">};</span>
 
-// qemu/softmmu/memory.c
-void memory_region_add_eventfd(MemoryRegion *mr,
-                               hwaddr addr,
-                               unsigned size,
-                               bool match_data,
-                               uint64_t data,
-                               EventNotifier *e) {
-  MemoryRegionIoeventfd mrfd = {
-    .addr.start = int128_make64(addr),
-    .addr.size = int128_make64(size),
-    .match_data = match_data,
-    .data = data,
-    .e = e,
-  };
+  <span class="n">memory_region_transaction_begin</span><span class="p">();</span>
+  <span class="n">memory_region_ioeventfd_before</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mrfd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="o">++</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">;</span>
+  <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span> <span class="o">=</span> <span class="n">g_realloc</span><span class="p">(</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">)</span> <span class="o">*</span> <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">);</span>
+  <span class="n">memmove</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">));</span>
+  <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mrfd</span><span class="p">;</span>
+  <span class="n">memory_region_transaction_commit</span><span class="p">();</span>
+<span class="p">}</span>
 
-  memory_region_transaction_begin();
-  memory_region_ioeventfd_before(&amp;mrfd, &amp;mr-&gt;ioeventfds[i]);
-  ++mr-&gt;ioeventfd_nb;
-  mr-&gt;ioeventfds = g_realloc(mr-&gt;ioeventfds, sizeof(*mr-&gt;ioeventfds) * mr-&gt;ioeventfd_nb);
-  memmove(&amp;mr-&gt;ioeventfds[i+1], &amp;mr-&gt;ioeventfds[i], sizeof(*mr-&gt;ioeventfds) * (mr-&gt;ioeventfd_nb-1 -i));
-  mr-&gt;ioeventfds[i] = mrfd;
-  memory_region_transaction_commit();
-}
+<span class="kt">void</span> <span class="nf">memory_region_transaction_commit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">;</span>
+  <span class="p">...</span>
+  <span class="n">QTAILQ_FOREACH</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_spaces</span><span class="p">,</span> <span class="n">address_spaces_link</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">address_space_update_ioeventfd</span><span class="p">(</span><span class="n">as</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-void memory_region_transaction_commit(void) {
-  AddressSpace *as;
-  ...
-  QTAILQ_FOREACH(as, &amp;address_spaces, address_spaces_link) {
-    address_space_update_ioeventfd(as);
-  }
-}
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">address_space_update_ioeventfds</span><span class="p">(</span><span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">address_space_add_del_ioeventfds</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="n">ioeventfds</span><span class="p">,</span> <span class="n">ioeventfd_nb</span><span class="p">,</span>
+                                   <span class="n">as</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">,</span> <span class="n">as</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">);</span>
+<span class="p">}</span>
 
-static void address_space_update_ioeventfds(AddressSpace *as) {
-  ...
-  address_space_add_del_ioeventfds(as, ioeventfds, ioeventfd_nb,
-                                   as-&gt;ioeventfds, as-&gt;ioeventfd_nb);
-}
-
-static void address_space_add_del_ioeventfds(AddressSpace *as,
-                                             MemoryRegionIoeventfd *fds_new,
-                                             unsigned fds_new_nb,
-                                             MemoryRegionIoeventfd *fds_old,
-                                             unsigned fds_old_nb) {
-  ...
-  MEMORY_LISTENER_CALL(as, eventfd_add, Reverse, &amp;section, fd-&gt;match_data, fd-&gt;data, fd-&gt;e);
-}
-</code></pre>
-<p>where <code>MEMORY_LISTENER_CALL</code> seems to call the registered eventfd add memory listener <code>kvm_mem_ioeventfd_add()</code>.</p>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">address_space_add_del_ioeventfds</span><span class="p">(</span><span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">,</span>
+                                             <span class="n">MemoryRegionIoeventfd</span> <span class="o">*</span><span class="n">fds_new</span><span class="p">,</span>
+                                             <span class="kt">unsigned</span> <span class="n">fds_new_nb</span><span class="p">,</span>
+                                             <span class="n">MemoryRegionIoeventfd</span> <span class="o">*</span><span class="n">fds_old</span><span class="p">,</span>
+                                             <span class="kt">unsigned</span> <span class="n">fds_old_nb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">MEMORY_LISTENER_CALL</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="n">eventfd_add</span><span class="p">,</span> <span class="n">Reverse</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">section</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">match_data</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>where <code>MEMORY_LISTENER_CALL</code> seems to call the registered eventfd add memory listener <code>kvm_mem_ioeventfd_add()</code>.</p>
 <!--
 A virtio front-end device driver running on the guest operating system puts data into the virtqueue and kicks to pass its execution context to host kernel module (KVM) and eventually to QEMU userspace process.
 This is because the guest operating system **allocates its virtqueues in the shared memory** shared with QEMU userspace process.
 Red Hat calls data communication that uses these shared memory regions as **data plane**, and communication used for the process of setting them up as **control plane** [^virtio-net-vhost-net].
 
-<figure><img src="/assets/images/210310/virtio-net-qemu.png"
-         alt="image"/><figcaption>
-            <p>virtio-net example architecture. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></p>
-        </figcaption>
-</figure>
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/210310/virtio-net-qemu.png" alt="image" />
+        <figcaption>virtio-net example architecture. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></figcaption>
+      </figure>
+    
+  
+
 
 
 With the knowledge of virtqueue internal data structures (descriptor, avail area, and used area), we can now understand how communication actually happens.
 -->
 <p>Once finished reading/writing operations, QEMU <em>injects</em> an IRQ to notify that the operation is complete.</p>
-<pre><code class="language-c">// qemu/hw/virtio.c
-void virtio_notify_irqfd(VirtIODevice *vdev, VirtQueue *vq) {
-  ...
-  virtio_set_isr(vq-&gt;vdev, 0x1);
-  event_notifier_set(&amp;vq-&gt;guest_notifier);
-}
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// qemu/hw/virtio.c
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">virtio_notify_irqfd</span><span class="p">(</span><span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span><span class="p">,</span> <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">virtio_set_isr</span><span class="p">(</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span> <span class="mh">0x1</span><span class="p">);</span>
+  <span class="n">event_notifier_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">guest_notifier</span><span class="p">);</span>
+<span class="p">}</span>
 
-// qemu/hw/block/dataplane/virtio-blk.c
-void virtio_blk_data_plane_notify(VirtIOBlockDataPlane *s, VirtQueue *vq) {
-  virtio_notify_irqfd(s-&gt;vdev, vq);
-}
+<span class="c1">// qemu/hw/block/dataplane/virtio-blk.c
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">virtio_blk_data_plane_notify</span><span class="p">(</span><span class="n">VirtIOBlockDataPlane</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">virtio_notify_irqfd</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span> <span class="n">vq</span><span class="p">);</span>
+<span class="p">}</span>
 
-// qemu/hw/block/virtio-blk.c
-static void virtio_blk_req_complete(VirtIOBlockReq *req, unsigned char status) {
-  ...
-  if (s-&gt;dataplane_started &amp;&amp; !s-&gt;dataplane_disabled) {
-    virtio_blk_data_plane_notify(s-&gt;dataplane, req-&gt;vq);
-  } else {
-    virtio_notify(vdev, req-&gt;vq);
-  }
-}
+<span class="c1">// qemu/hw/block/virtio-blk.c
+</span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">virtio_blk_req_complete</span><span class="p">(</span><span class="n">VirtIOBlockReq</span> <span class="o">*</span><span class="n">req</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane_started</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane_disabled</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">virtio_blk_data_plane_notify</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">virtio_notify</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-static void virtio_blk_rw_complete(void *opaque, int ret) {
-  VirtIOBlockReq *next = opaque;
-  ...
-  virtio_blk_req_complete(req, VIRTIO_BLK_S_OK);
-  ...
-}
-</code></pre>
-<h2 id="summary-io-virtualization">Summary <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup></h2>
-<figure><img src="/assets/images/210310/KVM_QEMU_virtIO_Process.png"
-         alt="image"/><figcaption>
-            <p>VirtI/O process diagram overview. <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">[Source (Korean)]</a></p>
-        </figcaption>
-</figure>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">virtio_blk_rw_complete</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">opaque</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">VirtIOBlockReq</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="n">opaque</span><span class="p">;</span>
+  <span class="p">...</span>
+  <span class="n">virtio_blk_req_complete</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">VIRTIO_BLK_S_OK</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="summary-io-virtualization" class="relative group">Summary <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#summary-io-virtualization" aria-label="Anchor">#</a></span></h2>
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/210310/KVM_QEMU_virtIO_Process.png" alt="image" />
+        <figcaption>VirtI/O process diagram overview. <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">[Source (Korean)]</a></figcaption>
+      </figure>
+    
+  
+
 
 <ul>
 <li>VirtI/O is implemented with virtqueues, shared by the guest and QEMU process.</li>
@@ -820,137 +1113,288 @@ static void virtio_blk_rw_complete(void *opaque, int ret) {
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://programmersought.com/article/38004209835/">Virtualization technology implementation - KVM I/O virtualization</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://programmersought.com/article/38004209835/"   target="_blank">Virtualization technology implementation - KVM I/O virtualization</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">IBM Developer: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">IBM Developer: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://programmersought.com/article/58091005566/">ProgrammerSought: IO Virtualization - virtio-blk front-end Driver Analysis</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://programmersought.com/article/58091005566/"   target="_blank">ProgrammerSought: IO Virtualization - virtio-blk front-end Driver Analysis</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p><a href="https://programmersought.com/article/11831007453/">ProgrammerSought: IO Virtualization - virtio Introduction and Code Analysis</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://programmersought.com/article/11831007453/"   target="_blank">ProgrammerSought: IO Virtualization - virtio Introduction and Code Analysis</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf">CMU Lecture Slide: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf"   target="_blank">CMU Lecture Slide: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p><a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">Red Hat Blog: Virtqueues and Virtio Ring: How the Data Travles</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels"   target="_blank">Red Hat Blog: Virtqueues and Virtio Ring: How the Data Travles</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:7" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/83465096784/">ProgrammerSought: eventfd in QEMU-ioeventfd</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.programmersought.com/article/83465096784/"   target="_blank">ProgrammerSought: eventfd in QEMU-ioeventfd</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:8" role="doc-endnote">
-<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">Ssup2 Blog: I/O Virtualization Software (Korean)</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/"   target="_blank">Ssup2 Blog: I/O Virtualization Software (Korean)</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
 
-    </div>
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
     
-    <div class="my-4">
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
     
-    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
     
-    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
-    <a href="/tags/virtualization/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#virtualization</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
-    <a href="/tags/kvm/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#kvm</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
 </div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
     
     
     
-    
-    
-    
-    
-<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Using Ceph RBD as a QEMU Storage</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2021-03-04 14:40:00 &#43;0900 &#43;0900">Mar 4, 2021</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="group flex text-right" href="/2021-03-15/virtio-and-vhost-architecture-part-2/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Virtio and Vhost Architecture - Part 2</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2021-03-15 12:24:00 &#43;0900 &#43;0900">Mar 15, 2021</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
     <div>
-        
-        <span class="block font-bold">Previous</span>
-        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/" class="block">Virtio and Vhost Architecture - Part 2</a>
-        
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2022
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
     </div>
-    <div class="md:text-right mt-4 md:mt-0">
-        
-        <span class="block font-bold">Next</span>
-        <a href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/" class="block">Using Ceph RBD as a QEMU Storage</a>
-        
-    </div>
-</div>
-
-    
-
-<div id="disqus_thread"></div>
-<script>
-    var disqus_config = function () {
     
     
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "insujang" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
 
 
-</div>
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
 
 
-
-
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-    <h2 class="text-lg font-semibold mb-4">See Also</h2>
-    <div class="content">
-        
-        <a href="/2020-08-27/introduction-to-flatpak/">Introduction to Flatpak</a>
-        <br />
-        
-        <a href="/2020-07-15/fedora-silverblue/">Introduction to Fedora Silverblue</a>
-        <br />
-        
-        <a href="/2020-02-09/introduction-to-programming-infiniband/">Introduction to Programming Infiniband RDMA</a>
-        <br />
-        
-        <a href="/2020-01-25/building-mellanox-ofed-from-source/">Building Mellanox OFED from source code</a>
-        <br />
-        
-        <a href="/2021-03-04/using-ceph-rbd-as-a-qemu-storage/">Using Ceph RBD as a QEMU Storage</a>
-        <br />
-        
-        <a href="/2020-12-23/analyzing-ceph-network-module/">Analyzing Ceph Network Module</a>
-        <br />
-        
-    </div>
-</div>
-
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-        hljs.initHighlightingOnLoad();
-    })
-</script>
-
+          </div>
+        </button>
       </div>
     
-  </main>
-  <footer class="pl-scrollbar">
-    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
-    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
-</div></div>
-  </footer>
-</body>
+  </div>
+  
+  
+</footer>
 
+    </div>
+  </body>
 </html>

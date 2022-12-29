@@ -6,7 +6,6 @@
     <description>Recent content in ceph on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Fri, 23 Apr 2021 16:19:00 +0900</lastBuildDate><atom:link href="/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Reconfiguring Ceph</title>
@@ -14,7 +13,9 @@
       <pubDate>Fri, 23 Apr 2021 16:19:00 +0900</pubDate>
       
       <guid>/2021-04-23/reconfiguring-ceph/</guid>
-      <description>Configuring Ceph Ceph daemons use /etc/ceph/ceph.</description>
+      <description>Configuring Ceph # Ceph daemons use /etc/ceph/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?
+1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
+ Use injectargs to inject configuration values into the existing values.</description>
     </item>
     
     <item>
@@ -23,7 +24,9 @@
       <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
       
       <guid>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</guid>
-      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.</description>
+      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
+VM execution is done through qemu-system-x86_64, without using libvirt.
+ Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
     </item>
     
     <item>
@@ -32,7 +35,10 @@
       <pubDate>Thu, 04 Mar 2021 14:40:00 +0900</pubDate>
       
       <guid>/2021-03-04/using-ceph-rbd-as-a-qemu-storage/</guid>
-      <description>This post explains how we can use a Ceph RBD as a QEMU storage.</description>
+      <description>This post explains how we can use a Ceph RBD as a QEMU storage. We can attach a Ceph RBD to a QEMU VM through either virtio-blk or vhost-user-blk QEMU device (vhost requires SPDK).
+Assume that a Ceph cluster is ready following the manual.
+Setting a Ceph client Configuration 1 # For a node to access a Ceph cluster, it requires some configuration:
+ Config file setup User authentication setup  This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</description>
     </item>
     
     <item>
@@ -41,7 +47,9 @@
       <pubDate>Wed, 23 Dec 2020 11:38:00 +0900</pubDate>
       
       <guid>/2020-12-23/analyzing-ceph-network-module/</guid>
-      <description></description>
+      <description>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+ High level Ceph architecture. [src]  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.</description>
     </item>
     
     <item>
@@ -50,7 +58,9 @@
       <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
       <guid>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
-      <description>This post explains how we can accelerate buildig a Ceph RPM package.</description>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
+Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
+1. RPM Packaing 101 # RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
     </item>
     
     <item>
@@ -59,7 +69,10 @@
       <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
       
       <guid>/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
-      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.</description>
+      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.
+ 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.</description>
     </item>
     
     <item>
@@ -68,7 +81,9 @@
       <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
       
       <guid>/2020-08-30/introduction-to-ceph/</guid>
-      <description>Ceph is an open-source distributed software platform 1 2.</description>
+      <description>Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+ Ceph Cluster Overview. [Source]   Ceph Cluster Overview. [Source]   Ceph Cluster Overview. [Source]  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.</description>
     </item>
     
   </channel>

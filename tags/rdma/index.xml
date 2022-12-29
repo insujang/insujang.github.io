@@ -6,7 +6,6 @@
     <description>Recent content in rdma on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Wed, 16 Mar 2022 23:37:00 -0500</lastBuildDate><atom:link href="/tags/rdma/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using RDMA CM</title>
@@ -14,7 +13,9 @@
       <pubDate>Wed, 16 Mar 2022 23:37:00 -0500</pubDate>
       
       <guid>/2022-03-16/using-rdma-cm/</guid>
-      <description>Years before, I posted how to use libibverbs for RDMA communication.</description>
+      <description>Years before, I posted how to use libibverbs for RDMA communication.
+When initializing queue pair connection, we need some destination information:
+bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here  rtr_attr.</description>
     </item>
     
     <item>
@@ -23,7 +24,8 @@
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
       <guid>/2020-02-09/introduction-to-programming-infiniband/</guid>
-      <description>This post explains the basic of RDMA programming.</description>
+      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
     </item>
     
     <item>
@@ -32,7 +34,8 @@
       <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
       
       <guid>/2020-01-25/building-mellanox-ofed-from-source/</guid>
-      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).</description>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
+Building Mellanox OFED source code: inside install script # Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.</description>
     </item>
     
   </channel>

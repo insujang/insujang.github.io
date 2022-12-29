@@ -1,392 +1,850 @@
+
+
+
 <!DOCTYPE html>
-<html lang='en' ><meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Open Container Initiative (OCI) Standard, Image Spec &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Open Container Initiative (OCI) Standard, Image Spec &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&#39;, enabling providing compatibilities between Docker and OCI-based container frameworks." />
+  
+  
+  
+  <link rel="canonical" href="/2019-10-10/open-container-initiative-image-spec/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.fdfd68c6d80697a222b9fc676c392570628fa823215c17e25faaeebb4afbe03ed6ccb978bbf6605b7b63b7f0c091b622850b865f49286208e8dfb5a7b3501d82.css"
+    integrity="sha512-/f1oxtgGl6IiufxnbDklcGKPqCMhXBfiX6ruu0r74D7WzLl4u/ZgW3tjt/DAkbYihQuGX0koYgjo37Wns1Adgg=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Open Container Initiative (OCI) Standard, Image Spec" />
+<meta property="og:description" content="The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&#39;, enabling providing compatibilities between Docker and OCI-based container frameworks." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2019-10-10/open-container-initiative-image-spec/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-10-10T20:35:00+09:00" />
+<meta property="article:modified_time" content="2019-10-10T20:35:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
 
-<title>Open Container Initiative (OCI) Standard, Image Spec | Better Tomorrow with Computer Science</title>
-<link rel="stylesheet" href="/css/eureka.min.css">
-<script defer src="/js/eureka.min.js"></script>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Open Container Initiative (OCI) Standard, Image Spec"/>
+<meta name="twitter:description" content="The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&#39;, enabling providing compatibilities between Docker and OCI-based container frameworks."/>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload"
-  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-  as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
-   media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
-   crossorigin>
-<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
-   crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
-   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
-   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
-  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true }
-      ],
-    });
-  });
-</script>
-<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'UA-158110335-1');
-</script>
-
-
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
-
-<meta name="description"
-  content="The Open Container Initiative (OCI) standard is an open standard for Linux containers.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1 ,
-      "name":"Posts",
-      "item":"/posts/"},{
-      "@type": "ListItem",
-      "position": 2 ,
-      "name":"Open Container Initiative (OCI) Standard, Image Spec",
-      "item":"/2019-10-10/open-container-initiative-image-spec/"}]
-}
-</script>
-
-
-
-<script type="application/ld+json">
-{
+  
+  <script type="application/ld+json">
+  [{
     "@context": "https://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "/2019-10-10/open-container-initiative-image-spec/"
+    "articleSection": "Posts",
+    "name": "Open Container Initiative (OCI) Standard, Image Spec",
+    "headline": "Open Container Initiative (OCI) Standard, Image Spec",
+    
+    "abstract": "The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers\u0027, enabling providing compatibilities between Docker and OCI-based container frameworks.",
+    "inLanguage": "en",
+    "url" : "\/2019-10-10\/open-container-initiative-image-spec\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
     },
-    "headline": "Open Container Initiative (OCI) Standard, Image Spec | Better Tomorrow with Computer Science","datePublished": "2019-10-10T20:35:00+09:00",
-    "dateModified": "2019-10-10T20:35:00+09:00",
-    "wordCount":  487 ,
-    "publisher": {
-        "@type": "Person",
-        "name": "Insu Jang",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "/umich.png"
-        }
-        },
-    "description": "The Open Container Initiative (OCI) standard is an open standard for Linux containers."
+    "copyrightYear": "2019",
+    "dateCreated": "2019-10-10T20:35:00\u002b09:00",
+    "datePublished": "2019-10-10T20:35:00\u002b09:00",
+    
+    "dateModified": "2019-10-10T20:35:00\u002b09:00",
+    
+    "keywords": ["linux","research"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "490"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
 }
-</script><meta property="og:title" content="Open Container Initiative (OCI) Standard, Image Spec | Better Tomorrow with Computer Science" />
-<meta property="og:type" content="article" />
-
-
-<meta property="og:image" content="/umich.png">
-
-
-<meta property="og:url" content="/2019-10-10/open-container-initiative-image-spec/" />
-
-
-
-
-<meta property="og:description" content="The Open Container Initiative (OCI) standard is an open standard for Linux containers." />
-
-
-
-
-<meta property="og:locale" content="en" />
-
-
-
-
-<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
-
-
-
-
-
-<meta property="article:published_time" content="2019-10-10T20:35:00&#43;09:00" />
-
-
-<meta property="article:modified_time" content="2019-10-10T20:35:00&#43;09:00" />
-
-
-
-<meta property="article:section" content="posts" />
-
-
-<meta property="article:tag" content="linux" />
-
-<meta property="article:tag" content="research" />
-
-
-
-
-
-<meta property="og:see_also" content="/2019-02-07/implementing-a-new-custom-netlink-family-protocol/" />
-
-<meta property="og:see_also" content="/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/" />
-
-<meta property="og:see_also" content="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/" />
-
-<meta property="og:see_also" content="/2018-11-22/systemd-boot-process/" />
-
-<meta property="og:see_also" content="/2017-05-10/usermode-helper-api/" />
-
-<meta property="og:see_also" content="/2017-05-09/cpu-affinity/" />
-
-
-
-<body class="flex flex-col min-h-screen">
-  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
-    <div class="w-full max-w-screen-xl mx-auto"><script>
-    let storageColorScheme = localStorage.getItem("lightDarkMode")
-    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
-        document.getElementsByTagName('html')[0].classList.add('dark')
-    }
 </script>
-<nav class="flex items-center justify-between flex-wrap p-4">
-    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
-    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div id="target"
-        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
-        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
-            <a href="/#about"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
-            <a href="/posts/"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
-        </div>
 
-        <div class="flex">
-            <div class="relative pt-4 md:pt-0">
-                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
-                </div>
-                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
-                    id='lightDarkOptions'>
-                    <span class="px-4 py-1 hover:text-eureka">Light</span>
-                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
-                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
-                </div>
-            </div>
-        </div>
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
     </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="z-40 flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
 
-    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+      
+
     </div>
+    
+      
+      <label id="menu-button" for="menu-controller" class="block sm:hidden">
+        <input type="checkbox" id="menu-controller" class="hidden" />
+        <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+          
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+        </div>
+        <div
+          id="menu-wrapper"
+          class="invisible fixed inset-0 z-30 m-auto h-screen w-screen cursor-default overflow-auto bg-neutral-100/50 opacity-0 backdrop-blur-sm transition-opacity dark:bg-neutral-900/50"
+        >
+          <ul
+            class="mx-auto flex w-full max-w-7xl list-none flex-col overflow-visible px-6 py-6 ltr:text-right rtl:text-left sm:px-14 sm:py-10 sm:pt-10 md:px-24 lg:px-32"
+          >
+            <li class="mb-1">
+              <span class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"
+                >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span
+              >
+            </li>
+            
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/#about"
+                    title=""
+                    >About</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/research/"
+                    title=""
+                    >Research</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/posts/"
+                    title=""
+                    >Posts</a
+                  >
+                </li>
+              
+            
+            
+          </ul>
+        </div>
+      </label>
+      
+      <ul class="hidden list-none flex-row ltr:text-right rtl:text-left sm:flex">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Open Container Initiative (OCI) Standard, Image Spec
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2019-10-10 20:35:00 &#43;0900 &#43;0900">Oct 10, 2019</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/linux/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >linux</a
+            >
+          
+            <a
+              href="/tags/research/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >research</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#image-spec">Image Spec</a></li>
+        <li><a href="#runtime-spec">Runtime Spec</a></li>
+        <li><a href="#references">References</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
-<script>
-    let element = document.getElementById('lightDarkMode')
-    if (storageColorScheme == 'Auto') {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'adjust')
-        element.firstElementChild.classList.add('fa-adjust')
-        document.addEventListener('DOMContentLoaded', () => {
-            switchMode('Auto')
-        })
-    } else if (storageColorScheme == "Dark") {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'moon')
-        element.firstElementChild.classList.add('fa-moon')
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        getcolorscheme();
-        switchBurger();
-    });
-</script></div>
-  </header>
-  <main class="flex-grow pt-16">
-      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+  </div>
+</details>
 
-
-<div class="lg:pt-12"></div>
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-    <h1 class="font-bold text-3xl text-primary-text">Open Container Initiative (OCI) Standard, Image Spec</h1>
-    <div class="mr-6 my-2">
-    <span>Oct 10, 2019</span>
-</div>
-
-
-
-
-    
-    
-    
-
-    <div class="content">
-        <p>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, <a href="https://www.docker.com">Docker</a> has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest.
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
+        <p>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, <a href="https://www.docker.com"   target="_blank">Docker</a> has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest.
 As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers', enabling providing compatibilities between Docker and OCI-based container frameworks.</p>
-<p>The official website says it contains two specifications (the Image Spec and the Runtime Spec), however, its Github repository actually contains three specification: <a href="https://github.com/opencontainers/image-spec">the Image Spec</a>, <a href="https://github.com/opencontainers/runtime-spec">the Runtime Spec</a>, and <a href="https://github.com/opencontainers/distribution-spec">the Distribution Spec</a>. That may be because that distribution is currently out of scope on the OCI Scope Table <a href="https://github.com/opencontainers/image-spec#faq">[link]</a>.</p>
-<h2 id="image-spec">Image Spec</h2>
-<p>The OCI Image Spec is based on <a href="https://cloud.google.com/container-registry/docs/image-formats">Docker Image Manifest Version 2.2</a>. The architecture is very similar; hence docker images are convertible to the corresponding OCI image by using <a href="https://github.com/containers/skopeo">skopeo utility</a>.</p>
-<p><img src="/assets/images/191010/skopeo_copy.png" alt="skopeo copy">{: width=&ldquo;800px&rdquo;}
-<em>The OCI image layout of <a href="https://hub.docker.com/_/debian">the Debian image from Docker Hub</a>.</em></p>
+<p>The official website says it contains two specifications (the Image Spec and the Runtime Spec), however, its Github repository actually contains three specification: <a href="https://github.com/opencontainers/image-spec"   target="_blank">the Image Spec</a>, <a href="https://github.com/opencontainers/runtime-spec"   target="_blank">the Runtime Spec</a>, and <a href="https://github.com/opencontainers/distribution-spec"   target="_blank">the Distribution Spec</a>. That may be because that distribution is currently out of scope on the OCI Scope Table <a href="https://github.com/opencontainers/image-spec#faq"   target="_blank">[link]</a>.</p>
+<h2 id="image-spec" class="relative group">Image Spec <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#image-spec" aria-label="Anchor">#</a></span></h2>
+<p>The OCI Image Spec is based on <a href="https://cloud.google.com/container-registry/docs/image-formats"   target="_blank">Docker Image Manifest Version 2.2</a>. The architecture is very similar; hence docker images are convertible to the corresponding OCI image by using <a href="https://github.com/containers/skopeo"   target="_blank">skopeo utility</a>.</p>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/191010/skopeo_copy.png" alt="skopeo copy" />
+      
+    </figure>
+  
+
+{: width=&ldquo;800px&rdquo;}
+<em>The OCI image layout of <a href="https://hub.docker.com/_/debian"   target="_blank">the Debian image from Docker Hub</a>.</em></p>
 <p>The OCI image consists of:</p>
 <ul>
 <li><code>blobs/sha256</code>: this directory contains information about image manifests and image layers, and compressed layer archives.</li>
 <li><code>index.json</code>: this JSON plaintext contains information about the list of image manifests.</li>
 <li><code>oci-layout</code>: this JSON plaintext contains the version of OCI layout&hellip; To be honest, I do not know how to use it.</li>
 </ul>
-<p><img src="/assets/images/191010/debian_index.png" alt="debian_index">{: width=&ldquo;800px&rdquo;}
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/191010/debian_index.png" alt="debian_index" />
+      
+    </figure>
+  
+
+{: width=&ldquo;800px&rdquo;}
 <em>The contents of <code>index.json</code> of Debian OCI image.</em></p>
-<p><code>anntations:org.opencontainers.image.ref.name</code> usually represents a tag name <a href="https://github.com/opencontainers/image-spec/blob/e562b04403929d582d449ae5386ff79dd7961a11/image-layout.md#indexjson-file">[link]</a>.
+<p><code>anntations:org.opencontainers.image.ref.name</code> usually represents a tag name <a href="https://github.com/opencontainers/image-spec/blob/e562b04403929d582d449ae5386ff79dd7961a11/image-layout.md#indexjson-file"   target="_blank">[link]</a>.
 Therefore, each OCI image directory can contain several image tags, all layers, manifests, configs of which are mixed in <code>blobs/sha256</code> directory.</p>
-<p><img src="/assets/images/191010/debian_blobs.png" alt="debian_blobs">{: width=&ldquo;800px&rdquo;}
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/191010/debian_blobs.png" alt="debian_blobs" />
+      
+    </figure>
+  
+
+{: width=&ldquo;800px&rdquo;}
 <em>The contents of <code>debian/blobs/sha256</code> directory. As indicated there is a file named with the digest <code>sha256:0578...</code> from <code>index.json</code> file.</em></p>
-<p><img src="/assets/images/191010/debian_config.png" alt="debian_config">{: width=&ldquo;800px&rdquo;}
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/191010/debian_config.png" alt="debian_config" />
+      
+    </figure>
+  
+
+{: width=&ldquo;800px&rdquo;}
 <em>Contents of the image manifest <code>0578e4...</code>. It explicitly defines the name of image config and layers.</em> Those files are stored in the same directory with this manifest file.</p>
 <p>As there is one tag in the image, contents of the directory <code>blobs/sha256</code> is quite simple.</p>
-<p><img src="/assets/images/191010/oci_layout.png" alt="oci layout">{: width=&ldquo;800px&rdquo;}
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/191010/oci_layout.png" alt="oci layout" />
+      
+    </figure>
+  
+
+{: width=&ldquo;800px&rdquo;}
 <em>Simple summarized diagram of OCI image directory layout.</em></p>
-<h2 id="runtime-spec">Runtime Spec</h2>
+<h2 id="runtime-spec" class="relative group">Runtime Spec <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#runtime-spec" aria-label="Anchor">#</a></span></h2>
 <p>The OCI Image Spec is much similar to Docker images. Similar to Docker framework, where a container needs to be created from an image, <strong>a runtime bundle</strong> should be generated from the OCI image.</p>
 <p>Detailed explanations are out of this post, just leave a link about it.
 There are several tools to unpack an OCI image and to generate an OCI runtime bundle.</p>
 <ul>
-<li><a href="https://github.com/openSUSE/umoci">umoci</a></li>
-<li><a href="https://github.com/opencontainers/image-tools">OCI image tool</a></li>
-<li><a href="https://github.com/opencontainers/runc">runc</a></li>
+<li><a href="https://github.com/openSUSE/umoci"   target="_blank">umoci</a></li>
+<li><a href="https://github.com/opencontainers/image-tools"   target="_blank">OCI image tool</a></li>
+<li><a href="https://github.com/opencontainers/runc"   target="_blank">runc</a></li>
 </ul>
 <p>With <code>umoci</code> or <code>OCI image tool</code>, we can unpack an OCI image to make a OCI runtime. And then, we can run a container with <code>runc</code>.</p>
-<p><img src="/assets/images/191010/umoci_runc.png" alt="umoci_runc">{: width=&ldquo;800px&rdquo;}
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/191010/umoci_runc.png" alt="umoci_runc" />
+      
+    </figure>
+  
+
+{: width=&ldquo;800px&rdquo;}
 <em>As the environment is already running in an unprivileged Docker container, running a new container inside the container is impossible due to the restricted permission. It is supposed to run normally, executing a new shell in a container.</em></p>
-<h2 id="references">References</h2>
+<h2 id="references" class="relative group">References <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a></span></h2>
 <ul>
-<li><a href="https://www.docker.com">Docker</a></li>
-<li><a href="https://www.opencontainers.org">OCI standard home</a></li>
-<li><a href="https://github.com/opencontainers/image-spec">The OCI image spec</a></li>
-<li><a href="https://github.com/opencontainers/runtime-spec">The OCI runtime spec</a></li>
-<li><a href="https://github.com/opencontainers/distribution-spec">The OCI distribution spec</a></li>
+<li><a href="https://www.docker.com"   target="_blank">Docker</a></li>
+<li><a href="https://www.opencontainers.org"   target="_blank">OCI standard home</a></li>
+<li><a href="https://github.com/opencontainers/image-spec"   target="_blank">The OCI image spec</a></li>
+<li><a href="https://github.com/opencontainers/runtime-spec"   target="_blank">The OCI runtime spec</a></li>
+<li><a href="https://github.com/opencontainers/distribution-spec"   target="_blank">The OCI distribution spec</a></li>
 </ul>
 
-    </div>
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
     
-    <div class="my-4">
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
     
-    <a href="/tags/linux/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#linux</a>
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
     
-    <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
 </div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
     
     
     
-    
-    
-    
-    
-<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2019-09-28/jekyll-vscode/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Managing Github Pages blog with VScode and Jekyll</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2019-09-28 14:31:00 &#43;0900 &#43;0900">Sep 28, 2019</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="group flex text-right" href="/2019-10-31/container-runtime/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Container Runtime</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2019-10-31 21:36:00 &#43;0900 &#43;0900">Oct 31, 2019</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
     <div>
-        
-        <span class="block font-bold">Previous</span>
-        <a href="/2019-10-31/container-runtime/" class="block">Container Runtime</a>
-        
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2022
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
     </div>
-    <div class="md:text-right mt-4 md:mt-0">
-        
-        <span class="block font-bold">Next</span>
-        <a href="/2019-09-28/jekyll-vscode/" class="block">Managing Github Pages blog with VScode and Jekyll</a>
-        
-    </div>
-</div>
-
-    
-
-<div id="disqus_thread"></div>
-<script>
-    var disqus_config = function () {
     
     
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "insujang" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
 
 
-</div>
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
 
 
-
-
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-    <h2 class="text-lg font-semibold mb-4">See Also</h2>
-    <div class="content">
-        
-        <a href="/2019-02-07/implementing-a-new-custom-netlink-family-protocol/">Implementing a New Custom Netlink Family Protocol</a>
-        <br />
-        
-        <a href="/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/">udev: Function Flow for KOBJECT_UEVENT kernel group message </a>
-        <br />
-        
-        <a href="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/">udev: Device Manager for the Linux Kernel in Userspace</a>
-        <br />
-        
-        <a href="/2018-11-22/systemd-boot-process/">systemd Boot Process</a>
-        <br />
-        
-        <a href="/2017-05-10/usermode-helper-api/">Usermode Helper API</a>
-        <br />
-        
-        <a href="/2017-05-09/cpu-affinity/">CPU Affinity</a>
-        <br />
-        
-    </div>
-</div>
-
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-        hljs.initHighlightingOnLoad();
-    })
-</script>
-
+          </div>
+        </button>
       </div>
     
-  </main>
-  <footer class="pl-scrollbar">
-    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
-    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
-</div></div>
-  </footer>
-</body>
+  </div>
+  
+  
+</footer>
 
+    </div>
+  </body>
 </html>

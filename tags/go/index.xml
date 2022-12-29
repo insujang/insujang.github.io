@@ -6,7 +6,6 @@
     <description>Recent content in go on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Sat, 04 Apr 2020 19:27:00 +0900</lastBuildDate><atom:link href="/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go Modules: an Alternative to GOPATH for Package Distribution</title>
@@ -14,7 +13,10 @@
       <pubDate>Sat, 04 Apr 2020 19:27:00 +0900</pubDate>
       
       <guid>/2020-04-04/go-modules/</guid>
-      <description>This post introduces Go modules, introduced in Go version 1.</description>
+      <description>This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? # Go 1.11 introduces a new dependency mangement system, Go modules (That&amp;rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what it means specifically. Here is my explanaion.
+Importing Packages without Go Modules # Go programmers can import third-party packages (i.</description>
     </item>
     
     <item>
@@ -23,7 +25,8 @@
       <pubDate>Thu, 13 Feb 2020 10:13:00 +0900</pubDate>
       
       <guid>/2020-02-13/programming-kubernetes-crd/</guid>
-      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI.</description>
+      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
+Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
     </item>
     
     <item>
@@ -32,7 +35,9 @@
       <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
       
       <guid>/2019-12-10/cmake-for-custom-library-build-system-in-go/</guid>
-      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities.</description>
+      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities. This post dives a little bit deeper into CMake build system for this interaction.
+The following CMakeLists.txt provides a binary compilation altogether with compiling Go based static library.
+cmake_minimum_required(VERSION 3.0)project(test)set(TARGET_OUT test.out)set(TARGET_LIB test.lib)# Go configurations set(GO_SRCS test.go)set(GO_LIBNAME libtest.a)# Custom command for &amp;#39;go build -buildmode=c-archive ...&amp;#39; # to create a library from Go codes. add_custom_command(OUTPUT ${GO_LIBNAME} DEPENDS ${GO_SRCS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMMAND env go build -buildmode=c-archive -o &amp;#34;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&amp;#34; ${CMAKE_GO_FLAGS} ${GO_SRCS} COMMENT &amp;#34;Building Go library&amp;#34;)# Add a custom target for the library.</description>
     </item>
     
     <item>
@@ -41,7 +46,8 @@
       <pubDate>Thu, 28 Nov 2019 21:09:00 +0900</pubDate>
       
       <guid>/2019-11-28/implementing-kubernetes-cpp-client-library/</guid>
-      <description>Linking Go and C Since Go 1.</description>
+      <description>Linking Go and C # Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &amp;#34;C&amp;#34; import &amp;#34;fmt&amp;#34; //export hello func hello(name string) { fmt.Printf(&amp;#34;Hello from Go, %s!\n&amp;#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest.</description>
     </item>
     
   </channel>

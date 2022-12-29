@@ -1,338 +1,585 @@
+
+
+
 <!DOCTYPE html>
-<html lang='en' ><meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Interactions between cri-o and conmon in Kubernetes &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Interactions between cri-o and conmon in Kubernetes &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="cri-o #    cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
+   {: width=&ldquo;1000px&rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes." />
+  
+  
+  
+  <link rel="canonical" href="/2019-11-18/interactions-between-crio-and-conmon/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.fdfd68c6d80697a222b9fc676c392570628fa823215c17e25faaeebb4afbe03ed6ccb978bbf6605b7b63b7f0c091b622850b865f49286208e8dfb5a7b3501d82.css"
+    integrity="sha512-/f1oxtgGl6IiufxnbDklcGKPqCMhXBfiX6ruu0r74D7WzLl4u/ZgW3tjt/DAkbYihQuGX0koYgjo37Wns1Adgg=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Interactions between cri-o and conmon in Kubernetes" />
+<meta property="og:description" content="cri-o #    cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
+   {: width=&ldquo;1000px&rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2019-11-18/interactions-between-crio-and-conmon/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-11-18T23:07:00+09:00" />
+<meta property="article:modified_time" content="2019-11-18T23:07:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
 
-<title>Interactions between cri-o and conmon in Kubernetes | Better Tomorrow with Computer Science</title>
-<link rel="stylesheet" href="/css/eureka.min.css">
-<script defer src="/js/eureka.min.js"></script>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Interactions between cri-o and conmon in Kubernetes"/>
+<meta name="twitter:description" content="cri-o #    cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
+   {: width=&ldquo;1000px&rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes."/>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload"
-  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-  as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
-   media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
-   crossorigin>
-<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
-   crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
-   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
-   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
-  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true }
-      ],
-    });
-  });
-</script>
-<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'UA-158110335-1');
-</script>
-
-
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
-
-<meta name="description"
-  content="cri-o cri-o is a lightweight container runtime framework for Kubernetes.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1 ,
-      "name":"Posts",
-      "item":"/posts/"},{
-      "@type": "ListItem",
-      "position": 2 ,
-      "name":"Interactions between cri-o and conmon in Kubernetes",
-      "item":"/2019-11-18/interactions-between-crio-and-conmon/"}]
-}
-</script>
-
-
-
-<script type="application/ld+json">
-{
+  
+  <script type="application/ld+json">
+  [{
     "@context": "https://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "/2019-11-18/interactions-between-crio-and-conmon/"
+    "articleSection": "Posts",
+    "name": "Interactions between cri-o and conmon in Kubernetes",
+    "headline": "Interactions between cri-o and conmon in Kubernetes",
+    
+    "abstract": "cri-o #    cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.\n   {: width=\u0026ldquo;1000px\u0026rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.",
+    "inLanguage": "en",
+    "url" : "\/2019-11-18\/interactions-between-crio-and-conmon\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
     },
-    "headline": "Interactions between cri-o and conmon in Kubernetes | Better Tomorrow with Computer Science","datePublished": "2019-11-18T23:07:00+09:00",
-    "dateModified": "2019-11-18T23:07:00+09:00",
-    "wordCount":  1145 ,
-    "publisher": {
-        "@type": "Person",
-        "name": "Insu Jang",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "/umich.png"
-        }
-        },
-    "description": "cri-o cri-o is a lightweight container runtime framework for Kubernetes."
+    "copyrightYear": "2019",
+    "dateCreated": "2019-11-18T23:07:00\u002b09:00",
+    "datePublished": "2019-11-18T23:07:00\u002b09:00",
+    
+    "dateModified": "2019-11-18T23:07:00\u002b09:00",
+    
+    "keywords": ["kubernetes","research"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "1150"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
 }
-</script><meta property="og:title" content="Interactions between cri-o and conmon in Kubernetes | Better Tomorrow with Computer Science" />
-<meta property="og:type" content="article" />
-
-
-<meta property="og:image" content="/umich.png">
-
-
-<meta property="og:url" content="/2019-11-18/interactions-between-crio-and-conmon/" />
-
-
-
-
-<meta property="og:description" content="cri-o cri-o is a lightweight container runtime framework for Kubernetes." />
-
-
-
-
-<meta property="og:locale" content="en" />
-
-
-
-
-<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
-
-
-
-
-
-<meta property="article:published_time" content="2019-11-18T23:07:00&#43;09:00" />
-
-
-<meta property="article:modified_time" content="2019-11-18T23:07:00&#43;09:00" />
-
-
-
-<meta property="article:section" content="posts" />
-
-
-<meta property="article:tag" content="kubernetes" />
-
-<meta property="article:tag" content="research" />
-
-
-
-
-
-<meta property="og:see_also" content="/2019-11-07/kubernetes/" />
-
-<meta property="og:see_also" content="/2019-10-31/container-runtime/" />
-
-<meta property="og:see_also" content="/2019-10-10/open-container-initiative-image-spec/" />
-
-<meta property="og:see_also" content="/2019-02-07/implementing-a-new-custom-netlink-family-protocol/" />
-
-<meta property="og:see_also" content="/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/" />
-
-<meta property="og:see_also" content="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/" />
-
-
-
-<body class="flex flex-col min-h-screen">
-  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
-    <div class="w-full max-w-screen-xl mx-auto"><script>
-    let storageColorScheme = localStorage.getItem("lightDarkMode")
-    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
-        document.getElementsByTagName('html')[0].classList.add('dark')
-    }
 </script>
-<nav class="flex items-center justify-between flex-wrap p-4">
-    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
-    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div id="target"
-        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
-        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
-            <a href="/#about"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
-            <a href="/posts/"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
-        </div>
 
-        <div class="flex">
-            <div class="relative pt-4 md:pt-0">
-                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
-                </div>
-                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
-                    id='lightDarkOptions'>
-                    <span class="px-4 py-1 hover:text-eureka">Light</span>
-                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
-                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
-                </div>
-            </div>
-        </div>
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
     </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="z-40 flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
 
-    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+      
+
     </div>
+    
+      
+      <label id="menu-button" for="menu-controller" class="block sm:hidden">
+        <input type="checkbox" id="menu-controller" class="hidden" />
+        <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+          
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+        </div>
+        <div
+          id="menu-wrapper"
+          class="invisible fixed inset-0 z-30 m-auto h-screen w-screen cursor-default overflow-auto bg-neutral-100/50 opacity-0 backdrop-blur-sm transition-opacity dark:bg-neutral-900/50"
+        >
+          <ul
+            class="mx-auto flex w-full max-w-7xl list-none flex-col overflow-visible px-6 py-6 ltr:text-right rtl:text-left sm:px-14 sm:py-10 sm:pt-10 md:px-24 lg:px-32"
+          >
+            <li class="mb-1">
+              <span class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"
+                >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span
+              >
+            </li>
+            
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/#about"
+                    title=""
+                    >About</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/research/"
+                    title=""
+                    >Research</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/posts/"
+                    title=""
+                    >Posts</a
+                  >
+                </li>
+              
+            
+            
+          </ul>
+        </div>
+      </label>
+      
+      <ul class="hidden list-none flex-row ltr:text-right rtl:text-left sm:flex">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Interactions between cri-o and conmon in Kubernetes
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2019-11-18 23:07:00 &#43;0900 &#43;0900">Nov 18, 2019</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/kubernetes/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >kubernetes</a
+            >
+          
+            <a
+              href="/tags/research/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >research</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#cri-o">cri-o</a></li>
+        <li><a href="#conmon-container-monitor">conmon: Container Monitor</a>
+          <ul>
+            <li><a href="#how-conmon-is-used-in-cri-o">How conmon is used in cri-o</a></li>
+            <li><a href="#why-cri-o-uses-conmon">Why cri-o uses conmon?</a></li>
+            <li><a href="#how-information-container-terminated-is-passed-to-cri-o">How information &ldquo;container terminated&rdquo; is passed to cri-o?</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
 </nav>
-<script>
-    let element = document.getElementById('lightDarkMode')
-    if (storageColorScheme == 'Auto') {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'adjust')
-        element.firstElementChild.classList.add('fa-adjust')
-        document.addEventListener('DOMContentLoaded', () => {
-            switchMode('Auto')
-        })
-    } else if (storageColorScheme == "Dark") {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'moon')
-        element.firstElementChild.classList.add('fa-moon')
-    }
+  </div>
+</details>
+
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
+        <h2 id="cri-o" class="relative group">cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#cri-o" aria-label="Anchor">#</a></span></h2>
+<p>
+
+
+
+  <figure>
+    <img class="my-0 rounded-md" src="https://cri-o.io/logo/crio-logo.svg" alt="crio" />
     
-    document.addEventListener('DOMContentLoaded', () => {
-        getcolorscheme();
-        switchBurger();
-    });
-</script></div>
-  </header>
-  <main class="flex-grow pt-16">
-      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+  </figure>
 
-
-<div class="lg:pt-12"></div>
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-    <h1 class="font-bold text-3xl text-primary-text">Interactions between cri-o and conmon in Kubernetes</h1>
-    <div class="mr-6 my-2">
-    <span>Nov 18, 2019</span>
-</div>
-
-
-
-
-    
-    
-    
-
-    <div class="content">
-        <h2 id="cri-o">cri-o</h2>
-<p><img src="https://cri-o.io/logo/crio-logo.svg" alt="crio"></p>
-<p><a href="https://cri-o.io">cri-o</a> is a lightweight container runtime framework for Kubernetes.
+</p>
+<p><a href="https://cri-o.io"   target="_blank">cri-o</a> is a lightweight container runtime framework for Kubernetes.
 After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and <em>for Kubernetes</em>.</p>
-<p><img src="https://cri-o.io/assets/images/architecture.png" alt="crio-architecture">{: width=&ldquo;1000px&rdquo;}
+<p>
+
+
+
+  <figure>
+    <img class="my-0 rounded-md" src="https://cri-o.io/assets/images/architecture.png" alt="crio-architecture" />
+    
+  </figure>
+
+{: width=&ldquo;1000px&rdquo;}
 <em>cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.</em></p>
 <p>Okay&hellip; What are noticable differences from Docker?</p>
-<h2 id="conmon-container-monitor">conmon: Container Monitor</h2>
-<h3 id="how-conmon-is-used-in-cri-o">How conmon is used in cri-o</h3>
+<h2 id="conmon-container-monitor" class="relative group">conmon: Container Monitor <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#conmon-container-monitor" aria-label="Anchor">#</a></span></h2>
+<h3 id="how-conmon-is-used-in-cri-o" class="relative group">How conmon is used in cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#how-conmon-is-used-in-cri-o" aria-label="Anchor">#</a></span></h3>
 <p>cri-o executes <code>conmon</code> when it receives a request for container creation, which creates a container process by using runc or Kata container (whatever a low level container runtime).
 <code>stdout</code> and <code>stderr</code> streams of the container process are connected to <code>conmon</code>, where one <code>conmon</code> is launched per container, and are handled by it. Therefore, even during the downtime of cri-o daemon, conmon safely handles containers' logs.
 This flow is different from the existing Dockerd or containerd: in containerd, daemon itself creates a container process directly.</p>
-<p><a href="https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/internal/oci/runtime_oci.go#L76">[source]</a></p>
-<pre><code class="language-go">func (r *runtimeOCI) CreateContainer(c *Container, cgroupParent string) (err error) {
-  ...
-  cmd := exec.Command(r.config.Conmon, args...)
-  ...
-  cmd.ExtraFiles = append(cmd.ExtraFiles, childPipe, childStartPipe)
-	// 0, 1 and 2 are stdin, stdout and stderr
-	cmd.Env = r.config.ConmonEnv
-	cmd.Env = append(cmd.Env,
-		fmt.Sprintf(&quot;_OCI_SYNCPIPE=%d&quot;, 3),
-		fmt.Sprintf(&quot;_OCI_STARTPIPE=%d&quot;, 4))
-  ...
-  err = cmd.Start()
-  ...
-</code></pre>
-<p>cri-o passes two file descriptors; <code>_OCI_SYNCPIPE</code> and <code>_OCI_STARTPIPE</code> to conmon process. <code>conmon</code> primarily uses <code>_OCI_SYNCPIPE</code> pipe fd to communicate with cri-o daemon process: passing container pid after creating a container process, and an exit status and an exit message after the container process terminates.</p>
+<p><a href="https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/internal/oci/runtime_oci.go#L76"   target="_blank">[source]</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">runtimeOCI</span><span class="p">)</span> <span class="nf">CreateContainer</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Container</span><span class="p">,</span> <span class="nx">cgroupParent</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">...</span>
+  <span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">Conmon</span><span class="p">,</span> <span class="nx">args</span><span class="o">...</span><span class="p">)</span>
+  <span class="o">...</span>
+  <span class="nx">cmd</span><span class="p">.</span><span class="nx">ExtraFiles</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">ExtraFiles</span><span class="p">,</span> <span class="nx">childPipe</span><span class="p">,</span> <span class="nx">childStartPipe</span><span class="p">)</span>
+	<span class="c1">// 0, 1 and 2 are stdin, stdout and stderr
+</span><span class="c1"></span>	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Env</span> <span class="p">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">ConmonEnv</span>
+	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Env</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Env</span><span class="p">,</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;_OCI_SYNCPIPE=%d&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;_OCI_STARTPIPE=%d&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+  <span class="o">...</span>
+  <span class="nx">err</span> <span class="p">=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
+  <span class="o">...</span>
+</code></pre></div><p>cri-o passes two file descriptors; <code>_OCI_SYNCPIPE</code> and <code>_OCI_STARTPIPE</code> to conmon process. <code>conmon</code> primarily uses <code>_OCI_SYNCPIPE</code> pipe fd to communicate with cri-o daemon process: passing container pid after creating a container process, and an exit status and an exit message after the container process terminates.</p>
 <p>cri-o log</p>
-<pre><code>...
+<pre tabindex="0"><code>...
 time=&quot;2019-11-17 22:34:42.175927926-08:00&quot; level=debug msg=&quot;running conmon: /usr/libexec/crio/conmon&quot; args=&quot;[--syslog -c219e8fe1a17e71bb6ca74e3fa3e0fc638a76beaf6627b65b890bda086850826d -n k8s_POD_testcontainer_default_25f78622-1fcb-464e-b7da-15950ffca11a_0 -u219e8fe1a17e71bb6ca74e3fa3e0fc638a76beaf6627b65b890bda086850826d -r /usr/lib/cri-o-runc/sbin/runc -b /var/run/containers/storage/vfs-containers219e8fe1a17e71bb6ca74e3fa3e0fc638a76beaf6627b65b890bda086850826d/userdata -p /var/run/containers/storage/vfs    -containers219e8fe1a17e71bb6ca74e3fa3e0fc638a76beaf6627b65b890bda086850826d/userdata/pidfile -l /var/log/podsdefault_testcontainer_25f78622-1fcb-464e-b7da-15950ffca11a/219e8fe1a17e71bb6ca74e3fa3e0fc638a76beaf6627b65b890bda086850826d.log --exit-dir /var/run/crio/exits --socket-dir-path /var/run/crio --log-level debug --runtime-arg --root=/run/runc]&quot;
 ...
 time=&quot;2019-11-17 22:34:42.240172490-08:00&quot; level=debug msg=&quot;Received container pid: 13152&quot;
-</code></pre>
-<p><a href="https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/internal/oci/runtime_oci.go#L204">[source for the log in cri-o]</a></p>
-<pre><code class="language-go">func (r *runtimeOCI) CreateContainer(c *Container, cgroupParent string) (err error) {
-  ...
-  // Wait to get container pid from conmon
-	type syncStruct struct {
-		si  *syncInfo
-		err error
-	}
-	ch := make(chan syncStruct)
-	go func() {
-		var si *syncInfo
-		if err = json.NewDecoder(parentPipe).Decode(&amp;si); err != nil {
-			ch &lt;- syncStruct{err: err}
-			return
-		}
-		ch &lt;- syncStruct{si: si}
-	}()
+</code></pre><p><a href="https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/internal/oci/runtime_oci.go#L204"   target="_blank">[source for the log in cri-o]</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">runtimeOCI</span><span class="p">)</span> <span class="nf">CreateContainer</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Container</span><span class="p">,</span> <span class="nx">cgroupParent</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">...</span>
+  <span class="c1">// Wait to get container pid from conmon
+</span><span class="c1"></span>	<span class="kd">type</span> <span class="nx">syncStruct</span> <span class="kd">struct</span> <span class="p">{</span>
+		<span class="nx">si</span>  <span class="o">*</span><span class="nx">syncInfo</span>
+		<span class="nx">err</span> <span class="kt">error</span>
+	<span class="p">}</span>
+	<span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">syncStruct</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">si</span> <span class="o">*</span><span class="nx">syncInfo</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">parentPipe</span><span class="p">).</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">si</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nx">ch</span> <span class="o">&lt;-</span> <span class="nx">syncStruct</span><span class="p">{</span><span class="nx">err</span><span class="p">:</span> <span class="nx">err</span><span class="p">}</span>
+			<span class="k">return</span>
+		<span class="p">}</span>
+		<span class="nx">ch</span> <span class="o">&lt;-</span> <span class="nx">syncStruct</span><span class="p">{</span><span class="nx">si</span><span class="p">:</span> <span class="nx">si</span><span class="p">}</span>
+	<span class="p">}()</span>
 
-	select {
-	case ss := &lt;-ch:
-		if ss.err != nil {
-			return fmt.Errorf(&quot;error reading container (probably exited) json message: %v&quot;, ss.err)
-		}
-		logrus.Debugf(&quot;Received container pid: %d&quot;, ss.si.Pid)
-		if ss.si.Pid == -1 {
-			if ss.si.Message != &quot;&quot; {
-				logrus.Errorf(&quot;Container creation error: %s&quot;, ss.si.Message)
-				return fmt.Errorf(&quot;container create failed: %s&quot;, ss.si.Message)
-			}
-			logrus.Errorf(&quot;Container creation failed&quot;)
-			return fmt.Errorf(&quot;container create failed&quot;)
-    }
-  ...
-  }
-}
-</code></pre>
-<p><a href="https://github.com/containers/conmon/blob/951052b62fdfdf2dd61efa2ad03b5fdbfc93c3ba/src/conmon.c#L1669">[source for the log in conmon]</a></p>
-<pre><code class="language-c">int main(int argc, char *argv[]) {
-  ...
-  execv(g_ptr_array_index(runtime_argv, 0), (char **)runtime_argv-&gt;pdata);
-  ...
-	container_pid = atoi(contents);
-	ndebugf(&quot;container PID: %d&quot;, container_pid);
+	<span class="k">select</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="nx">ss</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;error reading container (probably exited) json message: %v&#34;</span><span class="p">,</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">err</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Debugf</span><span class="p">(</span><span class="s">&#34;Received container pid: %d&#34;</span><span class="p">,</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">si</span><span class="p">.</span><span class="nx">Pid</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">si</span><span class="p">.</span><span class="nx">Pid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">si</span><span class="p">.</span><span class="nx">Message</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+				<span class="nx">logrus</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Container creation error: %s&#34;</span><span class="p">,</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">si</span><span class="p">.</span><span class="nx">Message</span><span class="p">)</span>
+				<span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;container create failed: %s&#34;</span><span class="p">,</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">si</span><span class="p">.</span><span class="nx">Message</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="nx">logrus</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Container creation failed&#34;</span><span class="p">)</span>
+			<span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;container create failed&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="o">...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p><a href="https://github.com/containers/conmon/blob/951052b62fdfdf2dd61efa2ad03b5fdbfc93c3ba/src/conmon.c#L1669"   target="_blank">[source for the log in conmon]</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">execv</span><span class="p">(</span><span class="n">g_ptr_array_index</span><span class="p">(</span><span class="n">runtime_argv</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="p">)</span><span class="n">runtime_argv</span><span class="o">-&gt;</span><span class="n">pdata</span><span class="p">);</span>
+  <span class="p">...</span>
+	<span class="n">container_pid</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">contents</span><span class="p">);</span>
+	<span class="n">ndebugf</span><span class="p">(</span><span class="s">&#34;container PID: %d&#34;</span><span class="p">,</span> <span class="n">container_pid</span><span class="p">);</span>
 
-	g_hash_table_insert(pid_to_handler, (pid_t *)&amp;container_pid, container_exit_cb);
+	<span class="n">g_hash_table_insert</span><span class="p">(</span><span class="n">pid_to_handler</span><span class="p">,</span> <span class="p">(</span><span class="n">pid_t</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">container_pid</span><span class="p">,</span> <span class="n">container_exit_cb</span><span class="p">);</span>
 
-	/* Send the container pid back to parent
-	 * Only send this pid back if we are using the current exec API. Old consumers expect
-	 * conmon to only send one value down this pipe, which will later be the exit code
-	 * Thus, if we are legacy and we are exec, skip this write.
-	 */
-	if ((opt_api_version &gt;= 1 || !opt_exec) &amp;&amp; sync_pipe_fd &gt;= 0)
-		write_sync_fd(sync_pipe_fd, container_pid, NULL);
+	<span class="cm">/* Send the container pid back to parent
+</span><span class="cm">	 * Only send this pid back if we are using the current exec API. Old consumers expect
+</span><span class="cm">	 * conmon to only send one value down this pipe, which will later be the exit code
+</span><span class="cm">	 * Thus, if we are legacy and we are exec, skip this write.
+</span><span class="cm">	 */</span>
+	<span class="k">if</span> <span class="p">((</span><span class="n">opt_api_version</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="o">||</span> <span class="o">!</span><span class="n">opt_exec</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">sync_pipe_fd</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="n">write_sync_fd</span><span class="p">(</span><span class="n">sync_pipe_fd</span><span class="p">,</span> <span class="n">container_pid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 
-  ...
-}
-</code></pre>
-<h3 id="why-cri-o-uses-conmon">Why cri-o uses conmon?</h3>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="why-cri-o-uses-conmon" class="relative group">Why cri-o uses conmon? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#why-cri-o-uses-conmon" aria-label="Anchor">#</a></span></h3>
 <blockquote>
 <p>Each container is monitored by a separate <code>conmon</code> process. The conmon process holds the pty of the PID1 of the container process. It handles logging for the container and records the exit code for the container process.</p>
 <p><em>cri-o architectural components explanation.</em></p>
@@ -340,157 +587,308 @@ time=&quot;2019-11-17 22:34:42.240172490-08:00&quot; level=debug msg=&quot;Recei
 <p>Why this is a strength of cri-o? In Docker, <code>dockerd</code> itself manages all of its containers and handles loggings for the containers. dockerd captures all outputs from the standard output streams (<code>stdout</code> and <code>stderr</code>) of the containers with Docker log drivers.</p>
 <p>It seems to be efficient as one <code>dockerd</code> process handles all container&rsquo;s logs, however, it also does mean that it can occur <strong>single point failure</strong>. When <code>dockerd</code> is terminated, the standard output streams of the containers are <em>blocked</em>, which might put containers in a critical state.</p>
 <blockquote>
-<p>Though Docker provides non-blocking log message delivery mode, default mode is blocked mode <a href="https://docs.docker.com/config/containers/logging/configure/">[link]</a>.</p>
+<p>Though Docker provides non-blocking log message delivery mode, default mode is blocked mode <a href="https://docs.docker.com/config/containers/logging/configure/"   target="_blank">[link]</a>.</p>
 </blockquote>
-<p>For this reason, when <code>dockerd</code> receives a <code>SIGTERM</code> signal, it explicitly terminates all of its containers before terminating itself. This is default, where Docker also provides an alternative <code>live-restore</code> option, however, it is not recommended to keep containers alive during downtime <a href="https://docs.docker.com/config/containers/live-restore/">[link]</a>.</p>
+<p>For this reason, when <code>dockerd</code> receives a <code>SIGTERM</code> signal, it explicitly terminates all of its containers before terminating itself. This is default, where Docker also provides an alternative <code>live-restore</code> option, however, it is not recommended to keep containers alive during downtime <a href="https://docs.docker.com/config/containers/live-restore/"   target="_blank">[link]</a>.</p>
 <p>If logging is not responsible for a centralized container runtime daemon, the problem can be solved. <code>conmon</code> is the answer of cri-o team as a solution; even cri-o daemon is down, loggings for each container process are handled by conmon processes.</p>
-<h3 id="how-information-container-terminated-is-passed-to-cri-o">How information &ldquo;container terminated&rdquo; is passed to cri-o?</h3>
+<h3 id="how-information-container-terminated-is-passed-to-cri-o" class="relative group">How information &ldquo;container terminated&rdquo; is passed to cri-o? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#how-information-container-terminated-is-passed-to-cri-o" aria-label="Anchor">#</a></span></h3>
 <p>When a main process of a containter terminates, all processes in the container and the container itself are terminated as well. In containerd, daemon has connected pipes to the main process of the container, which are closed during termination, hence they role as a <em>notification</em> of containter termination to containerd.</p>
-<pre><code>Nov 18 13:57:42 insujang-tmaxlinux microk8s.daemon-containerd[8816]: time=&quot;2019-11-18T13:57:42.617846445+09:00&quot; level=info msg=&quot;Finish piping stdout of container &quot;72d440531d468f757ce628deac966828b405df842b0a84f4e737d1d464cdd4ab&quot;&quot;
+<pre tabindex="0"><code>Nov 18 13:57:42 insujang-tmaxlinux microk8s.daemon-containerd[8816]: time=&quot;2019-11-18T13:57:42.617846445+09:00&quot; level=info msg=&quot;Finish piping stdout of container &quot;72d440531d468f757ce628deac966828b405df842b0a84f4e737d1d464cdd4ab&quot;&quot;
 Nov 18 13:57:42 insujang-tmaxlinux microk8s.daemon-containerd[8816]: time=&quot;2019-11-18T13:57:42.617935590+09:00&quot; level=info msg=&quot;Finish piping stderr of container &quot;72d440531d468f757ce628deac966828b405df842b0a84f4e737d1d464cdd4ab&quot;&quot;
 Nov 18 13:57:42 insujang-tmaxlinux microk8s.daemon-containerd[8816]: time=&quot;2019-11-18T13:57:42.642359076+09:00&quot; level=info msg=&quot;TaskExit event &amp;TaskExit{ContainerID:72d440531d468f757ce628deac966828b405df842b0a84f4e737d1d464cdd4ab,ID:72d440531d468f757ce628deac966828b405df842b0a84f4e737d1d464cdd4ab,Pid:31408,ExitStatus:0,ExitedAt:2019-11-18 13:57:42.618338639 +0900 UTC,}&quot;
 Nov 18 13:57:42 insujang-tmaxlinux microk8s.daemon-kubelet[20180]: I1118 13:57:42.684278   20180 manager.go:1005] Destroyed container: &quot;/kubepods/besteffort/podde8d5097-67d1-4cfa-8648-2a2e1c050c3f/72d440531d468f757ce628deac966828b405df842b0a84f4e737d1d464cdd4ab&quot; (aliases: [], namespace: &quot;&quot;)
-</code></pre>
-<p>As indicated in the log above, containerd finds out one of its containers is down with pipe close, and creates <code>TaskExit</code> Kubernetes CRI event; kubelet receives the event and knows the container is destroyed.</p>
+</code></pre><p>As indicated in the log above, containerd finds out one of its containers is down with pipe close, and creates <code>TaskExit</code> Kubernetes CRI event; kubelet receives the event and knows the container is destroyed.</p>
 <p>But with cri-o, this way does not work as cri-o daemon itself is not directly connected to container processes via pipe fds; they are connected to the corresponding <code>conmon</code> processes.
-Although conmon passes a termination event through <code>_OCI_SYNCPIPE</code>, cri-o uses <a href="https://github.com/fsnotify/fsnotify">fsnotify</a> library to find out which container is terminated. when <code>conmon</code> finds out the container that it handles is down, it creates a file in the location specified as <code>--exit-dir</code> argument:</p>
-<pre><code class="language-shell">root@debian:~/Downloads# ps -ef | grep conmon
-root     24508     1  0 21:53 ?        00:00:00 /usr/libexec/crio/conmon ... --exit-dir /var/run/crio/exits --socket-dir-path /var/run/crio --log-level debug --runtime-arg --root=/run/runc
-root     24645 11159  0 21:53 pts/3    00:00:00 grep conmon
-</code></pre>
-<p><code>conmon</code> creates a file, with its container id as a name and an exit status and message as its content, when a container process is terminated.
+Although conmon passes a termination event through <code>_OCI_SYNCPIPE</code>, cri-o uses <a href="https://github.com/fsnotify/fsnotify"   target="_blank">fsnotify</a> library to find out which container is terminated. when <code>conmon</code> finds out the container that it handles is down, it creates a file in the location specified as <code>--exit-dir</code> argument:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">root@debian:~/Downloads# ps -ef <span class="p">|</span> grep conmon
+root     <span class="m">24508</span>     <span class="m">1</span>  <span class="m">0</span> 21:53 ?        00:00:00 /usr/libexec/crio/conmon ... --exit-dir /var/run/crio/exits --socket-dir-path /var/run/crio --log-level debug --runtime-arg --root<span class="o">=</span>/run/runc
+root     <span class="m">24645</span> <span class="m">11159</span>  <span class="m">0</span> 21:53 pts/3    00:00:00 grep conmon
+</code></pre></div><p><code>conmon</code> creates a file, with its container id as a name and an exit status and message as its content, when a container process is terminated.
 cri-o is notified by fsnotify right after <code>conmon</code> process creates a file.</p>
-<p><a href="https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/server/server.go#L648">[cri-o source]</a></p>
-<pre><code class="language-go">// StartExitMonitor start a routine that monitors container exits
-// and updates the container status
-func (s *Server) StartExitMonitor() {
-  go func() {
-		for {
-			select {
-			case event := &lt;-watcher.Events:
-				logrus.Debugf(&quot;event: %v&quot;, event)
-				if event.Op&amp;fsnotify.Create == fsnotify.Create {
-					containerID := filepath.Base(event.Name)
-          logrus.Debugf(&quot;container or sandbox exited: %v&quot;, containerID)
-    ...
-  }
+<p><a href="https://github.com/cri-o/cri-o/blob/2ce5b4b07a81f85bb59dc28148f2a38507bf3648/server/server.go#L648"   target="_blank">[cri-o source]</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// StartExitMonitor start a routine that monitors container exits
+</span><span class="c1">// and updates the container status
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">StartExitMonitor</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="nx">event</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">watcher</span><span class="p">.</span><span class="nx">Events</span><span class="p">:</span>
+				<span class="nx">logrus</span><span class="p">.</span><span class="nf">Debugf</span><span class="p">(</span><span class="s">&#34;event: %v&#34;</span><span class="p">,</span> <span class="nx">event</span><span class="p">)</span>
+				<span class="k">if</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Op</span><span class="o">&amp;</span><span class="nx">fsnotify</span><span class="p">.</span><span class="nx">Create</span> <span class="o">==</span> <span class="nx">fsnotify</span><span class="p">.</span><span class="nx">Create</span> <span class="p">{</span>
+					<span class="nx">containerID</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nf">Base</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+          <span class="nx">logrus</span><span class="p">.</span><span class="nf">Debugf</span><span class="p">(</span><span class="s">&#34;container or sandbox exited: %v&#34;</span><span class="p">,</span> <span class="nx">containerID</span><span class="p">)</span>
+    <span class="o">...</span>
+  <span class="p">}</span>
 
-  if err := watcher.Add(s.config.ContainerExitsDir); err != nil {
-		logrus.Errorf(&quot;watcher.Add(%q) failed: %s&quot;, s.config.ContainerExitsDir, err)
-		close(done)
-	}
-	&lt;-done
-}
-</code></pre>
-<p>cri-o log</p>
-<pre><code>time=&quot;2019-11-17 22:34:46.087120063-08:00&quot; level=debug msg=&quot;event: \&quot;/var/run/crio/exits/99c537824f1a3890a5bb6a5414789390f0ceaf203bbeb72099905ba8508fc262.HYHHB0\&quot;: RENAME&quot;
+  <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">watcher</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">ContainerExitsDir</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;watcher.Add(%q) failed: %s&#34;</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">ContainerExitsDir</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="nb">close</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="o">&lt;-</span><span class="nx">done</span>
+<span class="p">}</span>
+</code></pre></div><p>cri-o log</p>
+<pre tabindex="0"><code>time=&quot;2019-11-17 22:34:46.087120063-08:00&quot; level=debug msg=&quot;event: \&quot;/var/run/crio/exits/99c537824f1a3890a5bb6a5414789390f0ceaf203bbeb72099905ba8508fc262.HYHHB0\&quot;: RENAME&quot;
 time=&quot;2019-11-17 22:34:46.087275699-08:00&quot; level=debug msg=&quot;event: \&quot;/var/run/crio/exits/99c537824f1a3890a5bb6a5414789390f0ceaf203bbeb72099905ba8508fc262\&quot;: CREATE&quot;
 time=&quot;2019-11-17 22:34:46.087380192-08:00&quot; level=debug msg=&quot;container or sandbox exited: 99c537824f1a3890a5bb6a5414789390f0ceaf203bbeb72099905ba8508fc262&quot;
 time=&quot;2019-11-17 22:34:46.087413457-08:00&quot; level=debug msg=&quot;container exited and found: 99c537824f1a3890a5bb6a5414789390f0ceaf203bbeb72099905ba8508fc262&quot;
-</code></pre>
-<p>Then, similar to containerd, cri-o notifies to Kubelet via a CRI event.</p>
-
-    </div>
-    
-    <div class="my-4">
-    
-    <a href="/tags/kubernetes/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#kubernetes</a>
-    
-    <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
-    
-</div>
-    
-    
-    
-    
-    
-    
-    
-<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
-    <div>
-        
-        <span class="block font-bold">Previous</span>
-        <a href="/2019-11-21/installing-kubernetes-and-crio-in-debian/" class="block">Installing Kubernetes and cri-o in Debian</a>
-        
-    </div>
-    <div class="md:text-right mt-4 md:mt-0">
-        
-        <span class="block font-bold">Next</span>
-        <a href="/2019-11-10/code-server/" class="block">Code Server: Using vscode via Web Browsers</a>
-        
-    </div>
-</div>
-
-    
-
-<div id="disqus_thread"></div>
-<script>
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "insujang" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-</div>
-
-
-
-
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-    <h2 class="text-lg font-semibold mb-4">See Also</h2>
-    <div class="content">
-        
-        <a href="/2019-11-07/kubernetes/">Kubernetes</a>
-        <br />
-        
-        <a href="/2019-10-31/container-runtime/">Container Runtime</a>
-        <br />
-        
-        <a href="/2019-10-10/open-container-initiative-image-spec/">Open Container Initiative (OCI) Standard, Image Spec</a>
-        <br />
-        
-        <a href="/2019-02-07/implementing-a-new-custom-netlink-family-protocol/">Implementing a New Custom Netlink Family Protocol</a>
-        <br />
-        
-        <a href="/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/">udev: Function Flow for KOBJECT_UEVENT kernel group message </a>
-        <br />
-        
-        <a href="/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/">udev: Device Manager for the Linux Kernel in Userspace</a>
-        <br />
-        
-    </div>
-</div>
-
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-        hljs.initHighlightingOnLoad();
-    })
-</script>
+</code></pre><p>Then, similar to containerd, cri-o notifies to Kubelet via a CRI event.</p>
 
       </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
     
-  </main>
-  <footer class="pl-scrollbar">
-    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
-    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
-</div></div>
-  </footer>
-</body>
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
+    
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
+</div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
+    
+    
+    
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2019-11-10/code-server/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Code Server: Using vscode via Web Browsers</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2019-11-10 14:05:00 &#43;0900 &#43;0900">Nov 10, 2019</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="group flex text-right" href="/2019-11-21/installing-kubernetes-and-crio-in-debian/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Installing Kubernetes and cri-o in Debian</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2019-11-21 18:32:00 &#43;0900 &#43;0900">Nov 21, 2019</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
+    <div>
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2022
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
+    </div>
+    
+    
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+          </div>
+        </button>
+      </div>
+    
+  </div>
+  
+  
+</footer>
+
+    </div>
+  </body>
 </html>

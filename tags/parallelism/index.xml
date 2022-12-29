@@ -6,7 +6,6 @@
     <description>Recent content in parallelism on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Sat, 11 Jun 2022 19:33:00 -0400</lastBuildDate><atom:link href="/tags/parallelism/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Parallelism in Distributed Deep Learning</title>
@@ -14,7 +13,8 @@
       <pubDate>Sat, 11 Jun 2022 19:33:00 -0400</pubDate>
       
       <guid>/2022-06-11/parallelism-in-distributed-deep-learning/</guid>
-      <description>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning.</description>
+      <description>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning. Since mid 2010, people have been thinking about accelerating deep learning with scale-out, and distributd deep learning has been introduced. Parameter server is one of the well-known architecture for distributed deep learning.
+Recent days, many parallelization mechanisms, the way of distributing computation to multiple workers, have been introduced. First one was to split batches into several microbatches and distributed it, namely data parallelism, which the parameter server architecture is for.</description>
     </item>
     
   </channel>

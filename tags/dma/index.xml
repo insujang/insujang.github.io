@@ -6,7 +6,6 @@
     <description>Recent content in dma on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 26 Apr 2021 09:02:00 +0900</lastBuildDate><atom:link href="/tags/dma/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using Intel IOAT DMA</title>
@@ -14,7 +13,8 @@
       <pubDate>Mon, 26 Apr 2021 09:02:00 +0900</pubDate>
       
       <guid>/2021-04-26/using-intel-ioat-dma/</guid>
-      <description>I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.</description>
+      <description>I/OAT (I/O Acceleration Technology) 1 # Intel I/OAT is a set of technologies for improving I/O performance. This post specifically illustrates how to use Intel QuickData Technology, which enables data copy by the chipset instead of the CPU, to move data more efficiently and provide fast throughput.
+Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemented as ioatdma kernel module in Linux, and integrated into the Linux DMA subsystem.</description>
     </item>
     
   </channel>

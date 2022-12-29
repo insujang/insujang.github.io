@@ -6,7 +6,6 @@
     <description>Recent content in study on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Sat, 12 Mar 2022 10:40:00 -0500</lastBuildDate><atom:link href="/tags/study/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Implementing Basic RPC with C&#43;&#43;20</title>
@@ -14,7 +13,10 @@
       <pubDate>Sat, 12 Mar 2022 10:40:00 -0500</pubDate>
       
       <guid>/2022-03-12/implementing-basic-rpc-with-c-20/</guid>
-      <description>This post explains how a basic RPC framework can be implemented by using modern C++ functionalities.</description>
+      <description>This post explains how a basic RPC framework can be implemented by using modern C++ functionalities. The explanation in this post is heavily inspired from:
+ simple-rpc by evenleo buttonrpc-cpp14 by button-chen  C++ Features used # Parameter Pack 1 # Parameter pack is similar to C variadic arguments that are used in printf() family:
+int printf(char *format, ...); which is implemented with va_ variadic function API [src]:
+int printf(const char* format, .</description>
     </item>
     
     <item>
@@ -23,7 +25,8 @@
       <pubDate>Mon, 17 Jan 2022 14:54:00 -0500</pubDate>
       
       <guid>/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/</guid>
-      <description>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing.</description>
+      <description>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.
+# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (/etc/init.d/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=/etc/init.</description>
     </item>
     
     <item>
@@ -32,7 +35,9 @@
       <pubDate>Thu, 06 Jan 2022 20:53:00 -0500</pubDate>
       
       <guid>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</guid>
-      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores.</description>
+      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores. NVIDIA BlueField2 equips 8 ARM Cortex A-72 cores, which can be used to process offloaded functions. This functions are not limited to packet processing, but can also be more complicated applications, e.g., file system, etc.
+This post talks about how to configure NVIDIA BlueField2 SmartNIC, on CloudLab r7525 machines.
+Regarding CloudLab, please refer to [this paper](https://www.usenix.org/conference/atc19/presentation/duplyakin).   Regarding NVIDIA BlueField2 SmartNIC/DPU, please refer to [NVIDIA DPU introduction page](https://www.</description>
     </item>
     
     <item>
@@ -41,7 +46,8 @@
       <pubDate>Mon, 03 May 2021 16:47:00 +0900</pubDate>
       
       <guid>/2021-05-03/libvirt-vm-network-accessibility/</guid>
-      <description>Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:</description>
+      <description>Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:
+$ ip addr ... 20: virbr0: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu 1500 qdisc noqueue state UP group default qlen 1000 link/ether 52:54:00:e9:7b:57 brd ff:ff:ff:ff:ff:ff inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0 valid_lft forever preferred_lft forever libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</description>
     </item>
     
     <item>
@@ -50,7 +56,8 @@
       <pubDate>Mon, 26 Apr 2021 09:02:00 +0900</pubDate>
       
       <guid>/2021-04-26/using-intel-ioat-dma/</guid>
-      <description>I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.</description>
+      <description>I/OAT (I/O Acceleration Technology) 1 # Intel I/OAT is a set of technologies for improving I/O performance. This post specifically illustrates how to use Intel QuickData Technology, which enables data copy by the chipset instead of the CPU, to move data more efficiently and provide fast throughput.
+Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemented as ioatdma kernel module in Linux, and integrated into the Linux DMA subsystem.</description>
     </item>
     
     <item>
@@ -59,7 +66,9 @@
       <pubDate>Fri, 23 Apr 2021 16:19:00 +0900</pubDate>
       
       <guid>/2021-04-23/reconfiguring-ceph/</guid>
-      <description>Configuring Ceph Ceph daemons use /etc/ceph/ceph.</description>
+      <description>Configuring Ceph # Ceph daemons use /etc/ceph/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?
+1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
+ Use injectargs to inject configuration values into the existing values.</description>
     </item>
     
     <item>
@@ -68,7 +77,9 @@
       <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
       
       <guid>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</guid>
-      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.</description>
+      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
+VM execution is done through qemu-system-x86_64, without using libvirt.
+ Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
     </item>
     
     <item>
@@ -77,7 +88,8 @@
       <pubDate>Mon, 15 Mar 2021 12:24:00 +0900</pubDate>
       
       <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
-      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.</description>
+      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.
+Virtio Review &amp;amp; Vhost Introduction #  virtio-net example diagram. [Source]   VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
     </item>
     
     <item>
@@ -86,7 +98,8 @@
       <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
       
       <guid>/2021-03-10/virtio-and-vhost-architecture-part-1/</guid>
-      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).</description>
+      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.
+Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required.</description>
     </item>
     
     <item>
@@ -95,7 +108,10 @@
       <pubDate>Thu, 04 Mar 2021 14:40:00 +0900</pubDate>
       
       <guid>/2021-03-04/using-ceph-rbd-as-a-qemu-storage/</guid>
-      <description>This post explains how we can use a Ceph RBD as a QEMU storage.</description>
+      <description>This post explains how we can use a Ceph RBD as a QEMU storage. We can attach a Ceph RBD to a QEMU VM through either virtio-blk or vhost-user-blk QEMU device (vhost requires SPDK).
+Assume that a Ceph cluster is ready following the manual.
+Setting a Ceph client Configuration 1 # For a node to access a Ceph cluster, it requires some configuration:
+ Config file setup User authentication setup  This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</description>
     </item>
     
     <item>
@@ -104,7 +120,9 @@
       <pubDate>Wed, 23 Dec 2020 11:38:00 +0900</pubDate>
       
       <guid>/2020-12-23/analyzing-ceph-network-module/</guid>
-      <description></description>
+      <description>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+ High level Ceph architecture. [src]  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.</description>
     </item>
     
     <item>
@@ -113,7 +131,9 @@
       <pubDate>Mon, 09 Nov 2020 15:09:00 +0900</pubDate>
       
       <guid>/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
-      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.</description>
+      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
+The introduction below clearly shows why it is required.
+ Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
     </item>
     
     <item>
@@ -122,7 +142,9 @@
       <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
       <guid>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
-      <description>This post explains how we can accelerate buildig a Ceph RPM package.</description>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
+Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
+1. RPM Packaing 101 # RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
     </item>
     
     <item>
@@ -131,7 +153,10 @@
       <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
       
       <guid>/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
-      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.</description>
+      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.
+ 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.</description>
     </item>
     
     <item>
@@ -140,7 +165,9 @@
       <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
       
       <guid>/2020-08-30/introduction-to-ceph/</guid>
-      <description>Ceph is an open-source distributed software platform 1 2.</description>
+      <description>Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+ Ceph Cluster Overview. [Source]   Ceph Cluster Overview. [Source]   Ceph Cluster Overview. [Source]  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.</description>
     </item>
     
     <item>
@@ -149,7 +176,10 @@
       <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
       
       <guid>/2020-08-27/introduction-to-flatpak/</guid>
-      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1.</description>
+      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1. Although Snap is the most famous one, I think the internal architecture of Flatpak is more reliable.
+Fedora Silverblue and EndlessOS provide software installation primarily via Flathub, a central repository of Flatpak based applications 2 3.
+This post briefly summarizes how to use Flatpak in terms of implementing a sample applications.
+Installing Flatpak # In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.</description>
     </item>
     
     <item>
@@ -158,7 +188,9 @@
       <pubDate>Mon, 24 Aug 2020 09:21:00 +0900</pubDate>
       
       <guid>/2020-08-24/dynamic-kubelet-configuration/</guid>
-      <description>Kubelet, at launch time, loads configuration files from pre-specified files.</description>
+      <description>Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
+Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
+Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:</description>
     </item>
     
     <item>
@@ -167,7 +199,8 @@
       <pubDate>Wed, 15 Jul 2020 12:35:00 +0900</pubDate>
       
       <guid>/2020-07-15/fedora-silverblue/</guid>
-      <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution.</description>
+      <description>Fedora Silverblue #    Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:</description>
     </item>
     
     <item>
@@ -176,7 +209,10 @@
       <pubDate>Sat, 04 Apr 2020 19:27:00 +0900</pubDate>
       
       <guid>/2020-04-04/go-modules/</guid>
-      <description>This post introduces Go modules, introduced in Go version 1.</description>
+      <description>This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? # Go 1.11 introduces a new dependency mangement system, Go modules (That&amp;rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what it means specifically. Here is my explanaion.
+Importing Packages without Go Modules # Go programmers can import third-party packages (i.</description>
     </item>
     
     <item>
@@ -185,7 +221,8 @@
       <pubDate>Thu, 13 Feb 2020 10:13:00 +0900</pubDate>
       
       <guid>/2020-02-13/programming-kubernetes-crd/</guid>
-      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI.</description>
+      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
+Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
     </item>
     
     <item>
@@ -194,7 +231,8 @@
       <pubDate>Tue, 11 Feb 2020 17:23:00 +0900</pubDate>
       
       <guid>/2020-02-11/kubernetes-custom-resource/</guid>
-      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.</description>
+      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.g. ReplicaSet, etc). Main introduction in Kubernetes document is in [here].
+A major confusing point comes from ambiguous distinction between Custom Resource Definition (CRD) and Aggregated APIserver (AA). Even the document explains some differences of two types of implementation, it is not clearly understandable.</description>
     </item>
     
     <item>
@@ -203,7 +241,8 @@
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
       <guid>/2020-02-09/introduction-to-programming-infiniband/</guid>
-      <description>This post explains the basic of RDMA programming.</description>
+      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
     </item>
     
     <item>
@@ -212,7 +251,8 @@
       <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
       
       <guid>/2020-01-25/building-mellanox-ofed-from-source/</guid>
-      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).</description>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
+Building Mellanox OFED source code: inside install script # Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.</description>
     </item>
     
     <item>
@@ -221,7 +261,9 @@
       <pubDate>Tue, 07 Jan 2020 16:12:00 +0900</pubDate>
       
       <guid>/2020-01-07/self-signed-certificate/</guid>
-      <description></description>
+      <description>Public Key Management and X.509 Certificates A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
+Steps to create a certificate 3 # Follow the steps to create a self-signed certificate:
+ Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key # A generated certificate must be signed with the Certificate Authority&amp;rsquo;s private key, which we are going to make here.</description>
     </item>
     
     <item>
@@ -230,7 +272,9 @@
       <pubDate>Wed, 18 Dec 2019 09:26:00 +0900</pubDate>
       
       <guid>/2019-12-18/kubernetes-authentication/</guid>
-      <description></description>
+      <description>1
+For access control, Kubernetes steps the procedures above for each API operation: authentication (who can access), authorization (what can be accessed), and admisssion control. This post is about Kubernetes authentication.
+All API accesses are handled by Kubernetes api server. All accesses have to be authenticated by the API server for Kubernetes operations. Kubernetes API server serve on 2 ports: one for testing, and the other for all other cases.</description>
     </item>
     
     <item>
@@ -239,7 +283,9 @@
       <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
       
       <guid>/2019-12-10/cmake-for-custom-library-build-system-in-go/</guid>
-      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities.</description>
+      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities. This post dives a little bit deeper into CMake build system for this interaction.
+The following CMakeLists.txt provides a binary compilation altogether with compiling Go based static library.
+cmake_minimum_required(VERSION 3.0)project(test)set(TARGET_OUT test.out)set(TARGET_LIB test.lib)# Go configurations set(GO_SRCS test.go)set(GO_LIBNAME libtest.a)# Custom command for &amp;#39;go build -buildmode=c-archive ...&amp;#39; # to create a library from Go codes. add_custom_command(OUTPUT ${GO_LIBNAME} DEPENDS ${GO_SRCS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMMAND env go build -buildmode=c-archive -o &amp;#34;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&amp;#34; ${CMAKE_GO_FLAGS} ${GO_SRCS} COMMENT &amp;#34;Building Go library&amp;#34;)# Add a custom target for the library.</description>
     </item>
     
     <item>
@@ -248,7 +294,8 @@
       <pubDate>Thu, 28 Nov 2019 21:09:00 +0900</pubDate>
       
       <guid>/2019-11-28/implementing-kubernetes-cpp-client-library/</guid>
-      <description>Linking Go and C Since Go 1.</description>
+      <description>Linking Go and C # Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &amp;#34;C&amp;#34; import &amp;#34;fmt&amp;#34; //export hello func hello(name string) { fmt.Printf(&amp;#34;Hello from Go, %s!\n&amp;#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest.</description>
     </item>
     
   </channel>

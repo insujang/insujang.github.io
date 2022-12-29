@@ -6,7 +6,6 @@
     <description>Recent content in jekyll on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Sat, 28 Sep 2019 14:31:00 +0900</lastBuildDate><atom:link href="/tags/jekyll/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Managing Github Pages blog with VScode and Jekyll</title>
@@ -14,7 +13,8 @@
       <pubDate>Sat, 28 Sep 2019 14:31:00 +0900</pubDate>
       
       <guid>/2019-09-28/jekyll-vscode/</guid>
-      <description>In recent days, I barely managed my blog after graduation.</description>
+      <description>In recent days, I barely managed my blog after graduation. Switching my most favorite code editor from Atom to VScode also makes it hard, since there is no plugins such like Jekyll Atom. It provides an integrated Jekyll commands, and several tools for post management. There is a plugin named Jekyll Snippets in VScode marketplace, , but I don&amp;rsquo;t think it is not comparable to Atom&amp;rsquo;s plugin.
+As I do not want to use several editors, I kept looking for a way to manage my blog with VScode, and I found a reasonable one: using VScode insider, Docker Jekyll and jekyll-post plugin.</description>
     </item>
     
     <item>
@@ -23,7 +23,12 @@
       <pubDate>Sat, 01 Apr 2017 09:55:05 +0900</pubDate>
       
       <guid>/2017-04-01/using-jekyll-with-atom-editor/</guid>
-      <description>{: .</description>
+      <description>{: .center-image}
+   {: width=&amp;ldquo;860px&amp;rdquo;, height=&amp;ldquo;390px&amp;rdquo;,}
+Atom is a modern, approachable text editor.
+Until the last year, I had used Sublime Text for a text editor. However, after I saw some post examining Atom, I switched to it.
+It is as modern as Sublime Text, and plugins are much much more powerful, I think.
+I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll package on Atom.</description>
     </item>
     
     <item>
@@ -32,7 +37,10 @@
       <pubDate>Sat, 01 Apr 2017 01:56:49 +0900</pubDate>
       
       <guid>/2017-04-01/new-blog-with-jekyll/</guid>
-      <description>After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.</description>
+      <description>After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.
+Now I restarted a blog, now with Jekyll and Github Pages.
+Comparing Wordpress, it has following advantages:
+ The format of posts, Markdown, is easy to edit in anywhere. I need to accustom markup languages, e.g., LaTex or Markdown. Use Git system. chance to be more familiar with Git? Not as many plugins as in Wordpress, but all the necessary are provided and fast!</description>
     </item>
     
   </channel>

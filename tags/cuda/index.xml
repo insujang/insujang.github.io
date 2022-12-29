@@ -6,7 +6,6 @@
     <description>Recent content in cuda on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Fri, 23 Jun 2017 10:13:09 +0900</lastBuildDate><atom:link href="/tags/cuda/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GPU Resource Management</title>
@@ -14,7 +13,10 @@
       <pubDate>Fri, 23 Jun 2017 10:13:09 +0900</pubDate>
       
       <guid>/2017-06-23/gpu-resource-management/</guid>
-      <description>This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).</description>
+      <description>This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).
+   {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
+The GPU channel is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.
+GPU channel is the only way to send GPU commands to the GPU.</description>
     </item>
     
     <item>
@@ -23,7 +25,11 @@
       <pubDate>Thu, 27 Apr 2017 22:35:30 +0900</pubDate>
       
       <guid>/2017-04-27/analyzing-gdev/</guid>
-      <description>Gdev Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.</description>
+      <description>Gdev # Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.
+You can download it from [here].
+Detail implementations are described in the other paper that the author wrote, Implementing Open-Source CUDA Runtime. (link)
+Internal Implementation #    {: .center-image}
+ Implementation of Gdev  Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source.</description>
     </item>
     
     <item>
@@ -32,7 +38,10 @@
       <pubDate>Thu, 27 Apr 2017 10:15:41 +0900</pubDate>
       
       <guid>/2017-04-27/gpu-architecture-overview/</guid>
-      <description>GPU Model {: .</description>
+      <description>GPU Model #    {: .center-image width:600px}
+It explains several important designs that recent GPUs have adopted.
+  MMIO.
+ The CPU communicates with the GPU via MMIO. Hardware engines for DMA are supported for transferring large amounts of data, however, commands should be written via MMIO. The I/O ports can be used to indirectly access the MMIO regions, but rarely used. An open source device driver Nouveau currently never uses it.</description>
     </item>
     
     <item>
@@ -41,7 +50,10 @@
       <pubDate>Mon, 03 Apr 2017 12:12:58 +0900</pubDate>
       
       <guid>/2017-04-03/pci-express-i/o-system/</guid>
-      <description>I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.</description>
+      <description>I/O Hardware Overview # The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.
+To encapsulate the details and oddities of different devices, the kernel of an operating system is structured to use device-driver modules.
+A device communicates with a computer system by sending signals over a cable or through the air.
+ The device communicates with the machine via a connection point, or port.</description>
     </item>
     
   </channel>

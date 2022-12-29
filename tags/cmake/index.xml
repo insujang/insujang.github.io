@@ -6,7 +6,6 @@
     <description>Recent content in cmake on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Tue, 10 Dec 2019 15:04:00 +0900</lastBuildDate><atom:link href="/tags/cmake/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cmake for Custom Library Build System in Go</title>
@@ -14,7 +13,9 @@
       <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
       
       <guid>/2019-12-10/cmake-for-custom-library-build-system-in-go/</guid>
-      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities.</description>
+      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities. This post dives a little bit deeper into CMake build system for this interaction.
+The following CMakeLists.txt provides a binary compilation altogether with compiling Go based static library.
+cmake_minimum_required(VERSION 3.0)project(test)set(TARGET_OUT test.out)set(TARGET_LIB test.lib)# Go configurations set(GO_SRCS test.go)set(GO_LIBNAME libtest.a)# Custom command for &amp;#39;go build -buildmode=c-archive ...&amp;#39; # to create a library from Go codes. add_custom_command(OUTPUT ${GO_LIBNAME} DEPENDS ${GO_SRCS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMMAND env go build -buildmode=c-archive -o &amp;#34;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&amp;#34; ${CMAKE_GO_FLAGS} ${GO_SRCS} COMMENT &amp;#34;Building Go library&amp;#34;)# Add a custom target for the library.</description>
     </item>
     
   </channel>

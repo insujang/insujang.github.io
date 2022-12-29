@@ -6,7 +6,6 @@
     <description>Recent content in Posts on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Wed, 03 Aug 2022 14:30:00 -0400</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Analyzing Parallelization of Attention</title>
@@ -14,7 +13,8 @@
       <pubDate>Wed, 03 Aug 2022 14:30:00 -0400</pubDate>
       
       <guid>/2022-08-03/analyzing-parallelization-of-attention/</guid>
-      <description>We exploit the inherent parallelism in the multi-head attention operation to partition the self-attention block (shown in Figure 5b).</description>
+      <description>We exploit the inherent parallelism in the multi-head attention operation to partition the self-attention block (shown in Figure 5b). The key (K), Query (Q), and value (V) matrices can be partitioned in a column-parallel fashion. The output linear layer can then directly operate on the partitioned output of the attention operation (weight matrix partitioned across rows).
+Deepak Narayanan et al, Efficient large-scale language model training on GPU clusters using megatron-LM, SC&#39;21</description>
     </item>
     
     <item>
@@ -23,7 +23,10 @@
       <pubDate>Sat, 30 Jul 2022 23:48:00 -0400</pubDate>
       
       <guid>/2022-07-30/analysis-of-transformer-model/</guid>
-      <description>This post analyzes transformer models, specifically memory and computation overhead.</description>
+      <description>This post analyzes transformer models, specifically memory and computation overhead.
+Many transformer based models just explain themselves as a model with X-B parameters; I wanted to break it down and look into the model structure how they are stored and used in actual computing hardware.
+ Many illustrations and analysis are based on the following papers 1.
+ Transformer-based Model # Since Google announed attention and transformer models in 2017 2, MLP and image classification models are rapidly adopting transformer layers.</description>
     </item>
     
     <item>
@@ -32,7 +35,8 @@
       <pubDate>Sat, 11 Jun 2022 19:33:00 -0400</pubDate>
       
       <guid>/2022-06-11/parallelism-in-distributed-deep-learning/</guid>
-      <description>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning.</description>
+      <description>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning. Since mid 2010, people have been thinking about accelerating deep learning with scale-out, and distributd deep learning has been introduced. Parameter server is one of the well-known architecture for distributed deep learning.
+Recent days, many parallelization mechanisms, the way of distributing computation to multiple workers, have been introduced. First one was to split batches into several microbatches and distributed it, namely data parallelism, which the parameter server architecture is for.</description>
     </item>
     
     <item>
@@ -41,7 +45,9 @@
       <pubDate>Wed, 16 Mar 2022 23:37:00 -0500</pubDate>
       
       <guid>/2022-03-16/using-rdma-cm/</guid>
-      <description>Years before, I posted how to use libibverbs for RDMA communication.</description>
+      <description>Years before, I posted how to use libibverbs for RDMA communication.
+When initializing queue pair connection, we need some destination information:
+bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here  rtr_attr.</description>
     </item>
     
     <item>
@@ -50,7 +56,10 @@
       <pubDate>Sat, 12 Mar 2022 10:40:00 -0500</pubDate>
       
       <guid>/2022-03-12/implementing-basic-rpc-with-c-20/</guid>
-      <description>This post explains how a basic RPC framework can be implemented by using modern C++ functionalities.</description>
+      <description>This post explains how a basic RPC framework can be implemented by using modern C++ functionalities. The explanation in this post is heavily inspired from:
+ simple-rpc by evenleo buttonrpc-cpp14 by button-chen  C++ Features used # Parameter Pack 1 # Parameter pack is similar to C variadic arguments that are used in printf() family:
+int printf(char *format, ...); which is implemented with va_ variadic function API [src]:
+int printf(const char* format, .</description>
     </item>
     
     <item>
@@ -59,7 +68,8 @@
       <pubDate>Mon, 17 Jan 2022 14:54:00 -0500</pubDate>
       
       <guid>/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/</guid>
-      <description>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing.</description>
+      <description>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.
+# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (/etc/init.d/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=/etc/init.</description>
     </item>
     
     <item>
@@ -68,7 +78,9 @@
       <pubDate>Thu, 06 Jan 2022 20:53:00 -0500</pubDate>
       
       <guid>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</guid>
-      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores.</description>
+      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores. NVIDIA BlueField2 equips 8 ARM Cortex A-72 cores, which can be used to process offloaded functions. This functions are not limited to packet processing, but can also be more complicated applications, e.g., file system, etc.
+This post talks about how to configure NVIDIA BlueField2 SmartNIC, on CloudLab r7525 machines.
+Regarding CloudLab, please refer to [this paper](https://www.usenix.org/conference/atc19/presentation/duplyakin).   Regarding NVIDIA BlueField2 SmartNIC/DPU, please refer to [NVIDIA DPU introduction page](https://www.</description>
     </item>
     
     <item>
@@ -77,7 +89,8 @@
       <pubDate>Mon, 03 May 2021 16:47:00 +0900</pubDate>
       
       <guid>/2021-05-03/libvirt-vm-network-accessibility/</guid>
-      <description>Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:</description>
+      <description>Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:
+$ ip addr ... 20: virbr0: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu 1500 qdisc noqueue state UP group default qlen 1000 link/ether 52:54:00:e9:7b:57 brd ff:ff:ff:ff:ff:ff inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0 valid_lft forever preferred_lft forever libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</description>
     </item>
     
     <item>
@@ -86,7 +99,8 @@
       <pubDate>Mon, 26 Apr 2021 09:02:00 +0900</pubDate>
       
       <guid>/2021-04-26/using-intel-ioat-dma/</guid>
-      <description>I/OAT (I/O Acceleration Technology) 1 Intel I/OAT is a set of technologies for improving I/O performance.</description>
+      <description>I/OAT (I/O Acceleration Technology) 1 # Intel I/OAT is a set of technologies for improving I/O performance. This post specifically illustrates how to use Intel QuickData Technology, which enables data copy by the chipset instead of the CPU, to move data more efficiently and provide fast throughput.
+Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemented as ioatdma kernel module in Linux, and integrated into the Linux DMA subsystem.</description>
     </item>
     
     <item>
@@ -95,7 +109,9 @@
       <pubDate>Fri, 23 Apr 2021 16:19:00 +0900</pubDate>
       
       <guid>/2021-04-23/reconfiguring-ceph/</guid>
-      <description>Configuring Ceph Ceph daemons use /etc/ceph/ceph.</description>
+      <description>Configuring Ceph # Ceph daemons use /etc/ceph/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?
+1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
+ Use injectargs to inject configuration values into the existing values.</description>
     </item>
     
     <item>
@@ -104,7 +120,9 @@
       <pubDate>Wed, 24 Mar 2021 11:20:00 +0900</pubDate>
       
       <guid>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</guid>
-      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.</description>
+      <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
+VM execution is done through qemu-system-x86_64, without using libvirt.
+ Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
     </item>
     
     <item>
@@ -113,7 +131,8 @@
       <pubDate>Mon, 15 Mar 2021 12:24:00 +0900</pubDate>
       
       <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
-      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.</description>
+      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.
+Virtio Review &amp;amp; Vhost Introduction #  virtio-net example diagram. [Source]   VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
     </item>
     
     <item>
@@ -122,7 +141,8 @@
       <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
       
       <guid>/2021-03-10/virtio-and-vhost-architecture-part-1/</guid>
-      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).</description>
+      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.
+Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required.</description>
     </item>
     
     <item>
@@ -131,7 +151,10 @@
       <pubDate>Thu, 04 Mar 2021 14:40:00 +0900</pubDate>
       
       <guid>/2021-03-04/using-ceph-rbd-as-a-qemu-storage/</guid>
-      <description>This post explains how we can use a Ceph RBD as a QEMU storage.</description>
+      <description>This post explains how we can use a Ceph RBD as a QEMU storage. We can attach a Ceph RBD to a QEMU VM through either virtio-blk or vhost-user-blk QEMU device (vhost requires SPDK).
+Assume that a Ceph cluster is ready following the manual.
+Setting a Ceph client Configuration 1 # For a node to access a Ceph cluster, it requires some configuration:
+ Config file setup User authentication setup  This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</description>
     </item>
     
     <item>
@@ -140,7 +163,9 @@
       <pubDate>Wed, 23 Dec 2020 11:38:00 +0900</pubDate>
       
       <guid>/2020-12-23/analyzing-ceph-network-module/</guid>
-      <description></description>
+      <description>This post explains how Ceph daemons and clients communicate with each other, with Ceph network architecture.
+Ceph offical document provides a very high-level diagram that depicts the Ceph architecture:
+ High level Ceph architecture. [src]  However, I could not find out detailed documents explaining how clients with librados actually communicate with daemons, except a few blog post 1 2 3 4 5 6 7. Even after reading those, I was not clear how they work.</description>
     </item>
     
     <item>
@@ -149,7 +174,9 @@
       <pubDate>Mon, 09 Nov 2020 15:09:00 +0900</pubDate>
       
       <guid>/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
-      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.</description>
+      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
+The introduction below clearly shows why it is required.
+ Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
     </item>
     
     <item>
@@ -158,7 +185,9 @@
       <pubDate>Sat, 07 Nov 2020 19:07:00 +0900</pubDate>
       
       <guid>/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/</guid>
-      <description>This post explains how we can accelerate buildig a Ceph RPM package.</description>
+      <description>This post explains how we can accelerate buildig a Ceph RPM package. Knowledge in the post can be generally applied to packaging all other applications, not only Ceph.
+Ceph source code is managed by Github 1, and it contains several shell scripts for packaging as well. Before illustrating how these scripts work, we have to figure out how RPM packaging works.
+1. RPM Packaing 101 # RPM (originally stands for Red Hat Package Manager) is a package management system developed by Red Hat 2.</description>
     </item>
     
     <item>
@@ -167,7 +196,10 @@
       <pubDate>Tue, 03 Nov 2020 13:09:00 +0900</pubDate>
       
       <guid>/2020-11-03/deploying-a-ceph-development-environment-cluster/</guid>
-      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.</description>
+      <description>This post explains how we can deploy a Ceph development cluster from Ceph source code.
+ I tested it in Windows 10 + Docker for Windows with WSL2 engine + WSL2 Ubuntu 20.04.
+ 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.</description>
     </item>
     
     <item>
@@ -176,7 +208,9 @@
       <pubDate>Sun, 30 Aug 2020 14:16:00 +0900</pubDate>
       
       <guid>/2020-08-30/introduction-to-ceph/</guid>
-      <description>Ceph is an open-source distributed software platform 1 2.</description>
+      <description>Ceph is an open-source distributed software platform 1 2. It mainly focuses on scale-out file system including storage distribution and availability.
+ Ceph Cluster Overview. [Source]   Ceph Cluster Overview. [Source]   Ceph Cluster Overview. [Source]  A ceph storage cluster roughly consists of three components:
+ Ceph Storage Nodes: equip physical storage media, and Ceph Object Storage Daemons (OSDs, or ceph-osd), Ceph Monitors (ceph-mon), and Ceph Managers (ceph-mgr) manage them.</description>
     </item>
     
     <item>
@@ -185,7 +219,10 @@
       <pubDate>Thu, 27 Aug 2020 17:22:00 +0900</pubDate>
       
       <guid>/2020-08-27/introduction-to-flatpak/</guid>
-      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1.</description>
+      <description>Flatpak is one of app sandboxing frameworks, along with AppImage and Snap 1. Although Snap is the most famous one, I think the internal architecture of Flatpak is more reliable.
+Fedora Silverblue and EndlessOS provide software installation primarily via Flathub, a central repository of Flatpak based applications 2 3.
+This post briefly summarizes how to use Flatpak in terms of implementing a sample applications.
+Installing Flatpak # In Ubuntu distributions, there is no Flatpak preinstalled, while it is in Fedora.</description>
     </item>
     
     <item>
@@ -194,7 +231,9 @@
       <pubDate>Mon, 24 Aug 2020 09:21:00 +0900</pubDate>
       
       <guid>/2020-08-24/dynamic-kubelet-configuration/</guid>
-      <description>Kubelet, at launch time, loads configuration files from pre-specified files.</description>
+      <description>Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
+Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
+Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:</description>
     </item>
     
     <item>
@@ -203,7 +242,8 @@
       <pubDate>Wed, 15 Jul 2020 12:35:00 +0900</pubDate>
       
       <guid>/2020-07-15/fedora-silverblue/</guid>
-      <description>Fedora Silverblue Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution.</description>
+      <description>Fedora Silverblue #    Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:</description>
     </item>
     
     <item>
@@ -212,7 +252,10 @@
       <pubDate>Sat, 04 Apr 2020 19:27:00 +0900</pubDate>
       
       <guid>/2020-04-04/go-modules/</guid>
-      <description>This post introduces Go modules, introduced in Go version 1.</description>
+      <description>This post introduces Go modules, introduced in Go version 1.11.
+Go Modules? # Go 1.11 introduces a new dependency mangement system, Go modules (That&amp;rsquo;s why Go uses the environment variable name GO111MODULE: indicating to use Go 1.11 module).
+Google introduced Go module as an alternative to GOPATH for versioning and package distribution. At first I did not understand what it means specifically. Here is my explanaion.
+Importing Packages without Go Modules # Go programmers can import third-party packages (i.</description>
     </item>
     
     <item>
@@ -221,7 +264,8 @@
       <pubDate>Thu, 13 Feb 2020 10:13:00 +0900</pubDate>
       
       <guid>/2020-02-13/programming-kubernetes-crd/</guid>
-      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI.</description>
+      <description>In [previous post], I briefly introduced a custom resource definition and how to create it through CLI. In this post, I introduce how to implement Go code that programatically specifies a CRD and a custom controllers that handles CRD events.
+Many tutorials are exist, but not perfect 1 2 3 4 [^tutorial4]. I by myself implement a new custom controller to fully understand how it works, and introduce almost full details here.</description>
     </item>
     
     <item>
@@ -230,7 +274,8 @@
       <pubDate>Tue, 11 Feb 2020 17:23:00 +0900</pubDate>
       
       <guid>/2020-02-11/kubernetes-custom-resource/</guid>
-      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.</description>
+      <description>One of main advantages of Kubernetes API is flexibility; users can add a custom resource to the Kubernetes cluster, and Kubernetes apiserver manages defined custom resources like standard resources (e.g. ReplicaSet, etc). Main introduction in Kubernetes document is in [here].
+A major confusing point comes from ambiguous distinction between Custom Resource Definition (CRD) and Aggregated APIserver (AA). Even the document explains some differences of two types of implementation, it is not clearly understandable.</description>
     </item>
     
     <item>
@@ -239,7 +284,8 @@
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
       <guid>/2020-02-09/introduction-to-programming-infiniband/</guid>
-      <description>This post explains the basic of RDMA programming.</description>
+      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
     </item>
     
     <item>
@@ -248,7 +294,8 @@
       <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
       
       <guid>/2020-01-25/building-mellanox-ofed-from-source/</guid>
-      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).</description>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
+Building Mellanox OFED source code: inside install script # Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.</description>
     </item>
     
     <item>
@@ -257,7 +304,9 @@
       <pubDate>Tue, 07 Jan 2020 16:12:00 +0900</pubDate>
       
       <guid>/2020-01-07/self-signed-certificate/</guid>
-      <description></description>
+      <description>Public Key Management and X.509 Certificates A self-signed certificate is a ceritificate, which is not signed by a certificate authority (CA) 1 2. (There is no parent-like CA when creating a CA, CA itself is a self-signed certificate.) When using Kubernetes, kubeadm automatically genereates a self-signed Kubernetes CA before generating other certificates.
+Steps to create a certificate 3 # Follow the steps to create a self-signed certificate:
+ Generate a private key Generate a Certificate Signing Request (CSR) Generate a self-signed certificate  Generate a private key # A generated certificate must be signed with the Certificate Authority&amp;rsquo;s private key, which we are going to make here.</description>
     </item>
     
     <item>
@@ -266,7 +315,9 @@
       <pubDate>Wed, 18 Dec 2019 09:26:00 +0900</pubDate>
       
       <guid>/2019-12-18/kubernetes-authentication/</guid>
-      <description></description>
+      <description>1
+For access control, Kubernetes steps the procedures above for each API operation: authentication (who can access), authorization (what can be accessed), and admisssion control. This post is about Kubernetes authentication.
+All API accesses are handled by Kubernetes api server. All accesses have to be authenticated by the API server for Kubernetes operations. Kubernetes API server serve on 2 ports: one for testing, and the other for all other cases.</description>
     </item>
     
     <item>
@@ -275,7 +326,9 @@
       <pubDate>Tue, 10 Dec 2019 15:04:00 +0900</pubDate>
       
       <guid>/2019-12-10/cmake-for-custom-library-build-system-in-go/</guid>
-      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities.</description>
+      <description>In the previous post, I implemented a Go shim layer that enables c++ codes to use Go functionalities. This post dives a little bit deeper into CMake build system for this interaction.
+The following CMakeLists.txt provides a binary compilation altogether with compiling Go based static library.
+cmake_minimum_required(VERSION 3.0)project(test)set(TARGET_OUT test.out)set(TARGET_LIB test.lib)# Go configurations set(GO_SRCS test.go)set(GO_LIBNAME libtest.a)# Custom command for &amp;#39;go build -buildmode=c-archive ...&amp;#39; # to create a library from Go codes. add_custom_command(OUTPUT ${GO_LIBNAME} DEPENDS ${GO_SRCS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMMAND env go build -buildmode=c-archive -o &amp;#34;${CMAKE_CURRENT_BINARY_DIR}/${GO_LIBNAME}&amp;#34; ${CMAKE_GO_FLAGS} ${GO_SRCS} COMMENT &amp;#34;Building Go library&amp;#34;)# Add a custom target for the library.</description>
     </item>
     
     <item>
@@ -284,7 +337,8 @@
       <pubDate>Thu, 28 Nov 2019 21:09:00 +0900</pubDate>
       
       <guid>/2019-11-28/implementing-kubernetes-cpp-client-library/</guid>
-      <description>Linking Go and C Since Go 1.</description>
+      <description>Linking Go and C # Since Go 1.5, Go supports packaging Go codes into a shared or static library, which can be linked in C programs 1.
+package main	// buildmode=[c-archive|c-shared] requires exactly one main package  import &amp;#34;C&amp;#34; import &amp;#34;fmt&amp;#34; //export hello func hello(name string) { fmt.Printf(&amp;#34;Hello from Go, %s!\n&amp;#34;, name); } func main() {} ## as c-shared library go build -buildmode=c-shared -o libtest.so test.go ## as c-archive(static) library go build -buildmode=c-archive -o libtest.</description>
     </item>
     
     <item>
@@ -293,7 +347,9 @@
       <pubDate>Thu, 21 Nov 2019 18:32:00 +0900</pubDate>
       
       <guid>/2019-11-21/installing-kubernetes-and-crio-in-debian/</guid>
-      <description>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine.</description>
+      <description>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine. Tested with Debian 10 running on a VirtualBox VM.
+root@kubernetesdebian:/etc# cat os-release PRETTY_NAME=&amp;#34;Debian GNU/Linux 10 (buster)&amp;#34; NAME=&amp;#34;Debian GNU/Linux&amp;#34; VERSION_ID=&amp;#34;10&amp;#34; VERSION=&amp;#34;10 (buster)&amp;#34; VERSION_CODENAME=buster ID=debian HOME_URL=&amp;#34;https://www.debian.org/&amp;#34; SUPPORT_URL=&amp;#34;https://www.debian.org/support&amp;#34; BUG_REPORT_URL=&amp;#34;https://bugs.debian.org/&amp;#34; Installing cri-o # 0. Prerequiste for using cri-o with Kubernetes # Kubernetes requires the following configurations be set before using cri-o container runtime [link]:
+modprobe overlay modprobe br_netfilter cat &amp;gt; /etc/sysctl.</description>
     </item>
     
     <item>
@@ -302,7 +358,8 @@
       <pubDate>Mon, 18 Nov 2019 23:07:00 +0900</pubDate>
       
       <guid>/2019-11-18/interactions-between-crio-and-conmon/</guid>
-      <description>cri-o cri-o is a lightweight container runtime framework for Kubernetes.</description>
+      <description>cri-o #    cri-o is a lightweight container runtime framework for Kubernetes. After introducing Open Container Initiative (OCI) container standard, Red Hat implemented cri-o to support the OCI standard and optimize performances by getting rid of unuseful features from Docker for Kubernetes; hence it is lightweight and for Kubernetes.
+   {: width=&amp;ldquo;1000px&amp;rdquo;} cri-o Archituecture. It manages containers under the supervison of Kubelet, a node agent of Kubernetes.</description>
     </item>
     
     <item>
@@ -311,7 +368,8 @@
       <pubDate>Sun, 10 Nov 2019 14:05:00 +0900</pubDate>
       
       <guid>/2019-11-10/code-server/</guid>
-      <description></description>
+      <description>vscode running as a standalone app (lower right), and vscode frontend UI running in Safari web browser (upper left). Their looks are nearly identical except for menu, etc.
+Visual Studio Code # Visual Studio Code, implemented and managed by Microsoft, is one of the best open-source code editors over the world. I&amp;rsquo;am using this too for almost every works; programming codes, writing Markdowns, writing Latex, etc. With tremendous number of plugins, its functionality is nearly limitless.</description>
     </item>
     
     <item>
@@ -320,7 +378,12 @@
       <pubDate>Thu, 07 Nov 2019 11:17:00 +0900</pubDate>
       
       <guid>/2019-11-07/kubernetes/</guid>
-      <description>Kubernetes Kubernetes is is an container-based cluster orchestration tool, originally implemented by Google.</description>
+      <description>Kubernetes # Kubernetes is is an container-based cluster orchestration tool, originally implemented by Google. It manages containerized workloads and services in clusters.
+ Kubernetes is really an orchestration tool?
+Kubernetes does not call itself as an orchestration system, due to its different behaviors from the technical definition of &amp;ldquo;orchestration&amp;rdquo;.
+ Orchestration (from [Wikipedia])
+Orchestration is the automated configuration, coordination, and management of computer systems and software.
+  Orchestration (from [bmc])</description>
     </item>
     
     <item>
@@ -329,7 +392,10 @@
       <pubDate>Thu, 31 Oct 2019 21:36:00 +0900</pubDate>
       
       <guid>/2019-10-31/container-runtime/</guid>
-      <description>From Docker to Kubernetes, these days container solutions are emerging.</description>
+      <description>From Docker to Kubernetes, these days container solutions are emerging.
+   {: .center-image width=&amp;ldquo;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+In the era of Docker the term &amp;ldquo;Container runtime&amp;rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
+Here are very clear explanations what is container runtime exactly, written by Ian Lewis:</description>
     </item>
     
     <item>
@@ -338,7 +404,7 @@
       <pubDate>Thu, 10 Oct 2019 20:35:00 +0900</pubDate>
       
       <guid>/2019-10-10/open-container-initiative-image-spec/</guid>
-      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers.</description>
+      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&#39;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
     </item>
     
     <item>
@@ -347,7 +413,8 @@
       <pubDate>Sat, 28 Sep 2019 14:31:00 +0900</pubDate>
       
       <guid>/2019-09-28/jekyll-vscode/</guid>
-      <description>In recent days, I barely managed my blog after graduation.</description>
+      <description>In recent days, I barely managed my blog after graduation. Switching my most favorite code editor from Atom to VScode also makes it hard, since there is no plugins such like Jekyll Atom. It provides an integrated Jekyll commands, and several tools for post management. There is a plugin named Jekyll Snippets in VScode marketplace, , but I don&amp;rsquo;t think it is not comparable to Atom&amp;rsquo;s plugin.
+As I do not want to use several editors, I kept looking for a way to manage my blog with VScode, and I found a reasonable one: using VScode insider, Docker Jekyll and jekyll-post plugin.</description>
     </item>
     
     <item>
@@ -356,7 +423,8 @@
       <pubDate>Thu, 07 Feb 2019 17:00:00 +0900</pubDate>
       
       <guid>/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</guid>
-      <description>Netlink Protocol Netlink is a communication protocol between kernel and userspace.</description>
+      <description>Netlink Protocol # Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
+#include &amp;lt;asm/types.h&amp;gt;#include &amp;lt;sys/socket.h&amp;gt;#include &amp;lt;linux/netlink.h&amp;gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on.</description>
     </item>
     
     <item>
@@ -365,7 +433,9 @@
       <pubDate>Wed, 28 Nov 2018 14:03:15 +0900</pubDate>
       
       <guid>/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</guid>
-      <description>Identifying the device {: .</description>
+      <description>Identifying the device #    {: .center-image} [source]
+When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
+linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; .</description>
     </item>
     
     <item>
@@ -374,7 +444,9 @@
       <pubDate>Tue, 27 Nov 2018 10:05:14 +0900</pubDate>
       
       <guid>/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</guid>
-      <description></description>
+      <description>What is udev? #  udev (userspace /dev) is a device manager for the Linux kernel. As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory. At the same time, udev also handls all user space events raised when hardware devices are added into the system or removed from it, including firmware loading as reuqired by certain devices.
+https://en.wikipedia.org/wiki/Udev
+ udev first appeared at Linux kernel version 2.</description>
     </item>
     
     <item>
@@ -383,7 +455,9 @@
       <pubDate>Thu, 22 Nov 2018 13:49:40 +0900</pubDate>
       
       <guid>/2018-11-22/systemd-boot-process/</guid>
-      <description>What is systemd?</description>
+      <description>What is systemd? #  systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
+https://www.freedesktop.org/wiki/Software/systemd
+ systemd is now the init process running as PID 1 as indicated above. /sbin/init was the actual init process of Linux (also known as System V init boot system), it is now replaced with /usr/lib/systemd in many Linux distributions.</description>
     </item>
     
     <item>
@@ -392,7 +466,9 @@
       <pubDate>Mon, 09 Oct 2017 15:26:34 +0900</pubDate>
       
       <guid>/2017-10-09/intel-sgx-sealing/</guid>
-      <description>There is a few information related to sealing, even no detailed explanation in the paper: Intel SGX explaned.</description>
+      <description>There is a few information related to sealing, even no detailed explanation in the paper: Intel SGX explaned. All in this post are from Intel, with a little thought of mine.
+Sealing # Sealing is a service that Intel provides with Intel SGX technology for secure data saving.
+Intel SGX provides protections data only if it is in the enclave, part of main memory. Therefore, when the enclave process exits, the enclave will be destroyed and any data that is secured whithin the enclave will be lost.</description>
     </item>
     
     <item>
@@ -401,7 +477,9 @@
       <pubDate>Wed, 06 Sep 2017 20:40:37 +0900</pubDate>
       
       <guid>/2017-09-06/nvmedirect/</guid>
-      <description>NVMeDirect Overview NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.</description>
+      <description>NVMeDirect Overview # NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
+In the existing system, applications should access to a storage through several software I/O stacks.   {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
+As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
     </item>
     
     <item>
@@ -410,7 +488,9 @@
       <pubDate>Wed, 16 Aug 2017 16:48:47 +0900</pubDate>
       
       <guid>/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/</guid>
-      <description>I tried to use AMD&amp;rsquo;s GPU for research, with the software stack called AMD ROCm.</description>
+      <description>I tried to use AMD&amp;rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.
+HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode.   {: .center-image}
+Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.</description>
     </item>
     
     <item>
@@ -419,7 +499,10 @@
       <pubDate>Fri, 23 Jun 2017 10:13:09 +0900</pubDate>
       
       <guid>/2017-06-23/gpu-resource-management/</guid>
-      <description>This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).</description>
+      <description>This post is a study of the paper Operating Systems Challenges for GPU Resource Management (International Workshop on Operating Systems Platforms for Embedded Real-Time Applications, 2011), and Implementing Open-Source CUDA Runtime (Programming Symposium, 2013).
+   {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
+The GPU channel is an interface that bridges across the CPU and the GPU contexts, especially when sending GPU commands from the CPU to the GPU.
+GPU channel is the only way to send GPU commands to the GPU.</description>
     </item>
     
     <item>
@@ -428,7 +511,11 @@
       <pubDate>Thu, 01 Jun 2017 19:58:54 +0900</pubDate>
       
       <guid>/2017-06-01/implementing-and-using-custom-intel-sgx-trusted-library-2/</guid>
-      <description>In the previous post, I showed how to link a trusted function that can be called insdie the enclave.</description>
+      <description>In the previous post, I showed how to link a trusted function that can be called insdie the enclave.
+However, Intel SGX provides a way to import EDL to make a library have an ECALL. The post from Intel is [here].
+1. Implementing a trusted SGX library # As we do in the previous post, make a trusted library.
+   {: .center-image}
+So our simple trusted SGX library has a function named ecall_testlib_sample.</description>
     </item>
     
     <item>
@@ -437,7 +524,9 @@
       <pubDate>Wed, 31 May 2017 18:42:44 +0900</pubDate>
       
       <guid>/2017-05-31/implementing-and-using-custom-intel-sgx-trusted-library/</guid>
-      <description>Intel SGX Trusted Library Trusted libraries are libraries that are linked to a SGX program, and used inside an enclave.</description>
+      <description>Intel SGX Trusted Library # Trusted libraries are libraries that are linked to a SGX program, and used inside an enclave. Hence, it should follow SGX enclave restrictions to be used.
+According to Intel SGX SDK document, restrictions are as follow.
+ Trusted libraries are static libraries that linked with the enclave binary. This functions/objects can only be used from within the enclave. (=ECALL cannot be implemented in a library) We should not link the enclave with any trusted library including C/C++ standard libraries.</description>
     </item>
     
     <item>
@@ -446,7 +535,11 @@
       <pubDate>Wed, 10 May 2017 01:58:06 +0900</pubDate>
       
       <guid>/2017-05-10/usermode-helper-api/</guid>
-      <description>We already know that fork() and exec() are system calls for making a new process from user space.</description>
+      <description>We already know that fork() and exec() are system calls for making a new process from user space.
+However, system calls cannot be called in kernel space. Then how to execute a process from kernel space?
+Usermode Helper API is for creating a user mode process from kernel space.
+Data structure that is used for the API is struct subprocess_info.
+/linux/include/kmod.h struct subprocess_info { struct work_struct work; struct completion* complete; const char* path; char** argv; char** envp; int wait; int retval; int (*init)(struct subprocess_info* info, struct cred* new); void (*cleanup)(struct subprocess_info* info); void* data; }; Simple example from the reference:</description>
     </item>
     
     <item>
@@ -455,7 +548,10 @@
       <pubDate>Tue, 09 May 2017 21:56:25 +0900</pubDate>
       
       <guid>/2017-05-09/cpu-affinity/</guid>
-      <description>CPU affinity, also called CPU pinning, enables the binding of a process or a thread to a specific CPU core, or CPU cores.</description>
+      <description>CPU affinity, also called CPU pinning, enables the binding of a process or a thread to a specific CPU core, or CPU cores.
+The following function is provided as a standard library to set affinity. [reference]
+#include &amp;lt;sched.h&amp;gt; int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask); int sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask); On success, schedu_setaffinity() and sched_getaffinity() return 0. On error, -1 is returned, and errno is set appropriately.
+cpu_set_t can be set by defined macros as follows.</description>
     </item>
     
     <item>
@@ -464,7 +560,10 @@
       <pubDate>Wed, 03 May 2017 15:18:17 +0900</pubDate>
       
       <guid>/2017-05-03/calling-kernel-modules-function-from-the-other-kernel-module/</guid>
-      <description>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &amp;quot;&amp;lt;function_name&amp;gt;&amp;quot; undefined!</description>
+      <description>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &amp;quot;&amp;lt;function_name&amp;gt;&amp;quot; undefined!. Even though I exported the function, there actually is another step that I should follow.
+References: http://stackoverflow.com/a/9499893
+What I did before finding the reference was to export the target function.
+/kernel1/functions.h void function1(void); /kernel1/functions.c #include &amp;lt;linux/module.h&amp;gt;void function1(void){}; EXPORT_SYMBOL(function1); However, the other kernel module (say it kernel2) does not know where function1() exists.</description>
     </item>
     
     <item>
@@ -473,7 +572,11 @@
       <pubDate>Tue, 02 May 2017 20:26:56 +0900</pubDate>
       
       <guid>/2017-05-02/kvm-internal-how-a-vm-is-created/</guid>
-      <description>KVM is an acronym of &amp;ldquo;Kernel based Virtual Machine&amp;rdquo;, and is a virtualization infrastructure for the Linux kernel that turns it into a hypervisor.</description>
+      <description>KVM is an acronym of &amp;ldquo;Kernel based Virtual Machine&amp;rdquo;, and is a virtualization infrastructure for the Linux kernel that turns it into a hypervisor.
+It is used with QEMU to emulate some peripherals, called QEMU-KVM.
+The basic architecture for KVM is as follows.
+   {: .center-image}
+ KVM Architecture. {: .center}  QEMU process runs as a userspace process on top of the Linux kernel with KVM module, and a guest kernel runs on the of emulated hardware in QEMU.</description>
     </item>
     
     <item>
@@ -482,7 +585,9 @@
       <pubDate>Tue, 02 May 2017 09:58:43 +0900</pubDate>
       
       <guid>/2017-05-02/git-basics/</guid>
-      <description>1. Initialize a Git Repository $ git init  This will create .</description>
+      <description>1. Initialize a Git Repository # $ git init This will create .git directory to store all information for version control.
+2. Checking out a Remote Repository # $ git checkout https://github.com/username/abc.git $ git checkout https://github.com/username/abc.git branch_name The last .git can be omitted. This will copy files in the remote repository. You can directly checkout a branch by adding branch_name to the tail of the command.
+To checkout a remote branch into the existing git local repository, use the following:</description>
     </item>
     
     <item>
@@ -491,7 +596,11 @@
       <pubDate>Thu, 27 Apr 2017 22:35:30 +0900</pubDate>
       
       <guid>/2017-04-27/analyzing-gdev/</guid>
-      <description>Gdev Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.</description>
+      <description>Gdev # Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.
+You can download it from [here].
+Detail implementations are described in the other paper that the author wrote, Implementing Open-Source CUDA Runtime. (link)
+Internal Implementation #    {: .center-image}
+ Implementation of Gdev  Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source.</description>
     </item>
     
     <item>
@@ -500,7 +609,9 @@
       <pubDate>Thu, 27 Apr 2017 13:14:24 +0900</pubDate>
       
       <guid>/2017-04-27/introduction-to-vfio/</guid>
-      <description>Virtual Function I/O (VFIO)  Introduced to replace the old-fashioned KVM PCI device assignment (virtio).</description>
+      <description>Virtual Function I/O (VFIO) #  Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything!  VFIO Device Filer descriptor #   located in /dev/vfio
+     Each divided into regions
+ Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl.</description>
     </item>
     
     <item>
@@ -509,7 +620,10 @@
       <pubDate>Thu, 27 Apr 2017 10:15:41 +0900</pubDate>
       
       <guid>/2017-04-27/gpu-architecture-overview/</guid>
-      <description>GPU Model {: .</description>
+      <description>GPU Model #    {: .center-image width:600px}
+It explains several important designs that recent GPUs have adopted.
+  MMIO.
+ The CPU communicates with the GPU via MMIO. Hardware engines for DMA are supported for transferring large amounts of data, however, commands should be written via MMIO. The I/O ports can be used to indirectly access the MMIO regions, but rarely used. An open source device driver Nouveau currently never uses it.</description>
     </item>
     
     <item>
@@ -518,7 +632,9 @@
       <pubDate>Fri, 21 Apr 2017 20:36:41 +0900</pubDate>
       
       <guid>/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</guid>
-      <description>Environment  Host: Ubuntu 14.</description>
+      <description>Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1
+  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+  Software specifies the leaf function by setting the appropriate value in the register EAX as input.</description>
     </item>
     
     <item>
@@ -527,7 +643,9 @@
       <pubDate>Fri, 14 Apr 2017 23:22:59 +0900</pubDate>
       
       <guid>/2017-04-14/adding-an-additional-sgx-instruction/</guid>
-      <description>Implementing a SGX SDK Function for the Instruction 1.</description>
+      <description>Implementing a SGX SDK Function for the Instruction # 1. Function Declaration # Declare a Function into /linux-sgx/common/inc/sgx_urts.h.
+... sgx_status_t SGXAPI sgx_create_abc(void); 2. Function Definition # Define a Function into any file in /linux-sgx/psw/urts/. I defined it in /linux-sgx/psw/urts/linux/urts.cpp, as follows.
+extern &amp;#34;C&amp;#34; sgx_status_t sgx_create_abc() { printf(&amp;#34;Hello from %s!\n&amp;#34;, __func__); return SGX_SUCCESS; } Also, you should define a function with the same name in /linux-sgx/sdk/simulation/urtssim/urts_deploy.c, but with void return type and no parameters.</description>
     </item>
     
     <item>
@@ -536,7 +654,9 @@
       <pubDate>Fri, 14 Apr 2017 13:58:12 +0900</pubDate>
       
       <guid>/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/</guid>
-      <description>Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.</description>
+      <description>Many research papers have dealed about how SGX internally works, however, none have handled how SGX SDK works.
+This post explains how Intel Linux SGX SDK calls Intel SGX CPU instructions, to create an enclave.
+As we all know, There is an SGX instruction we use to create an enclave, EADD. This is a Intel CPU microcode instruction. However, a user program does not directly call this instruction, but calls sgx_create_enclave() SDK function.</description>
     </item>
     
     <item>
@@ -545,7 +665,10 @@
       <pubDate>Fri, 07 Apr 2017 09:55:25 +0900</pubDate>
       
       <guid>/2017-04-07/linux-kernel-memory-map-operations/</guid>
-      <description>Memory mapping is one of the most important features to protect the memory system in Linux.</description>
+      <description>Memory mapping is one of the most important features to protect the memory system in Linux.
+Linux provides several functions to map a physical address into a virtual address.
+1. mmap # Linux/fs/sysfs/bin.c:337 static int mmap(struct file* file, struct vm_area_struct* vma) {...} mmap() maps the file to a virtual memory. And this can be used with the special file /dev/mem (system memory) or /dev/kmem (kernel memory).
+2. vm_insert_pfn # This function is called by sgx_enclave_add_page().</description>
     </item>
     
     <item>
@@ -554,7 +677,9 @@
       <pubDate>Wed, 05 Apr 2017 22:13:25 +0900</pubDate>
       
       <guid>/2017-04-05/intel-sgx-instructions-in-enclave-initialization/</guid>
-      <description>1. ECREATE  [Intel SGX Explained p63] Section 5.</description>
+      <description>1. ECREATE #  [Intel SGX Explained p63] Section 5.3.1. Creation [Programming References p21] Section 5.3. ECREATE  An enclave is born when the system software issues the ECREATE instruction, which turns a free EPC page into the SECS for the new enclave.
+ECREATE copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.
+Software sets the following fields in the source structure: SECS:BASEADDR, SECS:SIZE, and ATTRIBUTES.</description>
     </item>
     
     <item>
@@ -563,7 +688,9 @@
       <pubDate>Mon, 03 Apr 2017 14:09:50 +0900</pubDate>
       
       <guid>/2017-04-03/intel-sgx-protection-mechanism/</guid>
-      <description>All Figure numbers are same with those in the paper.</description>
+      <description>All Figure numbers are same with those in the paper.
+Glossary #  PMH: Page Miss Handler. MMU: Memory Management Unit. TLB: Translation Look-aside Buffer. FSM: Finite State Machine. EPC: Enclave Page Cache. EPCM: Enclave Page Cache Map. PRM: Processor Reserved Memory. ELRANGE: Enclave Linear Address Range.  Address Translation # Concepts #  Section 2.5.1 Address Translation Concepts
+ System software relies on the CPU&amp;rsquo;s address translation mechanism for implementing isolation among less privileged pieces of software.</description>
     </item>
     
     <item>
@@ -572,7 +699,10 @@
       <pubDate>Mon, 03 Apr 2017 12:12:58 +0900</pubDate>
       
       <guid>/2017-04-03/pci-express-i/o-system/</guid>
-      <description>I/O Hardware Overview The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.</description>
+      <description>I/O Hardware Overview # The basic I/O hardware elements, such as ports, buses, and device controllers, accomodate a wide variety of I/O devices.
+To encapsulate the details and oddities of different devices, the kernel of an operating system is structured to use device-driver modules.
+A device communicates with a computer system by sending signals over a cable or through the air.
+ The device communicates with the machine via a connection point, or port.</description>
     </item>
     
     <item>
@@ -581,7 +711,12 @@
       <pubDate>Sat, 01 Apr 2017 09:55:05 +0900</pubDate>
       
       <guid>/2017-04-01/using-jekyll-with-atom-editor/</guid>
-      <description>{: .</description>
+      <description>{: .center-image}
+   {: width=&amp;ldquo;860px&amp;rdquo;, height=&amp;ldquo;390px&amp;rdquo;,}
+Atom is a modern, approachable text editor.
+Until the last year, I had used Sublime Text for a text editor. However, after I saw some post examining Atom, I switched to it.
+It is as modern as Sublime Text, and plugins are much much more powerful, I think.
+I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll package on Atom.</description>
     </item>
     
     <item>
@@ -590,7 +725,10 @@
       <pubDate>Sat, 01 Apr 2017 01:56:49 +0900</pubDate>
       
       <guid>/2017-04-01/new-blog-with-jekyll/</guid>
-      <description>After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.</description>
+      <description>After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.
+Now I restarted a blog, now with Jekyll and Github Pages.
+Comparing Wordpress, it has following advantages:
+ The format of posts, Markdown, is easy to edit in anywhere. I need to accustom markup languages, e.g., LaTex or Markdown. Use Git system. chance to be more familiar with Git? Not as many plugins as in Wordpress, but all the necessary are provided and fast!</description>
     </item>
     
   </channel>

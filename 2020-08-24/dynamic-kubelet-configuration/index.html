@@ -1,251 +1,493 @@
+
+
+
 <!DOCTYPE html>
-<html lang='en' ><meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Dynamic Kubelet Configuration &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Dynamic Kubelet Configuration &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
+Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
+Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:" />
+  
+  
+  
+  <link rel="canonical" href="/2020-08-24/dynamic-kubelet-configuration/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.fdfd68c6d80697a222b9fc676c392570628fa823215c17e25faaeebb4afbe03ed6ccb978bbf6605b7b63b7f0c091b622850b865f49286208e8dfb5a7b3501d82.css"
+    integrity="sha512-/f1oxtgGl6IiufxnbDklcGKPqCMhXBfiX6ruu0r74D7WzLl4u/ZgW3tjt/DAkbYihQuGX0koYgjo37Wns1Adgg=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Dynamic Kubelet Configuration" />
+<meta property="og:description" content="Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
+Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
+Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2020-08-24/dynamic-kubelet-configuration/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-08-24T09:21:00+09:00" />
+<meta property="article:modified_time" content="2020-08-24T09:21:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
 
-<title>Dynamic Kubelet Configuration | Better Tomorrow with Computer Science</title>
-<link rel="stylesheet" href="/css/eureka.min.css">
-<script defer src="/js/eureka.min.js"></script>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dynamic Kubelet Configuration"/>
+<meta name="twitter:description" content="Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.
+Dynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.
+Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:"/>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload"
-  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-  as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
-   media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
-   crossorigin>
-<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
-   crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
-   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
-   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
-  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true }
-      ],
-    });
-  });
-</script>
-<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'UA-158110335-1');
-</script>
-
-
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
-
-<meta name="description"
-  content="Kubelet, at launch time, loads configuration files from pre-specified files.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1 ,
-      "name":"Posts",
-      "item":"/posts/"},{
-      "@type": "ListItem",
-      "position": 2 ,
-      "name":"Dynamic Kubelet Configuration",
-      "item":"/2020-08-24/dynamic-kubelet-configuration/"}]
-}
-</script>
-
-
-
-<script type="application/ld+json">
-{
+  
+  <script type="application/ld+json">
+  [{
     "@context": "https://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "/2020-08-24/dynamic-kubelet-configuration/"
+    "articleSection": "Posts",
+    "name": "Dynamic Kubelet Configuration",
+    "headline": "Dynamic Kubelet Configuration",
+    
+    "abstract": "Kubelet, at launch time, loads configuration files from pre-specified files. Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.\nDynamic Kubelet configuration eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated1. It uses Kubernetes a ConfigMap object.\nKubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not enabled by default. To be specific, one of required configurations is missing; the following flags for Kubelet are required for dynamic configuration:",
+    "inLanguage": "en",
+    "url" : "\/2020-08-24\/dynamic-kubelet-configuration\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
     },
-    "headline": "Dynamic Kubelet Configuration | Better Tomorrow with Computer Science","datePublished": "2020-08-24T09:21:00+09:00",
-    "dateModified": "2020-08-24T09:21:00+09:00",
-    "wordCount":  1689 ,
-    "publisher": {
-        "@type": "Person",
-        "name": "Insu Jang",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "/umich.png"
-        }
-        },
-    "description": "Kubelet, at launch time, loads configuration files from pre-specified files."
+    "copyrightYear": "2020",
+    "dateCreated": "2020-08-24T09:21:00\u002b09:00",
+    "datePublished": "2020-08-24T09:21:00\u002b09:00",
+    
+    "dateModified": "2020-08-24T09:21:00\u002b09:00",
+    
+    "keywords": ["study","kubernetes"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "1580"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
 }
-</script><meta property="og:title" content="Dynamic Kubelet Configuration | Better Tomorrow with Computer Science" />
-<meta property="og:type" content="article" />
-
-
-<meta property="og:image" content="/umich.png">
-
-
-<meta property="og:url" content="/2020-08-24/dynamic-kubelet-configuration/" />
-
-
-
-
-<meta property="og:description" content="Kubelet, at launch time, loads configuration files from pre-specified files." />
-
-
-
-
-<meta property="og:locale" content="en" />
-
-
-
-
-<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
-
-
-
-
-
-<meta property="article:published_time" content="2020-08-24T09:21:00&#43;09:00" />
-
-
-<meta property="article:modified_time" content="2020-08-24T09:21:00&#43;09:00" />
-
-
-
-<meta property="article:section" content="posts" />
-
-
-<meta property="article:tag" content="study" />
-
-<meta property="article:tag" content="kubernetes" />
-
-
-
-
-
-<meta property="og:see_also" content="/2020-02-13/programming-kubernetes-crd/" />
-
-<meta property="og:see_also" content="/2020-02-11/kubernetes-custom-resource/" />
-
-<meta property="og:see_also" content="/2019-12-18/kubernetes-authentication/" />
-
-<meta property="og:see_also" content="/2020-07-15/fedora-silverblue/" />
-
-<meta property="og:see_also" content="/2020-04-04/go-modules/" />
-
-<meta property="og:see_also" content="/2020-02-09/introduction-to-programming-infiniband/" />
-
-
-
-<body class="flex flex-col min-h-screen">
-  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
-    <div class="w-full max-w-screen-xl mx-auto"><script>
-    let storageColorScheme = localStorage.getItem("lightDarkMode")
-    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
-        document.getElementsByTagName('html')[0].classList.add('dark')
-    }
 </script>
-<nav class="flex items-center justify-between flex-wrap p-4">
-    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
-    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div id="target"
-        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
-        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
-            <a href="/#about"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
-            <a href="/posts/"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
-        </div>
 
-        <div class="flex">
-            <div class="relative pt-4 md:pt-0">
-                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
-                </div>
-                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
-                    id='lightDarkOptions'>
-                    <span class="px-4 py-1 hover:text-eureka">Light</span>
-                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
-                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
-                </div>
-            </div>
-        </div>
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
     </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="z-40 flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
 
-    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+      
+
     </div>
+    
+      
+      <label id="menu-button" for="menu-controller" class="block sm:hidden">
+        <input type="checkbox" id="menu-controller" class="hidden" />
+        <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+          
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+        </div>
+        <div
+          id="menu-wrapper"
+          class="invisible fixed inset-0 z-30 m-auto h-screen w-screen cursor-default overflow-auto bg-neutral-100/50 opacity-0 backdrop-blur-sm transition-opacity dark:bg-neutral-900/50"
+        >
+          <ul
+            class="mx-auto flex w-full max-w-7xl list-none flex-col overflow-visible px-6 py-6 ltr:text-right rtl:text-left sm:px-14 sm:py-10 sm:pt-10 md:px-24 lg:px-32"
+          >
+            <li class="mb-1">
+              <span class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"
+                >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span
+              >
+            </li>
+            
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/#about"
+                    title=""
+                    >About</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/research/"
+                    title=""
+                    >Research</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/posts/"
+                    title=""
+                    >Posts</a
+                  >
+                </li>
+              
+            
+            
+          </ul>
+        </div>
+      </label>
+      
+      <ul class="hidden list-none flex-row ltr:text-right rtl:text-left sm:flex">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Dynamic Kubelet Configuration
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2020-08-24 09:21:00 &#43;0900 &#43;0900">Aug 24, 2020</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/study/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >study</a
+            >
+          
+            <a
+              href="/tags/kubernetes/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >kubernetes</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#kubelet-flags-for-dynamic-configuration">Kubelet Flags for Dynamic Configuration</a>
+          <ul>
+            <li><a href="#why---dynamic-config-dir-flag-is-required">Why <code>--dynamic-config-dir</code> flag is required?</a></li>
+          </ul>
+        </li>
+        <li><a href="#dynamic-configuration-setup">Dynamic Configuration Setup</a>
+          <ul>
+            <li><a href="#creating-a-configmap">Creating a ConfigMap</a></li>
+            <li><a href="#adding-more-configurations-into-the-configmap">Adding more Configurations into the ConfigMap</a></li>
+            <li><a href="#specifying-node-to-use-the-configmap">Specifying Node to use the ConfigMap</a></li>
+            <li><a href="#verifying-dynamic-kubelet-configuration">Verifying Dynamic Kubelet Configuration</a></li>
+          </ul>
+        </li>
+        <li><a href="#authentication-and-authorization">Authentication and Authorization</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
-<script>
-    let element = document.getElementById('lightDarkMode')
-    if (storageColorScheme == 'Auto') {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'adjust')
-        element.firstElementChild.classList.add('fa-adjust')
-        document.addEventListener('DOMContentLoaded', () => {
-            switchMode('Auto')
-        })
-    } else if (storageColorScheme == "Dark") {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'moon')
-        element.firstElementChild.classList.add('fa-moon')
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        getcolorscheme();
-        switchBurger();
-    });
-</script></div>
-  </header>
-  <main class="flex-grow pt-16">
-      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+  </div>
+</details>
 
-
-<div class="lg:pt-12"></div>
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-    <h1 class="font-bold text-3xl text-primary-text">Dynamic Kubelet Configuration</h1>
-    <div class="mr-6 my-2">
-    <span>Aug 24, 2020</span>
-</div>
-
-
-
-
-    
-    
-    
-
-    <div class="content">
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>Kubelet, at launch time, loads configuration files from pre-specified files.
 Changed configurations are not applied into the running Kubelet process during runtime, hence manual restarting Kubelet is required after modification.</p>
 <p><em>Dynamic Kubelet configuration</em> eliminates this burden, making Kubelet monitors its configuration changes and restarts when it is updated<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
 It uses Kubernetes a <strong>ConfigMap</strong> object.</p>
-<h2 id="kubelet-flags-for-dynamic-configuration">Kubelet Flags for Dynamic Configuration</h2>
+<h2 id="kubelet-flags-for-dynamic-configuration" class="relative group">Kubelet Flags for Dynamic Configuration <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#kubelet-flags-for-dynamic-configuration" aria-label="Anchor">#</a></span></h2>
 <p>Dynamic kubelet configuration is not enabled by default.
 To be specific, one of required configurations is missing;
 the following flags for Kubelet are required for dynamic configuration:</p>
@@ -253,254 +495,250 @@ the following flags for Kubelet are required for dynamic configuration:</p>
 <li><code>--feature-gates=&quot;DynamicKubeletConfig=true&quot;</code>: enabled by default since Kubernetes 1.11 <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, so nothing should be done manually.</li>
 <li><code>--dynamic-config-dir=&lt;path&gt;</code>: this flag for Kubelet is required to enable dynamic kubelet configuration.</li>
 </ol>
-<h3 id="why---dynamic-config-dir-flag-is-required">Why <code>--dynamic-config-dir</code> flag is required?</h3>
-<figure><img src="/assets/images/200824/kubelet-reconfigure-diagram.png"
-         alt="image"/><figcaption>
-            <p>Kubelet reconfigure diagram. Source: <a href="https://kubernetes.io/blog/2018/07/11/dynamic-kubelet-configuration/">Kubernetes: Dynamic Kubelet Configuration</a></p>
-        </figcaption>
-</figure>
+<h3 id="why---dynamic-config-dir-flag-is-required" class="relative group">Why <code>--dynamic-config-dir</code> flag is required? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#why---dynamic-config-dir-flag-is-required" aria-label="Anchor">#</a></span></h3>
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/200824/kubelet-reconfigure-diagram.png" alt="image" />
+        <figcaption>Kubelet reconfigure diagram. Source: <a href="https://kubernetes.io/blog/2018/07/11/dynamic-kubelet-configuration/">Kubernetes: Dynamic Kubelet Configuration</a></figcaption>
+      </figure>
+    
+  
+
 
 <p>The figure above illustrates how Kubelet uses dynamic Kubelet reconfiguration.
 At step 4~5, Kubelet <strong>&ldquo;checkpoints&rdquo;</strong> the modified configmap from the apiserver to its local storage, and loads the data after restarted.
 Here, the checkpointed configmap should be stored at somewhere, and <code>--dynamic-config-dir</code> is the one.
 When you specify <code>--dynamic-config-dir</code>, Kubelet automatically initializes itself with config checkpoint:</p>
-<pre><code class="language-sh">Aug 21 18:54:30 localhost.worker kubelet[107800]: I0821 18:54:30.679461  107800 watch.go:128] kubelet config controller: assigned ConfigMap was updated
-Aug 21 18:54:34 localhost.worker kubelet[107800]: I0821 18:54:34.776572  107800 download.go:181] kubelet config controller: checking in-memory store for /api/v1/namespaces/kube-system/configmaps/k8s-worker16
-Aug 21 18:54:34 localhost.worker kubelet[107800]: I0821 18:54:34.776605  107800 download.go:187] kubelet config controller: found /api/v1/namespaces/kube-system/configmaps/k8s-worker16 in in-memory store, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: 437429
-Aug 21 18:54:34 localhost.worker kubelet[107800]: I0821 18:54:34.806121  107800 configsync.go:205] kubelet config controller: Kubelet restarting to use /api/v1/namespaces/kube-system/configmaps/k8s-worker16, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: 437429, KubeletConfigKey: kubelet
-Aug 21 18:54:34 localhost.worker systemd[1]: kubelet.service: Succeeded.
-Aug 21 18:54:45 localhost.worker systemd[1]: kubelet.service: Scheduled restart job, restart counter is at 19.
-Aug 21 18:54:45 localhost.worker systemd[1]: Stopped kubelet: The Kubernetes Node Agent.
-Aug 21 18:54:45 localhost.worker systemd[1]: Started kubelet: The Kubernetes Node Agent.
-Aug 21 18:54:45 localhost.worker kubelet[108430]: I0821 18:54:45.115977  108430 controller.go:101] kubelet config controller: starting controller
-Aug 21 18:54:45 localhost.worker kubelet[108430]: I0821 18:54:45.116038  108430 controller.go:267] kubelet config controller: ensuring filesystem is set up correctly
-Aug 21 18:54:45 localhost.worker kubelet[108430]: I0821 18:54:45.116045  108430 fsstore.go:59] kubelet config controller: initializing config checkpoints directory &quot;/var/lib/kubelet/dynamic-config/store&quot;
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">Aug <span class="m">21</span> 18:54:30 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:30.679461  <span class="m">107800</span> watch.go:128<span class="o">]</span> kubelet config controller: assigned ConfigMap was updated
+Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.776572  <span class="m">107800</span> download.go:181<span class="o">]</span> kubelet config controller: checking in-memory store <span class="k">for</span> /api/v1/namespaces/kube-system/configmaps/k8s-worker16
+Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.776605  <span class="m">107800</span> download.go:187<span class="o">]</span> kubelet config controller: found /api/v1/namespaces/kube-system/configmaps/k8s-worker16 in in-memory store, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: <span class="m">437429</span>
+Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.806121  <span class="m">107800</span> configsync.go:205<span class="o">]</span> kubelet config controller: Kubelet restarting to use /api/v1/namespaces/kube-system/configmaps/k8s-worker16, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: 437429, KubeletConfigKey: kubelet
+Aug <span class="m">21</span> 18:54:34 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Succeeded.
+Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Scheduled restart job, restart counter is at 19.
+Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: Stopped kubelet: The Kubernetes Node Agent.
+Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: Started kubelet: The Kubernetes Node Agent.
+Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.115977  <span class="m">108430</span> controller.go:101<span class="o">]</span> kubelet config controller: starting controller
+Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.116038  <span class="m">108430</span> controller.go:267<span class="o">]</span> kubelet config controller: ensuring filesystem is <span class="nb">set</span> up correctly
+Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.116045  <span class="m">108430</span> fsstore.go:59<span class="o">]</span> kubelet config controller: initializing config checkpoints directory <span class="s2">&#34;/var/lib/kubelet/dynamic-config/store&#34;</span>
 ...
-</code></pre>
-<h2 id="dynamic-configuration-setup">Dynamic Configuration Setup</h2>
+</code></pre></div><h2 id="dynamic-configuration-setup" class="relative group">Dynamic Configuration Setup <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#dynamic-configuration-setup" aria-label="Anchor">#</a></span></h2>
 <p>Dynamic Kubelet Configuration uses ConfigMap objects.
 Therefore, a ConfigMap object for Kubelet configurations and related authorized access permission is required.</p>
-<h3 id="creating-a-configmap">Creating a ConfigMap</h3>
+<h3 id="creating-a-configmap" class="relative group">Creating a ConfigMap <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#creating-a-configmap" aria-label="Anchor">#</a></span></h3>
 <p>Dynamic Kubelet onfiguration cannot be used with the existing configurations given by flags and <code>--config</code> file.
 In other words, even if a configuration is set by the flags or <code>--config</code> file, this configurations are not enabled and only Dynamic configurations are applied.
 <strong>For this reason, <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> recommends to start from the current configuration.</strong></p>
-<pre><code class="language-sh">$ kubectl proxy --port=8001 &amp;
-$ NODE_NAME=&quot;the-name-of-the-node-you-are-reconfiguring&quot;; curl -sSL &quot;http://localhost:8001/api/v1/nodes/${NODE_NAME}/proxy/configz&quot; | jq '.kubeletconfig|.kind=&quot;KubeletConfiguration&quot;|.apiVersion=&quot;kubelet.config.k8s.io/v1beta1&quot;' &gt; kubelet_configz_${NODE_NAME}
-$ kubectl (-n kube-system) create configmap node-config --from-file=kubelet=kubelet_configz_${NODE_NAME}
-</code></pre>
-<blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ kubectl proxy --port<span class="o">=</span><span class="m">8001</span> <span class="p">&amp;</span>
+$ <span class="nv">NODE_NAME</span><span class="o">=</span><span class="s2">&#34;the-name-of-the-node-you-are-reconfiguring&#34;</span><span class="p">;</span> curl -sSL <span class="s2">&#34;http://localhost:8001/api/v1/nodes/</span><span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span><span class="s2">/proxy/configz&#34;</span> <span class="p">|</span> jq <span class="s1">&#39;.kubeletconfig|.kind=&#34;KubeletConfiguration&#34;|.apiVersion=&#34;kubelet.config.k8s.io/v1beta1&#34;&#39;</span> &gt; kubelet_configz_<span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+$ kubectl <span class="o">(</span>-n kube-system<span class="o">)</span> create configmap node-config --from-file<span class="o">=</span><span class="nv">kubelet</span><span class="o">=</span>kubelet_configz_<span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+</code></pre></div><blockquote>
 <p>It only works at control plane nodes, and currently I could not figure out which permission is required for this operation.</p>
 <p>I found that the configmap does not need to be the namespace <code>kube-system</code>. Also works if it is stored in the default namespace.</p>
 </blockquote>
-<h3 id="adding-more-configurations-into-the-configmap">Adding more Configurations into the ConfigMap</h3>
+<h3 id="adding-more-configurations-into-the-configmap" class="relative group">Adding more Configurations into the ConfigMap <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#adding-more-configurations-into-the-configmap" aria-label="Anchor">#</a></span></h3>
 <p>You should see your ConfigMap object with the following command:</p>
-<pre><code>$ kubectl get configmaps (-n NAMESPACE)
-</code></pre>
-<p>Now you can edit the ConfigMap object with <code>edit</code> subcommand:</p>
-<pre><code>$ kubectl edit configmaps node-config (-n NAMESPACE)
-</code></pre>
-<p>The format of the ConfigMap object looks like this:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: ConfigMap
-metadta: &lt;not important&gt;
-name: node-config
-namespace: default
-data:
-    kubelet: |     # &lt;- Do not omit '|'.
-        {
-            &quot;kind&quot;: &quot;KubeletConfiguration&quot;,
-            &quot;apiVersion&quot;: &quot;kubelet.config.k8s.io/v1beta1&quot;,
-            &lt;other Kubelet configurations in JSON format&gt;
-        }
-</code></pre>
-<p>The ConfigMap object itself follows YAML format, but its content in <code>data.kubelet</code> foolows JSON format. Do not be confused.
-Available Kubelet configuration key/value can be investigated in [<a href="https://github.com/kubernetes/kubelet/blob/master/config/v1beta1/types.go#L75">here</a>]</p>
+<pre tabindex="0"><code>$ kubectl get configmaps (-n NAMESPACE)
+</code></pre><p>Now you can edit the ConfigMap object with <code>edit</code> subcommand:</p>
+<pre tabindex="0"><code>$ kubectl edit configmaps node-config (-n NAMESPACE)
+</code></pre><p>The format of the ConfigMap object looks like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
+</span><span class="w"></span><span class="nt">metadta</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;not important&gt;</span><span class="w">
+</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
+</span><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="l">|    </span><span class="w"> </span><span class="c"># &lt;- Do not omit &#39;|&#39;.</span><span class="w">
+</span><span class="w">        </span>{<span class="w">
+</span><span class="w">            </span><span class="nt">&#34;kind&#34;: </span><span class="s2">&#34;KubeletConfiguration&#34;</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="nt">&#34;apiVersion&#34;: </span><span class="s2">&#34;kubelet.config.k8s.io/v1beta1&#34;</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="l">&lt;other Kubelet configurations in JSON format&gt;</span><span class="w">
+</span><span class="w">        </span>}<span class="w">
+</span></code></pre></div><p>The ConfigMap object itself follows YAML format, but its content in <code>data.kubelet</code> foolows JSON format. Do not be confused.
+Available Kubelet configuration key/value can be investigated in [<a href="https://github.com/kubernetes/kubelet/blob/master/config/v1beta1/types.go#L75"   target="_blank">here</a>]</p>
 <p>In my case, I want to try to restrict allocatable resources via dynamic Kubernetes configuration. I added several Kubelet flags in the ConfigMap object:</p>
-<pre><code class="language-yaml">&lt;omitted&gt;
-data:
-    kubelet: |
-        {
-            &quot;kind&quot;: &quot;KubeletConfiguration&quot;,
-            &quot;apiVersion&quot;: &quot;kubelet.config.k8s.io/v1beta1&quot;,
-            &lt;other default configurations are omitted&gt;,
-            &quot;systemReserved&quot;: {
-                &quot;cpu&quot;: &quot;2&quot;,
-                &quot;memory&quot;: &quot;2Gi&quot;
-            },
-            &quot;kubeReserved&quot;: {
-                &quot;cpu&quot;: &quot;1&quot;,
-                &quot;memory&quot;: &quot;1Gi&quot;
-            },
-            &quot;systemReservedCgroup&quot;: &quot;/system.slice&quot;,  &lt;-- not necessary
-            &quot;kubeReservedCgroup&quot;: &quot;/kubepods.slice&quot;,  &lt;-- not necessary
-            &quot;cgroupPerQOS&quot;: true,
-            &quot;enforceNodeAllocatable&quot;: [&quot;pods&quot;],
-        }
-</code></pre>
-<blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">&lt;omitted&gt;</span><span class="w">
+</span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span><span class="sd">        {
+</span><span class="sd">            &#34;kind&#34;: &#34;KubeletConfiguration&#34;,
+</span><span class="sd">            &#34;apiVersion&#34;: &#34;kubelet.config.k8s.io/v1beta1&#34;,
+</span><span class="sd">            &lt;other default configurations are omitted&gt;,
+</span><span class="sd">            &#34;systemReserved&#34;: {
+</span><span class="sd">                &#34;cpu&#34;: &#34;2&#34;,
+</span><span class="sd">                &#34;memory&#34;: &#34;2Gi&#34;
+</span><span class="sd">            },
+</span><span class="sd">            &#34;kubeReserved&#34;: {
+</span><span class="sd">                &#34;cpu&#34;: &#34;1&#34;,
+</span><span class="sd">                &#34;memory&#34;: &#34;1Gi&#34;
+</span><span class="sd">            },
+</span><span class="sd">            &#34;systemReservedCgroup&#34;: &#34;/system.slice&#34;,  &lt;-- not necessary
+</span><span class="sd">            &#34;kubeReservedCgroup&#34;: &#34;/kubepods.slice&#34;,  &lt;-- not necessary
+</span><span class="sd">            &#34;cgroupPerQOS&#34;: true,
+</span><span class="sd">            &#34;enforceNodeAllocatable&#34;: [&#34;pods&#34;],
+</span><span class="sd">        }</span><span class="w">        
+</span></code></pre></div><blockquote>
 <p>Note that <code>systemReservedCgroup</code> and <code>kubeReservedCgroup</code> are not necessary, since I do not put <code>&quot;system-reserved&quot;</code> and <code>&quot;kube-reserved&quot;</code> in <code>enforceNodeAllocatable</code>.</p>
 <p>Note that <code>cgroupPerQOS</code> should be true for resource restriction on Kubernetes Pods, and <code>enforceNodeAllocatable</code> must not contain neither <code>system-reserved</code> nore <code>kube-reserved</code> string elements, otherwise you will see the following wierd error in the Kubelet log.
 I am not sure whether it is a bug.</p>
-<pre><code class="language-sh">Aug 26 16:55:47 localhost.worker kubelet[388430]: F0826 16:55:47.291827  388430 kubelet.go:1384] Failed to start ContainerManager Failed to enforce System Reserved Cgroup Limits on &quot;/system.slice&quot;: [&quot;system&quot;] cgroup does not exist      
-</code></pre>
-</blockquote>
-<p>You can see Kubelet method that creates <code>/kubepods.slice</code> cgroup in <a href="https://github.com/kubernetes/kubernetes/blob/v1.18.8/pkg/kubelet/cm/node_container_manager_linux.go#L64">[here]</a>, or as follows.</p>
-<pre><code class="language-go">// enforceNodeAllocatableCgroups enforce Node Allocatable Cgroup settings.
-func (cm *containerManagerImpl) enforceNodeAllocatableCgroups() error {
-    nc := cm.NodeConfig.NodeAllocatableConfig
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">Aug <span class="m">26</span> 16:55:47 localhost.worker kubelet<span class="o">[</span>388430<span class="o">]</span>: F0826 16:55:47.291827  <span class="m">388430</span> kubelet.go:1384<span class="o">]</span> Failed to start ContainerManager Failed to enforce System Reserved Cgroup Limits on <span class="s2">&#34;/system.slice&#34;</span>: <span class="o">[</span><span class="s2">&#34;system&#34;</span><span class="o">]</span> cgroup does not exist      
+</code></pre></div></blockquote>
+<p>You can see Kubelet method that creates <code>/kubepods.slice</code> cgroup in <a href="https://github.com/kubernetes/kubernetes/blob/v1.18.8/pkg/kubelet/cm/node_container_manager_linux.go#L64"   target="_blank">[here]</a>, or as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// enforceNodeAllocatableCgroups enforce Node Allocatable Cgroup settings.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">cm</span> <span class="o">*</span><span class="nx">containerManagerImpl</span><span class="p">)</span> <span class="nf">enforceNodeAllocatableCgroups</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="nx">nc</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">NodeConfig</span><span class="p">.</span><span class="nx">NodeAllocatableConfig</span>
 
-    // We need to update limits on node allocatable cgroup no matter what because
-    // default cpu shares on cgroups are low and can cause cpu starvation.
-    nodeAllocatable := cm.internalCapacity
-    // Use Node Allocatable limits instead of capacity if the user requested enforcing node allocatable.
-    if cm.CgroupsPerQOS &amp;&amp; nc.EnforceNodeAllocatable.Has(kubetypes.NodeAllocatableEnforcementKey) {
-        nodeAllocatable = cm.getNodeAllocatableInternalAbsolute()
-    }
+    <span class="c1">// We need to update limits on node allocatable cgroup no matter what because
+</span><span class="c1"></span>    <span class="c1">// default cpu shares on cgroups are low and can cause cpu starvation.
+</span><span class="c1"></span>    <span class="nx">nodeAllocatable</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">internalCapacity</span>
+    <span class="c1">// Use Node Allocatable limits instead of capacity if the user requested enforcing node allocatable.
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">CgroupsPerQOS</span> <span class="o">&amp;&amp;</span> <span class="nx">nc</span><span class="p">.</span><span class="nx">EnforceNodeAllocatable</span><span class="p">.</span><span class="nf">Has</span><span class="p">(</span><span class="nx">kubetypes</span><span class="p">.</span><span class="nx">NodeAllocatableEnforcementKey</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">nodeAllocatable</span> <span class="p">=</span> <span class="nx">cm</span><span class="p">.</span><span class="nf">getNodeAllocatableInternalAbsolute</span><span class="p">()</span>
+    <span class="p">}</span>
 
-    klog.V(4).Infof(&quot;Attempting to enforce Node Allocatable with config: %+v&quot;, nc)
+    <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Attempting to enforce Node Allocatable with config: %+v&#34;</span><span class="p">,</span> <span class="nx">nc</span><span class="p">)</span>
 
-    cgroupConfig := &amp;CgroupConfig{
-        Name:               cm.cgroupRoot,
-        ResourceParameters: getCgroupConfig(nodeAllocatable),
-    }
+    <span class="nx">cgroupConfig</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">CgroupConfig</span><span class="p">{</span>
+        <span class="nx">Name</span><span class="p">:</span>               <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span>
+        <span class="nx">ResourceParameters</span><span class="p">:</span> <span class="nf">getCgroupConfig</span><span class="p">(</span><span class="nx">nodeAllocatable</span><span class="p">),</span>
+    <span class="p">}</span>
 
-    // Using ObjectReference for events as the node maybe not cached; refer to #42701 for detail.
-    nodeRef := &amp;v1.ObjectReference{
-        Kind:      &quot;Node&quot;,
-        Name:      cm.nodeInfo.Name,
-        UID:       types.UID(cm.nodeInfo.Name),
-        Namespace: &quot;&quot;,
-    }
+    <span class="c1">// Using ObjectReference for events as the node maybe not cached; refer to #42701 for detail.
+</span><span class="c1"></span>    <span class="nx">nodeRef</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">v1</span><span class="p">.</span><span class="nx">ObjectReference</span><span class="p">{</span>
+        <span class="nx">Kind</span><span class="p">:</span>      <span class="s">&#34;Node&#34;</span><span class="p">,</span>
+        <span class="nx">Name</span><span class="p">:</span>      <span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+        <span class="nx">UID</span><span class="p">:</span>       <span class="nx">types</span><span class="p">.</span><span class="nf">UID</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">),</span>
+        <span class="nx">Namespace</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    // If Node Allocatable is enforced on a node that has not been drained or is updated on an existing node to a lower value,
-    // existing memory usage across pods might be higher than current Node Allocatable Memory Limits.
-    // Pod Evictions are expected to bring down memory usage to below Node Allocatable limits.
-    // Until evictions happen retry cgroup updates.
-    // Update limits on non root cgroup-root to be safe since the default limits for CPU can be too low.
-    // Check if cgroupRoot is set to a non-empty value (empty would be the root container)
-    if len(cm.cgroupRoot) &gt; 0 {
-        go func() {
-            for {
-                err := cm.cgroupManager.Update(cgroupConfig)
-                if err == nil {
-                    cm.recorder.Event(nodeRef, v1.EventTypeNormal, events.SuccessfulNodeAllocatableEnforcement, &quot;Updated Node Allocatable limit across pods&quot;)
-                    return
-                }
-                message := fmt.Sprintf(&quot;Failed to update Node Allocatable Limits %q: %v&quot;, cm.cgroupRoot, err)
-                cm.recorder.Event(nodeRef, v1.EventTypeWarning, events.FailedNodeAllocatableEnforcement, message)
-                time.Sleep(time.Minute)
-            }
-        }()
-    }
+    <span class="c1">// If Node Allocatable is enforced on a node that has not been drained or is updated on an existing node to a lower value,
+</span><span class="c1"></span>    <span class="c1">// existing memory usage across pods might be higher than current Node Allocatable Memory Limits.
+</span><span class="c1"></span>    <span class="c1">// Pod Evictions are expected to bring down memory usage to below Node Allocatable limits.
+</span><span class="c1"></span>    <span class="c1">// Until evictions happen retry cgroup updates.
+</span><span class="c1"></span>    <span class="c1">// Update limits on non root cgroup-root to be safe since the default limits for CPU can be too low.
+</span><span class="c1"></span>    <span class="c1">// Check if cgroupRoot is set to a non-empty value (empty would be the root container)
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">{</span>
+                <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupManager</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="nx">cgroupConfig</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+                    <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">SuccessfulNodeAllocatableEnforcement</span><span class="p">,</span> <span class="s">&#34;Updated Node Allocatable limit across pods&#34;</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="p">}</span>
+                <span class="nx">message</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;Failed to update Node Allocatable Limits %q: %v&#34;</span><span class="p">,</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">FailedNodeAllocatableEnforcement</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span>
+                <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}()</span>
+    <span class="p">}</span>
 
-    ...
-}
-</code></pre>
-<p>If <code>cm.cgroupManager.Update(cgroupConfig)</code> returns <code>nil</code>, the following event is logged in the target node:</p>
-<pre><code>$ kubectl describe nodes k8s-worker16
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div><p>If <code>cm.cgroupManager.Update(cgroupConfig)</code> returns <code>nil</code>, the following event is logged in the target node:</p>
+<pre tabindex="0"><code>$ kubectl describe nodes k8s-worker16
 ...
   Normal   KubeletConfigChanged              33m   kubelet, k8s-worker16  Kubelet restarting to use /api/v1/namespaces/default/configmaps/node-config, UID: a8b4da9d-0b6e-478d-9e35-4a3696f5778c, ResourceVersion: 1464790, KubeletConfigKey: kubelet
   Normal   Starting                          32m   kubelet, k8s-worker16  Starting kubelet.
   Normal   NodeAllocatableEnforced           32m   kubelet, k8s-worker16  Updated Node Allocatable limit across pods
 
-</code></pre>
-<h3 id="specifying-node-to-use-the-configmap">Specifying Node to use the ConfigMap</h3>
+</code></pre><h3 id="specifying-node-to-use-the-configmap" class="relative group">Specifying Node to use the ConfigMap <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#specifying-node-to-use-the-configmap" aria-label="Anchor">#</a></span></h3>
 <p>One more thing to do is to add <code>spec</code> to Kubernetes Node object to indicate which ConfigMap object should be used for dynamic Kubelet configuration for which node.</p>
 <p>Oen an editor with the following command to specify it:</p>
-<pre><code class="language-sh">$ kubectl edit node ${NODE_NAME}
-</code></pre>
-<p>You have nothing in <code>spec</code> section if it is the first time to edit it.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ kubectl edit node <span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+</code></pre></div><p>You have nothing in <code>spec</code> section if it is the first time to edit it.
 Add <code>configSource</code> element as follows (note that it is YAML format):</p>
-<pre><code class="language-yaml">spec:
-    configSource:
-        kubeletConfigKey: kubelet
-        name: node-config
-        namespace: default
-</code></pre>
-<p>each of which key means:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">configSource</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
+</span><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></code></pre></div><p>each of which key means:</p>
 <ul>
 <li><code>kubeletConfigKey</code>: the key in <code>data</code> dictionary in the ConfigMap object. In our case, we specified it as <code>kubelet</code> (<code>kubelet: | { ... }</code>).</li>
 <li><code>name</code>: name of the ConfigMap object.</li>
 <li><code>namespace</code>: namespace that the ConfigMap object is in.</li>
 </ul>
 <p>Once you specify the spec, the Kubelet in the target node will automatically restart to apply dynamic configuration.</p>
-<h3 id="verifying-dynamic-kubelet-configuration">Verifying Dynamic Kubelet Configuration</h3>
+<h3 id="verifying-dynamic-kubelet-configuration" class="relative group">Verifying Dynamic Kubelet Configuration <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#verifying-dynamic-kubelet-configuration" aria-label="Anchor">#</a></span></h3>
 <p>Check the result with <code>$ kubectl get nodes ${NODE_NAME} -o yaml</code>.</p>
 <ul>
 <li>First, check whether the spec is successfully applied:</li>
 </ul>
-<pre><code class="language-yaml">managedFields:
-    - apiVersion: v1
-    - fieldsType: FieldsV1
-    fieldsV1:
-        f:spec:
-            f:configSource:
-            ...
-spec:
-    configSource:
-        kubeletConfigKey: kubelet
-        name: node-config
-        namespace: default
-</code></pre>
-<ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">managedFields</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">fieldsType</span><span class="p">:</span><span class="w"> </span><span class="l">FieldsV1</span><span class="w">
+</span><span class="w">    </span><span class="nt">fieldsV1</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">f:spec</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">f:configSource</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="l">...</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">configSource</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
+</span><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></code></pre></div><ul>
 <li>Second, the Kubelet updates its <strong>status</strong> whether the configuration is successfully applied or not:</li>
 </ul>
-<pre><code class="language-yaml">status:
-    addresses: &lt;omitted&gt;
-    allocatable: &lt;omitted&gt;
-    capacity: &lt;omitted&gt;
-    conditions: &lt;omitted&gt;
-        active:              &lt;-- must exist
-            configMap:
-                kubeletConfigKey: kubelet
-                name: node-config 
-                namespace: default
-                resourceVersion: &quot;1024519&quot;
-                uid: a8b4da9d-0b6e-478d-9e35-4a3696f5778c
-        assigned:
-            configMap:
-                kubeletConfigKey: kubelet
-                name: node-config 
-                namespace: default
-                resourceVersion: &quot;1024519&quot;
-                uid: a8b4da9d-0b6e-478d-9e35-4a3696f5778c
-        lastKnownGood:
-            configMap:
-                kubeletConfigKey: kubelet
-                name: node-config 
-                namespace: default
-                resourceVersion: &quot;1024519&quot;
-                uid: a8b4da9d-0b6e-478d-9e35-4a3696f5778c
-</code></pre>
-<p>You must check that <code>status.conditions.active</code> fields exist, <strong>and</strong> there is no error field in <code>status.conditions.assigned</code>. If an error occured when applying the specified configuration, the Kubelet restarts with <code>status.conditions.lastKnownGood</code> config hence <code>status.conditions.active.configMap.resourceVersion</code> may different from that in <code>status.conditions.assigned</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">status</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">allocatable</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">capacity</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">conditions</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span><span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w">              </span><span class="l">&lt;-- must exist</span><span class="w">
+</span><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
+</span><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
+</span><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
+</span><span class="w">        </span><span class="nt">assigned</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
+</span><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
+</span><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
+</span><span class="w">        </span><span class="nt">lastKnownGood</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
+</span><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
+</span><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
+</span></code></pre></div><p>You must check that <code>status.conditions.active</code> fields exist, <strong>and</strong> there is no error field in <code>status.conditions.assigned</code>. If an error occured when applying the specified configuration, the Kubelet restarts with <code>status.conditions.lastKnownGood</code> config hence <code>status.conditions.active.configMap.resourceVersion</code> may different from that in <code>status.conditions.assigned</code>.</p>
 <p>If an error occured, a systemd journal log indicates what would be an error:</p>
-<pre><code class="language-sh">## This error is logged when you missed data.kubelet.kind.
-Aug 24 13:16:04 localhost.worker kubelet[278409]: E0824 13:16:04.368361  278409 controller.go:151] kubelet config controller: failed to load config, see Kubelet log for details, error: failed to decode: Object 'Kind' is missing in '{
-</code></pre>
-<p>Also, my configuration contains resource restriction; it is applied as intended:</p>
-<pre><code class="language-yaml">$ kubectl get nodes ${NODE_NAME} -o yaml
-status:
-    allocatable:    
-        cpu: &quot;1&quot;
-        ephemeral-storage: &quot;66100978374&quot;
-        hugepages-1Gi: &quot;0&quot;
-        hugepages-2Mi: &quot;0&quot;
-        memory: 4775280Ki
-        pods: &quot;110&quot;
-    capacity:
-        cpu: &quot;4&quot;
-        ephemeral-storage: 71724152Ki
-        hugepages-1Gi: &quot;0&quot;
-        hugepages-2Mi: &quot;0&quot;
-        memory: 8023408Ki
-        pods: &quot;110&quot;
-</code></pre>
-<p>In my configuration, I restricted CPU and memory resource, so be sure to check whether it actually is applied to Linux cgroup:</p>
-<pre><code class="language-sh">/sys/fs/cgroup/memory/kubepods.slice $ cat memory.limit_in_bytes
-4994744320 // Similar to allocatable memory 4775280Ki
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">## This error is logged when you missed data.kubelet.kind.</span>
+Aug <span class="m">24</span> 13:16:04 localhost.worker kubelet<span class="o">[</span>278409<span class="o">]</span>: E0824 13:16:04.368361  <span class="m">278409</span> controller.go:151<span class="o">]</span> kubelet config controller: failed to load config, see Kubelet log <span class="k">for</span> details, error: failed to decode: Object <span class="s1">&#39;Kind&#39;</span> is missing in <span class="err">&#39;</span><span class="o">{</span>
+</code></pre></div><p>Also, my configuration contains resource restriction; it is applied as intended:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">$ kubectl get nodes ${NODE_NAME} -o yaml</span><span class="w">
+</span><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">allocatable</span><span class="p">:</span><span class="w">    
+</span><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">ephemeral-storage</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;66100978374&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">hugepages-1Gi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">4775280Ki</span><span class="w">
+</span><span class="w">        </span><span class="nt">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;4&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">ephemeral-storage</span><span class="p">:</span><span class="w"> </span><span class="l">71724152Ki</span><span class="w">
+</span><span class="w">        </span><span class="nt">hugepages-1Gi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">8023408Ki</span><span class="w">
+</span><span class="w">        </span><span class="nt">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
+</span></code></pre></div><p>In my configuration, I restricted CPU and memory resource, so be sure to check whether it actually is applied to Linux cgroup:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">/sys/fs/cgroup/memory/kubepods.slice $ cat memory.limit_in_bytes
+<span class="m">4994744320</span> // Similar to allocatable memory 4775280Ki
 
-</code></pre>
-<h2 id="authentication-and-authorization">Authentication and Authorization</h2>
+</code></pre></div><h2 id="authentication-and-authorization" class="relative group">Authentication and Authorization <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#authentication-and-authorization" aria-label="Anchor">#</a></span></h2>
 <p>During the setup, the Kubelet queries a ConfigMap object from the apiserver, which requires authentication.
 According to <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, the node authorizer now <em>automatically</em> configures an RBAC rules so that there is nothing to do.</p>
 <blockquote>
@@ -508,10 +746,9 @@ According to <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-no
 </blockquote>
 <p>Node authorizor means that default authorization mode contains <code>Node</code> ^[node-auth]:
 SystemReservedEnforcementKey</p>
-<pre><code class="language-sh">ps -ef | grep kube-apiserver
-root       91113   91100  2 Aug19 ?        02:29:37 kube-apiserver ... --authorization-mode=Node,RBAC
-</code></pre>
-<p>so that any users in the <code>system:nodes</code> group (username <code>system:node:&lt;nodeName&gt;</code>) are allowed to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">ps -ef <span class="p">|</span> grep kube-apiserver
+root       <span class="m">91113</span>   <span class="m">91100</span>  <span class="m">2</span> Aug19 ?        02:29:37 kube-apiserver ... --authorization-mode<span class="o">=</span>Node,RBAC
+</code></pre></div><p>so that any users in the <code>system:nodes</code> group (username <code>system:node:&lt;nodeName&gt;</code>) are allowed to:</p>
 <ol>
 <li>read services, endpoints, nodes, pods, secrets, configmaps, and persistent volumes (bound to the Kubelet&rsquo;s node)</li>
 <li>write nodes (+status), pods (+status), and events.</li>
@@ -524,115 +761,270 @@ root       91113   91100  2 Aug19 ?        02:29:37 kube-apiserver ... --authori
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://kubernetes.io/docs/tasks/administer-cluster/reconfigure-kubelet/">Kubernetes: Reconfigure a Node&rsquo;s Kubelet in a Live Cluster</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://kubernetes.io/docs/tasks/administer-cluster/reconfigure-kubelet/"   target="_blank">Kubernetes: Reconfigure a Node&rsquo;s Kubelet in a Live Cluster</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://kubernetes.cn/docs/reference/command-line-tools-reference/feature-gates/">Kubernetes: Feature Gates</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://kubernetes.cn/docs/reference/command-line-tools-reference/feature-gates/"   target="_blank">Kubernetes: Feature Gates</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
 
-    </div>
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
     
-    <div class="my-4">
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
     
-    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
     
-    <a href="/tags/kubernetes/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#kubernetes</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
 </div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
     
     
     
-    
-    
-    
-    
-<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2020-07-15/fedora-silverblue/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Introduction to Fedora Silverblue</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2020-07-15 12:35:00 &#43;0900 &#43;0900">Jul 15, 2020</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="group flex text-right" href="/2020-08-27/introduction-to-flatpak/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Introduction to Flatpak</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2020-08-27 17:22:00 &#43;0900 &#43;0900">Aug 27, 2020</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
     <div>
-        
-        <span class="block font-bold">Previous</span>
-        <a href="/2020-08-27/introduction-to-flatpak/" class="block">Introduction to Flatpak</a>
-        
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2022
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
     </div>
-    <div class="md:text-right mt-4 md:mt-0">
-        
-        <span class="block font-bold">Next</span>
-        <a href="/2020-07-15/fedora-silverblue/" class="block">Introduction to Fedora Silverblue</a>
-        
-    </div>
-</div>
-
-    
-
-<div id="disqus_thread"></div>
-<script>
-    var disqus_config = function () {
     
     
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "insujang" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
 
 
-</div>
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
 
 
-
-
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-    <h2 class="text-lg font-semibold mb-4">See Also</h2>
-    <div class="content">
-        
-        <a href="/2020-02-13/programming-kubernetes-crd/">Programming Kubernetes CRDs</a>
-        <br />
-        
-        <a href="/2020-02-11/kubernetes-custom-resource/">Kubernetes Custom Resource Definition (CRD)</a>
-        <br />
-        
-        <a href="/2019-12-18/kubernetes-authentication/">Kubernetes Authentication: Client Certificate</a>
-        <br />
-        
-        <a href="/2020-07-15/fedora-silverblue/">Introduction to Fedora Silverblue</a>
-        <br />
-        
-        <a href="/2020-04-04/go-modules/">Go Modules: an Alternative to GOPATH for Package Distribution</a>
-        <br />
-        
-        <a href="/2020-02-09/introduction-to-programming-infiniband/">Introduction to Programming Infiniband RDMA</a>
-        <br />
-        
-    </div>
-</div>
-
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-        hljs.initHighlightingOnLoad();
-    })
-</script>
-
+          </div>
+        </button>
       </div>
     
-  </main>
-  <footer class="pl-scrollbar">
-    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
-    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
-</div></div>
-  </footer>
-</body>
+  </div>
+  
+  
+</footer>
 
+    </div>
+  </body>
 </html>

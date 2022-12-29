@@ -6,7 +6,6 @@
     <description>Recent content in kvm on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 15 Mar 2021 12:24:00 +0900</lastBuildDate><atom:link href="/tags/kvm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Virtio and Vhost Architecture - Part 2</title>
@@ -14,7 +13,8 @@
       <pubDate>Mon, 15 Mar 2021 12:24:00 +0900</pubDate>
       
       <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
-      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.</description>
+      <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.
+Virtio Review &amp;amp; Vhost Introduction #  virtio-net example diagram. [Source]   VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
     </item>
     
     <item>
@@ -23,7 +23,8 @@
       <pubDate>Wed, 10 Mar 2021 17:01:00 +0900</pubDate>
       
       <guid>/2021-03-10/virtio-and-vhost-architecture-part-1/</guid>
-      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM).</description>
+      <description>This post explains virtio and vhost, device virtualization techniques used in Linux kernel virtual machine (KVM). Here, I focus only on block device and network device virtualization.
+Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization techniques that are used in virtualization. It is a paravirtualized I/O solution that implements a set of communication framework for I/O interaction between guest applications and hypervisor 1 2, which means a device driver that is aware of virtualization is required.</description>
     </item>
     
   </channel>

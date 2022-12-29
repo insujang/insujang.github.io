@@ -6,7 +6,6 @@
     <description>Recent content in smartnic on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 17 Jan 2022 14:54:00 -0500</lastBuildDate><atom:link href="/tags/smartnic/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Open vSwitch in NVIDIA BlueField SmartNIC</title>
@@ -14,7 +13,8 @@
       <pubDate>Mon, 17 Jan 2022 14:54:00 -0500</pubDate>
       
       <guid>/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/</guid>
-      <description>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing.</description>
+      <description>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.
+# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (/etc/init.d/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=/etc/init.</description>
     </item>
     
     <item>
@@ -23,7 +23,9 @@
       <pubDate>Thu, 06 Jan 2022 20:53:00 -0500</pubDate>
       
       <guid>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</guid>
-      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores.</description>
+      <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores. NVIDIA BlueField2 equips 8 ARM Cortex A-72 cores, which can be used to process offloaded functions. This functions are not limited to packet processing, but can also be more complicated applications, e.g., file system, etc.
+This post talks about how to configure NVIDIA BlueField2 SmartNIC, on CloudLab r7525 machines.
+Regarding CloudLab, please refer to [this paper](https://www.usenix.org/conference/atc19/presentation/duplyakin).   Regarding NVIDIA BlueField2 SmartNIC/DPU, please refer to [NVIDIA DPU introduction page](https://www.</description>
     </item>
     
   </channel>

@@ -6,7 +6,6 @@
     <description>Recent content in vm on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 03 May 2021 16:47:00 +0900</lastBuildDate><atom:link href="/tags/vm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Libvirt VM Network Accessibility</title>
@@ -14,7 +13,8 @@
       <pubDate>Mon, 03 May 2021 16:47:00 +0900</pubDate>
       
       <guid>/2021-05-03/libvirt-vm-network-accessibility/</guid>
-      <description>Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:</description>
+      <description>Libvirt provides virtual networking 1 to VMs with a virtual network switch, which is implemented with a bridge by default:
+$ ip addr ... 20: virbr0: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu 1500 qdisc noqueue state UP group default qlen 1000 link/ether 52:54:00:e9:7b:57 brd ff:ff:ff:ff:ff:ff inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0 valid_lft forever preferred_lft forever libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</description>
     </item>
     
   </channel>

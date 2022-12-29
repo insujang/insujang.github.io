@@ -6,7 +6,6 @@
     <description>Recent content in dl on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Wed, 03 Aug 2022 14:30:00 -0400</lastBuildDate><atom:link href="/tags/dl/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Analyzing Parallelization of Attention</title>
@@ -14,7 +13,8 @@
       <pubDate>Wed, 03 Aug 2022 14:30:00 -0400</pubDate>
       
       <guid>/2022-08-03/analyzing-parallelization-of-attention/</guid>
-      <description>We exploit the inherent parallelism in the multi-head attention operation to partition the self-attention block (shown in Figure 5b).</description>
+      <description>We exploit the inherent parallelism in the multi-head attention operation to partition the self-attention block (shown in Figure 5b). The key (K), Query (Q), and value (V) matrices can be partitioned in a column-parallel fashion. The output linear layer can then directly operate on the partitioned output of the attention operation (weight matrix partitioned across rows).
+Deepak Narayanan et al, Efficient large-scale language model training on GPU clusters using megatron-LM, SC&#39;21</description>
     </item>
     
     <item>
@@ -23,7 +23,10 @@
       <pubDate>Sat, 30 Jul 2022 23:48:00 -0400</pubDate>
       
       <guid>/2022-07-30/analysis-of-transformer-model/</guid>
-      <description>This post analyzes transformer models, specifically memory and computation overhead.</description>
+      <description>This post analyzes transformer models, specifically memory and computation overhead.
+Many transformer based models just explain themselves as a model with X-B parameters; I wanted to break it down and look into the model structure how they are stored and used in actual computing hardware.
+ Many illustrations and analysis are based on the following papers 1.
+ Transformer-based Model # Since Google announed attention and transformer models in 2017 2, MLP and image classification models are rapidly adopting transformer layers.</description>
     </item>
     
     <item>
@@ -32,7 +35,8 @@
       <pubDate>Sat, 11 Jun 2022 19:33:00 -0400</pubDate>
       
       <guid>/2022-06-11/parallelism-in-distributed-deep-learning/</guid>
-      <description>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning.</description>
+      <description>Distributed deep learning refers to use a distributed system that includes several workers to perform inference or training deep learning. Since mid 2010, people have been thinking about accelerating deep learning with scale-out, and distributd deep learning has been introduced. Parameter server is one of the well-known architecture for distributed deep learning.
+Recent days, many parallelization mechanisms, the way of distributing computation to multiple workers, have been introduced. First one was to split batches into several microbatches and distributed it, namely data parallelism, which the parameter server architecture is for.</description>
     </item>
     
   </channel>

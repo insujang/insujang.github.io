@@ -1,350 +1,610 @@
+
+
+
 <!DOCTYPE html>
-<html lang='en' ><meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Open vSwitch in NVIDIA BlueField SmartNIC &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Open vSwitch in NVIDIA BlueField SmartNIC &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.
+# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (/etc/init.d/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=/etc/init." />
+  
+  
+  
+  <link rel="canonical" href="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.fdfd68c6d80697a222b9fc676c392570628fa823215c17e25faaeebb4afbe03ed6ccb978bbf6605b7b63b7f0c091b622850b865f49286208e8dfb5a7b3501d82.css"
+    integrity="sha512-/f1oxtgGl6IiufxnbDklcGKPqCMhXBfiX6ruu0r74D7WzLl4u/ZgW3tjt/DAkbYihQuGX0koYgjo37Wns1Adgg=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Open vSwitch in NVIDIA BlueField SmartNIC" />
+<meta property="og:description" content="In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.
+# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (/etc/init.d/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=/etc/init." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-17T14:54:00-05:00" />
+<meta property="article:modified_time" content="2022-01-17T14:54:00-05:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
 
-<title>Open vSwitch in NVIDIA BlueField SmartNIC | Better Tomorrow with Computer Science</title>
-<link rel="stylesheet" href="/css/eureka.min.css">
-<script defer src="/js/eureka.min.js"></script>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Open vSwitch in NVIDIA BlueField SmartNIC"/>
+<meta name="twitter:description" content="In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.
+# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (/etc/init.d/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=/etc/init."/>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload"
-  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-  as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
-   media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
-   crossorigin>
-<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
-   crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
-   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
-   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
-  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true }
-      ],
-    });
-  });
-</script>
-<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'UA-158110335-1');
-</script>
-
-
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
-
-<meta name="description"
-  content="In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1 ,
-      "name":"Posts",
-      "item":"/posts/"},{
-      "@type": "ListItem",
-      "position": 2 ,
-      "name":"Open vSwitch in NVIDIA BlueField SmartNIC",
-      "item":"/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/"}]
-}
-</script>
-
-
-
-<script type="application/ld+json">
-{
+  
+  <script type="application/ld+json">
+  [{
     "@context": "https://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/"
+    "articleSection": "Posts",
+    "name": "Open vSwitch in NVIDIA BlueField SmartNIC",
+    "headline": "Open vSwitch in NVIDIA BlueField SmartNIC",
+    
+    "abstract": "In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing. Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.\n# in SmartNIC Linux $ systemctl status openvswitch-switch ● openvswitch-switch.service - LSB: Open vSwitch switch Loaded: loaded (\/etc\/init.d\/openvswitch-switch; generated) Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago Docs: man:systemd-sysv-generator(8) Process: 227259 ExecStart=\/etc\/init.",
+    "inLanguage": "en",
+    "url" : "\/2022-01-17\/open-vswitch-in-nvidia-bluefield-smartnic\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
     },
-    "headline": "Open vSwitch in NVIDIA BlueField SmartNIC | Better Tomorrow with Computer Science","datePublished": "2022-01-17T14:54:00-05:00",
+    "copyrightYear": "2022",
+    "dateCreated": "2022-01-17T14:54:00-05:00",
+    "datePublished": "2022-01-17T14:54:00-05:00",
+    
     "dateModified": "2022-01-17T14:54:00-05:00",
-    "wordCount":  1491 ,
-    "publisher": {
-        "@type": "Person",
-        "name": "Insu Jang",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "/umich.png"
-        }
-        },
-    "description": "In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing."
+    
+    "keywords": ["study","bluefield","smartnic"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "1497"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
 }
-</script><meta property="og:title" content="Open vSwitch in NVIDIA BlueField SmartNIC | Better Tomorrow with Computer Science" />
-<meta property="og:type" content="article" />
-
-
-<meta property="og:image" content="/umich.png">
-
-
-<meta property="og:url" content="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/" />
-
-
-
-
-<meta property="og:description" content="In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing." />
-
-
-
-
-<meta property="og:locale" content="en" />
-
-
-
-
-<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
-
-
-
-
-
-<meta property="article:published_time" content="2022-01-17T14:54:00-05:00" />
-
-
-<meta property="article:modified_time" content="2022-01-17T14:54:00-05:00" />
-
-
-
-<meta property="article:section" content="posts" />
-
-
-<meta property="article:tag" content="study" />
-
-<meta property="article:tag" content="bluefield" />
-
-<meta property="article:tag" content="smartnic" />
-
-
-
-
-
-<meta property="og:see_also" content="/2022-01-06/configuring-nvidia-bluefield2-smartnic/" />
-
-<meta property="og:see_also" content="/2021-05-03/libvirt-vm-network-accessibility/" />
-
-<meta property="og:see_also" content="/2021-04-26/using-intel-ioat-dma/" />
-
-<meta property="og:see_also" content="/2021-04-23/reconfiguring-ceph/" />
-
-<meta property="og:see_also" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" />
-
-<meta property="og:see_also" content="/2021-03-15/virtio-and-vhost-architecture-part-2/" />
-
-
-
-<body class="flex flex-col min-h-screen">
-  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
-    <div class="w-full max-w-screen-xl mx-auto"><script>
-    let storageColorScheme = localStorage.getItem("lightDarkMode")
-    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
-        document.getElementsByTagName('html')[0].classList.add('dark')
-    }
 </script>
-<nav class="flex items-center justify-between flex-wrap p-4">
-    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
-    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div id="target"
-        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
-        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
-            <a href="/#about"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
-            <a href="/posts/"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
-        </div>
 
-        <div class="flex">
-            <div class="relative pt-4 md:pt-0">
-                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
-                </div>
-                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
-                    id='lightDarkOptions'>
-                    <span class="px-4 py-1 hover:text-eureka">Light</span>
-                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
-                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
-                </div>
-            </div>
-        </div>
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
     </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="z-40 flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
 
-    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+      
+
     </div>
+    
+      
+      <label id="menu-button" for="menu-controller" class="block sm:hidden">
+        <input type="checkbox" id="menu-controller" class="hidden" />
+        <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+          
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+        </div>
+        <div
+          id="menu-wrapper"
+          class="invisible fixed inset-0 z-30 m-auto h-screen w-screen cursor-default overflow-auto bg-neutral-100/50 opacity-0 backdrop-blur-sm transition-opacity dark:bg-neutral-900/50"
+        >
+          <ul
+            class="mx-auto flex w-full max-w-7xl list-none flex-col overflow-visible px-6 py-6 ltr:text-right rtl:text-left sm:px-14 sm:py-10 sm:pt-10 md:px-24 lg:px-32"
+          >
+            <li class="mb-1">
+              <span class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"
+                >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span
+              >
+            </li>
+            
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/#about"
+                    title=""
+                    >About</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/research/"
+                    title=""
+                    >Research</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/posts/"
+                    title=""
+                    >Posts</a
+                  >
+                </li>
+              
+            
+            
+          </ul>
+        </div>
+      </label>
+      
+      <ul class="hidden list-none flex-row ltr:text-right rtl:text-left sm:flex">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Open vSwitch in NVIDIA BlueField SmartNIC
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2022-01-17 14:54:00 -0500 EST">Jan 17, 2022</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/study/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >study</a
+            >
+          
+            <a
+              href="/tags/bluefield/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >bluefield</a
+            >
+          
+            <a
+              href="/tags/smartnic/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >smartnic</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#is-ovs-really-used-in-host-packet-processing">Is OvS Really Used in Host Packet Processing?</a>
+      <ul>
+        <li><a href="#explaining-ovs-rules">Explaining OvS Rules</a></li>
+      </ul>
+    </li>
+    <li><a href="#bluefield-ovs-data-plane-hw-offloading">BlueField OvS Data Plane HW Offloading</a>
+      <ul>
+        <li><a href="#kernel-ovs-ovs-tc-and-tc-flower-ovs-tc">Kernel-OVS, OVS-TC, and tc-flower </a>
+          <ul>
+            <li><a href="#offload-performance-measurement">Offload Performance Measurement</a></li>
+          </ul>
+        </li>
+        <li><a href="#ovs-dpdk-and-asap2">OVS-DPDK and ASAP2</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
-<script>
-    let element = document.getElementById('lightDarkMode')
-    if (storageColorScheme == 'Auto') {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'adjust')
-        element.firstElementChild.classList.add('fa-adjust')
-        document.addEventListener('DOMContentLoaded', () => {
-            switchMode('Auto')
-        })
-    } else if (storageColorScheme == "Dark") {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'moon')
-        element.firstElementChild.classList.add('fa-moon')
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        getcolorscheme();
-        switchBurger();
-    });
-</script></div>
-  </header>
-  <main class="flex-grow pt-16">
-      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+  </div>
+</details>
 
-
-<div class="lg:pt-12"></div>
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-    <h1 class="font-bold text-3xl text-primary-text">Open vSwitch in NVIDIA BlueField SmartNIC</h1>
-    <div class="mr-6 my-2">
-    <span>Jan 17, 2022</span>
-</div>
-
-
-
-
-    
-    
-    
-
-    <div class="content">
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing.
 Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.</p>
-<pre><code class="language-sh"># in SmartNIC Linux
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in SmartNIC Linux</span>
 $ systemctl status openvswitch-switch
 ● openvswitch-switch.service - LSB: Open vSwitch switch
-     Loaded: loaded (/etc/init.d/openvswitch-switch; generated)
-     Active: active (running) since Sun 2022-01-16 18:17:46 UTC; 1 day 2h ago
-       Docs: man:systemd-sysv-generator(8)
-    Process: 227259 ExecStart=/etc/init.d/openvswitch-switch start (code=exited, status=0/SUCCESS)
-      Tasks: 13 (limit: 19074)
+     Loaded: loaded <span class="o">(</span>/etc/init.d/openvswitch-switch<span class="p">;</span> generated<span class="o">)</span>
+     Active: active <span class="o">(</span>running<span class="o">)</span> since Sun 2022-01-16 18:17:46 UTC<span class="p">;</span> <span class="m">1</span> day 2h ago
+       Docs: man:systemd-sysv-generator<span class="o">(</span>8<span class="o">)</span>
+    Process: <span class="m">227259</span> <span class="nv">ExecStart</span><span class="o">=</span>/etc/init.d/openvswitch-switch start <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+      Tasks: <span class="m">13</span> <span class="o">(</span>limit: 19074<span class="o">)</span>
      Memory: 111.5M
      CGroup: /system.slice/openvswitch-switch.service
-             ├─227323 ovsdb-server: monitoring pid 227324 (healthy)
+             ├─227323 ovsdb-server: monitoring pid <span class="m">227324</span> <span class="o">(</span>healthy<span class="o">)</span>
              ├─227324 ovsdb-server /etc/openvswitch/conf.db -vconsole:emer -vsyslog:err -vfile:info ...
-             ├─227341 ovs-vswitchd: monitoring pid 227342 (healthy)
+             ├─227341 ovs-vswitchd: monitoring pid <span class="m">227342</span> <span class="o">(</span>healthy<span class="o">)</span>
              └─227342 ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err ...
 ...
-</code></pre>
-<p>If SmartNIC is running in separated host mode, SmartNIC HW will automatically forward packets to the host and the SmartNIC, while in embedded mode, all packets first are handled by SmartNIC. Open vSwitch is running for this purpose: forwarding packets to the host.</p>
-<figure><img src="/assets/images/220106/kernel_representors_model.png"
-         alt="image"/><figcaption>
-            <p>BlueField2 kernel representors model. The red arrow demonstrates a packet flow through the representors, while the green arrow demonstrates the packet flow wheen steering rules are offloaded to the embedded switch (E-switch). <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Source]</a></p>
-        </figcaption>
-</figure>
+</code></pre></div><p>If SmartNIC is running in separated host mode, SmartNIC HW will automatically forward packets to the host and the SmartNIC, while in embedded mode, all packets first are handled by SmartNIC. Open vSwitch is running for this purpose: forwarding packets to the host.</p>
 
-<h1 id="is-ovs-really-used-in-host-packet-processing">Is OvS Really Used in Host Packet Processing?</h1>
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/220106/kernel_representors_model.png" alt="image" />
+        <figcaption>BlueField2 kernel representors model. The red arrow demonstrates a packet flow through the representors, while the green arrow demonstrates the packet flow wheen steering rules are offloaded to the embedded switch (E-switch). <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Source]</a></figcaption>
+      </figure>
+    
+  
+
+
+<h1 id="is-ovs-really-used-in-host-packet-processing" class="relative group">Is OvS Really Used in Host Packet Processing? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#is-ovs-really-used-in-host-packet-processing" aria-label="Anchor">#</a></span></h1>
 <blockquote>
-<p>Tutorial referenced: <a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-On Tutorial Part VII/A: To Offload or Not To Offload?</a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>Tutorial referenced: <a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf"   target="_blank">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-On Tutorial Part VII/A: To Offload or Not To Offload?</a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
 </blockquote>
 <p>To prove this, we could use OvS user-space tools. Here I setup two machines connected to each other via BlueField2 DPUs:</p>
-<figure><img src="/assets/images/220117/ipconfig.jpg"
-         alt="image"/><figcaption>
-            <p>IP setup of BlueField2 machines. I am trying to check whether OvS is involved in pinging from host2 to host1. I will check whether packets are forwarded through the red line.</p>
-        </figcaption>
-</figure>
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/220117/ipconfig.jpg" alt="image" />
+        <figcaption>IP setup of BlueField2 machines. I am trying to check whether OvS is involved in pinging from host2 to host1. I will check whether packets are forwarded through the red line.</figcaption>
+      </figure>
+    
+  
+
 
 <p>With default configuration, ping works:</p>
-<pre><code class="language-sh"># in BF-host1
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in BF-host1</span>
 bf-host1 $ ovs-vsctl show
     Bridge ovsbr1
-        Port pf0hpf             # connected to host ens5f0
+        Port pf0hpf             <span class="c1"># connected to host ens5f0</span>
             Interface pf0hpf
-        Port en3f0pf0sf0        # this is for SmartNIC ubuntu network
+        Port en3f0pf0sf0        <span class="c1"># this is for SmartNIC ubuntu network</span>
             Interface en3f0pf0sf0
-        Port ovsbr1             # Open vSwitch bridge
+        Port ovsbr1             <span class="c1"># Open vSwitch bridge</span>
             Interface ovsbr1
                 type: internal
-        Port p0                 # physical port
+        Port p0                 <span class="c1"># physical port</span>
             Interface p0
-    ovs_version: &quot;2.14.1&quot;
+    ovs_version: <span class="s2">&#34;2.14.1&#34;</span>
 
 bf-host1 $ ovs-ofctl dump-flows ovsbr1
- cookie=0x0, duration=1.879s, table=0, n_packets=2, n_bytes=120, priority=0 actions=NORMAL
+ <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>1.879s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>2, <span class="nv">n_bytes</span><span class="o">=</span>120, <span class="nv">priority</span><span class="o">=</span><span class="m">0</span> <span class="nv">actions</span><span class="o">=</span>NORMAL
 
-# in host2
-host2 $ ping 10.10.1.1 -c 5
-PING 10.10.1.1 (10.10.1.1) 56(84) bytes of data.
-64 bytes from 10.10.1.1: icmp_seq=1 ttl=64 time=0.702 ms
-64 bytes from 10.10.1.1: icmp_seq=2 ttl=64 time=0.343 ms
-64 bytes from 10.10.1.1: icmp_seq=3 ttl=64 time=0.359 ms
-64 bytes from 10.10.1.1: icmp_seq=4 ttl=64 time=0.408 ms
-64 bytes from 10.10.1.1: icmp_seq=5 ttl=64 time=0.175 ms
-</code></pre>
-<p>But if we delete a default flow configuration, ping does not work:</p>
-<pre><code class="language-sh"># in BF-host1
+<span class="c1"># in host2</span>
+host2 $ ping 10.10.1.1 -c <span class="m">5</span>
+PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.702 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.343 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.359 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.408 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.175 ms
+</code></pre></div><p>But if we delete a default flow configuration, ping does not work:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in BF-host1</span>
 bf-host1 $ over-ofctl del-flows ovsbr1
 bf-host1 $ over-ofctl dump-flows ovsbr1
-# nothing
+<span class="c1"># nothing</span>
 
-# in host2
-host2 $ ping 10.10.1.1 -c 5
-PING 10.10.1.1 (10.10.1.1) 56(84) bytes of data.
+<span class="c1"># in host2</span>
+host2 $ ping 10.10.1.1 -c <span class="m">5</span>
+PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
 
 --- 10.10.1.1 ping statistics ---
-5 packets transmitted, 0 received, 100% packet loss, time 4076ms
-</code></pre>
-<p>After manually inserting OvS flow rules, it works again:</p>
-<pre><code class="language-sh"># in BF-host1
-bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port=pf0hpf,actions=output:p0
-bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port=p0,ip_dst=10.10.1.1,actions=output:pf0hpf
-bf-host1 $ ovs-ofctl add-flow ovsbr1 arp,actions=FLOOD
+<span class="m">5</span> packets transmitted, <span class="m">0</span> received, 100% packet loss, <span class="nb">time</span> 4076ms
+</code></pre></div><p>After manually inserting OvS flow rules, it works again:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in BF-host1</span>
+bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>pf0hpf,actions<span class="o">=</span>output:p0
+bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>10.10.1.1,actions<span class="o">=</span>output:pf0hpf
+bf-host1 $ ovs-ofctl add-flow ovsbr1 arp,actions<span class="o">=</span>FLOOD
 
-# in host2
-host2 $ ping 10.10.1.1 -c 5
-PING 10.10.1.1 (10.10.1.1) 56(84) bytes of data.
-64 bytes from 10.10.1.1: icmp_seq=1 ttl=64 time=0.522 ms
-64 bytes from 10.10.1.1: icmp_seq=2 ttl=64 time=0.212 ms
-64 bytes from 10.10.1.1: icmp_seq=3 ttl=64 time=0.166 ms
-64 bytes from 10.10.1.1: icmp_seq=4 ttl=64 time=0.150 ms
-64 bytes from 10.10.1.1: icmp_seq=5 ttl=64 time=0.142 ms
+<span class="c1"># in host2</span>
+host2 $ ping 10.10.1.1 -c <span class="m">5</span>
+PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.522 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.212 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.166 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.150 ms
+<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.142 ms
 
-# in BF-host1
+<span class="c1"># in BF-host1</span>
 bf-host1 $ ovs-ofctl dump-flows ovsbr1
- cookie=0x0, duration=67.595s, table=0, n_packets=5, n_bytes=490, ip,in_port=p0,nw_dst=10.10.1.1 actions=output:pf0hpf
- cookie=0x0, duration=65.799s, table=0, n_packets=5, n_bytes=490, ip,in_port=pf0hpf actions=output:p0
- cookie=0x0, duration=64.320s, table=0, n_packets=2, n_bytes=112, arp actions=FLOOD
-</code></pre>
-<p>Packets are captured by OvS (<code>n_packets=5</code>) in the flow dump result.</p>
-<h2 id="explaining-ovs-rules">Explaining OvS Rules</h2>
-<p>In setting OvS rules I used <code>pf0hpf</code> and <code>p0</code> ports. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">NVIDIA DOCK SDK</a> explains how these ports are connected to each other.</p>
+ <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>67.595s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>5, <span class="nv">n_bytes</span><span class="o">=</span>490, ip,in_port<span class="o">=</span>p0,nw_dst<span class="o">=</span>10.10.1.1 <span class="nv">actions</span><span class="o">=</span>output:pf0hpf
+ <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>65.799s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>5, <span class="nv">n_bytes</span><span class="o">=</span>490, ip,in_port<span class="o">=</span>pf0hpf <span class="nv">actions</span><span class="o">=</span>output:p0
+ <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>64.320s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>2, <span class="nv">n_bytes</span><span class="o">=</span>112, arp <span class="nv">actions</span><span class="o">=</span>FLOOD
+</code></pre></div><p>Packets are captured by OvS (<code>n_packets=5</code>) in the flow dump result.</p>
+<h2 id="explaining-ovs-rules" class="relative group">Explaining OvS Rules <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#explaining-ovs-rules" aria-label="Anchor">#</a></span></h2>
+<p>In setting OvS rules I used <code>pf0hpf</code> and <code>p0</code> ports. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html"   target="_blank">NVIDIA DOCK SDK</a> explains how these ports are connected to each other.</p>
 <p>By default, Mellanox OFED installs the following ports:</p>
-<pre><code class="language-sh">bf-host1 $ ovs-vsctl show
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">bf-host1 $ ovs-vsctl show
     Bridge ovsbr1
         Port pf0hpf
             Interface pf0hpf
@@ -355,103 +615,143 @@ bf-host1 $ ovs-ofctl dump-flows ovsbr1
                 type: internal
         Port p0
             Interface p0
-    ovs_version: &quot;2.14.1&quot;
-</code></pre>
-<figure><img src="/assets/images/220117/representors.jpg"
-         alt="image"/><figcaption>
-            <p>NVIDIA BlueField2 default representor model. It is slightly different from what is described in DOCA SDK manual. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Manual ref]</a></p>
-        </figcaption>
-</figure>
+    ovs_version: <span class="s2">&#34;2.14.1&#34;</span>
+</code></pre></div>
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/220117/representors.jpg" alt="image" />
+        <figcaption>NVIDIA BlueField2 default representor model. It is slightly different from what is described in DOCA SDK manual. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Manual ref]</a></figcaption>
+      </figure>
+    
+  
 
-<pre><code class="language-sh">add-flow ovsbr1 ip,in_port=pf0hpf,actions=output:p0
-</code></pre>
-<p>This rule indicates the red line in the figure. When a packet comes from the port <code>pf0hpf</code> (<code>hpf</code> stands for host physical function), which is connected to the host interface (meaning outbound packet from the host), OvS should forward it to the physical port so that it can reach out to the destination (<code>actions=output:p0</code>). <code>p0</code> is an actual physical port in DPU, connected to the network outside.</p>
-<pre><code class="language-sh">add-flow ovsbr1 ip,in_port=p0,ip_dst=10.10.1.1,actions=output:pf0hpf
-</code></pre>
-<p>This rule indicates the blue line in the figure, representing handling incoming packets. Note that an SF <code>en3f0pf0sf0</code> can also have an IP and can be used by applications in ARM CPU, not all packets should be forward to the host. In this example, the host has <code>10.10.1.1</code> IP, so only packets with destination IP <code>10.10.1.1</code> (<code>ip_dst=10.10.1.1</code>) should be forwarded to <code>pf0hpf</code> port, which is connected to the host.</p>
-<h1 id="bluefield-ovs-data-plane-hw-offloading">BlueField OvS Data Plane HW Offloading</h1>
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">add-flow ovsbr1 ip,in_port<span class="o">=</span>pf0hpf,actions<span class="o">=</span>output:p0
+</code></pre></div><p>This rule indicates the red line in the figure. When a packet comes from the port <code>pf0hpf</code> (<code>hpf</code> stands for host physical function), which is connected to the host interface (meaning outbound packet from the host), OvS should forward it to the physical port so that it can reach out to the destination (<code>actions=output:p0</code>). <code>p0</code> is an actual physical port in DPU, connected to the network outside.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>10.10.1.1,actions<span class="o">=</span>output:pf0hpf
+</code></pre></div><p>This rule indicates the blue line in the figure, representing handling incoming packets. Note that an SF <code>en3f0pf0sf0</code> can also have an IP and can be used by applications in ARM CPU, not all packets should be forward to the host. In this example, the host has <code>10.10.1.1</code> IP, so only packets with destination IP <code>10.10.1.1</code> (<code>ip_dst=10.10.1.1</code>) should be forwarded to <code>pf0hpf</code> port, which is connected to the host.</p>
+<h1 id="bluefield-ovs-data-plane-hw-offloading" class="relative group">BlueField OvS Data Plane HW Offloading <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#bluefield-ovs-data-plane-hw-offloading" aria-label="Anchor">#</a></span></h1>
 <p>OvS datapath can be offloaded to the hardware for acceleration in NVIDIA BlueField2 DPU. It seems to have two hardware accelerators: <code>tc-flower</code> and <code>ASAP2</code>.</p>
-<h2 id="kernel-ovs-ovs-tc-and-tc-flower-ovs-tc">Kernel-OVS, OVS-TC, and tc-flower <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></h2>
+<h2 id="kernel-ovs-ovs-tc-and-tc-flower-ovs-tc" class="relative group">Kernel-OVS, OVS-TC, and tc-flower <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#kernel-ovs-ovs-tc-and-tc-flower-ovs-tc" aria-label="Anchor">#</a></span></h2>
 <blockquote>
 <p>Note that the reference is for Netronome Agilio SmartNICs, but I think it can also be applied to NVIDIA BlueField SmartNICs. Not sure it is a general feature for <em>every</em> SmartNICs.</p>
 </blockquote>
 <p>Traffic Control (TC) flower is not a hardware, actually. It is a packet classifier in the Linux kernel, and part of the kernel traffic classification system.
 This TC datapath can be offloaded into SmartNIC, which provides a huge performance boost in virtual switch packet processing.</p>
-<figure><img src="/assets/images/220117/ovs-tc-offload.png"
-         alt="image"/><figcaption>
-            <p>Blue boxes in Kernel area are offloaded into the yellow Agilio CX SmartNIC hardware. <a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf">[Source]</a></p>
-        </figcaption>
-</figure>
 
-<p>It seems NVIDIA BlueField2 also provides TC offload hardware acceleration. I followed <a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf">the tutorial</a> to test SmartNIC offloading.</p>
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/220117/ovs-tc-offload.png" alt="image" />
+        <figcaption>Blue boxes in Kernel area are offloaded into the yellow Agilio CX SmartNIC hardware. <a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf">[Source]</a></figcaption>
+      </figure>
+    
+  
+
+
+<p>It seems NVIDIA BlueField2 also provides TC offload hardware acceleration. I followed <a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf"   target="_blank">the tutorial</a> to test SmartNIC offloading.</p>
 <p>To check whether HW offloading is enabled, use the following command in the BF2:</p>
-<pre><code class="language-sh">$ ovs-vsctl get Open_vSwitch . other_config:hw-offload
-&quot;true&quot;
-</code></pre>
-<p>To change configuration, set value and restart OvS switch daemon:</p>
-<pre><code class="language-sh">$ ovs-vsctl set Open_vSwitch . other_config:hw-offload=true
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ovs-vsctl get Open_vSwitch . other_config:hw-offload
+<span class="s2">&#34;true&#34;</span>
+</code></pre></div><p>To change configuration, set value and restart OvS switch daemon:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ovs-vsctl <span class="nb">set</span> Open_vSwitch . other_config:hw-offload<span class="o">=</span><span class="nb">true</span>
 $ systemctl restart openvswitch-switch
-</code></pre>
-<blockquote>
+</code></pre></div><blockquote>
 <p>Note that when restart switch daemon, existing rules are removed. Reset the rules.</p>
 </blockquote>
 <p>To check whether HW offloading is actually used, use <code>ovs-appctl</code> tool while hosts are communicating:</p>
-<pre><code class="language-sh">$ ovs-appctl dpctl/dump-flows -m | grep pf0hpf
-ufid:e81cbd1d-0120-4ef7-af70-f7a8cdf9ffc2, skb_priority(0/0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_
-mark(0/0),ct_label(0/0),recirc_id(0),dp_hash(0/0),in_port(pf0hpf),packet_type(ns=0/0,id=0/0),eth(src=00:0
-0:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.
-0/0.0.0.0,dst=0.0.0.0/0.0.0.0,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:174, bytes:17052, used:0.520s,
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ovs-appctl dpctl/dump-flows -m <span class="p">|</span> grep pf0hpf
+ufid:e81cbd1d-0120-4ef7-af70-f7a8cdf9ffc2, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
+mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:0
+0:00:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.
+0/0.0.0.0,dst<span class="o">=</span>0.0.0.0/0.0.0.0,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:174, bytes:17052, used:0.520s,
 offloaded:yes, dp:tc, actions:p0
 
-ufid:09bfe098-3319-4fcf-a2eb-be80636ed34e, skb_priority(0/0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_
-mark(0/0),ct_label(0/0),recirc_id(0),dp_hash(0/0),in_port(p0),packet_type(ns=0/0,id=0/0),eth(src=00:00:00
-:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.
-0.0.0,dst=10.10.1.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:175, bytes:17812, used:0.520s, offloaded:
+ufid:09bfe098-3319-4fcf-a2eb-be80636ed34e, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
+mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>p0<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00
+:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.
+0.0.0,dst<span class="o">=</span>10.10.1.1,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:175, bytes:17812, used:0.520s, offloaded:
 yes, dp:tc, actions:pf0hpf
 
-ufid:29e9b8b3-97a5-425e-a602-25f5765bf855, skb_priority(0/0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_
-mark(0/0),ct_label(0/0),recirc_id(0),dp_hash(0/0),in_port(pf0hpf),packet_type(ns=0/0,id=0/0),eth(src=00:0
-0:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0806),arp(sip=0.0.0.0
-/0.0.0.0,tip=0.0.0.0/0.0.0.0,op=0/0,sha=00:00:00:00:00:00/00:00:00:00:00:00,tha=00:00:00:00:00:00/00:00:0
-0:00:00:00), packets:1, bytes:38, used:5.820s, dp:tc, actions:p0,ovsbr1,en3f0pf0sf0
-</code></pre>
-<p>Three flows, each of which corresponds to each OvS rule, have been captured by <code>dump-flows</code>.</p>
+ufid:29e9b8b3-97a5-425e-a602-25f5765bf855, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
+mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:0
+0:00:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0806<span class="o">)</span>,arp<span class="o">(</span><span class="nv">sip</span><span class="o">=</span>0.0.0.0
+/0.0.0.0,tip<span class="o">=</span>0.0.0.0/0.0.0.0,op<span class="o">=</span>0/0,sha<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00,tha<span class="o">=</span>00:00:00:00:00:00/00:00:0
+0:00:00:00<span class="o">)</span>, packets:1, bytes:38, used:5.820s, dp:tc, actions:p0,ovsbr1,en3f0pf0sf0
+</code></pre></div><p>Three flows, each of which corresponds to each OvS rule, have been captured by <code>dump-flows</code>.</p>
 <p>First flow represents outbound packets (<code>in_port(pf0hpf)</code>, <code>actions:p0</code>), second inbound packets (<code>in_port(p0)</code>, <code>actions:pf0hpf</code>), and third is arp (<code>eth_type: 0x0806</code>, flooded to all connected ports: p0,ovsbr1,en3f0pf0sf0).
 Note that, you can see <code>offloaded:yes, dp:tc</code> in the first and second flow, which means BlueField embedded switch (Eswitch) partially processed traffic control (TC).</p>
 <blockquote>
-<p>Refer to <a href="https://www.openvswitch.org/support/ovscon2019/day2/0951-hw_offload_ovs_con_19-Oz-Mellanox.pdf">the presentation</a> from Mellanox <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> to see what &ldquo;partially process&rdquo; means, and how Eswitch handles offloading.</p>
+<p>Refer to <a href="https://www.openvswitch.org/support/ovscon2019/day2/0951-hw_offload_ovs_con_19-Oz-Mellanox.pdf"   target="_blank">the presentation</a> from Mellanox <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> to see what &ldquo;partially process&rdquo; means, and how Eswitch handles offloading.</p>
 </blockquote>
 <p>If you set hw-offload off, you can see the following flows, which don&rsquo;t have <code>offloaded</code> field:</p>
-<pre><code class="language-sh">ufid:240da61d-5cea-4161-9f60-783915bb1a1c, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(pf0hpf),sk
-b_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:0
-0:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.0.0.0,dst=0.0.0.0/0.0.0
-.0,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:18, bytes:1764, used:0.208s, dp:ovs, actions:p0
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">ufid:240da61d-5cea-4161-9f60-783915bb1a1c, recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,skb_priority<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,sk
+b_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00:00:00:00/00:00:00:00:0
+0:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.0.0.0,dst<span class="o">=</span>0.0.0.0/0.0.0
+.0,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:18, bytes:1764, used:0.208s, dp:ovs, actions:p0
 
-ufid:a5ff341c-7180-4be2-af6e-2792c4275e70, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(p0),skb_ma
-rk(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00
-,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.0.0.0,dst=10.10.1.1,proto=0
-/0,tos=0/0,ttl=0/0,frag=no), packets:18, bytes:1764, used:0.208s, dp:ovs, actions:pf0hpf
-</code></pre>
-<h3 id="offload-performance-measurement">Offload Performance Measurement</h3>
+ufid:a5ff341c-7180-4be2-af6e-2792c4275e70, recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,skb_priority<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>p0<span class="o">)</span>,skb_ma
+rk<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00
+,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.0.0.0,dst<span class="o">=</span>10.10.1.1,proto<span class="o">=</span><span class="m">0</span>
+/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:18, bytes:1764, used:0.208s, dp:ovs, actions:pf0hpf
+</code></pre></div><h3 id="offload-performance-measurement" class="relative group">Offload Performance Measurement <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#offload-performance-measurement" aria-label="Anchor">#</a></span></h3>
 <p>I tried to measure network performance by running simple data echo programs (16B~16MiB). This could quite be inaccurate, better to use iperf, etc. But I wanted to know difference in latency between host-to-host communication and the host-to-SmartNIC communication. Below figure is a configuration.</p>
 <blockquote>
 <p>Note that the following rules should be added to forward packets to a process running in SmartNIC:</p>
-<pre><code class="language-sh"># should be the port that is connected to ovs-system, not the one with IP assigned.
-$ ovs-ofctl add-flow ovsbr1 ip,in_port=p0,ip_dst=&lt;smartnic_ip&gt;,actions=output:en3f0pf0sf0
-$ ovs-ofctl add-flow ovsbr1 ip,in_port=en3f0pf0sf0,actions=output:p0
-</code></pre>
-</blockquote>
-<figure><img src="/assets/images/220117/exp1.jpg"
-         alt="image"/><figcaption>
-            <p>Nodes configureation. Echo client sends a bunch of data (16B~16MiB), and servers echo received data. All process uses a single thread. Elapsed time (from before sending data to after receiving data) is measured from the client side, so it is round-trip time. All data are verified to be the same in the client. I used Rust <code>std::tcp</code> for data transfer.</p>
-        </figcaption>
-</figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># should be the port that is connected to ovs-system, not the one with IP assigned.</span>
+$ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>&lt;smartnic_ip&gt;,actions<span class="o">=</span>output:en3f0pf0sf0
+$ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>en3f0pf0sf0,actions<span class="o">=</span>output:p0
+</code></pre></div></blockquote>
 
-<figure><img src="/assets/images/220117/smartnic-tcp.jpg"
-         alt="image"/><figcaption>
-            <p>Echo test result. All data is an average of 50 experiments.</p>
-        </figcaption>
-</figure>
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/220117/exp1.jpg" alt="image" />
+        <figcaption>Nodes configureation. Echo client sends a bunch of data (16B~16MiB), and servers echo received data. All process uses a single thread. Elapsed time (from before sending data to after receiving data) is measured from the client side, so it is round-trip time. All data are verified to be the same in the client. I used Rust <code>std::tcp</code> for data transfer.</figcaption>
+      </figure>
+    
+  
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+      <figure>
+        <img class="my-0 rounded-md" src="/assets/images/220117/smartnic-tcp.jpg" alt="image" />
+        <figcaption>Echo test result. All data is an average of 50 experiments.</figcaption>
+      </figure>
+    
+  
+
 
 <p>We can see two expected behaviors from the result:</p>
 <ol>
@@ -463,126 +763,279 @@ $ ovs-ofctl add-flow ovsbr1 ip,in_port=en3f0pf0sf0,actions=output:p0
 <li>Non-offloaded (SW only) OvS performance is not that bad. The tutorial says there was 88% performance degradation, which is not my case. Not sure what was different. Also, ARM CPUs are still not heavily used during packet processing if I glimpsed.</li>
 <li>SmartNIC performs worse with larger data size (e.g. 25ms in host vs 43ms in BF2 for 4MB TCP echo). I suspect this is because of low performance SmartNIC cores; Linux TCP packet processing performance with BF2 cores is probably the reason?</li>
 </ol>
-<h2 id="ovs-dpdk-and-asap2">OVS-DPDK and ASAP2</h2>
+<h2 id="ovs-dpdk-and-asap2" class="relative group">OVS-DPDK and ASAP2 <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#ovs-dpdk-and-asap2" aria-label="Anchor">#</a></span></h2>
 <p>TBD</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-On Tutorial Part VII/A: To Offload or Not To Offload?</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf"   target="_blank">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-On Tutorial Part VII/A: To Offload or Not To Offload?</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p><a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf">White Paper: Virtual Switch Acceleration with OVS-TC</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf"   target="_blank">White Paper: Virtual Switch Acceleration with OVS-TC</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://www.openvswitch.org/support/ovscon2019/day2/0951-hw_offload_ovs_con_19-Oz-Mellanox.pdf">Hardware Offload: Past, Present, and Future</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.openvswitch.org/support/ovscon2019/day2/0951-hw_offload_ovs_con_19-Oz-Mellanox.pdf"   target="_blank">Hardware Offload: Past, Present, and Future</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
 
-    </div>
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
     
-    <div class="my-4">
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
     
-    <a href="/tags/study/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#study</a>
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
     
-    <a href="/tags/bluefield/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#bluefield</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
-    <a href="/tags/smartnic/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#smartnic</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
 </div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
     
     
     
-    
-    
-    
-    
-<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2022-01-06/configuring-nvidia-bluefield2-smartnic/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Configuring NVIDIA BlueField2 SmartNIC</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2022-01-06 20:53:00 -0500 EST">Jan 6, 2022</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="group flex text-right" href="/2022-03-12/implementing-basic-rpc-with-c-20/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Implementing Basic RPC with C++20</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2022-03-12 10:40:00 -0500 EST">Mar 12, 2022</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
     <div>
-        
-        <span class="block font-bold">Previous</span>
-        <a href="/2022-03-12/implementing-basic-rpc-with-c-20/" class="block">Implementing Basic RPC with C&#43;&#43;20</a>
-        
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2022
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
     </div>
-    <div class="md:text-right mt-4 md:mt-0">
-        
-        <span class="block font-bold">Next</span>
-        <a href="/2022-01-06/configuring-nvidia-bluefield2-smartnic/" class="block">Configuring NVIDIA BlueField2 SmartNIC</a>
-        
-    </div>
-</div>
-
-    
-
-<div id="disqus_thread"></div>
-<script>
-    var disqus_config = function () {
     
     
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "insujang" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
 
 
-</div>
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
 
 
-
-
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-    <h2 class="text-lg font-semibold mb-4">See Also</h2>
-    <div class="content">
-        
-        <a href="/2022-01-06/configuring-nvidia-bluefield2-smartnic/">Configuring NVIDIA BlueField2 SmartNIC</a>
-        <br />
-        
-        <a href="/2021-05-03/libvirt-vm-network-accessibility/">Libvirt VM Network Accessibility</a>
-        <br />
-        
-        <a href="/2021-04-26/using-intel-ioat-dma/">Using Intel IOAT DMA</a>
-        <br />
-        
-        <a href="/2021-04-23/reconfiguring-ceph/">Reconfiguring Ceph</a>
-        <br />
-        
-        <a href="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/">Testing Ceph RBD Performance with Virtualization</a>
-        <br />
-        
-        <a href="/2021-03-15/virtio-and-vhost-architecture-part-2/">Virtio and Vhost Architecture - Part 2</a>
-        <br />
-        
-    </div>
-</div>
-
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-        hljs.initHighlightingOnLoad();
-    })
-</script>
-
+          </div>
+        </button>
       </div>
     
-  </main>
-  <footer class="pl-scrollbar">
-    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
-    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
-</div></div>
-  </footer>
-</body>
+  </div>
+  
+  
+</footer>
 
+    </div>
+  </body>
 </html>

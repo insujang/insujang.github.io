@@ -6,7 +6,6 @@
     <description>Recent content in container on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Mon, 09 Nov 2020 15:09:00 +0900</lastBuildDate><atom:link href="/tags/container/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Container Image inside Container using Buildah</title>
@@ -14,7 +13,9 @@
       <pubDate>Mon, 09 Nov 2020 15:09:00 +0900</pubDate>
       
       <guid>/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
-      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.</description>
+      <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
+The introduction below clearly shows why it is required.
+ Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
     </item>
     
     <item>
@@ -23,7 +24,10 @@
       <pubDate>Thu, 31 Oct 2019 21:36:00 +0900</pubDate>
       
       <guid>/2019-10-31/container-runtime/</guid>
-      <description>From Docker to Kubernetes, these days container solutions are emerging.</description>
+      <description>From Docker to Kubernetes, these days container solutions are emerging.
+   {: .center-image width=&amp;ldquo;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+In the era of Docker the term &amp;ldquo;Container runtime&amp;rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
+Here are very clear explanations what is container runtime exactly, written by Ian Lewis:</description>
     </item>
     
   </channel>

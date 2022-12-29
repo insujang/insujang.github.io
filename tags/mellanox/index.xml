@@ -6,7 +6,6 @@
     <description>Recent content in mellanox on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>&amp;copy; 2017 - 2021 Insu Jang</copyright>
     <lastBuildDate>Sun, 09 Feb 2020 19:58:00 +0900</lastBuildDate><atom:link href="/tags/mellanox/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduction to Programming Infiniband RDMA</title>
@@ -14,7 +13,8 @@
       <pubDate>Sun, 09 Feb 2020 19:58:00 +0900</pubDate>
       
       <guid>/2020-02-09/introduction-to-programming-infiniband/</guid>
-      <description>This post explains the basic of RDMA programming.</description>
+      <description>This post explains the basic of RDMA programming. There are many examples and posts regarding this, however, I personally could not find enough explanations for the examples. It was hard to understand how it works, and here I summarize what I got.
+Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the infiniband network. It is equivalent of Ethernet network interface card (NIC), but with more features regarding Infiniband and RDMA 1.</description>
     </item>
     
     <item>
@@ -23,7 +23,8 @@
       <pubDate>Sat, 25 Jan 2020 10:28:00 +0900</pubDate>
       
       <guid>/2020-01-25/building-mellanox-ofed-from-source/</guid>
-      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA).</description>
+      <description>Mellanox is a manufacturer of networking products based on infiniband, which in these days are used for Remote DMA (RDMA). Though their documents are explained and managed well in their [website], I cannot find how to build an infiniband device driver from source code they provide.
+Building Mellanox OFED source code: inside install script # Source code can be downloaded in [here]. Currently the latest version of MLNX_OFED is 4.7-3.2.9.0.</description>
     </item>
     
   </channel>

@@ -1,266 +1,518 @@
+
+
+
 <!DOCTYPE html>
-<html lang='en' ><meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Analyzing Gdev &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Analyzing Gdev &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="Gdev # Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.
+You can download it from [here].
+Detail implementations are described in the other paper that the author wrote, Implementing Open-Source CUDA Runtime. (link)
+Internal Implementation #    {: .center-image}
+ Implementation of Gdev  Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source." />
+  
+  
+  
+  <link rel="canonical" href="/2017-04-27/analyzing-gdev/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.fdfd68c6d80697a222b9fc676c392570628fa823215c17e25faaeebb4afbe03ed6ccb978bbf6605b7b63b7f0c091b622850b865f49286208e8dfb5a7b3501d82.css"
+    integrity="sha512-/f1oxtgGl6IiufxnbDklcGKPqCMhXBfiX6ruu0r74D7WzLl4u/ZgW3tjt/DAkbYihQuGX0koYgjo37Wns1Adgg=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Analyzing Gdev" />
+<meta property="og:description" content="Gdev # Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.
+You can download it from [here].
+Detail implementations are described in the other paper that the author wrote, Implementing Open-Source CUDA Runtime. (link)
+Internal Implementation #    {: .center-image}
+ Implementation of Gdev  Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2017-04-27/analyzing-gdev/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-04-27T22:35:30+09:00" />
+<meta property="article:modified_time" content="2017-04-27T22:35:30+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
 
-<title>Analyzing Gdev | Better Tomorrow with Computer Science</title>
-<link rel="stylesheet" href="/css/eureka.min.css">
-<script defer src="/js/eureka.min.js"></script>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Analyzing Gdev"/>
+<meta name="twitter:description" content="Gdev # Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.
+You can download it from [here].
+Detail implementations are described in the other paper that the author wrote, Implementing Open-Source CUDA Runtime. (link)
+Internal Implementation #    {: .center-image}
+ Implementation of Gdev  Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source."/>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload"
-  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-  as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/styles/solarized-light.min.css"
-   media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1.8.6/css/academicons.min.css"
-   crossorigin>
-<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.0/build/highlight.min.js"
-   crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"
-   integrity="sha256-uNYoXefWRqv&#43;PsIF/OflNmwtKM4lStn9yrz2gVl6ymo="  crossorigin></script>
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
-   integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3&#43;Aro6EYUG4&#43;cU&#43;KJWu/X"  media="print"
-  onload="this.media='all';this.onload=null" crossorigin>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" 
-  integrity="sha384-g7c&#43;Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI&#43;sEnkvrMWph2EDg4"  crossorigin></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-   integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC&#43;Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"  crossorigin></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true }
-      ],
-    });
-  });
-</script>
-<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158110335-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'UA-158110335-1');
-</script>
-
-
-<link rel="icon" type="image/png" sizes="32x32" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_32x32_fill_box_center_3.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/umich_hu6c99b92144fcbc4e30752e6c6d9a0d50_18545_180x180_fill_box_center_3.png">
-
-<meta name="description"
-  content="Gdev Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1 ,
-      "name":"Posts",
-      "item":"/posts/"},{
-      "@type": "ListItem",
-      "position": 2 ,
-      "name":"Analyzing Gdev",
-      "item":"/2017-04-27/analyzing-gdev/"}]
-}
-</script>
-
-
-
-<script type="application/ld+json">
-{
+  
+  <script type="application/ld+json">
+  [{
     "@context": "https://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "/2017-04-27/analyzing-gdev/"
+    "articleSection": "Posts",
+    "name": "Analyzing Gdev",
+    "headline": "Analyzing Gdev",
+    
+    "abstract": "Gdev # Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA\/PTX compilers, and so on.\nYou can download it from [here].\nDetail implementations are described in the other paper that the author wrote, Implementing Open-Source CUDA Runtime. (link)\nInternal Implementation #    {: .center-image}\n Implementation of Gdev  Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source.",
+    "inLanguage": "en",
+    "url" : "\/2017-04-27\/analyzing-gdev\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
     },
-    "headline": "Analyzing Gdev | Better Tomorrow with Computer Science","datePublished": "2017-04-27T22:35:30+09:00",
-    "dateModified": "2017-04-27T22:35:30+09:00",
-    "wordCount":  2697 ,
-    "publisher": {
-        "@type": "Person",
-        "name": "Insu Jang",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "/umich.png"
-        }
-        },
-    "description": "Gdev Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA\/PTX compilers, and so on."
+    "copyrightYear": "2017",
+    "dateCreated": "2017-04-27T22:35:30\u002b09:00",
+    "datePublished": "2017-04-27T22:35:30\u002b09:00",
+    
+    "dateModified": "2017-04-27T22:35:30\u002b09:00",
+    
+    "keywords": ["cuda","research"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "2712"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
 }
-</script><meta property="og:title" content="Analyzing Gdev | Better Tomorrow with Computer Science" />
-<meta property="og:type" content="article" />
-
-
-<meta property="og:image" content="/umich.png">
-
-
-<meta property="og:url" content="/2017-04-27/analyzing-gdev/" />
-
-
-
-
-<meta property="og:description" content="Gdev Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on." />
-
-
-
-
-<meta property="og:locale" content="en" />
-
-
-
-
-<meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
-
-
-
-
-
-<meta property="article:published_time" content="2017-04-27T22:35:30&#43;09:00" />
-
-
-<meta property="article:modified_time" content="2017-04-27T22:35:30&#43;09:00" />
-
-
-
-<meta property="article:section" content="posts" />
-
-
-<meta property="article:tag" content="cuda" />
-
-<meta property="article:tag" content="research" />
-
-
-
-
-
-<meta property="og:see_also" content="/2017-04-27/gpu-architecture-overview/" />
-
-<meta property="og:see_also" content="/2017-04-03/pci-express-i/o-system/" />
-
-<meta property="og:see_also" content="/2017-04-27/introduction-to-vfio/" />
-
-<meta property="og:see_also" content="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/" />
-
-<meta property="og:see_also" content="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/" />
-
-<meta property="og:see_also" content="/2017-04-03/intel-sgx-protection-mechanism/" />
-
-
-
-<body class="flex flex-col min-h-screen">
-  <header class="fixed flex items-center w-full min-h-16 pl-scrollbar z-50 bg-secondary-bg shadow-sm">
-    <div class="w-full max-w-screen-xl mx-auto"><script>
-    let storageColorScheme = localStorage.getItem("lightDarkMode")
-    if ((storageColorScheme == 'Auto' && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
-        document.getElementsByTagName('html')[0].classList.add('dark')
-    }
 </script>
-<nav class="flex items-center justify-between flex-wrap p-4">
-    <a href="/" class="mr-6 text-primary-text font-bold">Better Tomorrow with Computer Science</a>
-    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div id="target"
-        class="hidden block md:flex md:flex-grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
-        <div class="text-sm md:flex-grow pb-4 md:pb-0 border-b md:border-b-0">
-            <a href="/#about"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">About</a>
-            <a href="/posts/"
-                class="block mt-4 md:inline-block md:mt-0  hover:text-eureka mr-4">Posts</a>
-        </div>
 
-        <div class="flex">
-            <div class="relative pt-4 md:pt-0">
-                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
-                </div>
-                <div class="absolute flex flex-col left-0 md:left-auto right-auto md:right-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
-                    id='lightDarkOptions'>
-                    <span class="px-4 py-1 hover:text-eureka">Light</span>
-                    <span class="px-4 py-1 hover:text-eureka">Dark</span>
-                    <span class="px-4 py-1 hover:text-eureka">Auto</span>
-                </div>
-            </div>
-        </div>
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
     </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="z-40 flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
 
-    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+      
+
     </div>
+    
+      
+      <label id="menu-button" for="menu-controller" class="block sm:hidden">
+        <input type="checkbox" id="menu-controller" class="hidden" />
+        <div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400">
+          
 
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"/></svg>
+
+  </span>
+
+
+        </div>
+        <div
+          id="menu-wrapper"
+          class="invisible fixed inset-0 z-30 m-auto h-screen w-screen cursor-default overflow-auto bg-neutral-100/50 opacity-0 backdrop-blur-sm transition-opacity dark:bg-neutral-900/50"
+        >
+          <ul
+            class="mx-auto flex w-full max-w-7xl list-none flex-col overflow-visible px-6 py-6 ltr:text-right rtl:text-left sm:px-14 sm:py-10 sm:pt-10 md:px-24 lg:px-32"
+          >
+            <li class="mb-1">
+              <span class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"
+                >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"/></svg>
+
+  </span>
+
+</span
+              >
+            </li>
+            
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/#about"
+                    title=""
+                    >About</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/research/"
+                    title=""
+                    >Research</a
+                  >
+                </li>
+              
+                <li class="mb-1">
+                  <a
+                    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                    href="/posts/"
+                    title=""
+                    >Posts</a
+                  >
+                </li>
+              
+            
+            
+          </ul>
+        </div>
+      </label>
+      
+      <ul class="hidden list-none flex-row ltr:text-right rtl:text-left sm:flex">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Analyzing Gdev
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2017-04-27 22:35:30 &#43;0900 &#43;0900">Apr 27, 2017</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/cuda/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >cuda</a
+            >
+          
+            <a
+              href="/tags/research/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >research</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#gdev">Gdev</a>
+          <ul>
+            <li><a href="#internal-implementation">Internal Implementation</a></li>
+            <li><a href="#code-review">Code Review</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
 </nav>
-<script>
-    let element = document.getElementById('lightDarkMode')
-    if (storageColorScheme == 'Auto') {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'adjust')
-        element.firstElementChild.classList.add('fa-adjust')
-        document.addEventListener('DOMContentLoaded', () => {
-            switchMode('Auto')
-        })
-    } else if (storageColorScheme == "Dark") {
-        element.firstElementChild.classList.remove('fa-sun')
-        element.firstElementChild.setAttribute("data-icon", 'moon')
-        element.firstElementChild.classList.add('fa-moon')
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        getcolorscheme();
-        switchBurger();
-    });
-</script></div>
-  </header>
-  <main class="flex-grow pt-16">
-      <div class="w-full max-w-screen-xl lg:px-4 xl:px-8 mx-auto">
+  </div>
+</details>
 
-
-<div class="lg:pt-12"></div>
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded px-6 py-8">
-    <h1 class="font-bold text-3xl text-primary-text">Analyzing Gdev</h1>
-    <div class="mr-6 my-2">
-    <span>Apr 27, 2017</span>
-</div>
-
-
-
-
-    
-    
-    
-
-    <div class="content">
-        <h2 id="gdev">Gdev</h2>
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
+        <h2 id="gdev" class="relative group">Gdev <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#gdev" aria-label="Anchor">#</a></span></h2>
 <p>Gdev is an open-source CUDA software, containing device drivers, CUDA runtimes, CUDA/PTX compilers, and so on.</p>
-<p>You can download it from <a href="https://github.com/shinpei0208/gdev">[here]</a>.</p>
-<p>Detail implementations are described in the other paper that the author wrote, <em>Implementing Open-Source CUDA Runtime</em>. (<a href="http://www.ertl.jp/~shinpei/papers/pro13.pdf">link</a>)</p>
-<h3 id="internal-implementation">Internal Implementation</h3>
-<p><img src="/assets/images/170427/gdev_internal.png" alt="gdev_internal">{: .center-image}</p>
+<p>You can download it from <a href="https://github.com/shinpei0208/gdev"   target="_blank">[here]</a>.</p>
+<p>Detail implementations are described in the other paper that the author wrote, <em>Implementing Open-Source CUDA Runtime</em>. (<a href="http://www.ertl.jp/~shinpei/papers/pro13.pdf"   target="_blank">link</a>)</p>
+<h3 id="internal-implementation" class="relative group">Internal Implementation <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#internal-implementation" aria-label="Anchor">#</a></span></h3>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/170427/gdev_internal.png" alt="gdev_internal" />
+      
+    </figure>
+  
+
+{: .center-image}</p>
 <ul>
 <li>Implementation of Gdev</li>
 </ul>
 <p>Gdev uses the existing open-source NVIDIA device driver, Nouveau. It also supports NVIDIA proprietary drivers and pscnv as well, pscnv is not maintained and NVIDIA driver is not an open-source. Gdev mainly works well with Nouveau.</p>
 <p>It supports user-space runtime, so it can perform a GPGPU application with only Nouveau device driver. However, it requires root permission to be executed, I uses additional device driver called gdev. To use it, compile Gdev with the following commands.</p>
-<pre><code>$ cmake -H. -Brelease -Ddriver=nouveau -Duser=OFF -Druntime=ON
+<pre tabindex="0"><code>$ cmake -H. -Brelease -Ddriver=nouveau -Duser=OFF -Druntime=ON
 $ make -C release -j 8
 $ sudo make -C release install
-</code></pre>
-<p>Different from the instruction in the author&rsquo;s Github, I set user parameter OFF to make driver backend reside in kernel space, so running CUDA application do not require root permission.</p>
-<h3 id="code-review">Code Review</h3>
-<p>Gdev follows GPU&rsquo;s resource management model, which is illustrated in <a href="/2017-04-27/gpu-architecture-overview/">[here]</a>. So it allocates memory regions in MMIO, writes commands into that MMIO region, and so on. This section will analyze function calls from a basic example CUDA application.</p>
+</code></pre><p>Different from the instruction in the author&rsquo;s Github, I set user parameter OFF to make driver backend reside in kernel space, so running CUDA application do not require root permission.</p>
+<h3 id="code-review" class="relative group">Code Review <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#code-review" aria-label="Anchor">#</a></span></h3>
+<p>Gdev follows GPU&rsquo;s resource management model, which is illustrated in <a href="/2017-04-27/gpu-architecture-overview/"  >[here]</a>. So it allocates memory regions in MMIO, writes commands into that MMIO region, and so on. This section will analyze function calls from a basic example CUDA application.</p>
 <p>The sample application calls CUDA device API functions as follows.</p>
-<pre><code>cuInit()
+<pre tabindex="0"><code>cuInit()
 cuDeviceGet()
 cuCtxCreate()
 cuModuleLoad()
@@ -285,101 +537,97 @@ cuMemFree(c[])
 
 cuModuleUnload()
 cuCtxDestroy()
-</code></pre>
-<h4 id="0-additional-functions-in-nouveau">0. Additional Functions in Nouveau</h4>
+</code></pre><h4 id="0-additional-functions-in-nouveau" class="relative group">0. Additional Functions in Nouveau <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#0-additional-functions-in-nouveau" aria-label="Anchor">#</a></span></h4>
 <p>All gdev functions call functions additionally implemented in Nouveau (<code>/linux/drivers/gpu/drm/nouveau/gdev_interface.c</code>). This file does not exist by default and Linux kernel should be patched by a patcher that the author provided.</p>
-<pre><code class="language-c">int gdev_drv_vspace_alloc(struct drm_device *drm, uint64_t size, struct gdev_drv_vspace *drv_vspace) {
-    u32 arg0 = 0xbeef0201;
-    u32 arg1 = 0xbeef0202;
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">gdev_drv_vspace_alloc</span><span class="p">(</span><span class="k">struct</span> <span class="n">drm_device</span> <span class="o">*</span><span class="n">drm</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_vspace</span> <span class="o">*</span><span class="n">drv_vspace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">u32</span> <span class="n">arg0</span> <span class="o">=</span> <span class="mh">0xbeef0201</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">arg1</span> <span class="o">=</span> <span class="mh">0xbeef0202</span><span class="p">;</span>
 
-    printk(&quot;%s: creating a new vspace. size: 0x%lx\n&quot;,
-            __func__, size);
-    nouveau_channel_new(nvdrm, &amp;nvdrm-&gt;client, NVDRM_DEVICE, NVDRM_CHAN + 2, arg0, arg1, &amp;chan);
-    ...
-}
+    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: creating a new vspace. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+            <span class="n">__func__</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+    <span class="n">nouveau_channel_new</span><span class="p">(</span><span class="n">nvdrm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nvdrm</span><span class="o">-&gt;</span><span class="n">client</span><span class="p">,</span> <span class="n">NVDRM_DEVICE</span><span class="p">,</span> <span class="n">NVDRM_CHAN</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">chan</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
 
-int gdev_drv_chan_alloc(struct drm_device *drm, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_chan *drv_chan) {
-    // It initializes FIFO push buffer(`drv_chan-&gt;pb_xx`) and FIFO indirect buffer(`drv_chan-&gt;ib_xx`).
-    pb_order = 16; // it's hardcoded.
-    pb_bo = chan-&gt;push.buffer;
-    pb_base = chan-&gt;push.vma.offset;
-    ...
-    pb_size = (1 &lt;&lt; pb_order);
-    ...
-    printk(&quot;%s: allocating a channel. &quot;
-           &quot;push buffer addr: 0x%lx, size: 0x%lx. &quot;
-           &quot;indirect buffer addr: 0x%lx\n&quot;,
-           __func__, pb_base, pb_size, ib_base);
+<span class="kt">int</span> <span class="nf">gdev_drv_chan_alloc</span><span class="p">(</span><span class="k">struct</span> <span class="n">drm_device</span> <span class="o">*</span><span class="n">drm</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_vspace</span> <span class="o">*</span><span class="n">drv_vspace</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_chan</span> <span class="o">*</span><span class="n">drv_chan</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// It initializes FIFO push buffer(`drv_chan-&gt;pb_xx`) and FIFO indirect buffer(`drv_chan-&gt;ib_xx`).
+</span><span class="c1"></span>    <span class="n">pb_order</span> <span class="o">=</span> <span class="mi">16</span><span class="p">;</span> <span class="c1">// it&#39;s hardcoded.
+</span><span class="c1"></span>    <span class="n">pb_bo</span> <span class="o">=</span> <span class="n">chan</span><span class="o">-&gt;</span><span class="n">push</span><span class="p">.</span><span class="n">buffer</span><span class="p">;</span>
+    <span class="n">pb_base</span> <span class="o">=</span> <span class="n">chan</span><span class="o">-&gt;</span><span class="n">push</span><span class="p">.</span><span class="n">vma</span><span class="p">.</span><span class="n">offset</span><span class="p">;</span>
+    <span class="p">...</span>
+    <span class="n">pb_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">pb_order</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: allocating a channel. &#34;</span>
+           <span class="s">&#34;push buffer addr: 0x%lx, size: 0x%lx. &#34;</span>
+           <span class="s">&#34;indirect buffer addr: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+           <span class="n">__func__</span><span class="p">,</span> <span class="n">pb_base</span><span class="p">,</span> <span class="n">pb_size</span><span class="p">,</span> <span class="n">ib_base</span><span class="p">);</span>
 
-    // FIFO init: it has already been done in gdev_vas_new().
-}
+    <span class="c1">// FIFO init: it has already been done in gdev_vas_new().
+</span><span class="c1"></span><span class="p">}</span>
 
-int gdev_drv_bo_alloc(struct drm_device *drm, uint64_t size, uint32_t drv_flags, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo) {
-    printk(&quot;%s: allocating a new buffer object. size: 0x%lx\n&quot;,
-           __func__, size);
+<span class="kt">int</span> <span class="nf">gdev_drv_bo_alloc</span><span class="p">(</span><span class="k">struct</span> <span class="n">drm_device</span> <span class="o">*</span><span class="n">drm</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">drv_flags</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_vspace</span> <span class="o">*</span><span class="n">drv_vspace</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_bo</span> <span class="o">*</span><span class="n">drv_bo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: allocating a new buffer object. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+           <span class="n">__func__</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
 
-    nouveau_bo_new(drm, size, 0, flags, 0, 0, NULL, &amp;bo);
+    <span class="n">nouveau_bo_new</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bo</span><span class="p">);</span>
 
-    if (drv_flags &amp; GDEV_DRV_BO_MAPPABLE) nouveau_bo_map(bo);
+    <span class="k">if</span> <span class="p">(</span><span class="n">drv_flags</span> <span class="o">&amp;</span> <span class="n">GDEV_DRV_BO_MAPPABLE</span><span class="p">)</span> <span class="n">nouveau_bo_map</span><span class="p">(</span><span class="n">bo</span><span class="p">);</span>
 
-    // allocate virtual address space, if requested.
-    if (drv_flags &amp; GDEV_DRV_BO_VSPACE){
-        vma = kzalloc(sizeof(*vma), GFP_KERNEL);
-        nouveau_bo_vma_add(bo, client-&gt;vm, vma);
-        drv_bo-&gt;addr = vma-&gt;offset;
-    }
+    <span class="c1">// allocate virtual address space, if requested.
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">drv_flags</span> <span class="o">&amp;</span> <span class="n">GDEV_DRV_BO_VSPACE</span><span class="p">){</span>
+        <span class="n">vma</span> <span class="o">=</span> <span class="n">kzalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">vma</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+        <span class="n">nouveau_bo_vma_add</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span> <span class="n">client</span><span class="o">-&gt;</span><span class="n">vm</span><span class="p">,</span> <span class="n">vma</span><span class="p">);</span>
+        <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">addr</span> <span class="o">=</span> <span class="n">vma</span><span class="o">-&gt;</span><span class="n">offset</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    // address, size, and map.
-    drv_bo-&gt;map = bo-&gt;kmap.virtual;
-    drv_bo-&gt;size = bo-&gt;bo.mem.size;
-    driv_bo-&gt;priv = bo;
-}
-</code></pre>
-<h4 id="1-cuctxcreate">1. <code>cuCtxCreate()</code></h4>
+    <span class="c1">// address, size, and map.
+</span><span class="c1"></span>    <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">map</span> <span class="o">=</span> <span class="n">bo</span><span class="o">-&gt;</span><span class="n">kmap</span><span class="p">.</span><span class="n">virtual</span><span class="p">;</span>
+    <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">bo</span><span class="o">-&gt;</span><span class="n">bo</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">driv_bo</span><span class="o">-&gt;</span><span class="n">priv</span> <span class="o">=</span> <span class="n">bo</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="1-cuctxcreate" class="relative group">1. <code>cuCtxCreate()</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-cuctxcreate" aria-label="Anchor">#</a></span></h4>
 <p>Defined in <code>/gdev/cuda/driver/context.c</code>.</p>
-<pre><code class="language-c">CUresult cuCtxCreate_v2(CUcontext *pctx, unsigned int flags, CUdevice dev) {
-    handle = gopen(minor);
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">CUresult</span> <span class="nf">cuCtxCreate_v2</span><span class="p">(</span><span class="n">CUcontext</span> <span class="o">*</span><span class="n">pctx</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="n">CUdevice</span> <span class="n">dev</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">gopen</span><span class="p">(</span><span class="n">minor</span><span class="p">);</span>
 
-    // set to the current context.
-    cuCtxPushCurrent(ctx);
+    <span class="c1">// set to the current context.
+</span><span class="c1"></span>    <span class="n">cuCtxPushCurrent</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
 
-    // get the CUDA-specific device information.
-    gquery(handle, GDEV_QUERY_CHIPSET, &amp;cuda_info-&gt;chipset);
+    <span class="c1">// get the CUDA-specific device information.
+</span><span class="c1"></span>    <span class="n">gquery</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">GDEV_QUERY_CHIPSET</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cuda_info</span><span class="o">-&gt;</span><span class="n">chipset</span><span class="p">);</span>
 
-    cuDeviceGetAttribute(&amp;mp_count, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUND, dev);
+    <span class="n">cuDeviceGetAttribute</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mp_count</span><span class="p">,</span> <span class="n">CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUND</span><span class="p">,</span> <span class="n">dev</span><span class="p">);</span>
 
-    return CUDA_SUCCESS;
-}
-</code></pre>
-<p>As <code>cuCtxPushCurrent()</code> and <code>gquery()</code> does not use any Nouveau driver function, they will be passed.</p>
-<h5 id="1-1-gopen">1-1. <code>gopen()</code></h5>
+    <span class="k">return</span> <span class="n">CUDA_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>As <code>cuCtxPushCurrent()</code> and <code>gquery()</code> does not use any Nouveau driver function, they will be passed.</p>
+<h5 id="1-1-gopen" class="relative group">1-1. <code>gopen()</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-1-gopen" aria-label="Anchor">#</a></span></h5>
 <p>When <code>cuCtxCreate()</code> is called, the selected gdev device is opened. The function for this purpose is <code>gopen()</code>. It is implemented in <code>/gdev/common/gdev_api.c</code> and will be copied into <code>/gdev/release/mod/gdev/gdev_api.c</code> after performing <code>cmake</code>.</p>
 <p>It opens the device as well as allocates some memory regions for this context.</p>
-<pre><code class="language-c">struct gdev_handle *gopen (int minor) {
-    // open the specified device.
-    printk(&quot;%s: opening minor device number %d\n&quot;, __func__, minor);
-    struct gdev_device* gdev = gdev_dev_open(minor);
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">gdev_handle</span> <span class="o">*</span><span class="nf">gopen</span> <span class="p">(</span><span class="kt">int</span> <span class="n">minor</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// open the specified device.
+</span><span class="c1"></span>    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: opening minor device number %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">,</span> <span class="n">minor</span><span class="p">);</span>
+    <span class="k">struct</span> <span class="n">gdev_device</span><span class="o">*</span> <span class="n">gdev</span> <span class="o">=</span> <span class="n">gdev_dev_open</span><span class="p">(</span><span class="n">minor</span><span class="p">);</span>
 
-    // create a new virtual address space (VAS) object.
-    printk(&quot;%s: creating a new virtual address space object. size: 0x%lx\n&quot;,
-            __func__, GDEV_VAS_SIZE);
-    gdev_vas_t* vas = gdev_vas_new(gdev, GDEV_VAS_SIZE, h);
+    <span class="c1">// create a new virtual address space (VAS) object.
+</span><span class="c1"></span>    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: creating a new virtual address space object. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+            <span class="n">__func__</span><span class="p">,</span> <span class="n">GDEV_VAS_SIZE</span><span class="p">);</span>
+    <span class="n">gdev_vas_t</span><span class="o">*</span> <span class="n">vas</span> <span class="o">=</span> <span class="n">gdev_vas_new</span><span class="p">(</span><span class="n">gdev</span><span class="p">,</span> <span class="n">GDEV_VAS_SIZE</span><span class="p">,</span> <span class="n">h</span><span class="p">);</span>
 
-    // create a new GPU context object.
-    printk(&quot;%s: creating a new GPU context.\n&quot;, __func__);
-    gdev_ctx_t* ctx = gdev_ctx_new(gdev, vas);
+    <span class="c1">// create a new GPU context object.
+</span><span class="c1"></span>    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: creating a new GPU context.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
+    <span class="n">gdev_ctx_t</span><span class="o">*</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">gdev_ctx_new</span><span class="p">(</span><span class="n">gdev</span><span class="p">,</span> <span class="n">vas</span><span class="p">);</span>
 
-    // allocate static bounce bound buffer objects.
-    printk(&quot;%s: allocating static bounce bound buffer. size: 0x%lx\n&quot;,
-            __func__, GDEV_CHUNK_DEFAULT_SIZE);
-    gdev_mem_t* dma_mem = __malloc_dma(vas, GDEV_GDEV_CHUNK_DEFAULT_SIZE, h-&gt;pipeline_count);
+    <span class="c1">// allocate static bounce bound buffer objects.
+</span><span class="c1"></span>    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: allocating static bounce bound buffer. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+            <span class="n">__func__</span><span class="p">,</span> <span class="n">GDEV_CHUNK_DEFAULT_SIZE</span><span class="p">);</span>
+    <span class="n">gdev_mem_t</span><span class="o">*</span> <span class="n">dma_mem</span> <span class="o">=</span> <span class="n">__malloc_dma</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">GDEV_GDEV_CHUNK_DEFAULT_SIZE</span><span class="p">,</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">pipeline_count</span><span class="p">);</span>
 
-    GDEV_PRINT(&quot;Opened gdev%d\n&quot;, minor);
-}
-</code></pre>
-<p>Note that <code>gdev_drv_chan_alloc()</code> says FIFO buffers are initiated by <code>gopen()</code>, not by itself. To check this, I also added a printk call in <code>nouveau_fifo_channel_create_()</code> function in <code>linux/drivers/gpu/drm/nouveau/core/engine/fifo/base.c</code>.</p>
-<h5 id="result">Result</h5>
-<pre><code>gopen: opening minor device 0
+    <span class="n">GDEV_PRINT</span><span class="p">(</span><span class="s">&#34;Opened gdev%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">minor</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>Note that <code>gdev_drv_chan_alloc()</code> says FIFO buffers are initiated by <code>gopen()</code>, not by itself. To check this, I also added a printk call in <code>nouveau_fifo_channel_create_()</code> function in <code>linux/drivers/gpu/drm/nouveau/core/engine/fifo/base.c</code>.</p>
+<h5 id="result" class="relative group">Result <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#result" aria-label="Anchor">#</a></span></h5>
+<pre tabindex="0"><code>gopen: opening minor device 0
 gopen: creating a new virtual address space object. size: 0x10000000000
 gdev_drv_vspace_alloc: creating a new vspace. size: 0x10000000000
 nouveau_fifo_channel_create_: channel addr: 0xe8002000, len: 0x1000.
@@ -393,115 +641,107 @@ gopen: allocating static bounce bound buffer. size: 0x40000 [2]
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x40000 (memory allocated at host for DMA)
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x40000 (memory allocated at host for DMA)
 [gdev] Opened gdev0
-</code></pre>
-<p>Note that FIFO buffer is created by <code>gopen()</code>.</p>
-<h5 id="1-gdev_ctx_new">[1] gdev_ctx_new()</h5>
+</code></pre><p>Note that FIFO buffer is created by <code>gopen()</code>.</p>
+<h5 id="1-gdev_ctx_new" class="relative group">[1] gdev_ctx_new() <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-gdev_ctx_new" aria-label="Anchor">#</a></span></h5>
 <p><code>gdev_ctx_new()</code> is defined in <code>/gdev/common/gdev_nvidia.c</code>, and calls <code>gdev_raw_ctx_new()</code> defined in <code>/gdev/mod/gdev/gdev_drv_nvidia.c</code>, which allocates three buffers: command FIFO, fence buffer, and notify buffer.</p>
 <p>Actually, it creates one more buffer (desc buffer), however, it is allocated for Kepler GPU architecture, which will not be used by me.</p>
-<pre><code class="language-c">struct gdev_ctx *gdev_raw_ctx_new(struct gdev_device *gdev, struct gdev_vas *vas) {
-    struct gdev_ctx* ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-    gdev_drv_chan_alloc(drm, &amp;vspace, &amp;chan);
-    ...
-    // fence buffer.
-    flags = GDEV_DRV_BO_SYSRAM | GDEV_DRV_BO_VSPACE | GDEV_DRV_BO_MAPPABLE;
-    gdev_drv_bo_alloc(drm, GDEV_FENCE_BUF_SIZE, flags, &amp;vspace, $fbo);
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">gdev_ctx</span> <span class="o">*</span><span class="nf">gdev_raw_ctx_new</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_device</span> <span class="o">*</span><span class="n">gdev</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_vas</span> <span class="o">*</span><span class="n">vas</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">gdev_ctx</span><span class="o">*</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">kzalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">ctx</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+    <span class="n">gdev_drv_chan_alloc</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vspace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">chan</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="c1">// fence buffer.
+</span><span class="c1"></span>    <span class="n">flags</span> <span class="o">=</span> <span class="n">GDEV_DRV_BO_SYSRAM</span> <span class="o">|</span> <span class="n">GDEV_DRV_BO_VSPACE</span> <span class="o">|</span> <span class="n">GDEV_DRV_BO_MAPPABLE</span><span class="p">;</span>
+    <span class="n">gdev_drv_bo_alloc</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="n">GDEV_FENCE_BUF_SIZE</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vspace</span><span class="p">,</span> <span class="err">$</span><span class="n">fbo</span><span class="p">);</span>
 
-    // notify buffer.
-    flags = GDEV_DRV_BO_VRAM | GDEV_DRV_BO_VSPACE;
-    gdev_drv_bo_alloc(drm, 8 /* 64 bits */, flags, &amp;vspace, &amp;nbo);
+    <span class="c1">// notify buffer.
+</span><span class="c1"></span>    <span class="n">flags</span> <span class="o">=</span> <span class="n">GDEV_DRV_BO_VRAM</span> <span class="o">|</span> <span class="n">GDEV_DRV_BO_VSPACE</span><span class="p">;</span>
+    <span class="n">gdev_drv_bo_alloc</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="mi">8</span> <span class="cm">/* 64 bits */</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vspace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nbo</span><span class="p">);</span>
 
-    // compute desc buffer.
-    flags = GDEV_DRV_BO_SYSRAM | GDEV_DRV_BO_VSPACE | GDEV_DRV_BO_MAPPABLE;
-    gdev_drv_bo_alloc(drm, sizeof(struct gdev_nve4_compute_desc), flags, &amp;vpsace, &amp;dbo);
+    <span class="c1">// compute desc buffer.
+</span><span class="c1"></span>    <span class="n">flags</span> <span class="o">=</span> <span class="n">GDEV_DRV_BO_SYSRAM</span> <span class="o">|</span> <span class="n">GDEV_DRV_BO_VSPACE</span> <span class="o">|</span> <span class="n">GDEV_DRV_BO_MAPPABLE</span><span class="p">;</span>
+    <span class="n">gdev_drv_bo_alloc</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_nve4_compute_desc</span><span class="p">),</span> <span class="n">flags</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vpsace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dbo</span><span class="p">);</span>
 
-    ...
-    // allocating PGRAPH context for M2MF
-    gdev_drv_subch_alloc(drm, ctx-&gt;pctx, 0xbeef323f, m2mf_class, &amp;m2mf);
+    <span class="p">...</span>
+    <span class="c1">// allocating PGRAPH context for M2MF
+</span><span class="c1"></span>    <span class="n">gdev_drv_subch_alloc</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">pctx</span><span class="p">,</span> <span class="mh">0xbeef323f</span><span class="p">,</span> <span class="n">m2mf_class</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">m2mf</span><span class="p">);</span>
 
-    return ctx;
-}
-</code></pre>
-<p>After adding <code>printk()</code>s in <code>gdev_raw_ctx_new()</code>, the result is as follows.</p>
-<pre><code>gdev_drv_chan_alloc: allocating a channel. push buffer addr: 0x103f5000, size: 0x10000. indirect buffer addr: 0x10405000
+    <span class="k">return</span> <span class="n">ctx</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>After adding <code>printk()</code>s in <code>gdev_raw_ctx_new()</code>, the result is as follows.</p>
+<pre tabindex="0"><code>gdev_drv_chan_alloc: allocating a channel. push buffer addr: 0x103f5000, size: 0x10000. indirect buffer addr: 0x10405000
 gdev_raw_ctx_new: fence buffer allocation with size: 0x10000
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x10000
 gdev_raw_ctx_new: notify buffer allocation with size: 0x8
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x8
 ...
-</code></pre>
-<h5 id="2-__malloc_dma">[2] <code>__malloc_dma()</code></h5>
+</code></pre><h5 id="2-__malloc_dma" class="relative group">[2] <code>__malloc_dma()</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-__malloc_dma" aria-label="Anchor">#</a></span></h5>
 <p>The result says that <code>__malloc_dma()</code> allocates two buffer objects and memory regions each size of which is 0x40000.</p>
 <p>Here is a detailed implementation of <code>__malloc_dma()</code>. It is located in <code>/gdev/common/gdev_api.c</code>.</p>
-<pre><code class="language-c">static gdev_mem_t** __malloc_dma(gdev_vas_t *vas, uint64_t size, int p_count) {
-    gdev_mem_t** dma_mem;
-    int i;
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="n">gdev_mem_t</span><span class="o">**</span> <span class="nf">__malloc_dma</span><span class="p">(</span><span class="n">gdev_vas_t</span> <span class="o">*</span><span class="n">vas</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">p_count</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">gdev_mem_t</span><span class="o">**</span> <span class="n">dma_mem</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-    for (i=0; i&lt;p_count; i++) dma_mem[i] = gdev_mem_alloc(vas, size, GDEV_MEM_DMA);
-    ...
-}
-</code></pre>
-<p><code>gdev_mem_alloc()</code> calls <code>gdev_raw_mem_alloc()</code>, which calls <code>gdev_drv_bo_alloc()</code>. After printing <code>p_count</code>, I found that <code>p_count</code> is 2. Hence two memory and buffer objects are allocated.</p>
-<h4 id="2-cumoduleload">2. <code>cuModuleLoad()</code></h4>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">p_count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">dma_mem</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdev_mem_alloc</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">GDEV_MEM_DMA</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p><code>gdev_mem_alloc()</code> calls <code>gdev_raw_mem_alloc()</code>, which calls <code>gdev_drv_bo_alloc()</code>. After printing <code>p_count</code>, I found that <code>p_count</code> is 2. Hence two memory and buffer objects are allocated.</p>
+<h4 id="2-cumoduleload" class="relative group">2. <code>cuModuleLoad()</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-cumoduleload" aria-label="Anchor">#</a></span></h4>
 <p>Defined in <code>/gdev/cuda/driver/module.c</code>.</p>
-<pre><code class="language-c">CUresult cuModuleLoad(CUmodule *module, const char *fname) {
-    ...
-    // load the cubin image from the given object file.
-    gdev_cuda_load_cubin_file(mod, fname);
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">CUresult</span> <span class="nf">cuModuleLoad</span><span class="p">(</span><span class="n">CUmodule</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fname</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="c1">// load the cubin image from the given object file.
+</span><span class="c1"></span>    <span class="n">gdev_cuda_load_cubin_file</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">fname</span><span class="p">);</span>
 
-    // construct the kernels based on the cubin data.
-    gdev_cuda_construct_kernels(mod, &amp;ctx-&gt;cuda_info);
+    <span class="c1">// construct the kernels based on the cubin data.
+</span><span class="c1"></span>    <span class="n">gdev_cuda_construct_kernels</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cuda_info</span><span class="p">);</span>
 
-    // allocate (local) static data memory.
-    printf(&quot;%s: allocating local static data memory. size: 0x%lx\n&quot;,
-          __func__, mod-&gt;sdata_size);
-    gmalloc(handle, mod-&gt;sdata_size);
+    <span class="c1">// allocate (local) static data memory.
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: allocating local static data memory. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+          <span class="n">__func__</span><span class="p">,</span> <span class="n">mod</span><span class="o">-&gt;</span><span class="n">sdata_size</span><span class="p">);</span>
+    <span class="n">gmalloc</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">mod</span><span class="o">-&gt;</span><span class="n">sdata_size</span><span class="p">);</span>
 
-    // allocate the static data information for each kernel.
-    gdev_cuda_locate_sdata(mod);
+    <span class="c1">// allocate the static data information for each kernel.
+</span><span class="c1"></span>    <span class="n">gdev_cuda_locate_sdata</span><span class="p">(</span><span class="n">mod</span><span class="p">);</span>
 
-    // allocate code and constant memory.
-    printf(&quot;%s: allocating code and constant memory size. size: 0x%lx\n&quot;,
-           __func__, mode-&gt;code_size);
-    gmalloc(handle, mod-&gt;code_size);
+    <span class="c1">// allocate code and constant memory.
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: allocating code and constant memory size. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+           <span class="n">__func__</span><span class="p">,</span> <span class="n">mode</span><span class="o">-&gt;</span><span class="n">code_size</span><span class="p">);</span>
+    <span class="n">gmalloc</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">mod</span><span class="o">-&gt;</span><span class="n">code_size</span><span class="p">);</span>
 
-    // locate the code information for each kernel.
-    gdev_cuda_locate_code(mod);
+    <span class="c1">// locate the code information for each kernel.
+</span><span class="c1"></span>    <span class="n">gdev_cuda_locate_code</span><span class="p">(</span><span class="n">mod</span><span class="p">);</span>
 
-    // transfer the code and constant memory onto the device.
-    bnf_buf = malloc(mod-&gt;cuda_size);
-    gdev_cuda_memcpy_code(mod, bnc_buf);
-    gmemcpy_to_device(handle, mod-&gt;code_addr, bnc_buf, mod-&gt;code_size);
-    ...
-}
-</code></pre>
-<p>Note that this is a runtime library, not a part of gdev device driver, so <code>printf()</code> should be used instead of using <code>printk()</code>. Hence results are divided into userspace part, and kernel dmesg part. Note that I also added more <code>printk()</code> function calls in <code>gdev_raw_mem_alloc_dma()</code> and <code>gdev_raw_mem_alloc()</code>, which are implemented in <code>/gdev/common/gdev_nvidia_mem.c</code>. These functions are called by <code>gmalloc()</code>, as follows.</p>
-<pre><code class="language-c">uint64_t gmalloc(struct gdev_handle *h, uint64_t size) {
-    ...
-    printk(&quot;%s: allocating device memory by calling gdev_mem_alloc. size: 0x%lx\n&quot;,
-           __func__, size);
-    mem = gdev_mem_alloc(vas, size, GDEV_MEM_DEVICE);
-    ...
-}
-</code></pre>
-<pre><code class="language-c">struct gdev_mem *gdev_mem_alloc(struct gdev_vas *vas, uint64_t size, int type) {
-    switch (type) {
-    case GDEV_MEM_DEVICE:
-        mem = gdev_raw_mem_alloc(vas, size);
-        break;
-    case GDEV_MEM_DMA:
-        mem = gdev_raw_mem_alloc_dma(vas, size);
-        break;
-    default:
-        goto fail;
-    }
-}
-</code></pre>
-<h5 id="result-1">Result</h5>
-<pre><code>stdout
+    <span class="c1">// transfer the code and constant memory onto the device.
+</span><span class="c1"></span>    <span class="n">bnf_buf</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">mod</span><span class="o">-&gt;</span><span class="n">cuda_size</span><span class="p">);</span>
+    <span class="n">gdev_cuda_memcpy_code</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">bnc_buf</span><span class="p">);</span>
+    <span class="n">gmemcpy_to_device</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">mod</span><span class="o">-&gt;</span><span class="n">code_addr</span><span class="p">,</span> <span class="n">bnc_buf</span><span class="p">,</span> <span class="n">mod</span><span class="o">-&gt;</span><span class="n">code_size</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>Note that this is a runtime library, not a part of gdev device driver, so <code>printf()</code> should be used instead of using <code>printk()</code>. Hence results are divided into userspace part, and kernel dmesg part. Note that I also added more <code>printk()</code> function calls in <code>gdev_raw_mem_alloc_dma()</code> and <code>gdev_raw_mem_alloc()</code>, which are implemented in <code>/gdev/common/gdev_nvidia_mem.c</code>. These functions are called by <code>gmalloc()</code>, as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">uint64_t</span> <span class="nf">gmalloc</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_handle</span> <span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: allocating device memory by calling gdev_mem_alloc. size: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+           <span class="n">__func__</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+    <span class="n">mem</span> <span class="o">=</span> <span class="n">gdev_mem_alloc</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">GDEV_MEM_DEVICE</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">gdev_mem</span> <span class="o">*</span><span class="nf">gdev_mem_alloc</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_vas</span> <span class="o">*</span><span class="n">vas</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nl">GDEV_MEM_DEVICE</span><span class="p">:</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="n">gdev_raw_mem_alloc</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="nl">GDEV_MEM_DMA</span><span class="p">:</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="n">gdev_raw_mem_alloc_dma</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+        <span class="k">goto</span> <span class="n">fail</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h5 id="result-1" class="relative group">Result <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#result-1" aria-label="Anchor">#</a></span></h5>
+<pre tabindex="0"><code>stdout
 cuModuleLoad: allocating local static data memory. size: 0xc00000
 cuModuleLoad: code and constant memory size: 0x20300
-</code></pre>
-<pre><code>dmesg
+</code></pre><pre tabindex="0"><code>dmesg
 __malloc_dma: allocating 2 memory regions with size 0x40000
 gdev_raw_mem_alloc_dma: allocating memory at host for DMA. size: 0x40000
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x40000
@@ -515,10 +755,9 @@ gdev_drv_bo_alloc: allocating a new buffer object. size: 0xc00000
 gmalloc: allocating device memory by calling gdev_mem_alloc. size: 0x20300
 gdev_raw_mem_alloc: allocating memory at device. size: 0x20300
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x20300
-</code></pre>
-<p>I understand two <code>gmalloc()</code>s are called for static data and code/constant memory, but where does two buffer object allocation come from?</p>
+</code></pre><p>I understand two <code>gmalloc()</code>s are called for static data and code/constant memory, but where does two buffer object allocation come from?</p>
 <p>This <code>__malloc_dma()</code> call comes from <code>gtune()</code>, defined in <code>/gdev/common/gdev_api.c</code>, which is called by <code>gopen()</code> in CUDA runtime library (defined in <code>/gdev/lib/kernel/gdev_lib.c</code>).</p>
-<pre><code>struct gdev_handle *gopen(int minor) {
+<pre tabindex="0"><code>struct gdev_handle *gopen(int minor) {
     ...
     sprintf(devname, &quot;/dev/gdev%d&quot;, minor);
     fd = open(devname, O_RDWR);
@@ -526,9 +765,8 @@ gdev_drv_bo_alloc: allocating a new buffer object. size: 0x20300
     // chunk size of 0x40000 seems best when using OS runtime.
     gtune(h, GDEV_TUNE_MEMCPY_CHUNK_SIZE, 0x40000);
 }
-</code></pre>
-<p><code>/gdev/common/gdev_api.c</code></p>
-<pre><code>int gtune (struct gdev_handle *h, uint32_t type, uint32_t value) {
+</code></pre><p><code>/gdev/common/gdev_api.c</code></p>
+<pre tabindex="0"><code>int gtune (struct gdev_handle *h, uint32_t type, uint32_t value) {
     switch(type){
     case GDEV_TUNE_MEMCPY_PIPELINE_COUNT:
         ...
@@ -536,12 +774,11 @@ gdev_drv_bo_alloc: allocating a new buffer object. size: 0x20300
         h-&gt;dma_mem = __malloc_dma(h-&gt;vas, h-&gt;chunk_size, h-&gt;pipeline_count);
     }
 }
-</code></pre>
-<p>When <code>fd = open(devname, O_RDWR)</code> is called, the control is transferred to gdev device driver, and calls <code>gdev_open()</code>, defined in <code>/gdev/mod/gdev/gdev_fops.c</code>, which calls <code>gopen()</code> function, defined in the gdev device driver, not runtime library.</p>
+</code></pre><p>When <code>fd = open(devname, O_RDWR)</code> is called, the control is transferred to gdev device driver, and calls <code>gdev_open()</code>, defined in <code>/gdev/mod/gdev/gdev_fops.c</code>, which calls <code>gopen()</code> function, defined in the gdev device driver, not runtime library.</p>
 <p>Hence, actually, this allocations are parts of <code>cuCtxCreate()</code>.<br>
 The call flow is as follows. <code>cuCtxCreate()</code> -&gt; <code>gopen()</code> (in CUDA runtime) -&gt; <code>gdev_open()</code> (in gdev device driver) -&gt; <code>gopen()</code> (in gdev device drvier).</p>
-<h4 id="3-cumemalloc">3. <code>cuMemAlloc()</code></h4>
-<pre><code>// a[]
+<h4 id="3-cumemalloc" class="relative group">3. <code>cuMemAlloc()</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-cumemalloc" aria-label="Anchor">#</a></span></h4>
+<pre tabindex="0"><code>// a[]
 gmalloc: allocating device memory by calling gdev_mem_alloc. size: 0x24
 gdev_raw_mem_alloc: allocating memory at device. size: 0x24
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x24
@@ -555,55 +792,52 @@ gdev_drv_bo_alloc: allocating a new buffer object. size: 0x24
 gmalloc: allocating device memory by calling gdev_mem_alloc. size: 0x24
 gdev_raw_mem_alloc: allocating memory at device. size: 0x24
 gdev_drv_bo_alloc: allocating a new buffer object. size: 0x24
-</code></pre>
-<h4 id="4-cumemcpyhtod">4. <code>cuMemcpyHtoD()</code></h4>
-<h5 id="4-1-how-gdev-transfer-the-data-into-device">4-1. How gdev transfer the data into device?</h5>
+</code></pre><h4 id="4-cumemcpyhtod" class="relative group">4. <code>cuMemcpyHtoD()</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-cumemcpyhtod" aria-label="Anchor">#</a></span></h4>
+<h5 id="4-1-how-gdev-transfer-the-data-into-device" class="relative group">4-1. How gdev transfer the data into device? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-1-how-gdev-transfer-the-data-into-device" aria-label="Anchor">#</a></span></h5>
 <p>Defined in <code>/gdev/cuda/driver/memory.c</code>.</p>
-<pre><code class="language-c">CUresult cuMemcpyHtoD_v2 (CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount) {
-    ...
-    gmemcpy_to_device(handle, dst_addr, src_buf, size);
-    return CUDA_SUCCESS;
-}
-</code></pre>
-<p><code>/gdev/common/gdev_api.c</code></p>
-<pre><code class="language-c">int gmemcpy_to_device(struct gdev_handle *h, uint64_t dst_addr, const void *src_buf, uint64_t size) {
-    return __gmemcpy_to_device(h, dst_addr, src_buf, size, NULL, __ f_memcpy);
-}
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">CUresult</span> <span class="nf">cuMemcpyHtoD_v2</span> <span class="p">(</span><span class="n">CUdeviceptr</span> <span class="n">dstDevice</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">srcHost</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">ByteCount</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">gmemcpy_to_device</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">CUDA_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p><code>/gdev/common/gdev_api.c</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">gmemcpy_to_device</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_handle</span> <span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src_buf</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">__gmemcpy_to_device</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">__</span> <span class="n">f_memcpy</span><span class="p">);</span>
+<span class="p">}</span>
 
-// a wrapper function of gmemcpy_to_device().
-static int __gmemcpy_to_device (struct gdev_handle *h, uint64_t dst_addr, const void *src_buf, uint64_t size, uint32_t *id, int (*host_copy)(void*, const void*, uint32_t)) {
-    mem = gdev_mem_lookup_by_addr(vas, dst_addr, GDEV_MEM_DEVICE);
-    gdev_mem_lock(mem);
-    __gmemcpy_to_device_locked(ctx, dst_addr, src_buf, size, id, ch_size, p_count, vas, mem, dma_mem, host_copy);
-    gdev_mem_unlock(mem);
-    ...
-}
+<span class="c1">// a wrapper function of gmemcpy_to_device().
+</span><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">__gmemcpy_to_device</span> <span class="p">(</span><span class="k">struct</span> <span class="n">gdev_handle</span> <span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src_buf</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">id</span><span class="p">,</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">host_copy</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">mem</span> <span class="o">=</span> <span class="n">gdev_mem_lookup_by_addr</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">GDEV_MEM_DEVICE</span><span class="p">);</span>
+    <span class="n">gdev_mem_lock</span><span class="p">(</span><span class="n">mem</span><span class="p">);</span>
+    <span class="n">__gmemcpy_to_device_locked</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">ch_size</span><span class="p">,</span> <span class="n">p_count</span><span class="p">,</span> <span class="n">vas</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="n">dma_mem</span><span class="p">,</span> <span class="n">host_copy</span><span class="p">);</span>
+    <span class="n">gdev_mem_unlock</span><span class="p">(</span><span class="n">mem</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
 
-static int __gmemcpy_to_device_locked(gdev_ctx *ctx, uint64_t dst_addr, const void *src_buf, uint64_t size, uint32_t *id, uint32_t ch_size, int p_count, gdev_vas_t *vas, gdev_mem_t *mem, gdev_mem_t **dma_mem, int (*host_copy)(void*, const void*, uint32_t)) {
-    if (size &lt;= 4 &amp;&amp; mem-&gt;map)
-        gdev_write32(mem, dst_addr, ((uint32_t*)src_buf)[0]);
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">__gmemcpy_to_device_locked</span><span class="p">(</span><span class="n">gdev_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src_buf</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">id</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">ch_size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">p_count</span><span class="p">,</span> <span class="n">gdev_vas_t</span> <span class="o">*</span><span class="n">vas</span><span class="p">,</span> <span class="n">gdev_mem_t</span> <span class="o">*</span><span class="n">mem</span><span class="p">,</span> <span class="n">gdev_mem_t</span> <span class="o">**</span><span class="n">dma_mem</span><span class="p">,</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">host_copy</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">4</span> <span class="o">&amp;&amp;</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">)</span>
+        <span class="n">gdev_write32</span><span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span><span class="n">src_buf</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span>
 
-    // GDEV_MEMCPY_IOWRITE_LIMIT = 0x400000 (4MB) defined in mod/gdev/gdev_conf.h
-    else if (size &lt;= GDEV_MEMCPY_IOWRITE_LIMIT &amp;&amp; mem-&gt;map)
-        gdev_write(mem, dst_addr, src_buf, size);
+    <span class="c1">// GDEV_MEMCPY_IOWRITE_LIMIT = 0x400000 (4MB) defined in mod/gdev/gdev_conf.h
+</span><span class="c1"></span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">GDEV_MEMCPY_IOWRITE_LIMIT</span> <span class="o">&amp;&amp;</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">)</span>
+        <span class="n">gdev_write</span><span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
 
-    else if ((hmem = gdev_mem_lookup_by_buf(vas, src_buf, GDEV_MEM_DMA))) {
-        __gmemcpy_dma_to_device(ctx, dst_addr, hmem-&gt;addr, size, id);
-    }
+    <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="n">hmem</span> <span class="o">=</span> <span class="n">gdev_mem_lookup_by_buf</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">GDEV_MEM_DMA</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="n">__gmemcpy_dma_to_device</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">hmem</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+    <span class="p">}</span>
 
-    else {
-        // prepare bounce buffer memory.
-        // In a test configuration, it is not called.
-        if(!dma_mem) bmem = __malloc_dma(vas, __min(size, ch_size), p_count);
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// prepare bounce buffer memory.
+</span><span class="c1"></span>        <span class="c1">// In a test configuration, it is not called.
+</span><span class="c1"></span>        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">dma_mem</span><span class="p">)</span> <span class="n">bmem</span> <span class="o">=</span> <span class="n">__malloc_dma</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">__min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">ch_size</span><span class="p">),</span> <span class="n">p_count</span><span class="p">);</span>
 
-        if (p_count &gt; 1 &amp;&amp; size &gt; ch_size) __gmemcpy_to_device_p(ctx, dst_addr, src_buf, size, ch_size, p_count, bmem, host_copy);
-        else __gmemcpy_to_device_np(dst_addr, src_buf, size, ch_size, bmem, host_copy);
+        <span class="k">if</span> <span class="p">(</span><span class="n">p_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">ch_size</span><span class="p">)</span> <span class="n">__gmemcpy_to_device_p</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">ch_size</span><span class="p">,</span> <span class="n">p_count</span><span class="p">,</span> <span class="n">bmem</span><span class="p">,</span> <span class="n">host_copy</span><span class="p">);</span>
+        <span class="k">else</span> <span class="n">__gmemcpy_to_device_np</span><span class="p">(</span><span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">ch_size</span><span class="p">,</span> <span class="n">bmem</span><span class="p">,</span> <span class="n">host_copy</span><span class="p">);</span>
 
-        if(!dma_mem) __free_dma(bmem, p_count);
-    }
-}
-</code></pre>
-<p>The last function calls <code>gdev_write32()</code> or <code>gdev_write()</code>, both are defined in <code>/mod/gdev/gdev_nvidia_compute.c</code>. Also you can see that gdev transfers data in different ways in terms of its size.</p>
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">dma_mem</span><span class="p">)</span> <span class="n">__free_dma</span><span class="p">(</span><span class="n">bmem</span><span class="p">,</span> <span class="n">p_count</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>The last function calls <code>gdev_write32()</code> or <code>gdev_write()</code>, both are defined in <code>/mod/gdev/gdev_nvidia_compute.c</code>. Also you can see that gdev transfers data in different ways in terms of its size.</p>
 <ul>
 <li>If size is less than 4 bytes, it just write 4 bytes (32 bits) via MMIO.</li>
 <li>If size is less than 4MB, it uses MMIO (maybe).</li>
@@ -611,55 +845,50 @@ static int __gmemcpy_to_device_locked(gdev_ctx *ctx, uint64_t dst_addr, const vo
 </ul>
 <p>This strategy is well explained in the paper <em>Data Transfer Matters for GPU Computing</em> [[link](http://www.ertl.jp/~shinpei/papers/icpads13.pdf)]. The author of Gdev is a coworker of this paper.</p>
 <p><code>gdev_write32()</code> and <code>gdev_write()</code> call <code>gdev_raw_write32()</code> and <code>gdev_raw_write()</code> respectively, defined in <code>/mod/gdev/gdev_drv_nvidia.c</code>.</p>
-<pre><code class="language-c">void gdev_raw_write32 (struct gdev_mem *mem, uint64_t addr, uint32_t val) {
-    bo.addr = mem-&gt;addr;
-    bo.size = mem-&gt;size;
-    bo.map = mem-&gt;map;
-    gdev_drv_write32(drm, &amp;vspace, &amp;bo, offset, val);
-}
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">gdev_raw_write32</span> <span class="p">(</span><span class="k">struct</span> <span class="n">gdev_mem</span> <span class="o">*</span><span class="n">mem</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">bo</span><span class="p">.</span><span class="n">addr</span> <span class="o">=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">;</span>
+    <span class="n">bo</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">bo</span><span class="p">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">;</span>
+    <span class="n">gdev_drv_write32</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vspace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bo</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
+<span class="p">}</span>
 
-void gdev_raw_write (struct gdev_mem *mem, uint64_t addr, const void *buf, uint32_t size) {
-    bo.addr = mem-&gt;addr;
-    bo.size = mem-&gt;size;
-    bo.map = mem-&gt;map;
-    gdev_drv_write(drm, &amp;vspace, &amp;bo, offset, size, buf);
-}
-</code></pre>
-<p><code>/linux/drivers/gpu/drm/nouveau/gdev_interface.c</code></p>
-<pre><code class="language-c">int gdev_drv_write32 (struct drm_device *drm, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo, uint64_t offset, uint32_t val) {
-    if(drv_bo-&gt;map) iowrite32_native(val, drv_bo-&gt;map + offset);
-    return 0;
-}
+<span class="kt">void</span> <span class="nf">gdev_raw_write</span> <span class="p">(</span><span class="k">struct</span> <span class="n">gdev_mem</span> <span class="o">*</span><span class="n">mem</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">bo</span><span class="p">.</span><span class="n">addr</span> <span class="o">=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">;</span>
+    <span class="n">bo</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">bo</span><span class="p">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">;</span>
+    <span class="n">gdev_drv_write</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vspace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bo</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><code>/linux/drivers/gpu/drm/nouveau/gdev_interface.c</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">gdev_drv_write32</span> <span class="p">(</span><span class="k">struct</span> <span class="n">drm_device</span> <span class="o">*</span><span class="n">drm</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_vspace</span> <span class="o">*</span><span class="n">drv_vspace</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_bo</span> <span class="o">*</span><span class="n">drv_bo</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">)</span> <span class="n">iowrite32_native</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">map</span> <span class="o">+</span> <span class="n">offset</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 
-int gdev_drv_write (struct drm_device *drm, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo, uint64_t offset, uint64_t size, const void *buf) {
-    if(drv_bo-&gt;map) memcpy_toio(drv_bo-&gt;map + offset, buf, size);
-}
-</code></pre>
-<p><code>/linux/include/asm-generic/io.h</code></p>
-<pre><code class="language-c">static inline void memcpy_toio(volatile void __ iomem *addr, const void*buffer, size_t size) {
-    memcpy(__ io_virt(addr), buffer, size);
-}
+<span class="kt">int</span> <span class="nf">gdev_drv_write</span> <span class="p">(</span><span class="k">struct</span> <span class="n">drm_device</span> <span class="o">*</span><span class="n">drm</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_vspace</span> <span class="o">*</span><span class="n">drv_vspace</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_bo</span> <span class="o">*</span><span class="n">drv_bo</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">)</span> <span class="n">memcpy_toio</span><span class="p">(</span><span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">map</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><code>/linux/include/asm-generic/io.h</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">memcpy_toio</span><span class="p">(</span><span class="k">volatile</span> <span class="kt">void</span> <span class="n">__</span> <span class="n">iomem</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span><span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">__</span> <span class="n">io_virt</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+<span class="p">}</span>
 
-static inline void iowrite32 (u32 value, volatile void __ iomem *addr) {
-    writel(value, addr);
-}
-</code></pre>
-<p>These functions are for MMIO defined in Linux kernel. For more information, visit [[here](http://www.makelinux.net/ldd3/chp-9-sect-4)].</p>
-<h5 id="4-2-how-gdev-get-the-mmio-address-for-the-variable">4-2. How gdev get the MMIO address for the variable?</h5>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">iowrite32</span> <span class="p">(</span><span class="n">u32</span> <span class="n">value</span><span class="p">,</span> <span class="k">volatile</span> <span class="kt">void</span> <span class="n">__</span> <span class="n">iomem</span> <span class="o">*</span><span class="n">addr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">writel</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">addr</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>These functions are for MMIO defined in Linux kernel. For more information, visit [[here](http://www.makelinux.net/ldd3/chp-9-sect-4)].</p>
+<h5 id="4-2-how-gdev-get-the-mmio-address-for-the-variable" class="relative group">4-2. How gdev get the MMIO address for the variable? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-2-how-gdev-get-the-mmio-address-for-the-variable" aria-label="Anchor">#</a></span></h5>
 <p>Now, we understand that the target address is <code>drv_bo-&gt;map + offset (gdev_drv_write())</code>, the first one of which comes from <code>mem-&gt;map(gdev_raw_write())</code>, which returns from <code>gdev_mem_lookup_by_addr()</code> in <code>__gmemcpy_to_device()</code>.</p>
 <p>Seeing <code>__gmemcpy_to_device()</code> again, the function works as follows.</p>
-<pre><code class="language-c">static int __gmemcpy_to_device (struct gdev_handle *h, uint64_t dst_addr, const void *src_buf, uint64_t size, uint32_t *id, int (*host_copy)(void*, const void*, uint32_t)) {
-    mem = gdev_mem_lookup_by_addr(vas, dst_addr, GDEV_MEM_DEVICE);
-    __gmemcpy_to_device_locked(ctx, dst_addr, src_buf, size, id, ch_size, p_count, vas, mem, dma_mem, host_copy);
-    ...
-}
-</code></pre>
-<p>Keep in mind that, all software <mark>must</mark> access to memory including MMIO via virtual address, not physical address. hence, what <code>gdev_mem_lookup_by_addr</code> returns is a virtual address mapped to <code>dst_addr</code>. For <code>a[]</code>, printing the information is as follows.</p>
-<pre><code class="language-c">gdev_mem *mem = gdev_mem_lookup_by_addr(vas, dst_addr, GDEV_MEM_DEVICE);
-printk(&quot;%s: gdev_mem_lookup_by_addr returns mem-&gt;map: 0x%lx, dst_addr: 0x%lx\n&quot;,
-        __func__, mem-&gt;map, dst_addr);
-</code></pre>
-<pre><code>dmesg
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">__gmemcpy_to_device</span> <span class="p">(</span><span class="k">struct</span> <span class="n">gdev_handle</span> <span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src_buf</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">id</span><span class="p">,</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">host_copy</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">mem</span> <span class="o">=</span> <span class="n">gdev_mem_lookup_by_addr</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">GDEV_MEM_DEVICE</span><span class="p">);</span>
+    <span class="n">__gmemcpy_to_device_locked</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">src_buf</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">ch_size</span><span class="p">,</span> <span class="n">p_count</span><span class="p">,</span> <span class="n">vas</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="n">dma_mem</span><span class="p">,</span> <span class="n">host_copy</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div><p>Keep in mind that, all software <mark>must</mark> access to memory including MMIO via virtual address, not physical address. hence, what <code>gdev_mem_lookup_by_addr</code> returns is a virtual address mapped to <code>dst_addr</code>. For <code>a[]</code>, printing the information is as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">gdev_mem</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">gdev_mem_lookup_by_addr</span><span class="p">(</span><span class="n">vas</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">,</span> <span class="n">GDEV_MEM_DEVICE</span><span class="p">);</span>
+<span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: gdev_mem_lookup_by_addr returns mem-&gt;map: 0x%lx, dst_addr: 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+        <span class="n">__func__</span><span class="p">,</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">,</span> <span class="n">dst_addr</span><span class="p">);</span>
+</code></pre></div><pre tabindex="0"><code>dmesg
 
 // cuMemAlloc for a[]
 gmalloc: calling gdev_mem_alloc, size: 0x24.
@@ -670,56 +899,52 @@ __gdev_raw_mem_alloc: allocating memory of 0x24 bytes at addr 0x10554000
 
 // cuMemcpyHtoD for a[]
 __gmemcpy_to_device: gdev_mem_lookup_by_addr returns mem-&gt;map: 0xffffc90010e9c000, dst_addr: 0x10554000
-</code></pre>
-<p>As the name of the function is <code>lookup_by_addr</code>, and <code>dst_addr</code> is given as a parameter, <code>gdev_mem</code> structure would store both physical address and virtual address mapped to it.</p>
+</code></pre><p>As the name of the function is <code>lookup_by_addr</code>, and <code>dst_addr</code> is given as a parameter, <code>gdev_mem</code> structure would store both physical address and virtual address mapped to it.</p>
 <p>For more detail, let&rsquo;s see implementation of the function to see how it get objects with <code>dst_addr</code>. It is implemented in <code>/gdev/common/gdev_nvidia_mem.c</code>.</p>
-<pre><code class="language-c">struct gdev_mem *gdev_mem_lookup_by_addr(struct gdev_vas *vas, uint64_t addr, int type) {
-    switch (type){
-    case GDEV_MEM_DEVICE:
-        gdev_list_for_each (mem, &amp;vas-&gt;mem_list, list_entry_heap) {
-            if (addr &gt;= mem-&gt;addr) &amp;&amp; (addr &lt; mem-&gt;addr + mem-&gt;size)) break;
-        }
-        ...
-    }
-    return mem;
-}
-</code></pre>
-<p>It compares <code>dst_addr</code> with <code>mem-&gt;addr</code> for all <code>gdev_mem</code> objects.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">gdev_mem</span> <span class="o">*</span><span class="nf">gdev_mem_lookup_by_addr</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_vas</span> <span class="o">*</span><span class="n">vas</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">type</span><span class="p">){</span>
+    <span class="k">case</span> <span class="nl">GDEV_MEM_DEVICE</span><span class="p">:</span>
+        <span class="n">gdev_list_for_each</span> <span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vas</span><span class="o">-&gt;</span><span class="n">mem_list</span><span class="p">,</span> <span class="n">list_entry_heap</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">addr</span> <span class="o">&gt;=</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">addr</span> <span class="o">&lt;</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">addr</span> <span class="o">+</span> <span class="n">mem</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">mem</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>It compares <code>dst_addr</code> with <code>mem-&gt;addr</code> for all <code>gdev_mem</code> objects.</p>
 <p>Then let&rsquo;s figure out when <code>gdev_mem</code> object is created for each data. One good starting point would be <code>__gdev_raw_mem_alloc()</code>, defined in <code>/gdev/mod/gdev/gdev_drv_nvidia.c</code>.</p>
-<pre><code class="language-c">static intline struct gdev_mem *__gdev_raw_mem_alloc(struct gdev_vas *vas, uint64_t size, uint32_t flags) {
-    struct gdev_mem* mem;
-    mem = kzalloc(sizeof(*mem), GFP_KERNEL);
-    gdev_drv_bo_alloc(drm, size, flags, &amp;vpsace, &amp;bo);
-    printk(&quot;%s: allocating memory of 0x%lx bytes at addr 0x%lx\n&quot;,
-           __func__, size, bo.addr);
-    mem-&gt;addr = bo.addr;
-    mem-&gt;size = bo.size;
-    mem-&gt;map = bo.map;
-    mem-&gt;bo = bo.priv;
-    mem-&gt;padata = (void*)drm;
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="n">intline</span> <span class="k">struct</span> <span class="n">gdev_mem</span> <span class="o">*</span><span class="nf">__gdev_raw_mem_alloc</span><span class="p">(</span><span class="k">struct</span> <span class="n">gdev_vas</span> <span class="o">*</span><span class="n">vas</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">flags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">gdev_mem</span><span class="o">*</span> <span class="n">mem</span><span class="p">;</span>
+    <span class="n">mem</span> <span class="o">=</span> <span class="n">kzalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mem</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+    <span class="n">gdev_drv_bo_alloc</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vpsace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bo</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: allocating memory of 0x%lx bytes at addr 0x%lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+           <span class="n">__func__</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">bo</span><span class="p">.</span><span class="n">addr</span><span class="p">);</span>
+    <span class="n">mem</span><span class="o">-&gt;</span><span class="n">addr</span> <span class="o">=</span> <span class="n">bo</span><span class="p">.</span><span class="n">addr</span><span class="p">;</span>
+    <span class="n">mem</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">bo</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">mem</span><span class="o">-&gt;</span><span class="n">map</span> <span class="o">=</span> <span class="n">bo</span><span class="p">.</span><span class="n">map</span><span class="p">;</span>
+    <span class="n">mem</span><span class="o">-&gt;</span><span class="n">bo</span> <span class="o">=</span> <span class="n">bo</span><span class="p">.</span><span class="n">priv</span><span class="p">;</span>
+    <span class="n">mem</span><span class="o">-&gt;</span><span class="n">padata</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">drm</span><span class="p">;</span>
 
-    return mem;
-}
+    <span class="k">return</span> <span class="n">mem</span><span class="p">;</span>
+<span class="p">}</span>
 
-__gdev_raw_mem_alloc: allocating memory of 0x24 bytes at addr 0x10554000
-</code></pre>
-<p>Hence <code>mem-&gt;addr = bo.addr</code>. Then how <code>bo.addr</code> is set? It is set in <code>gdev_drv_bo_alloc()</code> defined in <code>/linux/drivers/gpu/drm/nouveau/gdev_interface.c</code>.</p>
-<pre><code class="language-c">int gdev_drv_bo_alloc (struct drm_device *drm, uint64_t size, uint32_t drv_flags, struct gdev_drv_vspace *drv_vspace, struct gdev_drv_bo *drv_bo) {
-    struct nouveau_bo* bo;
-    nouveau_bo_new(drm, size, 0, flags, 0, 0, NULL, &amp;bo);
-    ...
-    nouveau_vma* vma - kzalloc(sizeof(*vma), GFP_KERNEL);
-    nouveau_bo_vma_add(bo, client-&gt;vm, vma);
-    drv_bo-&gt;addr = vma-&gt;offset;
-    // otherwise drv_bo-&gt;addr will be 0.
-    drv_bo-&gt;map = bo-&gt;kmap.virtual;
-    drv_bo-&gt;size = bo-&gt;bo.mem.size;
-    drv_bo-&gt;priv = bo;
+<span class="nl">__gdev_raw_mem_alloc</span><span class="p">:</span> <span class="n">allocating</span> <span class="n">memory</span> <span class="n">of</span> <span class="mh">0x24</span> <span class="n">bytes</span> <span class="n">at</span> <span class="n">addr</span> <span class="mh">0x10554000</span>
+</code></pre></div><p>Hence <code>mem-&gt;addr = bo.addr</code>. Then how <code>bo.addr</code> is set? It is set in <code>gdev_drv_bo_alloc()</code> defined in <code>/linux/drivers/gpu/drm/nouveau/gdev_interface.c</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">gdev_drv_bo_alloc</span> <span class="p">(</span><span class="k">struct</span> <span class="n">drm_device</span> <span class="o">*</span><span class="n">drm</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">drv_flags</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_vspace</span> <span class="o">*</span><span class="n">drv_vspace</span><span class="p">,</span> <span class="k">struct</span> <span class="n">gdev_drv_bo</span> <span class="o">*</span><span class="n">drv_bo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">nouveau_bo</span><span class="o">*</span> <span class="n">bo</span><span class="p">;</span>
+    <span class="n">nouveau_bo_new</span><span class="p">(</span><span class="n">drm</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bo</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="n">nouveau_vma</span><span class="o">*</span> <span class="n">vma</span> <span class="o">-</span> <span class="n">kzalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">vma</span><span class="p">),</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+    <span class="n">nouveau_bo_vma_add</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span> <span class="n">client</span><span class="o">-&gt;</span><span class="n">vm</span><span class="p">,</span> <span class="n">vma</span><span class="p">);</span>
+    <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">addr</span> <span class="o">=</span> <span class="n">vma</span><span class="o">-&gt;</span><span class="n">offset</span><span class="p">;</span>
+    <span class="c1">// otherwise drv_bo-&gt;addr will be 0.
+</span><span class="c1"></span>    <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">map</span> <span class="o">=</span> <span class="n">bo</span><span class="o">-&gt;</span><span class="n">kmap</span><span class="p">.</span><span class="n">virtual</span><span class="p">;</span>
+    <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">bo</span><span class="o">-&gt;</span><span class="n">bo</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">drv_bo</span><span class="o">-&gt;</span><span class="n">priv</span> <span class="o">=</span> <span class="n">bo</span><span class="p">;</span>
 
-    return 0;
-}
-</code></pre>
-<p>Returned <code>bo</code> by <code>nouveau_bo_new()</code> seems to set the target phyiscal address.</p>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Returned <code>bo</code> by <code>nouveau_bo_new()</code> seems to set the target phyiscal address.</p>
 <!--
 `/linux/drivers/gpu/drm/nouveau/nouveau_bo.c`
 ```c
@@ -784,107 +1009,262 @@ nouveau_vm_map_sg_table(struct nouveau_vma *vma, u64 delta, u64 length,
 ```
 -->
 
-    </div>
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
     
-    <div class="my-4">
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
     
-    <a href="/tags/cuda/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#cuda</a>
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
     
-    <a href="/tags/research/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 mr-2 hover:text-eureka">#research</a>
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
     
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
 </div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
     
     
     
-    
-    
-    
-    
-<div class="flex flex-col md:flex-row md:justify-between -mx-2 mt-4 px-2 pt-4 border-t">
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2017-04-27/introduction-to-vfio/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Introduction to VFIO</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2017-04-27 13:14:24 &#43;0900 &#43;0900">Apr 27, 2017</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+            <a class="group flex text-right" href="/2017-05-02/git-basics/">
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Git Basics</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2017-05-02 09:58:43 &#43;0900 &#43;0900">May 2, 2017</time>
+                  
+                </span>
+              </span>
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+            </a>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
     <div>
-        
-        <span class="block font-bold">Previous</span>
-        <a href="/2017-05-02/git-basics/" class="block">Git Basics</a>
-        
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2022
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
     </div>
-    <div class="md:text-right mt-4 md:mt-0">
-        
-        <span class="block font-bold">Next</span>
-        <a href="/2017-04-27/introduction-to-vfio/" class="block">Introduction to VFIO</a>
-        
-    </div>
-</div>
-
-    
-
-<div id="disqus_thread"></div>
-<script>
-    var disqus_config = function () {
     
     
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "insujang" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
 
 
-</div>
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
 
 
-
-
-<div
-    class="col-span-2 lg:col-start-2 lg:col-span-6 bg-secondary-bg rounded p-6">
-    <h2 class="text-lg font-semibold mb-4">See Also</h2>
-    <div class="content">
-        
-        <a href="/2017-04-27/gpu-architecture-overview/">GPU Architecture Overview</a>
-        <br />
-        
-        <a href="/2017-04-03/pci-express-i/o-system/">PCI Express I/O System</a>
-        <br />
-        
-        <a href="/2017-04-27/introduction-to-vfio/">Introduction to VFIO</a>
-        <br />
-        
-        <a href="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/">Hooking an SGX ENCLS Leaf Function Call from KVM</a>
-        <br />
-        
-        <a href="/2017-04-05/intel-sgx-instructions-in-enclave-initialization/">Intel SGX Instructions in Enclave Initialization</a>
-        <br />
-        
-        <a href="/2017-04-03/intel-sgx-protection-mechanism/">Intel SGX Protection Mechanism</a>
-        <br />
-        
-    </div>
-</div>
-
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-        hljs.initHighlightingOnLoad();
-    })
-</script>
-
+          </div>
+        </button>
       </div>
     
-  </main>
-  <footer class="pl-scrollbar">
-    <div class="w-full max-w-screen-xl mx-auto"><div class="text-center p-6 pin-b">
-    <p class="text-sm text-tertiary-text">&copy; 2017 - 2021 Insu Jang &middot;  Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
-</div></div>
-  </footer>
-</body>
+  </div>
+  
+  
+</footer>
 
+    </div>
+  </body>
 </html>
