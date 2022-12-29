@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>News on Better Tomorrow with Computer Science</title>
+    <link>/news/</link>
+    <description>Recent content in News on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 29 Dec 2022 11:22:00 -0400</lastBuildDate><atom:link href="/news/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Changed Blog Theme</title>
+      <link>/news/changed-theme/</link>
+      <pubDate>Thu, 29 Dec 2022 11:22:00 -0400</pubDate>
+      
+      <guid>/news/changed-theme/</guid>
+      <description>Changed blog theme to Congo. Thanks James Panther for making a good theme!</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -6,7 +6,16 @@
     <description>Recent content on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 03 Aug 2022 14:30:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Dec 2022 11:22:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Changed Blog Theme</title>
+      <link>/news/changed-theme/</link>
+      <pubDate>Thu, 29 Dec 2022 11:22:00 -0400</pubDate>
+      
+      <guid>/news/changed-theme/</guid>
+      <description>Changed blog theme to Congo. Thanks James Panther for making a good theme!</description>
+    </item>
+    
     <item>
       <title>Analyzing Parallelization of Attention</title>
       <link>/2022-08-03/analyzing-parallelization-of-attention/</link>
