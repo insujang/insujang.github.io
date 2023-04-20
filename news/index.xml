@@ -6,13 +6,22 @@
     <description>Recent content in News on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 29 Dec 2022 11:22:00 -0400</lastBuildDate><atom:link href="/news/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Apr 2023 15:45:00 -0400</lastBuildDate><atom:link href="/news/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Internship at Tesla in Summer 2023</title>
+      <link>/news/20230419-summer-intern/</link>
+      <pubDate>Wed, 19 Apr 2023 15:45:00 -0400</pubDate>
+      
+      <guid>/news/20230419-summer-intern/</guid>
+      <description>I am going to work as an Intern at Tesla Autopilot Infrastructure team. Can&amp;rsquo;t wait to experience and work on large scale supercomputers that I have never seen before!</description>
+    </item>
+    
     <item>
       <title>Changed Blog Theme</title>
-      <link>/news/changed-theme/</link>
+      <link>/news/20221229-changed-theme/</link>
       <pubDate>Thu, 29 Dec 2022 11:22:00 -0400</pubDate>
       
-      <guid>/news/changed-theme/</guid>
+      <guid>/news/20221229-changed-theme/</guid>
       <description>Changed blog theme to Congo. Thanks James Panther for making a good theme!</description>
     </item>
     

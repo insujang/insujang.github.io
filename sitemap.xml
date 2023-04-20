@@ -5,20 +5,62 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2022-12-29T11:22:00-04:00</lastmod>
+    <lastmod>2023-04-19T16:10:00-04:00</lastmod>
   </url>
   
   
   
   <url>
-    <loc>/news/changed-theme/</loc>
-    <lastmod>2022-12-29T11:22:00-04:00</lastmod>
+    <loc>/tags/dl/</loc>
+    <lastmod>2023-04-19T16:10:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2023-04-19T16:10:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/python/</loc>
+    <lastmod>2023-04-19T16:10:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2023-04-19T16:10:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/2023-04-19/using-huggingface-transformers/</loc>
+    <lastmod>2023-04-19T16:10:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/news/20230419-summer-intern/</loc>
+    <lastmod>2023-04-19T15:45:00-04:00</lastmod>
   </url>
   
   
   
   <url>
     <loc>/news/</loc>
+    <lastmod>2023-04-19T15:45:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/news/20221229-changed-theme/</loc>
     <lastmod>2022-12-29T11:22:00-04:00</lastmod>
   </url>
   
@@ -26,27 +68,6 @@
   
   <url>
     <loc>/2022-08-03/analyzing-parallelization-of-attention/</loc>
-    <lastmod>2022-08-03T14:30:00-04:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/dl/</loc>
-    <lastmod>2022-08-03T14:30:00-04:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2022-08-03T14:30:00-04:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2022-08-03T14:30:00-04:00</lastmod>
   </url>
   

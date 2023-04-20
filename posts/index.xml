@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 03 Aug 2022 14:30:00 -0400</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Apr 2023 16:10:00 -0400</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using HuggingFace Transformers</title>
+      <link>/2023-04-19/using-huggingface-transformers/</link>
+      <pubDate>Wed, 19 Apr 2023 16:10:00 -0400</pubDate>
+      
+      <guid>/2023-04-19/using-huggingface-transformers/</guid>
+      <description>HF Transformers # HuggingFace (🤗) Transformers is a library that enables to easily download the state-of-the-art pretrained models. It is also possible to create and train a model from scratch, after modifying the structure of existing models. Although the library starts from transformer based language models, it became a general community hub and includes other models such as convolution based Resnet.
+It can easily be installed via pip 1:
+pip install transformers  Most code is borrowed from HuggingFace transformers example codes.</description>
+    </item>
+    
     <item>
       <title>Analyzing Parallelization of Attention</title>
       <link>/2022-08-03/analyzing-parallelization-of-attention/</link>

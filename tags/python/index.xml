@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on Better Tomorrow with Computer Science</title>
+    <link>/tags/python/</link>
+    <description>Recent content in python on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 19 Apr 2023 16:10:00 -0400</lastBuildDate><atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using HuggingFace Transformers</title>
+      <link>/2023-04-19/using-huggingface-transformers/</link>
+      <pubDate>Wed, 19 Apr 2023 16:10:00 -0400</pubDate>
+      
+      <guid>/2023-04-19/using-huggingface-transformers/</guid>
+      <description>HF Transformers # HuggingFace (🤗) Transformers is a library that enables to easily download the state-of-the-art pretrained models. It is also possible to create and train a model from scratch, after modifying the structure of existing models. Although the library starts from transformer based language models, it became a general community hub and includes other models such as convolution based Resnet.
+It can easily be installed via pip 1:
+pip install transformers  Most code is borrowed from HuggingFace transformers example codes.</description>
+    </item>
+    
+  </channel>
+</rss>

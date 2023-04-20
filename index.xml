@@ -6,13 +6,33 @@
     <description>Recent content on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 29 Dec 2022 11:22:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Apr 2023 16:10:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using HuggingFace Transformers</title>
+      <link>/2023-04-19/using-huggingface-transformers/</link>
+      <pubDate>Wed, 19 Apr 2023 16:10:00 -0400</pubDate>
+      
+      <guid>/2023-04-19/using-huggingface-transformers/</guid>
+      <description>HF Transformers # HuggingFace (🤗) Transformers is a library that enables to easily download the state-of-the-art pretrained models. It is also possible to create and train a model from scratch, after modifying the structure of existing models. Although the library starts from transformer based language models, it became a general community hub and includes other models such as convolution based Resnet.
+It can easily be installed via pip 1:
+pip install transformers  Most code is borrowed from HuggingFace transformers example codes.</description>
+    </item>
+    
+    <item>
+      <title>Internship at Tesla in Summer 2023</title>
+      <link>/news/20230419-summer-intern/</link>
+      <pubDate>Wed, 19 Apr 2023 15:45:00 -0400</pubDate>
+      
+      <guid>/news/20230419-summer-intern/</guid>
+      <description>I am going to work as an Intern at Tesla Autopilot Infrastructure team. Can&amp;rsquo;t wait to experience and work on large scale supercomputers that I have never seen before!</description>
+    </item>
+    
     <item>
       <title>Changed Blog Theme</title>
-      <link>/news/changed-theme/</link>
+      <link>/news/20221229-changed-theme/</link>
       <pubDate>Thu, 29 Dec 2022 11:22:00 -0400</pubDate>
       
-      <guid>/news/changed-theme/</guid>
+      <guid>/news/20221229-changed-theme/</guid>
       <description>Changed blog theme to Congo. Thanks James Panther for making a good theme!</description>
     </item>
     
