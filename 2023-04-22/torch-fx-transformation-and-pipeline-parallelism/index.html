@@ -1,0 +1,994 @@
+
+
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Torch FX Transformation and Pipeline Parallelism &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Torch FX Transformation and Pipeline Parallelism &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="Torch fx # torch.fx is a PyTorch module that captures a model and applies transformation for optimization 1. In recent days, the importance of model optimization is getting more important. torch.fx enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.
+ Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model.   This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance." />
+  
+  
+  
+  <link rel="canonical" href="/2023-04-22/torch-fx-transformation-and-pipeline-parallelism/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.10f51640c62455dc3b2a174cda772e2fee409808982122a17db5129978d396e5a9dec1b325b2c50f7e5f7dbc7d8c62bdcb89f86574ad3d8359acad96fb66e674.css"
+    integrity="sha512-EPUWQMYkVdw7KhdM2ncuL&#43;5AmAiYISKhfbUSmXjTluWp3sGzJbLFD35ffbx9jGK9y4n4ZXStPYNZrK2W&#43;2bmdA=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Torch FX Transformation and Pipeline Parallelism" />
+<meta property="og:description" content="Torch fx # torch.fx is a PyTorch module that captures a model and applies transformation for optimization 1. In recent days, the importance of model optimization is getting more important. torch.fx enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.
+ Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model.   This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2023-04-22/torch-fx-transformation-and-pipeline-parallelism/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-22T11:13:00-04:00" />
+<meta property="article:modified_time" content="2023-04-22T11:13:00-04:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Torch FX Transformation and Pipeline Parallelism"/>
+<meta name="twitter:description" content="Torch fx # torch.fx is a PyTorch module that captures a model and applies transformation for optimization 1. In recent days, the importance of model optimization is getting more important. torch.fx enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.
+ Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model.   This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance."/>
+
+  
+  <script type="application/ld+json">
+  [{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "articleSection": "Posts",
+    "name": "Torch FX Transformation and Pipeline Parallelism",
+    "headline": "Torch FX Transformation and Pipeline Parallelism",
+    
+    "abstract": "Torch fx # torch.fx is a PyTorch module that captures a model and applies transformation for optimization 1. In recent days, the importance of model optimization is getting more important. torch.fx enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.\n Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model.   This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance.",
+    "inLanguage": "en",
+    "url" : "\/2023-04-22\/torch-fx-transformation-and-pipeline-parallelism\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
+    },
+    "copyrightYear": "2023",
+    "dateCreated": "2023-04-22T11:13:00-04:00",
+    "datePublished": "2023-04-22T11:13:00-04:00",
+    
+    "dateModified": "2023-04-22T11:13:00-04:00",
+    
+    "keywords": ["pytorch","dl","python"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "1576"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
+    </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
+
+      
+
+    </div>
+    
+    
+      <ul class="flex list-none flex-col ltr:text-right rtl:text-left sm:flex-row">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Torch FX Transformation and Pipeline Parallelism
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2023-04-22 11:13:00 -0400 EDT">Apr 22, 2023</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/pytorch/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >pytorch</a
+            >
+          
+            <a
+              href="/tags/dl/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >dl</a
+            >
+          
+            <a
+              href="/tags/python/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >python</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#torch-fx">Torch fx</a>
+      <ul>
+        <li><a href="#using-torchfx-to-implement-pipeline-parallelism">Using <code>torch.fx</code> to implement pipeline parallelism</a></li>
+      </ul>
+    </li>
+    <li><a href="#using-huggingface-transformers-and-torchfx">Using Huggingface Transformers and <code>torch.fx</code></a>
+      <ul>
+        <li><a href="#generating-torchfxgraphmodule">Generating <code>torch.fx.GraphModule</code></a></li>
+        <li><a href="#generating-torchfxgraphmodule-for-training">Generating <code>torch.fx.GraphModule</code> &ldquo;for Training&rdquo;</a></li>
+      </ul>
+    </li>
+    <li><a href="#implementing-pipeline-parallelism-with-torchfx">Implementing Pipeline Parallelism with <code>torch.fx</code></a></li>
+  </ul>
+</nav>
+  </div>
+</details>
+
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
+        <h1 id="torch-fx" class="relative group">Torch fx <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#torch-fx" aria-label="Anchor">#</a></span></h1>
+<p><code>torch.fx</code> is a PyTorch module that captures a model and applies transformation for optimization <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
+In recent days, the importance of model optimization is getting more important.
+<code>torch.fx</code> enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.</p>
+<blockquote>
+<p>Since PyTorch 2.0, it seems <a href="https://pytorch.org/get-started/pytorch-2.0/#torchdynamo-acquiring-graphs-reliably-and-fast"   target="_blank">TorchDynamo</a> replaces legacy fx.tracer for tracing the model.
+
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/230422/pytorch-2.0-img12.png" alt="torchdynamo" />
+      
+    </figure>
+  
+
+
+This post focuses on existing <code>torch.fx</code> module, and I will post another one regarding TorchDynamo if I have a chance.</p>
+</blockquote>
+<h2 id="using-torchfx-to-implement-pipeline-parallelism" class="relative group">Using <code>torch.fx</code> to implement pipeline parallelism <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#using-torchfx-to-implement-pipeline-parallelism" aria-label="Anchor">#</a></span></h2>
+<p><code>torch.fx</code> can be used for various purposes, mostly for performance optimization.
+For me, I learned <code>torch.fx</code> to make models pipeline parallelizable, utilizing the characteristics of the output of <code>torch.fx</code>: <code>GraphModule</code>.</p>
+<p>Pipeline parallelism requires the model to be a type of <code>torch.nn.Sequential</code>; the output of the previous layer is an input of the next layer <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div><p><code>torch.fx.GraphModule</code> satisfies this requirement and can be used for pipeline parallelism.
+For the rest of the post, I focus on implementing a pipeline parallelism model with <code>torch.fx</code>.</p>
+<blockquote>
+<p>The first implementation of using <code>torch.fx</code> for pipeline parallelism that I have seen is <a href="https://github.com/hpdl-group/merak"   target="_blank">Merak</a> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
+This post has been inspired by Merak&rsquo;s implementation, which borrows its implementation from <a href="https://github.com/facebookresearch/fairscale/blob/v0.4.13/fairscale/experimental/nn/auto_shard.py"   target="_blank">FairScale</a>.</p>
+</blockquote>
+<h1 id="using-huggingface-transformers-and-torchfx" class="relative group">Using Huggingface Transformers and <code>torch.fx</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#using-huggingface-transformers-and-torchfx" aria-label="Anchor">#</a></span></h1>
+<p>HF Transformers provides its <a href="https://github.com/huggingface/transformers/blob/main/src/transformers/utils/fx.py"   target="_blank">own fx tracer</a> that wraps <code>torch.fx</code>: we can use it to generate a <code>GraphModule</code> of HF transformers models.</p>
+<h2 id="generating-torchfxgraphmodule" class="relative group">Generating <code>torch.fx.GraphModule</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#generating-torchfxgraphmodule" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoConfig</span><span class="p">,</span> <span class="n">AutoModelForCausalLM</span>
+<span class="kn">from</span> <span class="nn">transformers.utils.fx</span> <span class="kn">import</span> <span class="n">symbolic_trace</span> <span class="c1"># it replaces torch.fx.symbolic_trace</span>
+<span class="kn">from</span> <span class="nn">torch.fx</span> <span class="kn">import</span> <span class="n">GraphModule</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&#34;gpt2&#34;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">traced</span><span class="p">:</span> <span class="n">GraphModule</span> <span class="o">=</span> <span class="n">symbolic_trace</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</code></pre></div><p>The type of <code>traced</code> is <code>torch.fx.GraphModule</code>, which has the same structure of <code>model</code>, but each internal modules are replaced with the base class <code>torch.nn.Module</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">model</span>
+
+<span class="n">GPT2LMHeadModel</span><span class="p">(</span>
+  <span class="p">(</span><span class="n">transformer</span><span class="p">):</span> <span class="n">GPT2Model</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">wte</span><span class="p">):</span> <span class="n">Embedding</span><span class="p">(</span><span class="mi">50257</span><span class="p">,</span> <span class="mi">768</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">wpe</span><span class="p">):</span> <span class="n">Embedding</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">768</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">drop</span><span class="p">):</span> <span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">h</span><span class="p">):</span> <span class="n">ModuleList</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">11</span><span class="p">):</span> <span class="mi">12</span> <span class="n">x</span> <span class="n">GPT2Block</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+        <span class="o">...</span>
+    <span class="p">)</span>
+    <span class="o">...</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">traced</span>
+
+<span class="n">GraphModule</span><span class="p">(</span>
+  <span class="p">(</span><span class="n">transformer</span><span class="p">):</span> <span class="n">Module</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">wte</span><span class="p">):</span> <span class="n">Embedding</span><span class="p">(</span><span class="mi">50257</span><span class="p">,</span> <span class="mi">768</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">wpe</span><span class="p">):</span> <span class="n">Embedding</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">768</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">drop</span><span class="p">):</span> <span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">h</span><span class="p">):</span> <span class="n">Module</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">):</span> <span class="n">Module</span>
+        <span class="o">...</span>
+    <span class="p">)</span>
+    <span class="o">...</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div><p><code>GraphModule</code> includes <code>graph</code>, an IR representation of the model:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">traced</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">op</span><span class="si">}</span><span class="s1"> target=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s1"> args=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">args</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">placeholder</span> <span class="n">target</span><span class="o">=</span><span class="n">input_ids</span> <span class="n">args</span><span class="o">=</span><span class="p">()</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">call_method</span> <span class="n">target</span><span class="o">=</span><span class="n">size</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,)</span>
+<span class="n">getitem</span> <span class="o">=</span> <span class="n">call_function</span> <span class="n">target</span><span class="o">=&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">function</span> <span class="n">getitem</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">call_method</span> <span class="n">target</span><span class="o">=</span><span class="n">view</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">getitem</span><span class="p">)</span>
+<span class="n">size_1</span> <span class="o">=</span> <span class="n">call_method</span> <span class="n">target</span><span class="o">=</span><span class="n">size</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">view</span><span class="p">,)</span>
+<span class="o">...</span>
+<span class="n">transformer_ln_f</span> <span class="o">=</span> <span class="n">call_module</span> <span class="n">target</span><span class="o">=</span><span class="n">transformer</span><span class="o">.</span><span class="n">ln_f</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">add_146</span><span class="p">,)</span>
+<span class="n">view_146</span> <span class="o">=</span> <span class="n">call_method</span> <span class="n">target</span><span class="o">=</span><span class="n">view</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">transformer_ln_f</span><span class="p">,</span> <span class="n">add_2</span><span class="p">)</span>
+<span class="n">lm_head</span> <span class="o">=</span> <span class="n">call_module</span> <span class="n">target</span><span class="o">=</span><span class="n">lm_head</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">view_146</span><span class="p">,)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">output</span> <span class="n">target</span><span class="o">=</span><span class="n">output</span> <span class="n">args</span><span class="o">=</span><span class="p">({</span><span class="s1">&#39;logits&#39;</span><span class="p">:</span> <span class="n">lm_head</span><span class="p">,</span> <span class="s1">&#39;past_key_values&#39;</span><span class="p">:</span> <span class="p">((</span><span class="n">permute_1</span><span class="p">,</span> <span class="n">permute_2</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_5</span><span class="p">,</span> <span class="n">permute_6</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_9</span><span class="p">,</span> <span class="n">permute_10</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_13</span><span class="p">,</span> <span class="n">permute_14</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_17</span><span class="p">,</span> <span class="n">permute_18</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_21</span><span class="p">,</span> <span class="n">permute_22</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_25</span><span class="p">,</span> <span class="n">permute_26</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_29</span><span class="p">,</span> <span class="n">permute_30</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_33</span><span class="p">,</span> <span class="n">permute_34</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_37</span><span class="p">,</span> <span class="n">permute_38</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_41</span><span class="p">,</span> <span class="n">permute_42</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_45</span><span class="p">,</span> <span class="n">permute_46</span><span class="p">))},)</span>
+</code></pre></div><p>which can be modified and used to create a new <code>GraphModule</code>. You can retrieve <code>.code</code> or <code>print_readable()</code> for generated Python code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">traced</span><span class="o">.</span><span class="n">code</span>
+
+<span class="s1">&#39;</span><span class="se">\n\n\n</span><span class="s1">def forward(self, input_ids : torch.Tensor):</span><span class="se">\n</span><span class="s1">    size = input_ids.size()</span><span class="se">\n</span><span class="s1">...&#39;</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">traced</span><span class="o">.</span><span class="n">print_readable</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">GraphModule</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># No stacktrace found for following nodes</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="n">getitem</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="o">...</span>
+        <span class="n">lm_head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span><span class="p">(</span><span class="n">view_146</span><span class="p">);</span>  <span class="n">view_146</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;logits&#39;</span><span class="p">:</span> <span class="n">lm_head</span><span class="p">,</span> <span class="s1">&#39;past_key_values&#39;</span><span class="p">:</span> <span class="p">((</span><span class="n">permute_1</span><span class="p">,</span> <span class="n">permute_2</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_5</span><span class="p">,</span> <span class="n">permute_6</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_9</span><span class="p">,</span> <span class="n">permute_10</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_13</span><span class="p">,</span> <span class="n">permute_14</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_17</span><span class="p">,</span> <span class="n">permute_18</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_21</span><span class="p">,</span> <span class="n">permute_22</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_25</span><span class="p">,</span> <span class="n">permute_26</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_29</span><span class="p">,</span> <span class="n">permute_30</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_33</span><span class="p">,</span> <span class="n">permute_34</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_37</span><span class="p">,</span> <span class="n">permute_38</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_41</span><span class="p">,</span> <span class="n">permute_42</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_45</span><span class="p">,</span> <span class="n">permute_46</span><span class="p">))}</span>
+</code></pre></div><h2 id="generating-torchfxgraphmodule-for-training" class="relative group">Generating <code>torch.fx.GraphModule</code> &ldquo;for Training&rdquo; <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#generating-torchfxgraphmodule-for-training" aria-label="Anchor">#</a></span></h2>
+<p>The <code>traced</code> graph module does not return loss, meaning it cannot be used for training.
+To make a loss from <code>GraphModule</code>, we need to pass a <code>labels</code> input.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">symbolic_trace</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">PreTrainedModel</span><span class="p">,</span>
+    <span class="n">input_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">disable_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GraphModule</span><span class="p">:</span>
+    <span class="s2">&#34;&#34;&#34;
+</span><span class="s2">    Performs symbolic tracing on the model.
+</span><span class="s2">
+</span><span class="s2">    Args:
+</span><span class="s2">        model ([`PretrainedModel`]):
+</span><span class="s2">            The model to trace.
+</span><span class="s2">        input_names (`List[str]`, *optional*): &lt;--
+</span><span class="s2">            The names of the inputs of the traced model. If unset, model.dummy_inputs.keys() are used instead.
+</span><span class="s2">        disable_check (`bool`, *optional*, defaults to `False`):
+</span><span class="s2">            If `True`, no check is done before trying to trace the model, this is mostly usesul for debugging purposes.
+</span><span class="s2">        ...
+</span></code></pre></div><p>In <a href="https://github.com/huggingface/transformers/blob/v4.28.0/src/transformers/utils/fx.py#L1183"   target="_blank"><code>symbolic_trace</code></a>, it optionally takes <code>input_names</code>; according to the documents, <code>model.dummy_inputs.keys()</code> are used by default, which does not include <code>labels</code> key:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">dummy_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span> <span class="c1"># Dummy input keys specific for the GPT2 model</span>
+</code></pre></div><p>Let&rsquo;s use an input from dataset.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="n">raw_dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&#34;wikitext&#34;</span><span class="p">,</span> <span class="s2">&#34;wikitext-2-raw-v1&#34;</span><span class="p">)</span>
+<span class="c1"># preprocess the dataset explained in here:</span>
+<span class="c1"># https://insujang.github.io/2023-04-19/using-huggingface-transformers/#loading-a-tokenizer-and-preprocessing</span>
+<span class="k">def</span> <span class="nf">group_texts</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">&#34;labels&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;input_ids&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">tokenized_datasets</span> <span class="o">=</span> <span class="n">tokenized_datasets</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">group_texts</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">load_from_cache_file</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">tokenized_datasets</span><span class="p">[</span><span class="s2">&#34;train&#34;</span><span class="p">]</span>
+<span class="n">input_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">))</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="n">traced</span> <span class="o">=</span> <span class="n">symbolic_trace</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_names</span><span class="o">=</span><span class="n">input_names</span><span class="p">)</span>
+</code></pre></div><p>With preprocessing, <code>input_names</code> now includes 3 items: <code>['input_ids', 'attention_mask', 'labels']</code>. As it includes <code>labels</code>, <code>symbolic_trace</code> generates <code>loss</code> in the result as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">traced</span><span class="o">.</span><span class="n">print_readable</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">GraphModule</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">attention_mask</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">labels</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="n">crossentropyloss_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crossentropyloss_0</span><span class="p">(</span><span class="n">view_148</span><span class="p">,</span> <span class="n">view_149</span><span class="p">);</span>  <span class="n">view_148</span> <span class="o">=</span> <span class="n">view_149</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">crossentropyloss_0</span><span class="p">,</span> <span class="s1">&#39;logits&#39;</span><span class="p">:</span> <span class="n">lm_head</span><span class="p">,</span> <span class="s1">&#39;past_key_values&#39;</span><span class="p">:</span> <span class="p">((</span><span class="n">permute_1</span><span class="p">,</span> <span class="n">permute_2</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_5</span><span class="p">,</span> <span class="n">permute_6</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_9</span><span class="p">,</span> <span class="n">permute_10</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_13</span><span class="p">,</span> <span class="n">permute_14</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_17</span><span class="p">,</span> <span class="n">permute_18</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_21</span><span class="p">,</span> <span class="n">permute_22</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_25</span><span class="p">,</span> <span class="n">permute_26</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_29</span><span class="p">,</span> <span class="n">permute_30</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_33</span><span class="p">,</span> <span class="n">permute_34</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_37</span><span class="p">,</span> <span class="n">permute_38</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_41</span><span class="p">,</span> <span class="n">permute_42</span><span class="p">),</span> <span class="p">(</span><span class="n">permute_45</span><span class="p">,</span> <span class="n">permute_46</span><span class="p">))}</span>
+</code></pre></div><p>which can be used for training.</p>
+<p>Using a traced <code>torch.fx.GraphModule</code> is simple. Replace model with it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># This is for training the existing model</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">training_args</span><span class="p">,</span>
+    <span class="n">train_dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+    <span class="n">data_collatpr</span><span class="o">=</span><span class="n">default_data_collator</span><span class="p">,</span>
+    <span class="n">eval_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+
+<span class="n">TrainOutput</span><span class="p">(</span><span class="n">global_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">training_loss</span><span class="o">=</span><span class="mf">9.759646606445312</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;train_runtime&#39;</span><span class="p">:</span> <span class="mf">8.3264</span><span class="p">,</span> <span class="s1">&#39;train_samples_per_second&#39;</span><span class="p">:</span> <span class="mf">9.608</span><span class="p">,</span> <span class="s1">&#39;train_steps_per_second&#39;</span><span class="p">:</span> <span class="mf">1.201</span><span class="p">,</span> <span class="s1">&#39;total_flos&#39;</span><span class="p">:</span> <span class="mf">41806725120000.0</span><span class="p">,</span> <span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="mf">9.759646606445312</span><span class="p">,</span> <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">})</span>
+
+<span class="c1"># Equivalent training but with traced torch.fx.GraphModule model</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
+    <span class="n">traced</span><span class="p">,</span>
+    <span class="n">training_args</span><span class="p">,</span>
+    <span class="n">train_dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+    <span class="n">data_collatpr</span><span class="o">=</span><span class="n">default_data_collator</span><span class="p">,</span>
+    <span class="n">eval_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">compute_metrics</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+
+<span class="n">TrainOutput</span><span class="p">(</span><span class="n">global_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">training_loss</span><span class="o">=</span><span class="mf">9.122493743896484</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;train_runtime&#39;</span><span class="p">:</span> <span class="mf">7.6985</span><span class="p">,</span> <span class="s1">&#39;train_samples_per_second&#39;</span><span class="p">:</span> <span class="mf">10.392</span><span class="p">,</span> <span class="s1">&#39;train_steps_per_second&#39;</span><span class="p">:</span> <span class="mf">1.299</span><span class="p">,</span> <span class="s1">&#39;total_flos&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="mf">9.122493743896484</span><span class="p">,</span> <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">})</span>
+</code></pre></div><h1 id="implementing-pipeline-parallelism-with-torchfx" class="relative group">Implementing Pipeline Parallelism with <code>torch.fx</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#implementing-pipeline-parallelism-with-torchfx" aria-label="Anchor">#</a></span></h1>
+<blockquote>
+<p>This section is inspired by Fairscale&rsquo;s <a href="https://github.com/facebookresearch/fairscale/blob/v0.4.13/fairscale/experimental/nn/auto_shard.py#L151"   target="_blank">model sharding implementation</a> and <a href="https://github.com/pytorch/PiPPy/blob/v0.1.0/pippy/hf/gpt2.py"   target="_blank">PiPPy&rsquo;s split point implementation</a>.</p>
+<p><strong>Disclaimer</strong>: the examples below do NOT work in distributed pipeline parallel execution environment since they do not properly pass inputs for sharded model. This post only focuses on how to split the model using <code>torch.fx</code>.</p>
+</blockquote>
+<p>We can arbitrarily split <code>torch.fx.GraphModule</code> to distribute training to multiple GPUs or nodes.
+We are going to split the model by transformer layers, following <a href="https://github.com/pytorch/PiPPy/blob/v0.1.0/pippy/hf/gpt2.py"   target="_blank">PiPPy&rsquo;s HF GPT2 split point example</a>.
+The example splits the model in two points: <code>transformer.h.N</code> (where <code>N</code> is the number), and <code>transformer.ln_f</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">PretrainedConfig</span>
+<span class="k">def</span> <span class="nf">get_split_points</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">PretrainedConfig</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">split_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># config: GPT2Config for GPT2 model</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">num_hidden_layers</span><span class="p">):</span>
+        <span class="n">split_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;transformer.h.</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+    <span class="n">split_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&#34;transformer.ln_f&#34;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">split_points</span>
+</code></pre></div><p>During graph traversal, if we find a node that has a name starting with either <code>transformer.h.N</code> or <code>transformer.ln_f</code>, we split the graph and create another GraphModule.</p>
+<p>Graph partitioning iterates the entire nodes twice: first to find a proper location of graph partitioning, and second to create GraphModules based on partitioned information.
+We first iterate all nodes to find partitioning location by defining <code>_split_nodes</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">torch.fx</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="k">def</span> <span class="nf">_split_nodes</span><span class="p">(</span>
+        <span class="n">traced</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">GraphModule</span><span class="p">,</span> <span class="n">split_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+    <span class="n">node_name_to_shard_id</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">shard_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">nodes_so_far</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">extra_outputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">traced</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&#34;placeholder&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;get_attr&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;call_function&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;call_method&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;call_module&#34;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="n">node_name_to_shard_id</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">shard_id</span>
+            <span class="n">nodes_so_far</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+            <span class="n">point</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">split_points</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">point</span><span class="p">:</span>
+                <span class="c1"># Record outputs that should be used later.</span>
+                <span class="c1"># they will be added in return of this shard.</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_so_far</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node_name_to_shard_id</span><span class="p">:</span>
+                            <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="c1"># Remove duplicate</span>
+                <span class="n">extra_outputs</span><span class="p">[</span><span class="n">shard_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+                <span class="n">shard_id</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">split_points</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="s2">&#34;output&#34;</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_points</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&#34;Sharding is not complete.&#34;</span>
+
+    <span class="k">return</span> <span class="n">node_name_to_shard_id</span><span class="p">,</span> <span class="n">extra_outputs</span>
+</code></pre></div><p><code>_split_nodes</code> monotonically increases <code>shard_id</code> and maps every nodes to specific <code>shard_id</code>; nodes with the same <code>shard_id</code> are in the same partitioned <code>GraphModule</code>.
+The input of <code>_split_nodes</code> can be prepared as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">traced</span> <span class="o">=</span> <span class="n">symbolic_trace</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_names</span><span class="o">=</span><span class="n">input_names</span><span class="p">)</span>
+<span class="n">split_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;.&#34;</span><span class="p">,</span> <span class="s2">&#34;_&#34;</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">get_split_points</span><span class="p">(</span><span class="n">config</span><span class="p">)]</span>
+</code></pre></div><p>The main function <code>shard_model</code> internally uses <code>_split_nodes</code> to partition the model into <code>GraphModule</code>s:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">shard_model</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">traced</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">GraphModule</span><span class="p">,</span>
+        <span class="n">split_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">GraphModule</span><span class="p">]:</span>
+    <span class="n">module_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">GraphModule</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">node_name_to_shard_id</span><span class="p">,</span> <span class="n">extra_outputs</span> <span class="o">=</span> <span class="n">_split_nodes</span><span class="p">(</span><span class="n">traced</span><span class="p">,</span> <span class="n">split_points</span><span class="p">)</span>
+
+    <span class="n">prev_shard_id</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">prev_node</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">env</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">new_graph</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+    
+    <span class="c1"># Iterate all nodes</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">traced</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">node_name_to_shard_id</span><span class="p">:</span>
+            <span class="n">current_shard_id</span> <span class="o">=</span> <span class="n">node_name_to_shard_id</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">prev_shard_id</span> <span class="o">&lt;</span> <span class="n">current_shard_id</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">prev_node</span>
+
+                <span class="k">with</span> <span class="n">new_graph</span><span class="o">.</span><span class="n">inserting_after</span><span class="p">(</span><span class="n">prev_node</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">prev_shard_id</span> <span class="ow">in</span> <span class="n">extra_outputs</span><span class="p">:</span>
+                        <span class="n">outputs</span> <span class="o">=</span> <span class="n">extra_outputs</span><span class="p">[</span><span class="n">prev_shard_id</span><span class="p">]</span>
+                        <span class="n">outputs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">env</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">])</span>
+                        <span class="n">new_graph</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">outputs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">env</span><span class="p">[</span><span class="n">prev_node</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                        <span class="n">new_graph</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+                
+                <span class="c1"># finalize this graph into GraphModule list</span>
+                <span class="n">new_graph</span><span class="o">.</span><span class="n">lint</span><span class="p">()</span>
+                <span class="n">module_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">GraphModule</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">new_graph</span><span class="p">))</span>
+
+                <span class="c1"># Create a new graph</span>
+                <span class="n">new_graph</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+                    <span class="c1"># Add all nodes in return of the previous graph to its input</span>
+                    <span class="n">node_name</span> <span class="o">=</span> <span class="n">env</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">pl_node</span> <span class="o">=</span> <span class="n">new_graph</span><span class="o">.</span><span class="n">create_node</span><span class="p">(</span><span class="s2">&#34;placeholder&#34;</span><span class="p">,</span> <span class="n">node_name</span><span class="p">)</span>
+                    <span class="n">env</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl_node</span>
+
+        <span class="c1"># Cut is done. Add all nodes into the current graph</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&#34;placeholder&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;get_attr&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;call_function&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;call_method&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;call_module&#34;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="c1"># Copy the nodes from the existing graph to the new graph.</span>
+            <span class="n">new_node</span> <span class="o">=</span> <span class="n">new_graph</span><span class="o">.</span><span class="n">node_copy</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">env</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">env</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_node</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="s2">&#34;output&#34;</span><span class="p">:</span>
+            <span class="c1"># If this is the last node, we should add an output node and add the last graph to the list.</span>
+            <span class="k">assert</span> <span class="n">prev_node</span><span class="p">,</span> <span class="s2">&#34;prev_node cannot be None&#34;</span>
+            <span class="k">with</span> <span class="n">new_graph</span><span class="o">.</span><span class="n">inserting_after</span><span class="p">(</span><span class="n">prev_node</span><span class="p">):</span>
+                <span class="n">new_node</span> <span class="o">=</span> <span class="n">new_graph</span><span class="o">.</span><span class="n">node_copy</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">env</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">new_graph</span><span class="o">.</span><span class="n">lint</span><span class="p">()</span>
+            <span class="n">module_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">fx</span><span class="o">.</span><span class="n">GraphModule</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">new_graph</span><span class="p">))</span>
+            <span class="k">break</span>
+
+        <span class="n">prev_node</span> <span class="o">=</span> <span class="n">new_node</span>
+        <span class="n">prev_shard_id</span> <span class="o">=</span> <span class="n">node_name_to_shard_id</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">module_list</span>
+</code></pre></div><p>Here, we iterate all nodes again and create a list of <code>GraphModules</code> based on <code>shard_id</code>s.
+Based on <code>shard_id</code>, if it is increased, that means the graph should be partitioned there; it finalizes the graph by adding its outputs, checks its integrity with <code>new_graph.lint()</code>, and create a <code>GraphModule</code>.
+If some variables defined in the previous sharded modules are used later, they must be forwarded; thus we have to manually add outputs of the previous sharded module (<code>new_graph.output(outputs)</code>) and inputs of the next sharded module (<code>new_graph.create_node(&quot;placeholder&quot;, ...)</code>).</p>
+<p><a href="/assets/notebooks/torch.fx.html"  >See the full notebook here.</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://arxiv.org/abs/2112.08429"   target="_blank">Torch.fx: Practical Program Capture and Transformation for Deep Learning in Python</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.deepspeed.ai/tutorials/pipeline/#expressing-pipeline-models"   target="_blank">DeepSpeed: Expressing Pipeline Models</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://ieeexplore.ieee.org/abstract/document/10049507"   target="_blank">Merak: An Efficient Distributed DNN Training Framework With Automated 3D Parallelism for Giant Foundation Models</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
+    
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
+    
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
+</div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
+    
+    
+    
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2023-04-19/using-huggingface-transformers/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >Using HuggingFace Transformers</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2023-04-19 16:10:00 -0400 EDT">Apr 19, 2023</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
+    <div>
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2023
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
+    </div>
+    
+    
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+          </div>
+        </button>
+      </div>
+    
+  </div>
+  
+  
+</footer>
+
+    </div>
+  </body>
+</html>

@@ -6,11 +6,11 @@
     <description>Recent content in Tags on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 19 Apr 2023 16:10:00 -0400</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 22 Apr 2023 11:13:00 -0400</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>dl</title>
       <link>/tags/dl/</link>
-      <pubDate>Wed, 19 Apr 2023 16:10:00 -0400</pubDate>
+      <pubDate>Sat, 22 Apr 2023 11:13:00 -0400</pubDate>
       
       <guid>/tags/dl/</guid>
       <description></description>
@@ -19,9 +19,18 @@
     <item>
       <title>python</title>
       <link>/tags/python/</link>
-      <pubDate>Wed, 19 Apr 2023 16:10:00 -0400</pubDate>
+      <pubDate>Sat, 22 Apr 2023 11:13:00 -0400</pubDate>
       
       <guid>/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pytorch</title>
+      <link>/tags/pytorch/</link>
+      <pubDate>Sat, 22 Apr 2023 11:13:00 -0400</pubDate>
+      
+      <guid>/tags/pytorch/</guid>
       <description></description>
     </item>
     

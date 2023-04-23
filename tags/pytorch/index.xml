@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pytorch on Better Tomorrow with Computer Science</title>
+    <link>/tags/pytorch/</link>
+    <description>Recent content in pytorch on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 22 Apr 2023 11:13:00 -0400</lastBuildDate><atom:link href="/tags/pytorch/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Torch FX Transformation and Pipeline Parallelism</title>
+      <link>/2023-04-22/torch-fx-transformation-and-pipeline-parallelism/</link>
+      <pubDate>Sat, 22 Apr 2023 11:13:00 -0400</pubDate>
+      
+      <guid>/2023-04-22/torch-fx-transformation-and-pipeline-parallelism/</guid>
+      <description>Torch fx # torch.fx is a PyTorch module that captures a model and applies transformation for optimization 1. In recent days, the importance of model optimization is getting more important. torch.fx enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.
+ Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model.   This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance.</description>
+    </item>
+    
+  </channel>
+</rss>
