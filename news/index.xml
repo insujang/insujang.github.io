@@ -6,7 +6,16 @@
     <description>Recent content in News on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 19 Apr 2023 15:45:00 -0400</lastBuildDate><atom:link href="/news/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 14 Jul 2023 15:45:00 -0400</lastBuildDate><atom:link href="/news/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Oobleck Accepted to SOSP&#39;23</title>
+      <link>/news/20230714-oobleck/</link>
+      <pubDate>Fri, 14 Jul 2023 15:45:00 -0400</pubDate>
+      
+      <guid>/news/20230714-oobleck/</guid>
+      <description>Oobleck has been accepted to SOSP&#39;23! Oobleck is a distributed training framework that supports fast fault tolerance without full restart from checkpoint.</description>
+    </item>
+    
     <item>
       <title>Internship at Tesla in Summer 2023</title>
       <link>/news/20230419-summer-intern/</link>
