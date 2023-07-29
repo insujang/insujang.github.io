@@ -106,7 +106,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "289"
+    "wordCount": "310"
   }]
   </script>
 
@@ -378,7 +378,7 @@ if (!doNotTrack) {
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <h1 id="publications" class="relative group">Publications </h1>
 <ol>
-<li><strong>[SOSP &lsquo;23] Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates</strong> (43/229 = 18.8%)
+<li><strong>[SOSP &lsquo;23] Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates</strong> (43/229 = 18.8%)<br>
 <u>Insu Jang</u>, Zhenning Yang, Zhen Zhang, Xin Jin, and Mosharaf Chowdhury</li>
 <li><strong>[SOSP &lsquo;21] <a href="https://dl.acm.org/doi/abs/10.1145/3477132.3483565"   target="_blank">LineFS: Efficient SmartNIC Offload of a
 Distributed File System with Pipeline Parallelism</a></strong> (54/348 = 15.5%) <span
@@ -401,14 +401,15 @@ Jongyul Kim, <u>Insu Jang</u>, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kos
 <h1 id="experience" class="relative group">Experience </h1>
 <ul>
 <li>
-<p><strong>Systems for Distributed ML Training</strong><br>
+<p><strong>Fault Tolerant Systems for Distributed ML Training</strong><br>
 <span
     class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">PyTorch</span>
  <span
     class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">DeepSpeed</span>
 <br>
 Recent trend of growing model size forces to use distributed training with multiple computing devices.
-I am designing and implementing an efficient distributed training system based on <a href="https://www.deepspeed.ai"   target="_blank">DeepSpeed</a> to fully utilize all resources in data centers.</p>
+As more number of devices are used, higher the probability of failures, yet there was no efficient fault tolerance algorithm for such complicated parallelism.
+I led the Oobleck project that supports fast failure recovery in distributed training with hybrid parallleism.</p>
 </li>
 <li>
 <p><strong>Reimplementing Hyperloop</strong><br>
