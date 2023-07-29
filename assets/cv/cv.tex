@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Dec 14, 2022}}
+\fancyfoot[R]{\footnotesize{Last updated: Jul 29, 2023}}
 
 
 \urlstyle{same}
@@ -99,7 +99,7 @@
 
 
 \section{Research Interests}
-System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computing
+System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computing, Systems for ML
 
 %-----------EDUCATION-----------------
 \section{Education}
@@ -127,6 +127,7 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------PUBLICATIONS-----------------
 \section{Publications}
 \begin{enumerate}[leftmargin=*]
+  \item \small \textbf{Insu Jang}, Zhenning Yang, Zhen Zhang, Xin Jin, and Mosharaf Chowdhury. \textbf{``Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates.''} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2023.
   \item \small Jongyul Kim, \textbf{Insu Jang}, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kostić, Youngjin Kwon, Simon Peter, and Emmett Witchel. \href{https://dl.acm.org/doi/abs/10.1145/3477132.3483565}{\textbf{``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism.''}} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2021. \textbf{Best Paper Award.}
   \item \small \textbf{Insu Jang}, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. \href{https://dl.acm.org/doi/abs/10.1145/3297858.3304021}{\textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''}} \textit{International Conference on Architectural Support for Programming Languages and Operating Systems \textbf{(ASPLOS)}}, April 2019.
 \end{enumerate}
@@ -134,24 +135,18 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Graduate Student Research Assistant (GSRA)}{University of Michigan}
-    {Studying an efficient system architecture for distributed ML training.
-    Scrutinized Megatron-LM and DeepSpeed to understand large scale ML training.}{Sep 2021 -- Present}
+    \resumeSubheading{Fault Tolerant Distributed Training}{University of Michigan}
+    {Studied efficient fault tolerance in large scale distributed training. Implemented Oobleck, a distributed training framework with pre-generated pipeline templates that can recover from failures fast by quickly reinstantiating a pipeline, instead of fully restarting the entire job.
+    Oobleck has been accepted to SOSP'23.}{Sep 2021 -- Present}
     
-    \resumeSubheading{Research Assistant}{KAIST}
-    {Implemented Hyperloop to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband adaptors.
-    Studied Infiniband RDMA architecture and witnessed the benefits of offloading. LineFS paper has been published to SOSP21 and won the best paper award.}{Jan 2020 -- Jul 2020}
+    \resumeSubheading{Offloading Replicated Storage Transactions to RDMA NIC}{KAIST}
+    {Reimplemented Hyperloop to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
+    Studied Infiniband RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload. LineFS paper has been published to SOSP'21 and won the best paper award.}{Jan 2020 -- Jul 2020}
 
-    \resumeSubheading{Graduate Research Assistant}{KAIST}
+    \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{KAIST}
     {Designed a HW-SW codesigned architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
     and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.
     HIX paper has been published to ASPLOS19.}{Mar 2016 -- Feb 2018}
-
-    \resumeSubheading{Undergraduate Research Assistant}{SKKU}
-    {Designed and implemented an inaudible communication system that can be implemented with commodity smartphones.}{May 2014 -- Jul 2015}
-
-    \resumeSubheading{Undergraduate Research Asssitant}{Purdue University}
-    {Designed and implemented a HARMS (Human, Agent, Robot, Machine, Sensor) based collective robot system.}{Jul 2014 -- Aug 2014}
 
     % \resumeSubheading
     %   {Computer Architecture and Systems Lab, KAIST}{Daejeon, Republic of Korea}
@@ -193,6 +188,8 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------WORK EXPERIENCE-----------------
 \section{Work Experience}
   \resumeSubHeadingListStart
+    \resumeSubheading{Autopilot Software Engineer Intern}{May 2023 -- Aug 2023}{Tesla Inc.}{Palo Alto, CA, USA}
+
     \resumeSubheading{System Software Engineer}{Feb 2018 -- Jun 2021}
     {TmaxSoft Inc.}{Seongnam, Republic of Korea}
 
