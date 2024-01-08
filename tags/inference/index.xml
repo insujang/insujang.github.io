@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>inference on Better Tomorrow with Computer Science</title>
+    <link>/tags/inference/</link>
+    <description>Recent content in inference on Better Tomorrow with Computer Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 07 Jan 2024 20:20:00 -0500</lastBuildDate><atom:link href="/tags/inference/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LLM Inference: Continuous Batching and PagedAttention</title>
+      <link>/2024-01-07/llm-inference-continuous-batching-and-pagedattention/</link>
+      <pubDate>Sun, 07 Jan 2024 20:20:00 -0500</pubDate>
+      
+      <guid>/2024-01-07/llm-inference-continuous-batching-and-pagedattention/</guid>
+      <description>Recent days, many papers have been published to optimize LLM inference. This post introduces two of them, which focus on improving throughput by exploiting characteristics of batched LLM serving and characteristics of attention.
+Orca # Orca, published in OSDI&#39;22, proposes two novel techniques: 1. continuous batcing (or iteration-level scheduling) 1, and 2. selective batching.
+Continuous Batching # Before the introduction of continuous batching, static batching starts batch at once and wait all batch to complete their computation.</description>
+    </item>
+    
+    <item>
+      <title>LLM Inference: Autoregressive Generation and Attention KV Cache</title>
+      <link>/2024-01-07/llm-inference-autoregressive-generation-and-attention-kv-cache/</link>
+      <pubDate>Sun, 07 Jan 2024 18:20:00 -0500</pubDate>
+      
+      <guid>/2024-01-07/llm-inference-autoregressive-generation-and-attention-kv-cache/</guid>
+      <description>This post explains the basic of LLM inference, mainly focusing on differences from training LLM.
+Autreogressive Text Generation # Unlike training, where tokens are parallelized and trained, inference generates tokens one by one. Therefore, to create a full sentence, several forward pass should be executed (# tokens times). The following video from HuggingFace illustrates how it works.
+    Autoregressive token generation. Source: HuggingFace
+ Before generating the first token, LLM first puts all input tokens to generate context.</description>
+    </item>
+    
+  </channel>
+</rss>
