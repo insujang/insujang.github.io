@@ -112,7 +112,7 @@ Continuous Batching # Before the introduction of continuous batching, static bat
     "keywords": ["dl","inference","attention"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "726"
+    "wordCount": "1085"
   }]
   </script>
 
@@ -496,10 +496,86 @@ When the block is filled, a new block can be allocated.</p>
 In deciding which blocks should be evicted, PagedAttention interestingly implements all-of-nothing eviction policy, evicting all caches to either CPU (swapping) or discarding them (and later recompute it).
 The decision was because that all blocks of a sequence are accessed together, so it was not reasonable to remain some cache blocks for a sequence.
 A set of sequences (the latest requests will be preempted first) is selected and their blocks are evicted; while the eviction is in progress, they stop processing the sequences, if the sequence was in progress. After that, if the sequence was in progress, evicted blocks will be brought back to the GPU memory and finish execution.</p>
-<blockquote>
-<p>It was quite confusing with just texts how it works; need to run it and see.</p>
-</blockquote>
-<section class="footnotes" role="doc-endnotes">
+<p>This preemption is done when <em>sheduling requests</em>, not during runtime. Before scheduling requests, it first assigns a page slot to all running requests; if it is not available, do preemption and then run requests. Because PagedAttention implementes Orca&rsquo;s iteration-level scheduling, it schedules requets (called <code>SequenceGroup</code> in implementation) every iteration by calling <code>vllm.core.Scheduler._schedule()</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># vllm.core.Scheduler._schedule()</span>
+<span class="c1"># https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/core/scheduler.py#L217-L237</span>
+<span class="k">def</span> <span class="nf">_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SchedulerOutputs</span><span class="p">:</span>
+    <span class="o">...</span>
+    <span class="c1"># Preserve new token slots for the running sequence groups.</span>
+    <span class="n">running</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SequenceGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">preempted</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SequenceGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span> <span class="c1"># type: List[SequenceGroup]</span>
+        <span class="n">seg_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runing</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># try to append a new slot to the sequence group</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_manager</span><span class="o">.</span><span class="n">can_append_slot</span><span class="p">(</span><span class="n">seq_group</span><span class="p">):</span>
+            <span class="c1"># Entering here means we need to preempt some sequence groups to get slots.</span>
+            <span class="c1"># Until all running sequence group can get slots, iteration is executed.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+                <span class="c1"># Preempt the lowest-priority sequence groups.</span>
+                <span class="c1"># Because this victim sequence group is no longer in self.running list,</span>
+                <span class="c1"># It cannot be re-added to running list, and will not be scheduled in this iteration.</span>
+                <span class="n">victim_seq_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># Add victim_seq_group to either self.swapped or self.recomputed depending on preemption mode.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_preempt</span><span class="p">(</span><span class="n">victim_seq_group</span><span class="p">,</span> <span class="n">blocks_to_swap_out</span><span class="p">)</span> 
+                <span class="n">preempted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">victim_seq_group</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># No other sequence groups can be preempted.</span>
+                <span class="c1"># Preempt the current sequence group.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_preempt</span><span class="p">(</span><span class="n">seq_group</span><span class="p">,</span> <span class="n">blocks_to_swap_out</span><span class="p">)</span>
+                <span class="n">preempted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq_group</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Append new slots to the sequence group.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_append_slot</span><span class="p">(</span><span class="n">seq_group</span><span class="p">,</span> <span class="n">blocks_to_copy</span><span class="p">)</span>
+            <span class="n">running</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq_group</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="n">running</span>
+</code></pre></div><p>This <code>_schedule()</code> is called for every iteration (step):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># vllm.entrypoints.llm.LLM._run_engine()</span>
+<span class="c1"># https://github.com/vllm-project/vllm/blob/main/vllm/entrypoints/llm.py#L184-L190</span>
+<span class="k">def</span> <span class="nf">_run_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usq_tqdm</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RequestOutput</span><span class="p">]:</span>
+    <span class="o">...</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm_engine</span><span class="o">.</span><span class="n">has_unfinished_requests</span><span class="p">():</span>
+        <span class="n">step_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm_engine</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="o">...</span>
+
+<span class="c1"># vllm.engine.llm_engine.step()</span>
+<span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RequestOutput</span><span class="p">]:</span>
+    <span class="n">seq_group_metadata_list</span><span class="p">,</span> <span class="n">scheduler_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="p">()</span> <span class="c1"># calls _schedule() inside</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">scheduler_outputs</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+        <span class="c1"># Execute the model.</span>
+        <span class="n">all_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_workers</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">all_outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_model_outputs</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">scheduler_outputs</span><span class="p">)</span>
+</code></pre></div><p>If swapping is completed, sequence groups can be re-scheduled. As they are moved from <code>self.running</code> to <code>self.swapped</code> after changinig its status to <code>SequenceStatus.SWAPPED</code>, they need to be re-moved to <code>self.running</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># vllm.core.Scheduler._schedule()</span>
+<span class="c1"># https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/core/scheduler.py#L240-L262</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">preempted</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="c1"># Only add requests until the number of sequence group reaches to the maximum configured number.</span>
+    <span class="n">num_curr_seqs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">seq_group</span><span class="o">.</span><span class="n">get_max_num_runing_seqs</span><span class="p">()</span> <span class="k">for</span> <span class="n">seq_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">swapped</span><span class="p">:</span>
+        <span class="n">seq</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swapped</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># If the sequence group cannot be swapped in, stop.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_manager</span><span class="o">.</span><span class="n">can_swap_in</span><span class="p">(</span><span class="n">seq_group</span><span class="p">):</span>
+            <span class="k">break</span>
+
+        <span class="n">num_new_seqs</span> <span class="o">=</span> <span class="n">seq_group</span><span class="o">.</span><span class="n">get_max_num_running_seqs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num_curr_seqs</span> <span class="o">+</span> <span class="n">num_new_seqs</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler_config</span><span class="o">.</span><span class="n">max_num_seqs</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">seq_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swapped</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swap_in</span><span class="p">(</span><span class="n">seq_group</span><span class="p">,</span> <span class="n">blcoks_to_swap_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_append_slot</span><span class="p">(</span><span class="n">seq_group</span><span class="p">,</span> <span class="n">blocks_to_copy</span><span class="p">)</span>
+        <span class="n">num_curr_seqs</span> <span class="o">+=</span> <span class="n">num_new_seqs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq_group</span><span class="p">)</span>
+</code></pre></div><section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
