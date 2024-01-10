@@ -112,7 +112,7 @@ Continuous Batching # Before the introduction of continuous batching, static bat
     "keywords": ["dl","inference","attention"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1201"
+    "wordCount": "1338"
   }]
   </script>
 
@@ -410,6 +410,7 @@ if (!doNotTrack) {
     <li><a href="#pagedattention-pagedattention">PagedAttention </a>
       <ul>
         <li><a href="#preemption-with-page-miss">Preemption with Page Miss</a></li>
+        <li><a href="#prompt-handling">Prompt Handling</a></li>
       </ul>
     </li>
   </ul>
@@ -580,7 +581,27 @@ A set of sequences (the latest requests will be preempted first) is selected and
         <span class="bp">self</span><span class="o">.</span><span class="n">_append_slot</span><span class="p">(</span><span class="n">seq_group</span><span class="p">,</span> <span class="n">blocks_to_copy</span><span class="p">)</span>
         <span class="n">num_curr_seqs</span> <span class="o">+=</span> <span class="n">num_new_seqs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq_group</span><span class="p">)</span>
-</code></pre></div><section class="footnotes" role="doc-endnotes">
+</code></pre></div><h2 id="prompt-handling" class="relative group">Prompt Handling <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#prompt-handling" aria-label="Anchor">#</a></span></h2>
+<p>PagedAttention does not seem to coalesce prompt and decode requests in the same iteration, different from the illustration above.</p>
+<p>In <a href="https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/model_executor/layers/attention.py#L101-L172"   target="_blank">PagedAttention implementation</a>, <code>forward()</code> checks whether the input is prompt:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">input_metadata</span><span class="o">.</span><span class="n">is_prompt</span><span class="p">:</span>
+    <span class="c1"># Prompt run.</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># Decoding run.</span>
+    <span class="o">...</span>
+</code></pre></div><p>Because query, key, and cache arguments include a batched input, all inputs should be either prompt or decode, and cannot be coalesced.
+This is also verified in <a href="https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/worker/model_runner.py#L331-L340"   target="_blank">Model Runner</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">prpare_input_tensors</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="c1"># NOTE: We assume that all sequences in the group are all prompts or</span>
+    <span class="c1"># all decodes.</span>
+    <span class="n">is_prompt</span> <span class="o">=</span> <span class="n">seq_group_metadata_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">is_prompt</span>
+    <span class="k">if</span> <span class="n">is_prompt</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">input_tokens</span><span class="p">,</span> <span class="n">input_positions</span><span class="p">,</span> <span class="n">input_metadata</span><span class="p">,</span> <span class="n">prompt_lens</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_prompt</span><span class="p">(</span><span class="n">seq_group_metadata_list</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">input_tokens</span><span class="p">,</span> <span class="n">input_positions</span><span class="p">,</span> <span class="n">input_metadata</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_decode</span><span class="p">(</span><span class="n">seq_group_metadata_list</span><span class="p">)</span>
+        <span class="n">prompt_lens</span> <span class="o">=</span> <span class="p">[]</span>
+</code></pre></div><p>They might use several iterations, however, to finish all pending prompts before resuming decoding. Prompts can be grouped with padding or separated and executed in different iterations.</p>
+<section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
