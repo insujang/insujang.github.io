@@ -589,7 +589,7 @@ A set of sequences (the latest requests will be preempted first) is selected and
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># Decoding run.</span>
     <span class="o">...</span>
-</code></pre></div><p>Because query, key, and cache arguments include a batched input, all inputs should be either prompt or decode, and cannot be coalesced.
+</code></pre></div><p>Because query, key, and value arguments include a batched input, all inputs should be either prompt or decode, and cannot be coalesced.
 This is also verified in <a href="https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/worker/model_runner.py#L331-L340"   target="_blank">Model Runner</a>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">prpare_input_tensors</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
     <span class="c1"># NOTE: We assume that all sequences in the group are all prompts or</span>
