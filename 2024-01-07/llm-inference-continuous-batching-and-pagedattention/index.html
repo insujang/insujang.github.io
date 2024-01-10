@@ -112,7 +112,7 @@ Continuous Batching # Before the introduction of continuous batching, static bat
     "keywords": ["dl","inference","attention"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1176"
+    "wordCount": "1201"
   }]
   </script>
 
@@ -482,6 +482,9 @@ However, they observe that all non-Attention operations (Linear, GeLU, etc) are 
 </p>
 <p>This can easily be optimized with kernel fusion. PagedAttention, which I will introduce below, <a href="https://github.com/vllm-project/vllm/blob/v0.2.7/csrc/attention/attention_kernels.cu#L216-L331"   target="_blank">fuses all attentions</a> for a given batch and execute in a single global CUDA kernel named <code>paged_attention_kernel</code> (Orca is not open sourced). As long as matrix multiplications are done within a single CUDA kernel, they are fused and performance are improved.
 In the opposite, <a href="https://github.com/huggingface/transformers/blob/v4.36.2/src/transformers/models/opt/modeling_opt.py#L219-L265"   target="_blank">HuggingFace transformer&rsquo;s <strong>naive</strong> implementation</a> uses torch API and calls <code>torch.bmm</code>, <code>torch.nn.functional.softmax</code>, <code>torch.nn.functional.dropout</code>; this is much slow due to overheads between CUDA calls.</p>
+<blockquote>
+<p>Use <a href="https://huggingface.co/docs/text-generation-inference/conceptual/flash_attention"   target="_blank">FlashAteention</a> with HuggingFace transformers to boost performance. <a href="https://github.com/huggingface/transformers/blob/v4.36.2/src/transformers/models/opt/modeling_opt.py#L433-L450"   target="_blank">A fused flash attention</a> is called. For more information, visit <a href="https://github.com/Dao-AILab/flash-attention"   target="_blank">flash attention repository</a> and read <a href="https://arxiv.org/abs/2307.08691"   target="_blank">this paper</a>.</p>
+</blockquote>
 <h1 id="pagedattention-pagedattention" class="relative group">PagedAttention <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#pagedattention-pagedattention" aria-label="Anchor">#</a></span></h1>
 <p>After the introduction of continous batching, PagedAttention is introduced to solve inefficiency of memory consumption due to KV caching.</p>
 <p>One drawback of Orca is that they reserve memory for KV cache with the maximum number of tokens:</p>
