@@ -1,0 +1,847 @@
+
+
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  dir="ltr"
+  class="scroll-smooth"
+  data-default-appearance="dark"
+  data-auto-appearance="true"
+><head>
+  <meta charset="utf-8" />
+  
+    <meta http-equiv="content-language" content="en" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="rgb(255,255,255)" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>Tensor Parallelism and Sequence Parallelism: Detailed Analysis &middot; Better Tomorrow with Computer Science</title>
+    <meta name="title" content="Tensor Parallelism and Sequence Parallelism: Detailed Analysis &middot; Better Tomorrow with Computer Science" />
+  
+  <meta name="description" content="This post explains how tensor model parallelism and sequence parallelism work especially on attention layer, and how they are different.
+Backgrounds # Attention Layer #    Attention calculation with a single sequence with T number of tokens. d_attn is config.embed_dim // config.num_attention_heads Bold boxes are model parameters, while others are temporarily created tensors. All the other terms are borrowed from HuggingFace Transformers OPT config. Implementation of computing attention:" />
+  
+  
+  
+  <link rel="canonical" href="/2024-01-11/tensor-parallelism-and-sequence-parallelism-detailed-analysis/" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/css/main.bundle.min.10f51640c62455dc3b2a174cda772e2fee409808982122a17db5129978d396e5a9dec1b325b2c50f7e5f7dbc7d8c62bdcb89f86574ad3d8359acad96fb66e674.css"
+    integrity="sha512-EPUWQMYkVdw7KhdM2ncuL&#43;5AmAiYISKhfbUSmXjTluWp3sGzJbLFD35ffbx9jGK9y4n4ZXStPYNZrK2W&#43;2bmdA=="
+  />
+  
+  
+  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  
+  
+    
+    
+  
+  
+  
+    
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+  
+  
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="Tensor Parallelism and Sequence Parallelism: Detailed Analysis" />
+<meta property="og:description" content="This post explains how tensor model parallelism and sequence parallelism work especially on attention layer, and how they are different.
+Backgrounds # Attention Layer #    Attention calculation with a single sequence with T number of tokens. d_attn is config.embed_dim // config.num_attention_heads Bold boxes are model parameters, while others are temporarily created tensors. All the other terms are borrowed from HuggingFace Transformers OPT config. Implementation of computing attention:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2024-01-11/tensor-parallelism-and-sequence-parallelism-detailed-analysis/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-11T18:20:00-05:00" />
+<meta property="article:modified_time" content="2024-01-11T18:20:00-05:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
+
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tensor Parallelism and Sequence Parallelism: Detailed Analysis"/>
+<meta name="twitter:description" content="This post explains how tensor model parallelism and sequence parallelism work especially on attention layer, and how they are different.
+Backgrounds # Attention Layer #    Attention calculation with a single sequence with T number of tokens. d_attn is config.embed_dim // config.num_attention_heads Bold boxes are model parameters, while others are temporarily created tensors. All the other terms are borrowed from HuggingFace Transformers OPT config. Implementation of computing attention:"/>
+
+  
+  <script type="application/ld+json">
+  [{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "articleSection": "Posts",
+    "name": "Tensor Parallelism and Sequence Parallelism: Detailed Analysis",
+    "headline": "Tensor Parallelism and Sequence Parallelism: Detailed Analysis",
+    
+    "abstract": "This post explains how tensor model parallelism and sequence parallelism work especially on attention layer, and how they are different.\nBackgrounds # Attention Layer #    Attention calculation with a single sequence with T number of tokens. d_attn is config.embed_dim \/\/ config.num_attention_heads Bold boxes are model parameters, while others are temporarily created tensors. All the other terms are borrowed from HuggingFace Transformers OPT config. Implementation of computing attention:",
+    "inLanguage": "en",
+    "url" : "\/2024-01-11\/tensor-parallelism-and-sequence-parallelism-detailed-analysis\/",
+    "author" : {
+      "@type": "Person",
+      "name": "Insu Jang"
+    },
+    "copyrightYear": "2024",
+    "dateCreated": "2024-01-11T18:20:00-05:00",
+    "datePublished": "2024-01-11T18:20:00-05:00",
+    
+    "dateModified": "2024-01-11T18:20:00-05:00",
+    
+    "keywords": ["dl","parallleism"],
+    
+    "mainEntityOfPage": "true",
+    "wordCount": "1225"
+  }]
+  </script>
+
+
+  
+  <meta name="author" content="Insu Jang" />
+  
+    
+      <link href="mailto:insujang@umich.edu" rel="me" />
+    
+      <link href="https://www.linkedin.com/in/insujang" rel="me" />
+    
+      <link href="https://github.com/insujang" rel="me" />
+    
+      <link href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ" rel="me" />
+    
+  
+  
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$' , display: true},
+            {left: '$', right: '$' , display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ] });"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-158110335-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+  
+  
+</head>
+<body
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32"
+  >
+    <div id="the-top" class="absolute flex self-center">
+      <a
+        class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
+        href="#main-content"
+        ><span class="font-bold text-primary-600 ltr:pr-2 rtl:pl-2 dark:text-primary-400"
+          >&darr;</span
+        >Skip to main content</a
+      >
+    </div>
+    
+    
+      <header class="py-6 font-semibold text-neutral-900 dark:text-neutral print:hidden sm:py-10">
+  <nav class="flex items-start justify-between sm:items-center">
+    
+    <div class="flex flex-row items-center">
+      
+  <a
+    class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+    rel="me"
+    href="/"
+    >Better Tomorrow with Computer Science</a
+  >
+
+      
+
+    </div>
+    
+    
+      <ul class="flex list-none flex-col ltr:text-right rtl:text-left sm:flex-row">
+        
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/#about"
+                title=""
+                >About</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/research/"
+                title=""
+                >Research</a
+              >
+            </li>
+          
+            <li class="mb-1 sm:mb-0 ltr:sm:mr-7 ltr:sm:last:mr-0 rtl:sm:ml-7 rtl:sm:last:ml-0">
+              <a
+                class="decoration-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2"
+                href="/posts/"
+                title=""
+                >Posts</a
+              >
+            </li>
+          
+        
+        
+      </ul>
+    
+  </nav>
+</header>
+
+    
+    <div class="relative flex flex-col grow">
+      <main id="main-content" class="grow">
+        
+  <article>
+    <header class="max-w-prose">
+      
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        Tensor Parallelism and Sequence Parallelism: Detailed Analysis
+      </h1>
+      <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+        
+
+
+
+
+
+  
+  
+
+
+
+  
+
+  
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div class="flex flex-row flex-wrap items-center">
+    
+    
+      <time datetime="2024-01-11 18:20:00 -0500 EST">Jan 11, 2024</time>
+    
+
+    
+    
+  </div>
+
+  
+  
+    <div class="my-1 text-xs text-neutral-500 dark:text-neutral-400 ">
+      
+        
+          
+            <a
+              href="/tags/dl/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >dl</a
+            >
+          
+            <a
+              href="/tags/parallleism/"
+              class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
+              >parallleism</a
+            >
+          
+        
+      
+    </div>
+  
+
+
+      </div>
+      
+    </header>
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+      
+        <div class="order-first px-0 lg:order-last lg:max-w-xs ltr:lg:pl-8 rtl:lg:pr-8">
+          <div class="toc ltr:pl-5 rtl:pr-5 print:hidden lg:sticky lg:top-10">
+            <details open class="mt-0 overflow-hidden rounded-lg ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5">
+  <summary
+    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 ltr:-ml-5 ltr:pl-5 rtl:-mr-5 rtl:pr-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden"
+  >
+    Table of Contents
+  </summary>
+  <div
+    class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600"
+  >
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#backgrounds">Backgrounds</a>
+      <ul>
+        <li><a href="#attention-layer">Attention Layer</a></li>
+        <li><a href="#how-calculating-attention-in-training-and-inference-is-different">How Calculating Attention in Training and Inference is Different?</a></li>
+        <li><a href="#difference-in-sequence-token-and-batch">Difference in Sequence, Token, and Batch</a></li>
+      </ul>
+    </li>
+    <li><a href="#tensor-model-parallelism">Tensor Model Parallelism</a></li>
+    <li><a href="#sequence-parallelism">Sequence Parallelism</a></li>
+  </ul>
+</nav>
+  </div>
+</details>
+
+          </div>
+        </div>
+      
+      <div class="min-w-0 min-h-0 max-w-prose grow">
+        <p>This post explains how tensor model parallelism and sequence parallelism work especially on attention layer, and how they are different.</p>
+<h1 id="backgrounds" class="relative group">Backgrounds <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#backgrounds" aria-label="Anchor">#</a></span></h1>
+<h2 id="attention-layer" class="relative group">Attention Layer <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#attention-layer" aria-label="Anchor">#</a></span></h2>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained.png" alt="" />
+      
+    </figure>
+  
+
+
+Attention calculation with a single sequence with <code>T</code> number of tokens. <code>d_attn</code> is <code>config.embed_dim // config.num_attention_heads</code> Bold boxes are model parameters, while others are temporarily created tensors.
+All the other terms are borrowed from <a href="https://github.com/huggingface/transformers/blob/v4.36.2/src/transformers/models/opt/configuration_opt.py#L32"   target="_blank">HuggingFace Transformers OPT config</a>. <a href="https://github.com/huggingface/transformers/blob/v4.36.2/src/transformers/models/opt/modeling_opt.py#L164-L282"   target="_blank">Implementation of computing attention</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">OPTAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">enable_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">enable_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">enable_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">enable_bias</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+        <span class="c1"># hidden states is an input tenor of Attention layer</span>
+        <span class="c1"># Calculate Q, K, and V with linear projections to the input</span>
+        <span class="n">query_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span> <span class="c1"># apply self._shape() later</span>
+        <span class="n">key_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span> <span class="c1"># apply self._shape() later</span>
+        <span class="n">value_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span> <span class="c1"># apply self._shape() later</span>
+
+        <span class="c1"># QK^T</span>
+        <span class="n">attn_weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">query_states</span><span class="p">,</span> <span class="n">key_states</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="c1"># apply mask if exists</span>
+
+        <span class="c1"># softmax</span>
+        <span class="n">attn_weights</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">attn_weights</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+        <span class="c1"># dropout</span>
+        <span class="n">attn_probs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">attn_weights</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+        <span class="c1"># multiply by V</span>
+        <span class="n">attn_output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">attn_probs</span><span class="p">,</span> <span class="n">value_states</span><span class="p">)</span>
+
+        <span class="o">...</span>
+
+        <span class="c1"># final linear</span>
+        <span class="n">attn_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span><span class="p">(</span><span class="n">attn_output</span><span class="p">)</span>
+</code></pre></div><p>$$\text{Attention}(Q, K, V)=\text{softmax}(\frac{QK^T}{\sqrt{d^k}})V$$</p>
+<p>Attention is to calculate the probability of the next token, given all the previous tokens in the context.</p>
+<h2 id="how-calculating-attention-in-training-and-inference-is-different" class="relative group">How Calculating Attention in Training and Inference is Different? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#how-calculating-attention-in-training-and-inference-is-different" aria-label="Anchor">#</a></span></h2>
+<p>Calculating attention itself is the same ($\text{Attention}(Q, K, V)=\text{softmax}((QK^T)/\sqrt{d^k})V$).
+Then how calculating multiple tokens can be parallelized in training and prefill stage of inference, while decode stage in inference can&rsquo;t?
+This is because, for each token in training and prefill, all previous tokens are already given as its context.
+In training or prefill stage, there is no KV cache; thus K and V for every tokens need to be computed.
+For example, a-th token needs to compute K and V for all <code>[0...a-1]</code>-th tokens, and its context length Ta is a, while b-th token has context length is b.</p>
+<p>If a &lt; b, it is true that we can utilize K and V for a-th token as cache during calculating K and V of b-th token; but it adds dependecy between token computation, so it is typical to just utilize massive parallelization of accelerators and independently calculate each tokens' K and V in parallel even though it introduces a lot of redundancy.</p>
+<p>For decode stage in inference, on the other hand, generates one token per iteration, and K and V for previous tokens are already computed and stored as a cache; thus redundant computation is unncessary.
+But, we do not know which token will be chosen for the current location, therefore we cannot prefetch K and V calculation for all future tokens.</p>
+<h2 id="difference-in-sequence-token-and-batch" class="relative group">Difference in Sequence, Token, and Batch <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#difference-in-sequence-token-and-batch" aria-label="Anchor">#</a></span></h2>
+<p>To understand differences between tensor parallelism and sequence parallelism, you need to know first what are sequence and token.
+Sequence is an input text, which consists of multiple tokens.
+Even in a single batch, an input sequence includes several tokens which can be parallelized via sequence parallelism.</p>
+<p>This can be applied in training, or prefill stage of inference. For decode stage of inference, only one token is given per iteration; unless multiple requests are batched, sequence parallelism cannot be applied in decode stage.</p>
+<p>Note that all examples in this post uses batch size 1. the dimension of <code>hidden_states</code> :<code>[T, embed_dim]</code> is actually <code>[1, T, embed_dim]</code>, where batch size is 1, and token size is <code>T</code>.
+For input with dimension <code>[B, T, embed_dim]</code>:</p>
+<ul>
+<li>Data parallelism with DP degree <code>d</code>: input dim per GPU will be <code>[B/d, T, embed_dim]</code></li>
+<li>Sequence parallelism with SP degree <code>s</code>: input dim per GPU will be <code>[B, T/s, embed_dim]</code></li>
+</ul>
+<p>Both DP and SP can be applied together, making 2D parallelism for input and 4D parallleism for the entire parallel execution (data parallelism, sequence parallelism, pipeline model parallelism, and tensor model parallelism).</p>
+<h1 id="tensor-model-parallelism" class="relative group">Tensor Model Parallelism <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#tensor-model-parallelism" aria-label="Anchor">#</a></span></h1>
+<p>Tensor model parallelism splits and distributes model parameters into multiple GPUs, thus their FLOPs are divided.
+Model parameters in attention are included in <code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code>, and <code>out_proj</code>.
+Based on their location in matrix multiplication, they are sliced vertically (<code>ColumnParallelLinear</code>) or horizontally (<code>RowParallelLinear</code>).
+This 1D tensor model parallleism is first introduced by <a href="https://github.com/NVIDIA/Megatron-LM"   target="_blank">Megatron-LM</a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> and widely adopted in both training and inference, including HuggingFace ML serving system <a href="https://github.com/huggingface/text-generation-inference"   target="_blank">TGI</a>.</p>
+<p><a href="https://github.com/huggingface/text-generation-inference/blob/v1.3.4/server/text_generation_server/models/custom_modeling/opt_modeling.py"   target="_blank">Implementation of OPTAttention in TGI</a> supports tensor parallelism as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">OPTAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span> <span class="o">=</span> <span class="n">TensorParallelColumnLinear</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">.q_proj&#34;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span> <span class="o">=</span> <span class="n">TensorParallelColumnLinear</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">.k_proj&#34;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span> <span class="o">=</span> <span class="n">TensorParallelColumnLinear</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">.v_proj&#34;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">TensorParallelRowLinear</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">.out_proj&#34;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span>
+        <span class="p">)</span>
+</code></pre></div><p>According to the implementation, <code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code> are <strong>column</strong> parallelized, and <code>out_proj</code> is <strong>row</strong> parallelized. Let&rsquo;s see why.</p>
+<p>In calculating Q, K, and V, tensor parallelism is typically done by splitting the number of heads with the number of GPUs.
+For example, OPT-175b model has 96 heads in each decoder layer. If we use tensor parallelism with 8 GPUs, then each GPU computes 12 heads, instead of all 96 heads.
+Example of <a href="https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/model_executor/layers/linear.py#L316"   target="_blank">vllm</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">QKVParallelLinear</span><span class="p">(</span><span class="n">ColumnParallelLinear</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+
+        <span class="c1"># Divide the weight matrix along the last dimension.</span>
+        <span class="n">tp_size</span> <span class="o">=</span> <span class="n">get_tensor_model_parallel_world_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_num_heads</span><span class="p">,</span> <span class="n">tp_size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tp_size</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_num_kv_heads</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_kv_heads</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_kv_head_replicas</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="n">tp_size</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">total_num_kv_heads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_kv_heads</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_num_kv_heads</span><span class="p">,</span> <span class="n">tp_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_kv_head_replicas</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div><p>Because tensors per head are assigned in columns, it is natural to use <code>ColumnParallelLinear</code> to parallelize Q, K, and V linear projection matrices.</p>
+<p>For <code>out_proj</code>, it is the last matrix to be multiplied; and to make dimension suitable for matrix multiplication, it is split in row-wise.</p>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained_tp.png" alt="" />
+      
+    </figure>
+  
+
+
+Tensor parallleism with TP degree 2 (2 GPUs). The result <code>attn_output</code>, although both GPUs have the output with correct dimension, their computation result is distributed; hence, call <code>all_reduce</code> on <code>attn_output</code>. It is implemented in <code>RowParallelLinear</code>&rsquo;s <a href="https://github.com/huggingface/text-generation-inference/blob/v1.3.4/server/text_generation_server/utils/layers.py#L473"   target="_blank"><code>forward()</code></a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TensorParallelRowLinear</span><span class="p">(</span><span class="n">SuperLayer</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">reduce</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_group</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">reduce</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">grou</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">process_group</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+</code></pre></div><h1 id="sequence-parallelism" class="relative group">Sequence Parallelism <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#sequence-parallelism" aria-label="Anchor">#</a></span></h1>
+<p>Unlike tensor model parallelism, sequence parallelism splits input data (<code>hidden_states</code>).
+Data parallelism does also split input to mini-batch, but sequence parallelism has an advantage that it can even split a single batch. It introduced in several papers <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+<p>Sequence parallelism parallelizes token processing in multiple GPUs. As it partitions inputs, each GPU has the entire copy of model parameters (of course, if tensor model parallelism is applied together, model parameters are partitioned by TP).</p>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained_sp.png" alt="" />
+      
+    </figure>
+  
+
+
+Note again, this example uses batch size 1. If multiple sequences are batched, tokens in all sequences in the batch are partitioned.
+The number of tokens can be different for sequences; it is typical to <em>pad</em> short sentences using <code>pad_token</code> to make their number of token the same to the largest one.</p>
+<p>Not the entire forward pass is drawn, as we are focusing on attention layer.
+In forward, input tensor <code>hidden_states</code> is just partitioned but needs to be gathered in backward.
+After the last layer, decoder-based models has <code>ln_f</code> LayerNorm layer, which requires the whole output. Before calling it, outputs are gathered.
+Here is an example of <a href="https://github.com/hpcaitech/ColossalAI/blob/v0.3.4/colossalai/shardformer/modeling/gpt2.py#L169-L230"   target="_blank">ColossalAI&rsquo;s implementation of GPT</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">gpt2_model_forward</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">input_embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wte</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+    <span class="n">position_embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wpe</span><span class="p">(</span><span class="n">position_ids</span><span class="p">)</span>
+    <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">input_embeds</span> <span class="o">+</span> <span class="n">position_embeds</span>
+    <span class="n">hidden_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span>
+    <span class="o">...</span>
+    
+    <span class="k">if</span> <span class="n">enable_sequence_parallelism</span><span class="p">:</span>
+        <span class="n">hidden_staes</span> <span class="o">=</span> <span class="n">split_forward_gather_backward</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">hidden_states</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">enable_sequence_parallelism</span><span class="p">:</span>
+        <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">gather_forward_split_backward</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+    <span class="n">hidden_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ln_f</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div><section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://dl.acm.org/doi/abs/10.1145/3458817.3476209"   target="_blank">Efficient Large-scale Language Model Training on GPU Clusters using Megatron-LM</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://arxiv.org/abs/2105.13120"   target="_blank">Sequence Parallelism: Long Sequence Training from System Perspective</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://proceedings.mlsys.org/paper_files/paper/2023/hash/e851ca7b43815718fbbac8afb2246bf8-Abstract-mlsys2023.html"   target="_blank">Reducing Activation Recomputation in Large Transformer Models</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://arxiv.org/abs/2310.03294"   target="_blank">LightSeq: Sequence Level Parallelism for Distributed Training of Long Context Transformers</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+    </section>
+    <footer class="pt-8 max-w-prose print:hidden">
+      
+  <div class="flex">
+    
+      
+      
+        
+        <img
+          class="!mt-0 !mb-0 h-24 w-24 rounded-full ltr:mr-4 rtl:ml-4"
+          width="96"
+          height="96"
+          alt="Insu Jang"
+          src="/profile_hufec33d24ce71c5c22cc5620410f7e1d1_126481_192x192_fill_q75_box_smart1.jpg"
+        />
+      
+    
+    <div class="place-self-center">
+      
+        <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+          Author
+        </div>
+        <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+          Insu Jang
+        </div>
+      
+      
+      <div class="text-2xl sm:text-lg">
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500">
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="mailto:insujang@umich.edu"
+          target="_blank"
+          aria-label="Email"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M207.8 20.73c-93.45 18.32-168.7 93.66-187 187.1c-27.64 140.9 68.65 266.2 199.1 285.1c19.01 2.888 36.17-12.26 36.17-31.49l.0001-.6631c0-15.74-11.44-28.88-26.84-31.24c-84.35-12.98-149.2-86.13-149.2-174.2c0-102.9 88.61-185.5 193.4-175.4c91.54 8.869 158.6 91.25 158.6 183.2l0 16.16c0 22.09-17.94 40.05-40 40.05s-40.01-17.96-40.01-40.05v-120.1c0-8.847-7.161-16.02-16.01-16.02l-31.98 .0036c-7.299 0-13.2 4.992-15.12 11.68c-24.85-12.15-54.24-16.38-86.06-5.106c-38.75 13.73-68.12 48.91-73.72 89.64c-9.483 69.01 43.81 128 110.9 128c26.44 0 50.43-9.544 69.59-24.88c24 31.3 65.23 48.69 109.4 37.49C465.2 369.3 496 324.1 495.1 277.2V256.3C495.1 107.1 361.2-9.332 207.8 20.73zM239.1 304.3c-26.47 0-48-21.56-48-48.05s21.53-48.05 48-48.05s48 21.56 48 48.05S266.5 304.3 239.1 304.3z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://www.linkedin.com/in/insujang"
+          target="_blank"
+          aria-label="Linkedin"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://github.com/insujang"
+          target="_blank"
+          aria-label="Github"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+
+  </span>
+
+</a
+        >
+      
+    
+      
+        <a
+          class="px-1 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+          href="https://scholar.google.com/citations?user=U6I8Y98AAAAJ"
+          target="_blank"
+          aria-label="Google-Scholar"
+          rel="me noopener noreferrer"
+          >
+
+  <span class="relative inline-block align-text-bottom icon">
+    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><title>Google Scholar icon</title><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+  </span>
+
+</a
+        >
+      
+    
+  </div>
+
+</div>
+    </div>
+  </div>
+
+
+      
+
+      
+  
+    
+    
+    
+    <div class="pt-8">
+      <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+      <div class="flex justify-between pt-3">
+        <span>
+          
+            <a class="group flex" href="/2024-01-07/llm-inference-continuous-batching-and-pagedattention/">
+              <span
+                class="mr-2 text-neutral-700 transition-transform group-hover:-translate-x-[2px] group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-2 text-neutral-700 transition-transform group-hover:translate-x-[2px] group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
+              <span class="flex flex-col">
+                <span
+                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
+                  >LLM Inference: Continuous Batching and PagedAttention</span
+                >
+                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
+                  
+                    <time datetime="2024-01-07 20:20:00 -0500 EST">Jan 7, 2024</time>
+                  
+                </span>
+              </span>
+            </a>
+          
+        </span>
+        <span>
+          
+        </span>
+      </div>
+    </div>
+  
+
+
+      
+    </footer>
+  </article>
+
+        
+          <div
+            class="pointer-events-none absolute top-[100vh] bottom-0 w-12 ltr:right-0 rtl:left-0"
+          >
+            <a
+              href="#the-top"
+              class="pointer-events-auto sticky top-[calc(100vh-5.5rem)] flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 backdrop-blur hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              &uarr;
+            </a>
+          </div>
+        
+      </main><footer class="py-10 print:hidden">
+  
+  
+  <div class="flex items-center justify-between">
+    <div>
+      
+      
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            &copy;
+            2024
+            Insu Jang
+        </p>
+      
+      
+      
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          
+          
+          Powered by <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500"
+            href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> &amp; <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://git.io/hugo-congo" target="_blank" rel="noopener noreferrer">Congo</a>
+        </p>
+      
+    </div>
+    
+    
+      <div
+        class="ltr:mr-14 rtl:ml-14 cursor-pointer text-sm text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+      >
+        <button id="appearance-switcher" type="button">
+          <div
+            class="flex items-center justify-center w-12 h-12 dark:hidden"
+            title="Switch to dark appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M32 256c0-123.8 100.3-224 223.8-224c11.36 0 29.7 1.668 40.9 3.746c9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3c9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480C132.1 480 32 379.6 32 256z"/></svg>
+
+  </span>
+
+
+          </div>
+          <div
+            class="items-center justify-center hidden w-12 h-12 dark:flex"
+            title="Switch to light appearance"
+          >
+            
+
+  <span class="relative inline-block align-text-bottom icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02 0-95.1 42.98-95.1 95.1S202.1 351.1 256 351.1s95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347L446.1 255.1l63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7l-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89L164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6L12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256l-63.15 91.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7l19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109l109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69 0-127.1-57.31-127.1-127.1c0-70.69 57.31-127.1 127.1-127.1s127.1 57.3 127.1 127.1C383.1 326.7 326.7 383.1 256 383.1z"/></svg>
+
+  </span>
+
+
+          </div>
+        </button>
+      </div>
+    
+  </div>
+  
+  
+</footer>
+
+    </div>
+  </body>
+</html>
