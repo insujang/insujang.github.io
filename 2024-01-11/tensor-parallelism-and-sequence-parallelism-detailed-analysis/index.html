@@ -109,7 +109,7 @@ Backgrounds # Attention Layer #    Attention calculation with a single sequence 
     "keywords": ["dl","parallelism"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1651"
+    "wordCount": "1670"
   }]
   </script>
 
@@ -670,7 +670,8 @@ At each round, a worker computes $QK$ or $SV$ for one key and value, similarly t
   
 
 </p>
-<p>DistAttention drastically reduces redundant computation. If offloads some computation to balance the amount of attention computation.</p>
+<p>DistAttention completely removes redundant computation and offloads some computation to balance the amount of attention computation across workers.
+This offloading is quite clever, since it still doesn&rsquo;t have to compute any Q, K, V redundantly.</p>
 <p>
 
 
