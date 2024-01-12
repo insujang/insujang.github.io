@@ -109,7 +109,7 @@ Backgrounds # Attention Layer #    Attention calculation with a single sequence 
     "keywords": ["dl","parallelism"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1225"
+    "wordCount": "1651"
   }]
   </script>
 
@@ -400,7 +400,12 @@ if (!doNotTrack) {
       </ul>
     </li>
     <li><a href="#tensor-model-parallelism">Tensor Model Parallelism</a></li>
-    <li><a href="#sequence-parallelism">Sequence Parallelism</a></li>
+    <li><a href="#sequence-parallelism">Sequence Parallelism</a>
+      <ul>
+        <li><a href="#ring-self-attention-rsa-sp1">Ring Self-Attention (RSA) </a></li>
+        <li><a href="#distattention-sp3">DistAttention </a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
   </div>
@@ -590,7 +595,99 @@ Here is an example of <a href="https://github.com/hpcaitech/ColossalAI/blob/v0.3
 
     <span class="n">hidden_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ln_f</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span>
     <span class="o">...</span>
-</code></pre></div><section class="footnotes" role="doc-endnotes">
+</code></pre></div><p>Note that, even if the number of tokens are evenly distributed, the amount of computation per worker is different.
+This is because of how attention is computed with key and value.
+Basically, attention is, <strong>given the context with all previous tokens</strong>, to calculate the probability of the next token.
+Therefore, calculating attention for later tokens needs to consider more number of previous tokens, like the figure below:</p>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained_sp_tokens.png" alt="" />
+      
+    </figure>
+  
+
+</p>
+<p>Papers for sequence parallelism try to handle this imbalance problem in various ways.</p>
+<h2 id="ring-self-attention-rsa-sp1" class="relative group">Ring Self-Attention (RSA) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#ring-self-attention-rsa-sp1" aria-label="Anchor">#</a></span></h2>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/ring_self_attention.png" alt="" />
+      
+    </figure>
+  
+
+</p>
+<p>As you can see in the matrix of KV for each query, there are a lot of redundant computation (for key and value for the first <code>The</code>, it is computed 8 times, in every workers).
+RSA instead adopts allgather style approach to minimize redundant computation.
+Each worker <code>n</code> only computes Q, K, and V for its own token <code>q_n, k_n, v_n</code>.</p>
+<p>Let&rsquo;s see an example with 4 workers for simplicity.</p>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained_rsa.png" alt="" />
+      
+    </figure>
+  
+
+</p>
+<p>At round 1, computing $QK^T$ for its own token and transferring its key to the next work happens together.
+At the next round, compute partial attention score ($QK^T$) using its own query and given key ($QK^T$ for T1-T2 means calculating $QK^T$ for query token T1 and key token T2).
+At the last round of K transfer, all workers have all $QK^T$ for every token&rsquo;s key and its own query.</p>
+<p>RSA goes through another set of rounds to transfer V matrices too, and after the second round each worker will have $QK^TV$ for all pair of its own query token and all key tokens; now they can calculate attention for their own query.
+Note that attention only looks at the previous context, partial attentions calculated for future KV are discarded (highlighted as red).
+For example, worker 3 needs <code>attn for brown</code>, which can be calculated by summing partial attention score of The, quick, and brown, utilizes computed $QK^TV$s for <code>brown-The</code>, <code>brown-quick</code>, and <code>brown-brown</code>.</p>
+<p>A clear drawback is that it needs too many communication rounds (<code>2(n-1)</code>), and computations cannot be fused.
+At each round, a worker computes $QK$ or $SV$ for one key and value, similarly to decoding. This cannot fully saturate the GPU cores and leads to underutilization.</p>
+<h2 id="distattention-sp3" class="relative group">DistAttention <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#distattention-sp3" aria-label="Anchor">#</a></span></h2>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained_distattention.png" alt="" />
+      
+    </figure>
+  
+
+</p>
+<p>DistAttention drastically reduces redundant computation. If offloads some computation to balance the amount of attention computation.</p>
+<p>
+
+
+
+  
+  
+  
+    <figure>
+      <img class="my-0 rounded-md" src="/assets/images/240111/attention_explained_distattention_zoom.png" alt="" />
+      
+    </figure>
+  
+
+
+Not only offloading to reduce bubbles, it effectively overlaps comunication and computation that enables to avoid redundant computation of the same Q, K, V matrices.
+It only computes each Q, K, V for all tokens once, and transfers them back and forth to compute attentions.</p>
+<section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
