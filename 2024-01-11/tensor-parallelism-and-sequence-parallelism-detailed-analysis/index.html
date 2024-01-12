@@ -106,7 +106,7 @@ Backgrounds # Attention Layer #    Attention calculation with a single sequence 
     
     "dateModified": "2024-01-11T18:20:00-05:00",
     
-    "keywords": ["dl","parallleism"],
+    "keywords": ["dl","parallelism"],
     
     "mainEntityOfPage": "true",
     "wordCount": "1225"
@@ -363,9 +363,9 @@ if (!doNotTrack) {
             >
           
             <a
-              href="/tags/parallleism/"
+              href="/tags/parallelism/"
               class="rounded-md border border-neutral-200 px-1 py-[1px] hover:border-primary-300 hover:text-primary-700 dark:border-neutral-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
-              >parallleism</a
+              >parallelism</a
             >
           
         
@@ -484,12 +484,12 @@ For input with dimension <code>[B, T, embed_dim]</code>:</p>
 <li>Data parallelism with DP degree <code>d</code>: input dim per GPU will be <code>[B/d, T, embed_dim]</code></li>
 <li>Sequence parallelism with SP degree <code>s</code>: input dim per GPU will be <code>[B, T/s, embed_dim]</code></li>
 </ul>
-<p>Both DP and SP can be applied together, making 2D parallelism for input and 4D parallleism for the entire parallel execution (data parallelism, sequence parallelism, pipeline model parallelism, and tensor model parallelism).</p>
+<p>Both DP and SP can be applied together, making 2D parallelism for input and 4D parallelism for the entire parallel execution (data parallelism, sequence parallelism, pipeline model parallelism, and tensor model parallelism).</p>
 <h1 id="tensor-model-parallelism" class="relative group">Tensor Model Parallelism <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#tensor-model-parallelism" aria-label="Anchor">#</a></span></h1>
 <p>Tensor model parallelism splits and distributes model parameters into multiple GPUs, thus their FLOPs are divided.
 Model parameters in attention are included in <code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code>, and <code>out_proj</code>.
 Based on their location in matrix multiplication, they are sliced vertically (<code>ColumnParallelLinear</code>) or horizontally (<code>RowParallelLinear</code>).
-This 1D tensor model parallleism is first introduced by <a href="https://github.com/NVIDIA/Megatron-LM"   target="_blank">Megatron-LM</a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> and widely adopted in both training and inference, including HuggingFace ML serving system <a href="https://github.com/huggingface/text-generation-inference"   target="_blank">TGI</a>.</p>
+This 1D tensor model parallelism is first introduced by <a href="https://github.com/NVIDIA/Megatron-LM"   target="_blank">Megatron-LM</a> <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> and widely adopted in both training and inference, including HuggingFace ML serving system <a href="https://github.com/huggingface/text-generation-inference"   target="_blank">TGI</a>.</p>
 <p><a href="https://github.com/huggingface/text-generation-inference/blob/v1.3.4/server/text_generation_server/models/custom_modeling/opt_modeling.py"   target="_blank">Implementation of OPTAttention in TGI</a> supports tensor parallelism as:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">OPTAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
@@ -539,13 +539,13 @@ Example of <a href="https://github.com/vllm-project/vllm/blob/v0.2.7/vllm/model_
   
 
 
-Tensor parallleism with TP degree 2 (2 GPUs). The result <code>attn_output</code>, although both GPUs have the output with correct dimension, their computation result is distributed; hence, call <code>all_reduce</code> on <code>attn_output</code>. It is implemented in <code>RowParallelLinear</code>&rsquo;s <a href="https://github.com/huggingface/text-generation-inference/blob/v1.3.4/server/text_generation_server/utils/layers.py#L473"   target="_blank"><code>forward()</code></a>:</p>
+Tensor parallelism with TP degree 2 (2 GPUs). The result <code>attn_output</code>, although both GPUs have the output with correct dimension, their computation result is distributed; hence, call <code>all_reduce</code> on <code>attn_output</code>. It is implemented in <code>RowParallelLinear</code>&rsquo;s <a href="https://github.com/huggingface/text-generation-inference/blob/v1.3.4/server/text_generation_server/utils/layers.py#L473"   target="_blank"><code>forward()</code></a>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TensorParallelRowLinear</span><span class="p">(</span><span class="n">SuperLayer</span><span class="p">):</span>
     <span class="o">...</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">reduce</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_group</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">reduce</span><span class="p">:</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">grou</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">process_group</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">process_group</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
 </code></pre></div><h1 id="sequence-parallelism" class="relative group">Sequence Parallelism <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#sequence-parallelism" aria-label="Anchor">#</a></span></h1>
 <p>Unlike tensor model parallelism, sequence parallelism splits input data (<code>hidden_states</code>).
