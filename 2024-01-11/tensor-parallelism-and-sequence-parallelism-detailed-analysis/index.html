@@ -109,7 +109,7 @@ Backgrounds # Attention Layer #    Attention calculation with a single sequence 
     "keywords": ["dl","parallelism"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1670"
+    "wordCount": "1749"
   }]
   </script>
 
@@ -597,9 +597,9 @@ Here is an example of <a href="https://github.com/hpcaitech/ColossalAI/blob/v0.3
     <span class="o">...</span>
 </code></pre></div><p>Note that, even if the number of tokens are evenly distributed, the amount of computation per worker is different.
 This is because of how attention is computed with key and value.
-Basically, attention is, <strong>given the context with all previous tokens</strong>, to calculate the probability of the next token.
-Therefore, calculating attention for later tokens needs to consider more number of previous tokens, like the figure below:</p>
-<p>
+Basically, attention is, <strong>given the context with all previous tokens</strong>, to calculate the probability of the next token.</p>
+<p>Therefore, calculating attention for later tokens needs to consider more number of previous tokens, like the figure below:
+
 
 
 
@@ -613,7 +613,10 @@ Therefore, calculating attention for later tokens needs to consider more number 
   
 
 </p>
-<p>Papers for sequence parallelism try to handle this imbalance problem in various ways.</p>
+<p>With no sequence parallelism, all Q, K, V calculations and attentions can be done together in a single GPU.
+With sequence parallelism, however, Q, K, and V are distributed and a way of efficient computing distribution is needed.
+For example, if we simply distribute each token to workers (e.g. The to worker 1, quick to worker 2, brown to worker 3, &hellip;), they have imbalanced amount of calculation, leading to inefficiency (later tokens have more amount of computation).
+Therefore, papers for sequence parallelism try to handle this imbalance problem in various ways.</p>
 <h2 id="ring-self-attention-rsa-sp1" class="relative group">Ring Self-Attention (RSA) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#ring-self-attention-rsa-sp1" aria-label="Anchor">#</a></span></h2>
 <p>
 
