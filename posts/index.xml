@@ -6,7 +6,20 @@
     <description>Recent content in Posts on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 11 Jan 2024 18:20:00 -0500</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 21 Jan 2024 11:20:00 -0500</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Flash Attention</title>
+      <link>/2024-01-21/flash-attention/</link>
+      <pubDate>Sun, 21 Jan 2024 11:20:00 -0500</pubDate>
+      
+      <guid>/2024-01-21/flash-attention/</guid>
+      <description>This post explains flash attention 1 2.
+More references are also useful to understand flash attention as well 3 4 5.
+Backgrounds # Attention # $$\text{Attention}(Q, K, V)=\text{softmax}(\frac{QK^T}{\sqrt{d^k}})V$$
+This equation can be implemented as:
+class OPTAttention(nn.Module): def forward(...): # hidden states is an input tenor of Attention layer # Calculate Q, K, and V with linear projections to the input # query_states = self.q_proj(hidden_states) # key_states = self.k_proj(hidden_states) # value_states = self.</description>
+    </item>
+    
     <item>
       <title>Tensor Parallelism and Sequence Parallelism: Detailed Analysis</title>
       <link>/2024-01-11/tensor-parallelism-and-sequence-parallelism-detailed-analysis/</link>
