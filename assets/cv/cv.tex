@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Jul 29, 2023}}
+\fancyfoot[R]{\footnotesize{Last updated: Apr 6, 2024}}
 
 
 \urlstyle{same}
@@ -108,13 +108,13 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
     \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{The University of Michigan} & Ann Arbor, MI, USA \\
       \textit{\small Ph.D. Student in Computer Science and Engineering} & \small Aug 2021 -- Present \\
-      \small Advisor: \href{https://www.mosharaf.com}{Dr. Mosharaf Chowdhury}  \\
+      \small Advisor: \href{https://www.mosharaf.com}{Prof. Mosharaf Chowdhury}  \\
   \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{Korea Advanced Institute of Science and Technology (KAIST)} & Daejeon, Republic of Korea \\
         \textit{\small Master of Science in Computer Science} & \small Mar 2016 -- Feb 2018 \\
-        \small Advisor: \href{http://casys.kaist.ac.kr:8080/~jhuh/}{Dr. Jaehyuk Huh}  \\
+        \small Advisor: \href{http://casys.kaist.ac.kr:8080/~jhuh/}{Prof. Jaehyuk Huh}  \\
         % \multicolumn{2}{X}{\small Thesis: Secure I/O Architecture for Isolated Heterogeneous Computing with Hardware Assisted Trusted Execution Environment} \\
     \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
@@ -127,7 +127,7 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------PUBLICATIONS-----------------
 \section{Publications}
 \begin{enumerate}[leftmargin=*]
-  \item \small \textbf{Insu Jang}, Zhenning Yang, Zhen Zhang, Xin Jin, and Mosharaf Chowdhury. \textbf{``Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates.''} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2023.
+  \item \small \textbf{Insu Jang}, Zhenning Yang, Zhen Zhang, Xin Jin, and Mosharaf Chowdhury. \href{https://dl.acm.org/doi/abs/10.1145/3600006.3613152}{\textbf{``Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates.''}} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2023.
   \item \small Jongyul Kim, \textbf{Insu Jang}, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kostić, Youngjin Kwon, Simon Peter, and Emmett Witchel. \href{https://dl.acm.org/doi/abs/10.1145/3477132.3483565}{\textbf{``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism.''}} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2021. \textbf{Best Paper Award.}
   \item \small \textbf{Insu Jang}, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. \href{https://dl.acm.org/doi/abs/10.1145/3297858.3304021}{\textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''}} \textit{International Conference on Architectural Support for Programming Languages and Operating Systems \textbf{(ASPLOS)}}, April 2019.
 \end{enumerate}
@@ -135,9 +135,11 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
+    \resumeSubheading{Resource Scheduling for Multimodal LLM}{University of Michigan}
+    {Studying efficient resource scheduling for large scale multimodal large language model (MLLM).}{Mar 2024 -- Present}
     \resumeSubheading{Fault Tolerant Distributed Training}{University of Michigan}
     {Studied efficient fault tolerance in large scale distributed training. Implemented Oobleck, a distributed training framework with pre-generated pipeline templates that can recover from failures fast by quickly reinstantiating a pipeline, instead of fully restarting the entire job.
-    Oobleck has been accepted to SOSP'23.}{Sep 2021 -- Present}
+    Oobleck has been published to SOSP'23.}{Sep 2021 -- Present}
     
     \resumeSubheading{Offloading Replicated Storage Transactions to RDMA NIC}{KAIST}
     {Reimplemented Hyperloop to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
@@ -146,7 +148,7 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
     \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{KAIST}
     {Designed a HW-SW codesigned architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
     and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.
-    HIX paper has been published to ASPLOS19.}{Mar 2016 -- Feb 2018}
+    HIX paper has been published to ASPLOS'19.}{Mar 2016 -- Feb 2018}
 
     % \resumeSubheading
     %   {Computer Architecture and Systems Lab, KAIST}{Daejeon, Republic of Korea}
@@ -188,7 +190,7 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %-----------WORK EXPERIENCE-----------------
 \section{Work Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Autopilot Software Engineer Intern}{May 2023 -- Aug 2023}{Tesla Inc.}{Palo Alto, CA, USA}
+    \resumeSubheading{Autopilot Software Engineer Intern (ML Infra)}{May 2023 -- Aug 2023}{Tesla Inc.}{Palo Alto, CA, USA}
 
     \resumeSubheading{System Software Engineer}{Feb 2018 -- Jun 2021}
     {TmaxSoft Inc.}{Seongnam, Republic of Korea}
@@ -268,7 +270,7 @@ System Architecture, Cloud Computing, Distributed Systems, Heterogeneous Computi
 %--------PROGRAMMING SKILLS------------
 \section{Technical Skills}
  \resumeSubHeadingListStart
-  \resumeItem{Languages}{C, C++20, Python, Go, Markdown, \LaTeX}
+  \resumeItem{Languages}{C, C++, Python, Go, Markdown, \LaTeX}
   \resumeItem{Frameworks}{PyTorch, DeepSpeed, CUDA, Intel SGX, Kubernetes, RDMA, Ceph, Linux, QEMU, KVM}
  \resumeSubHeadingListEnd
 
