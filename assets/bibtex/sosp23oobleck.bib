@@ -1,0 +1,17 @@
+@inproceedings{10.1145/3600006.3613152,
+author = {Jang, Insu and Yang, Zhenning and Zhang, Zhen and Jin, Xin and Chowdhury, Mosharaf},
+title = {Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates},
+year = {2023},
+isbn = {9798400702297},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3600006.3613152},
+doi = {10.1145/3600006.3613152},
+abstract = {Oobleck enables resilient distributed training of large DNN models with guaranteed fault tolerance. It takes a planning-execution co-design approach, where it first generates a set of heterogeneous pipeline templates and instantiates at least f + 1 logically equivalent pipeline replicas to tolerate any f simultaneous failures. During execution, it relies on already-replicated model states across the replicas to provide fast recovery. Oobleck provably guarantees that some combination of the initially created pipeline templates can be used to cover all available resources after f or fewer simultaneous failures, thereby avoiding resource idling at all times. Evaluation on large DNN models with billions of parameters shows that Oobleck provides consistently high throughput, and it outperforms state-of-the-art fault tolerance solutions like Bamboo and Varuna by up to 13.9\texttimes{}.},
+booktitle = {Proceedings of the 29th Symposium on Operating Systems Principles},
+pages = {382–395},
+numpages = {14},
+keywords = {pipeline template, hybrid parallelism, distributed training, fault tolerant training},
+location = {<conf-loc>, <city>Koblenz</city>, <country>Germany</country>, </conf-loc>},
+series = {SOSP '23}
+}
