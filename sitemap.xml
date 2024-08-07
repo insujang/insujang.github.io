@@ -5,7 +5,21 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2024-01-21T11:20:00-05:00</lastmod>
+    <lastmod>2024-08-05T22:00:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/news/</loc>
+    <lastmod>2024-08-05T22:00:00-04:00</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>/news/20240805-perseus/</loc>
+    <lastmod>2024-08-05T22:00:00-04:00</lastmod>
   </url>
   
   
@@ -76,13 +90,6 @@
   <url>
     <loc>/2024-01-07/llm-inference-autoregressive-generation-and-attention-kv-cache/</loc>
     <lastmod>2024-01-07T18:20:00-05:00</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>/news/</loc>
-    <lastmod>2023-07-14T15:45:00-04:00</lastmod>
   </url>
   
   
