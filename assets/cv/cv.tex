@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Aug 22, 2024}}
+\fancyfoot[R]{\footnotesize{Last updated: Mar 16, 2025}}
 
 
 \urlstyle{same}
@@ -74,8 +74,15 @@
       \small#3 & \small #4 \\
     \end{tabularx}\vspace{-3pt}
 }
+\newcommand{\resumeSubheadingFewerItems}[2]{
+  \vspace{-1pt}\item
+    \begin{tabularx}{0.97\textwidth}[t]{X@{\hspace{20pt}}r}
+      \textbf{#1} & #2 \\
+    \end{tabularx}\vspace{-3pt}
+}
 
 \newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-5pt}}
+\newcommand{\resumeSubItemWithTime}[2]{\item\small{{#1 \hfill #2}\vspace{-5pt}}}
 
 \renewcommand{\labelitemii}{$\circ$}
 \renewcommand{\cellalign}{l}
@@ -99,27 +106,27 @@
 
 
 \section{Research Interests}
-System Architecture, Distributed Systems, Heterogeneous Computing, Systems for ML
+Systems for ML, Efficient ML, Distributed ML, HW-SW Co-design
 
 %-----------EDUCATION-----------------
 \section{Education}
   \resumeSubHeadingListStart
   \vspace{-1pt}\item
     \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{The University of Michigan} & \small Aug 2021 -- Present \\ 
+      \href{https://umich.edu}{\textbf{The University of Michigan}} & \small Aug 2021 -- Present \\ 
       \textit{\small Ph.D. Candidate in Computer Science and Engineering} & \small Ann Arbor, MI, USA \\
       \small Advisor: \href{https://www.mosharaf.com}{Prof. Mosharaf Chowdhury}  \\
   \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-        \textbf{Korea Advanced Institute of Science and Technology (KAIST)} & \small Mar 2016 -- Feb 2018 \\
+        \href{https://www.kaist.ac.kr/en/}{\textbf{Korea Advanced Institute of Science and Technology (KAIST)}} & \small Mar 2016 -- Feb 2018 \\
         \textit{\small M.Sc. in Computer Science} & \small Daejeon, Republic of Korea \\
         \small Advisor: \href{https://jaehyuk-huh.github.io/}{Prof. Jaehyuk Huh}  \\
         % \multicolumn{2}{X}{\small Thesis: Secure I/O Architecture for Isolated Heterogeneous Computing with Hardware Assisted Trusted Execution Environment} \\
     \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
       \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-        \textbf{Sungkyunkwan University (SKKU)} & \small Mar 2011 -- Feb 2016 \\
+        \href{https://www.skku.edu/eng/}{\textbf{Sungkyunkwan University (SKKU)}} & \small Mar 2011 -- Feb 2016 \\
         \textit{\small B.Sc. in Computer Engineering} & \small Seoul, Republic of Korea \\
     \end{tabularx}\vspace{-5pt}
   \resumeSubHeadingListEnd
@@ -127,29 +134,46 @@ System Architecture, Distributed Systems, Heterogeneous Computing, Systems for M
 %-----------PUBLICATIONS-----------------
 \section{Publications}
 \begin{enumerate}[leftmargin=*]
-  \item \small Jae-Won Chung, Yile Gu, \textbf{Insu Jang}, Luoxi Meng, Nikhil Bansal, and Mosharaf Chowdhury. \textbf{``Perseus: Reducing Energy Bloat in Large Model Training.''} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, November 2024.
-  \item \small \textbf{Insu Jang}, Zhenning Yang, Zhen Zhang, Xin Jin, and Mosharaf Chowdhury. \href{https://dl.acm.org/doi/abs/10.1145/3600006.3613152}{\textbf{``Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates.''}} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2023.
-  \item \small Jongyul Kim, \textbf{Insu Jang}, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kostić, Youngjin Kwon, Simon Peter, and Emmett Witchel. \href{https://dl.acm.org/doi/abs/10.1145/3477132.3483565}{\textbf{``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism.''}} \textit{ACM Symposium on Operating Systems Principles \textbf{(SOSP)}}, October 2021. \textbf{Best Paper Award.}
-  \item \small \textbf{Insu Jang}, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, and Jaehyuk Huh. \href{https://dl.acm.org/doi/abs/10.1145/3297858.3304021}{\textbf{``Heterogeneous Isolated Execution for Commodity GPUs.''}} \textit{International Conference on Architectural Support for Programming Languages and Operating Systems \textbf{(ASPLOS)}}, April 2019.
+  \item \small \href{https://arxiv.org/abs/2503.11367}{\textbf{Cornstarch: Distributed Multimodal Training Must Be Multimodality-Aware}} \\
+  \textbf{Insu Jang}, Runyu Lu, Nikhil Bansal, Ang Chen, Mosharaf Chowdhury \\
+  arXiv Preprint 2025
+  \item \small \href{https://arxiv.org/abs/2502.00241}{\textbf{Mordal: Automated Pretrained Model Selection for Vision Language Models}} \\
+  Shiqi He, \textbf{Insu Jang}, Mosharaf Chowdhury \\
+  arXiv Preprint 2025
+  \item \small \href{https://dl.acm.org/doi/abs/10.1145/3694715.3695970}{\textbf{Reducing Energy Bloat in Large Model Training}} \\
+  Jae-Won Chung, Yile Gu, \textbf{Insu Jang}, Luoxi Meng, Nikhil Bansal, Mosharaf Chowdhury \\
+  ACM SOSP 2024
+  \item \small \href{https://dl.acm.org/doi/abs/10.1145/3600006.3613152}{\textbf{Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates}} \\
+  \textbf{Insu Jang}, Zhenning Yang, Zhen Zhang, Xin Jin, Mosharaf Chowdhury \\
+  ACM SOSP 2023
+  \item \small \href{https://dl.acm.org/doi/abs/10.1145/3477132.3483565}{\textbf{LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism}} \\
+  Jongyul Kim, \textbf{Insu Jang}, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kostić, Youngjin Kwon, Simon Peter, Emmett Witchel \\
+  ACM SOSP 2021 -- \textbf{Best Paper Award!}
+  \item \small \href{https://dl.acm.org/doi/abs/10.1145/3297858.3304021}{\textbf{Heterogeneous Isolated Execution for Commodity GPUs}} \\
+  \textbf{Insu Jang}, Adrian Tang, Taehoon Kim, Simha Sethumadhavan, Jaehyuk Huh \\
+  ACM ASPLOS 2019
 \end{enumerate}
 
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Resource Scheduling for Multimodal LLM}{Jan 2024 -- Present}
-    {Studying efficient resource scheduling for large scale multimodal large language model (MLLM).}{University of Michigan}
-    \resumeSubheading{Fault Tolerant Distributed Training}{Sep 2021 -- Oct 2023}
-    {Studied efficient fault tolerance in large scale distributed training. Implemented Oobleck, a distributed training framework with pre-generated pipeline templates that can recover from failures fast by quickly reinstantiating a pipeline, instead of fully restarting the entire job.
-    Oobleck has been published to SOSP'23.}{University of Michigan}
-    
-    \resumeSubheading{Offloading Replicated Storage Transactions to RDMA NIC}{Jan 2020 -- Jul 2020}
-    {Reimplemented Hyperloop to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
-    Studied Infiniband RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload. LineFS paper has been published to SOSP'21 and won the best paper award.}{KAIST}
+    \resumeSubheading{Resource Scheduling for Multimodal LLM}{Jan 2024 -- Present}{
+      \href{https://github.com/cornstarch-org/Cornstarch}{\textbf{Cornstarch}}: A distributed multimodal LLM training framework. It focuses on unique characteristics of multimodal LLMs when it is distributed across multiple GPUs.
+      Exploiting the characteristics, Cornstarch introduces novel scheduling insights: for balanced end-to-end execution, you need imbalance in parallelization.
+    }{University of Michigan}
+    % {\resumeSubHeadingListStart
+    % \vspace{-15pt} \item{Cornstarch: efficient resource scheduling for large scale multimodal large language model (MLLM) in training and serving.}\item{Cornserve:}\resumeSubHeadingListEnd}{University of Michigan}
 
-    \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{Mar 2016 -- Feb 2018}
-    {Designed a HW-SW codesigned architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
-    and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.
-    HIX paper has been published to ASPLOS'19.}{KAIST}
+    \resumeSubheading{Fault Tolerant Distributed ML Training}{Sep 2021 -- Oct 2023}
+    {\href{https://github.com/SymbioticLab/Oobleck}{\textbf{Oobleck}}: An efficient fault tolerance in large scale distributed training. Oobleck introduces a groundbreaking way of fault tolerance ML; it exploits model states redundancy in data parallelism to recover lost states to avoid restart from the checkpoint, and utilizes every available GPUs by deploying heterogeneous pipeline parallel replicas. Oobleck introduces pipeline template for quick reconfiguration.}{University of Michigan}
+    
+    \resumeSubheading{Offloading Operations to RDMA NIC}{Jan 2020 -- Jul 2020}
+    {\href{https://github.com/casys-kaist/LineFS}{\textbf{LineFS}}: Reimplemented \href{https://dl.acm.org/doi/abs/10.1145/3230543.3230572}{Hyperloop} to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
+    Studied RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload.}{KAIST}
+
+    \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{April 2017 -- Oct 2018}
+    {\textbf{HIX}: Designed a HW-SW co-design architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
+    and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.}{KAIST}
 
     % \resumeSubheading
     %   {Computer Architecture and Systems Lab, KAIST}{Daejeon, Republic of Korea}
@@ -191,19 +215,20 @@ System Architecture, Distributed Systems, Heterogeneous Computing, Systems for M
 %-----------WORK EXPERIENCE-----------------
 \section{Work Experience}
   \resumeSubHeadingListStart
+    \resumeSubheading{Software Engineer Intern}{May 2025 -- Aug 2025}{Google}{Sunnyvale, CA, USA}
     \resumeSubheading{Autopilot Software Engineer Intern (ML Infra)}{May 2023 -- Aug 2023}{Tesla Inc.}{Palo Alto, CA, USA}
+    \resumeItemListStart
+      \resumeItem{Straggler detection}{Design core algorithm of detecting stragglers in distributed ML training.}
+      \resumeItem{Production deployment}{Implement, deploy, and integrate straggler detection algorithm into the infrastructure. Identified and helped fix several issues.}
+    \resumeItemListEnd
 
     \resumeSubheading{System Software Engineer \footnotesize{-- Fulfillment of Military Obligations}}{Feb 2018 -- Jun 2021}
     {TmaxSoft Inc.}{Seongnam, Republic of Korea}
-
-    \resumeSubheading{Research Intern}{Jan 2016 -- Feb 2016}
-    {Electronics and Telecommunications Research Institute (ETRI)}{Daejeon, Republic of Korea}
-
-    \resumeSubheading{Research Intern}{Jul 2015 -- Aug 2015}
-    {Advanced Institute of Convergence Technology (AICT)}{Suwon, Republic of Korea}
-
-    \resumeSubheading{Student Member}{Jan 2013 -- Apr 2014}
-    {Samsung Software Membership \footnotesize{(Student Program of Samsung Electronics)}}{Suwon, Republic of Korea}
+    \resumeItemListStart
+      \resumeItem{Network subsystem}{Worked on implementing a network subsystem for TmaxOS.}
+      \resumeItem{Virtualization}{Worked on researching virtualization technologies to improve I/O performance.}
+      \resumeItem{Ceph \& Kubernetes analysis}{Worked on analyzing Ceph distributed storage system to improve cloud storage performance.}
+    \resumeItemListEnd
 
     % \resumeSubheading{TmaxSoft Inc.}{Seongnam, Republic of Korea}
     % {}{Feb 2018 -- Jun 2021}
@@ -245,21 +270,27 @@ System Architecture, Distributed Systems, Heterogeneous Computing, Systems for M
     % % \resumeItemListEnd
   \resumeSubHeadingListEnd
 
-\section{Teaching Experience}
+\section{Teaching}
   \resumeSubHeadingListStart
-    \resumeSubheading{Graduate Student Instructor (GSI)}{Fall 2024}
-    {CSE585: Advanced Scalable Systems for Generative AI}{University of Michigan}
-    % \resumeSubheading{Teaching Assistant}{University of Michigan}
-    % {EECS 482: Introduction to Operating Systems}{Winter 2022}
-    \resumeSubheading{Teaching Assistant}{Spring 2017}
-    {CS230: System Programming}{KAIST}
+    \resumeSubItemWithTime{TA -- CSE585 Advanced Scalable Systems for Generative AI, The University of Michigan}{Fall 2024}
+    \resumeSubItemWithTime{TA -- CS230 System Programming, KAIST}{Spring 2017}
   \resumeSubHeadingListEnd
+
+\section{Mentoring}
+  \resumeSubHeadingListStart
+  \resumeSubItem{Runyu Lu}{PhD Student @ UM CSE}
+  \resumeSubItem{Kevin Xue}{PhD Student @ UM CSE}
+  \resumeSubItem{Minkyoung Cho}{PhD Student @ UM CSE}
+    \resumeSubItem{Vatsal Joshi}{MS Student @ UM CSE}
+    \resumeSubItem{Luke Zhu}{MS Student @ UM CSE $\rightarrow$ Tesla}
+  \resumeSubHeadingListEnd
+
 
 %-----------AWARDS-----------------
 \section{Honors and Awards}
   \resumeSubHeadingListStart
     \resumeSubheading{Best Paper Award}{Oct 2021}
-    {\makecell{``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism'' \\ The 28th ACM Symposium on Operating Systems Principles (SOSP)}}{}
+    {``LineFS: Efficient SmartNIC Offload of a Distributed File System with Pipeline Parallelism''}{}
     \resumeSubheading{Richard H. Orenstein Fellowship in Memory of Murray Orenstein}{Aug 2021}
     {Department of Electrical Engineering and Computer Science, The University of Michigan}{}
     \resumeSubheading{Korea National Scholarship}{Mar 2016}
@@ -279,11 +310,11 @@ System Architecture, Distributed Systems, Heterogeneous Computing, Systems for M
 
 %
 %--------PROGRAMMING SKILLS------------
-% \section{Technical Skills}
-%  \resumeSubHeadingListStart
-%   \resumeItem{Languages}{C, C++, Python, Go, Markdown, \LaTeX}
-%   \resumeItem{Frameworks}{PyTorch, DeepSpeed, CUDA, Intel SGX, Kubernetes, RDMA, Ceph, Linux, QEMU, KVM}
-%  \resumeSubHeadingListEnd
+\section{Technical Skills}
+ \resumeSubHeadingListStart
+  \resumeItem{Languages}{Python, C++, Rust, Triton, English (fluent), Korean (native)}
+  \resumeItem{Tools and Frameworks}{PyTorch, Cornstarch, Megatron-LM, DeepSpeed, ColossalAI, RDMA}
+ \resumeSubHeadingListEnd
 
 % \section{References}
 % Available upon request.

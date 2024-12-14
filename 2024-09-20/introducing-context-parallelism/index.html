@@ -20,8 +20,8 @@
   <title>Introducing Context Parallelism &middot; Better Tomorrow with Computer Science</title>
     <meta name="title" content="Introducing Context Parallelism &middot; Better Tomorrow with Computer Science" />
   
-  <meta name="description" content="In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works.
-What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute $QK^T$, apply mask." />
+  <meta name="description" content="In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.
+What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute QK^T, apply mask." />
   
   
   
@@ -71,8 +71,8 @@ What are the Problems of Early Sequence Parallelism Works? #    Both works follo
   
   
   <meta property="og:title" content="Introducing Context Parallelism" />
-<meta property="og:description" content="In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works.
-What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute $QK^T$, apply mask." />
+<meta property="og:description" content="In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.
+What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute QK^T, apply mask." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2024-09-20/introducing-context-parallelism/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-09-20T10:32:00-04:00" />
@@ -81,8 +81,8 @@ What are the Problems of Early Sequence Parallelism Works? #    Both works follo
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Introducing Context Parallelism"/>
-<meta name="twitter:description" content="In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works.
-What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute $QK^T$, apply mask."/>
+<meta name="twitter:description" content="In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.
+What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute QK^T, apply mask."/>
 
   
   <script type="application/ld+json">
@@ -93,7 +93,7 @@ What are the Problems of Early Sequence Parallelism Works? #    Both works follo
     "name": "Introducing Context Parallelism",
     "headline": "Introducing Context Parallelism",
     
-    "abstract": "In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn\u0026rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works.\nWhat are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute $QK^T$, apply mask.",
+    "abstract": "In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn\u0026rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.\nWhat are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute QK^T, apply mask.",
     "inLanguage": "en",
     "url" : "\/2024-09-20\/introducing-context-parallelism\/",
     "author" : {
@@ -109,7 +109,7 @@ What are the Problems of Early Sequence Parallelism Works? #    Both works follo
     "keywords": ["dl","parallelism"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1086"
+    "wordCount": "1089"
   }]
   </script>
 
@@ -415,7 +415,7 @@ if (!doNotTrack) {
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>In <a href="/2024-01-11/tensor-parallelism-and-sequence-parallelism-detailed-analysis/"  >the previous analysis of sequence parallelism</a>, I covered two papers <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.
 Those are early works about sequence parallelism and didn&rsquo;t get attention as there was low demand for context parallelism.
-After LLMs are required to have longer context support, new papers that tackle the problems of such early works.</p>
+After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.</p>
 <h1 id="what-are-the-problems-of-early-sequence-parallelism-works" class="relative group">What are the Problems of Early Sequence Parallelism Works? <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#what-are-the-problems-of-early-sequence-parallelism-works" aria-label="Anchor">#</a></span></h1>
 <p>
 
@@ -431,7 +431,7 @@ After LLMs are required to have longer context support, new papers that tackle t
   
 
 </p>
-<p>Both works follow the traditional attention computation: compute $QK^T$, apply mask. softmax, and dropout, then multiply by value to create attention score.
+<p>Both works follow the traditional attention computation: compute <code>QK^T</code>, apply mask. softmax, and dropout, then multiply by value to create attention score.
 Here, we need a temporary buffer to hold attention weights (TxT), which is huge when we try to compute attention for long sequences.</p>
 <p>FlashAttention <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> was introduced to solve the exact same problem by using online softmax <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>, gradually aggregating local attention results to compute the final attention results.</p>
 <p>Recent SP works are compatible with FlashAttention, distinguishing themselves from early SP works.</p>
@@ -773,7 +773,7 @@ These are main motivations to combine them together to exploit their advantages.
       
         <p class="text-sm text-neutral-500 dark:text-neutral-400">
             &copy;
-            2024
+            2025
             Insu Jang
         </p>
       
