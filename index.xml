@@ -13,8 +13,8 @@
       <pubDate>Fri, 20 Sep 2024 10:32:00 -0400</pubDate>
       
       <guid>/2024-09-20/introducing-context-parallelism/</guid>
-      <description>In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&amp;rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works.
-What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute $QK^T$, apply mask.</description>
+      <description>In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&amp;rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.
+What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute QK^T, apply mask.</description>
     </item>
     
     <item>
