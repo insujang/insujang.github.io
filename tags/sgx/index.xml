@@ -27,7 +27,7 @@ Intel SGX provides protections data only if it is in the enclave, part of main m
       <description>In the previous post, I showed how to link a trusted function that can be called insdie the enclave.
 However, Intel SGX provides a way to import EDL to make a library have an ECALL. The post from Intel is [here].
 1. Implementing a trusted SGX library # As we do in the previous post, make a trusted library.
-   {: .center-image}
+{: .center-image}
 So our simple trusted SGX library has a function named ecall_testlib_sample.</description>
     </item>
     
@@ -39,7 +39,7 @@ So our simple trusted SGX library has a function named ecall_testlib_sample.</de
       <guid>/2017-05-31/implementing-and-using-custom-intel-sgx-trusted-library/</guid>
       <description>Intel SGX Trusted Library # Trusted libraries are libraries that are linked to a SGX program, and used inside an enclave. Hence, it should follow SGX enclave restrictions to be used.
 According to Intel SGX SDK document, restrictions are as follow.
- Trusted libraries are static libraries that linked with the enclave binary. This functions/objects can only be used from within the enclave. (=ECALL cannot be implemented in a library) We should not link the enclave with any trusted library including C/C++ standard libraries.</description>
+Trusted libraries are static libraries that linked with the enclave binary. This functions/objects can only be used from within the enclave. (=ECALL cannot be implemented in a library) We should not link the enclave with any trusted library including C/C++ standard libraries.</description>
     </item>
     
     <item>
@@ -48,9 +48,10 @@ According to Intel SGX SDK document, restrictions are as follow.
       <pubDate>Fri, 21 Apr 2017 20:36:41 +0900</pubDate>
       
       <guid>/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</guid>
-      <description>Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1
-  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
-  Software specifies the leaf function by setting the appropriate value in the register EAX as input.</description>
+      <description>Environment # Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x) 1. ENCLS # SGX Programming Reference, Section 5.2.1
+ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+Software specifies the leaf function by setting the appropriate value in the register EAX as input.
+Example) Instruction = ENCLS, EAX = 0x0: ECREATE Example) Instruction = ENCLS, EAX = 0x1: EADD All leaf functions are defined in SGX programming reference, and linux-sgx-driver (/linux-sgx-driver/isgx_arch.</description>
     </item>
     
     <item>
@@ -59,7 +60,7 @@ According to Intel SGX SDK document, restrictions are as follow.
       <pubDate>Wed, 05 Apr 2017 22:13:25 +0900</pubDate>
       
       <guid>/2017-04-05/intel-sgx-instructions-in-enclave-initialization/</guid>
-      <description>1. ECREATE #  [Intel SGX Explained p63] Section 5.3.1. Creation [Programming References p21] Section 5.3. ECREATE  An enclave is born when the system software issues the ECREATE instruction, which turns a free EPC page into the SECS for the new enclave.
+      <description>1. ECREATE # [Intel SGX Explained p63] Section 5.3.1. Creation [Programming References p21] Section 5.3. ECREATE An enclave is born when the system software issues the ECREATE instruction, which turns a free EPC page into the SECS for the new enclave.
 ECREATE copies an SECS structure outside the EPC into an SECS page inside the EPC. The internal structure of SECS is not accessible to software.
 Software sets the following fields in the source structure: SECS:BASEADDR, SECS:SIZE, and ATTRIBUTES.</description>
     </item>
@@ -71,8 +72,8 @@ Software sets the following fields in the source structure: SECS:BASEADDR, SECS:
       
       <guid>/2017-04-03/intel-sgx-protection-mechanism/</guid>
       <description>All Figure numbers are same with those in the paper.
-Glossary #  PMH: Page Miss Handler. MMU: Memory Management Unit. TLB: Translation Look-aside Buffer. FSM: Finite State Machine. EPC: Enclave Page Cache. EPCM: Enclave Page Cache Map. PRM: Processor Reserved Memory. ELRANGE: Enclave Linear Address Range.  Address Translation # Concepts #  Section 2.5.1 Address Translation Concepts
- System software relies on the CPU&amp;rsquo;s address translation mechanism for implementing isolation among less privileged pieces of software.</description>
+Glossary # PMH: Page Miss Handler. MMU: Memory Management Unit. TLB: Translation Look-aside Buffer. FSM: Finite State Machine. EPC: Enclave Page Cache. EPCM: Enclave Page Cache Map. PRM: Processor Reserved Memory. ELRANGE: Enclave Linear Address Range. Address Translation # Concepts # Section 2.5.1 Address Translation Concepts
+System software relies on the CPU&amp;rsquo;s address translation mechanism for implementing isolation among less privileged pieces of software.</description>
     </item>
     
   </channel>

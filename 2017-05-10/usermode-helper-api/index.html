@@ -49,7 +49,7 @@ Data structure that is used for the API is struct subprocess_info.
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -58,7 +58,7 @@ Data structure that is used for the API is struct subprocess_info.
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -83,7 +83,6 @@ Data structure that is used for the API is struct subprocess_info.
 <meta property="og:url" content="/2017-05-10/usermode-helper-api/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-05-10T01:58:06+09:00" />
 <meta property="article:modified_time" content="2017-05-10T01:58:06+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Usermode Helper API"/>
@@ -418,47 +417,47 @@ if (!doNotTrack) {
 <p>However, system calls cannot be called in kernel space. Then how to execute a process from kernel space?<br>
 Usermode Helper API is for creating a user mode process from kernel space.</p>
 <p>Data structure that is used for the API is <code>struct subprocess_info</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">kmod</span><span class="p">.</span><span class="n">h</span>
-
-<span class="k">struct</span> <span class="n">subprocess_info</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">work_struct</span> <span class="n">work</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">completion</span><span class="o">*</span> <span class="n">complete</span><span class="p">;</span>
-	<span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">;</span>
-	<span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">;</span>
-	<span class="kt">char</span><span class="o">**</span> <span class="n">envp</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">wait</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">retval</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">init</span><span class="p">)(</span><span class="k">struct</span> <span class="n">subprocess_info</span><span class="o">*</span> <span class="n">info</span><span class="p">,</span> <span class="k">struct</span> <span class="n">cred</span><span class="o">*</span> <span class="n">new</span><span class="p">);</span>
-	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">cleanup</span><span class="p">)(</span><span class="k">struct</span> <span class="n">subprocess_info</span><span class="o">*</span> <span class="n">info</span><span class="p">);</span>
-	<span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
-<span class="p">};</span>
-</code></pre></div><p>Simple example from the reference:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;linux/kmod.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="k">struct</span> <span class="n">subprocess_info</span><span class="o">*</span> <span class="n">sub_info</span><span class="p">;</span>
-<span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;/home/insujang/test&#34;</span><span class="p">,</span> <span class="s">&#34;message from kernel device driver&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
-<span class="k">static</span> <span class="kt">char</span><span class="o">*</span> <span class="n">envp</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&#34;HOME=/&#34;</span><span class="p">,</span>
-    <span class="s">&#34;TERM=linux&#34;</span><span class="p">,</span>
-    <span class="s">&#34;PATH=/sbin:/bin:/usr/sbin:/usr/bin&#34;</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
-
-<span class="n">sub_info</span> <span class="o">=</span> <span class="n">call_usermodehelper_setup</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argv</span><span class="p">,</span> <span class="n">envp</span><span class="p">,</span> <span class="n">GFP_ATOMIC</span><span class="p">);</span>
-<span class="k">if</span><span class="p">(</span><span class="n">sub_info</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="n">ENOMEM</span><span class="p">;</span>
-
-<span class="k">return</span> <span class="nf">call_usermodehelper_exec</span><span class="p">(</span><span class="n">sub_info</span><span class="p">,</span> <span class="n">UMH_WAIT_PROC</span><span class="p">);</span>
-</code></pre></div><p>This code will executes <code>/home/insujang/test</code> executable file. It should be called from device driver, or another kernel space.<br>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">kmod</span><span class="p">.</span><span class="n">h</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">subprocess_info</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">work_struct</span> <span class="n">work</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">completion</span><span class="o">*</span> <span class="n">complete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">char</span><span class="o">**</span> <span class="n">envp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">wait</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">retval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">init</span><span class="p">)(</span><span class="k">struct</span> <span class="n">subprocess_info</span><span class="o">*</span> <span class="n">info</span><span class="p">,</span> <span class="k">struct</span> <span class="n">cred</span><span class="o">*</span> <span class="n">new</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">cleanup</span><span class="p">)(</span><span class="k">struct</span> <span class="n">subprocess_info</span><span class="o">*</span> <span class="n">info</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>Simple example from the reference:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/kmod.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">subprocess_info</span><span class="o">*</span> <span class="n">sub_info</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;/home/insujang/test&#34;</span><span class="p">,</span> <span class="s">&#34;message from kernel device driver&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">char</span><span class="o">*</span> <span class="n">envp</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;HOME=/&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;TERM=linux&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;PATH=/sbin:/bin:/usr/sbin:/usr/bin&#34;</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sub_info</span> <span class="o">=</span> <span class="nf">call_usermodehelper_setup</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argv</span><span class="p">,</span> <span class="n">envp</span><span class="p">,</span> <span class="n">GFP_ATOMIC</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">sub_info</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="n">ENOMEM</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="nf">call_usermodehelper_exec</span><span class="p">(</span><span class="n">sub_info</span><span class="p">,</span> <span class="n">UMH_WAIT_PROC</span><span class="p">);</span>
+</span></span></code></pre></div><p>This code will executes <code>/home/insujang/test</code> executable file. It should be called from device driver, or another kernel space.<br>
 All examples that I have referred uses the same <code>envp</code>, but I don&rsquo;t know exactly what this means.</p>
 <p>Simpler version of process creation is as follows.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;linux/kmod.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;/home/insujang/test&#34;</span><span class="p">,</span> <span class="s">&#34;message from kernel device driver&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
-<span class="k">static</span> <span class="kt">char</span><span class="o">*</span> <span class="n">envp</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&#34;HOME=/&#34;</span><span class="p">,</span>
-    <span class="s">&#34;TERM=linux&#34;</span><span class="p">,</span>
-    <span class="s">&#34;PATH=/sbin:/bin:/usr/sbin:/usr/bin&#34;</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
-
-<span class="k">return</span> <span class="nf">call_usermodehelper</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argv</span><span class="p">,</span> <span class="n">envp</span><span class="p">,</span> <span class="n">UMH_WAIT_PROC</span><span class="p">);</span>
-</code></pre></div><h2 id="references" class="relative group">References <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/kmod.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;/home/insujang/test&#34;</span><span class="p">,</span> <span class="s">&#34;message from kernel device driver&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">char</span><span class="o">*</span> <span class="n">envp</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;HOME=/&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;TERM=linux&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;PATH=/sbin:/bin:/usr/sbin:/usr/bin&#34;</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="nf">call_usermodehelper</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argv</span><span class="p">,</span> <span class="n">envp</span><span class="p">,</span> <span class="n">UMH_WAIT_PROC</span><span class="p">);</span>
+</span></span></code></pre></div><h2 id="references" class="relative group">References <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a></span></h2>
 <ul>
 <li>Invoking user-space applications from the kernel. M. Jones. [Online]: <a href="https://www.ibm.com/developerworks/library/l-user-space-apps/"   target="_blank">https://www.ibm.com/developerworks/library/l-user-space-apps/</a></li>
 </ul>

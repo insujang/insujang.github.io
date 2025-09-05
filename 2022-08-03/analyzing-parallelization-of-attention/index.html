@@ -46,7 +46,7 @@ Deepak Narayanan et al, Efficient large-scale language model training on GPU clu
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ Deepak Narayanan et al, Efficient large-scale language model training on GPU clu
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ Deepak Narayanan et al, Efficient large-scale language model training on GPU clu
 <meta property="og:url" content="/2022-08-03/analyzing-parallelization-of-attention/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-08-03T14:30:00-04:00" />
 <meta property="article:modified_time" content="2022-08-03T14:30:00-04:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Analyzing Parallelization of Attention"/>
@@ -342,7 +341,7 @@ if (!doNotTrack) {
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2022-08-03 14:30:00 -0400 EDT">Aug 3, 2022</time>
+      <time datetime="2022-08-03 14:30:00 -0400 -0400">Aug 3, 2022</time>
     
 
     
@@ -510,22 +509,22 @@ If we say the three linear projections are distributed, no communication is need
 
 
 <p>Megatron-LM uses 3D matrix multiplication to calculate attention <a href="https://github.com/NVIDIA/Megatron-LM/blob/3f4e71df3c81ae289e434c863466b658eaab37de/megatron/model/transformer.py#L242"   target="_blank">[src]</a>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">CoreAttention</span><span class="p">(</span><span class="n">MegatronModule</span><span class="p">):</span>
-    <span class="o">...</span>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
-        <span class="c1"># preallocting input tensor: [b * n, sq, sk]</span>
-        <span class="n">matmul_input_buffer</span> <span class="o">=</span> <span class="n">get_global_memory_buffer</span><span class="p">()</span><span class="o">.</span><span class="n">get_tensor</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">output_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">output_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">output_size</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
-            <span class="n">query_layer</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&#34;mpu&#34;</span><span class="p">)</span>
-
-        <span class="c1"># Raw attention scores. [b * n, sq, sk]</span>
-        <span class="n">matmul_result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">baddbmm</span><span class="p">(</span>
-            <span class="n">matmul_input_buffer</span><span class="p">,</span>
-            <span class="n">query_layer</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>   <span class="c1"># [b * np, sq, hn]</span>
-            <span class="n">key_layer</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># [b * np, hn, sk]</span>
-            <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span><span class="p">))</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">torch</span><span class="o">.</span><span class="n">baddbmm</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">batch1</span><span class="p">,</span> <span class="n">batch2</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span>
-</code></pre></div><p><code>torch.baddbmm</code> performs a batch matrix-matrix product (or matrix multiplication with <a href="https://pytorch.org/docs/stable/notes/broadcasting.html#broadcasting-semantics"   target="_blank">broadcasting</a>); so if batch1 is $(b \times n \times m)$ and batch2 is $(b \times m \times p)$, the input and output dimension is $(b \times n \times p)$ (first dimension $b$ is broadcasted to $(n \times m) \times (m \times p)$ matrix multiplication).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">CoreAttention</span><span class="p">(</span><span class="n">MegatronModule</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># preallocting input tensor: [b * n, sq, sk]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">matmul_input_buffer</span> <span class="o">=</span> <span class="n">get_global_memory_buffer</span><span class="p">()</span><span class="o">.</span><span class="n">get_tensor</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="p">(</span><span class="n">output_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">output_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">output_size</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">query_layer</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&#34;mpu&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1"># Raw attention scores. [b * n, sq, sk]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">matmul_result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">baddbmm</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="n">matmul_input_buffer</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="n">query_layer</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>   <span class="c1"># [b * np, sq, hn]</span>
+</span></span><span class="line"><span class="cl">            <span class="n">key_layer</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># [b * np, hn, sk]</span>
+</span></span><span class="line"><span class="cl">            <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span><span class="p">))</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">torch</span><span class="o">.</span><span class="n">baddbmm</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">batch1</span><span class="p">,</span> <span class="n">batch2</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span>
+</span></span></code></pre></div><p><code>torch.baddbmm</code> performs a batch matrix-matrix product (or matrix multiplication with <a href="https://pytorch.org/docs/stable/notes/broadcasting.html#broadcasting-semantics"   target="_blank">broadcasting</a>); so if batch1 is $(b \times n \times m)$ and batch2 is $(b \times m \times p)$, the input and output dimension is $(b \times n \times p)$ (first dimension $b$ is broadcasted to $(n \times m) \times (m \times p)$ matrix multiplication).</p>
 <p>Therefore, by simply adjusting the first dimension to specify how many attentions should be computed together, attention calculation can easily be parallelized. In the example above, if we have 3 attention heads ($a=3$) and 3 GPUs, we can distribute one attention calculation to each GPU by setting the first dimension to 1.</p>
 <h1 id="parallelizing-feed-forward-network-mlp" class="relative group">Parallelizing Feed Forward Network (MLP) <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#parallelizing-feed-forward-network-mlp" aria-label="Anchor">#</a></span></h1>
 <p>MLP layer includes two linear projections and GeLU; it can be expressed as follows (definition from the Attention paper <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>):</p>
@@ -550,20 +549,20 @@ If we say the three linear projections are distributed, no communication is need
 
 
 <p>There are two ways of parallelization: split input in a row-parallel manner (left), or split weight in a column-parallel manner (right). Considering that we need to perform the second linear projection with the output of the first linear projection after GeLU applied (element-wise operation), applying row-parallelization is reasonable, since it does not require communication across nodes if they already have a replicated weights. If we apply column-parallelization for the first linear projection, data should be exchanged in nodes (either every node has a replication or at least a row).</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://ieeexplore.ieee.org/abstract/document/9355301"   target="_blank">ZeRO: Memory Optimizations Toward Training Trillion Parameter Models</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853"   target="_blank">Transformer Explained Visually (Part 3): Multi-head Attention, Deep Dive</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf"   target="_blank">Attention is All you Need</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>
@@ -703,7 +702,7 @@ If we say the three linear projections are distributed, no communication is need
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-07-30 23:48:00 -0400 EDT">Jul 30, 2022</time>
+                    <time datetime="2022-07-30 23:48:00 -0400 -0400">Jul 30, 2022</time>
                   
                 </span>
               </span>
@@ -720,7 +719,7 @@ If we say the three linear projections are distributed, no communication is need
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2023-04-19 16:10:00 -0400 EDT">Apr 19, 2023</time>
+                    <time datetime="2023-04-19 16:10:00 -0400 -0400">Apr 19, 2023</time>
                   
                 </span>
               </span>

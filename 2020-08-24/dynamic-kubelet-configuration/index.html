@@ -47,7 +47,7 @@ Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not e
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +56,7 @@ Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not e
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -79,7 +79,6 @@ Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not e
 <meta property="og:url" content="/2020-08-24/dynamic-kubelet-configuration/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-08-24T09:21:00+09:00" />
 <meta property="article:modified_time" content="2020-08-24T09:21:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Dynamic Kubelet Configuration"/>
@@ -112,7 +111,7 @@ Kubelet Flags for Dynamic Configuration # Dynamic kubelet configuration is not e
     "keywords": ["study","kubernetes"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1580"
+    "wordCount": "1697"
   }]
   </script>
 
@@ -446,7 +445,7 @@ the following flags for Kubelet are required for dynamic configuration:</p>
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/200824/kubelet-reconfigure-diagram.png" alt="image" />
-        <figcaption>Kubelet reconfigure diagram. Source: <a href="https://kubernetes.io/blog/2018/07/11/dynamic-kubelet-configuration/">Kubernetes: Dynamic Kubelet Configuration</a></figcaption>
+        <figcaption>Kubelet reconfigure diagram. Source: <a href="https://kubernetes.io/blog/2018/07/11/dynamic-kubelet-configuration/"   target="_blank">Kubernetes: Dynamic Kubelet Configuration</a></figcaption>
       </figure>
     
   
@@ -456,29 +455,29 @@ the following flags for Kubelet are required for dynamic configuration:</p>
 At step 4~5, Kubelet <strong>&ldquo;checkpoints&rdquo;</strong> the modified configmap from the apiserver to its local storage, and loads the data after restarted.
 Here, the checkpointed configmap should be stored at somewhere, and <code>--dynamic-config-dir</code> is the one.
 When you specify <code>--dynamic-config-dir</code>, Kubelet automatically initializes itself with config checkpoint:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">Aug <span class="m">21</span> 18:54:30 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:30.679461  <span class="m">107800</span> watch.go:128<span class="o">]</span> kubelet config controller: assigned ConfigMap was updated
-Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.776572  <span class="m">107800</span> download.go:181<span class="o">]</span> kubelet config controller: checking in-memory store <span class="k">for</span> /api/v1/namespaces/kube-system/configmaps/k8s-worker16
-Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.776605  <span class="m">107800</span> download.go:187<span class="o">]</span> kubelet config controller: found /api/v1/namespaces/kube-system/configmaps/k8s-worker16 in in-memory store, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: <span class="m">437429</span>
-Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.806121  <span class="m">107800</span> configsync.go:205<span class="o">]</span> kubelet config controller: Kubelet restarting to use /api/v1/namespaces/kube-system/configmaps/k8s-worker16, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: 437429, KubeletConfigKey: kubelet
-Aug <span class="m">21</span> 18:54:34 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Succeeded.
-Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Scheduled restart job, restart counter is at 19.
-Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: Stopped kubelet: The Kubernetes Node Agent.
-Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: Started kubelet: The Kubernetes Node Agent.
-Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.115977  <span class="m">108430</span> controller.go:101<span class="o">]</span> kubelet config controller: starting controller
-Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.116038  <span class="m">108430</span> controller.go:267<span class="o">]</span> kubelet config controller: ensuring filesystem is <span class="nb">set</span> up correctly
-Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.116045  <span class="m">108430</span> fsstore.go:59<span class="o">]</span> kubelet config controller: initializing config checkpoints directory <span class="s2">&#34;/var/lib/kubelet/dynamic-config/store&#34;</span>
-...
-</code></pre></div><h2 id="dynamic-configuration-setup" class="relative group">Dynamic Configuration Setup <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#dynamic-configuration-setup" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:30 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:30.679461  <span class="m">107800</span> watch.go:128<span class="o">]</span> kubelet config controller: assigned ConfigMap was updated
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.776572  <span class="m">107800</span> download.go:181<span class="o">]</span> kubelet config controller: checking in-memory store <span class="k">for</span> /api/v1/namespaces/kube-system/configmaps/k8s-worker16
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.776605  <span class="m">107800</span> download.go:187<span class="o">]</span> kubelet config controller: found /api/v1/namespaces/kube-system/configmaps/k8s-worker16 in in-memory store, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: <span class="m">437429</span>
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:34 localhost.worker kubelet<span class="o">[</span>107800<span class="o">]</span>: I0821 18:54:34.806121  <span class="m">107800</span> configsync.go:205<span class="o">]</span> kubelet config controller: Kubelet restarting to use /api/v1/namespaces/kube-system/configmaps/k8s-worker16, UID: 5808539f-48e3-4e47-8ce6-c261c48fa1d9, ResourceVersion: 437429, KubeletConfigKey: kubelet
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:34 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Succeeded.
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Scheduled restart job, restart counter is at 19.
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: Stopped kubelet: The Kubernetes Node Agent.
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:45 localhost.worker systemd<span class="o">[</span>1<span class="o">]</span>: Started kubelet: The Kubernetes Node Agent.
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.115977  <span class="m">108430</span> controller.go:101<span class="o">]</span> kubelet config controller: starting controller
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.116038  <span class="m">108430</span> controller.go:267<span class="o">]</span> kubelet config controller: ensuring filesystem is <span class="nb">set</span> up correctly
+</span></span><span class="line"><span class="cl">Aug <span class="m">21</span> 18:54:45 localhost.worker kubelet<span class="o">[</span>108430<span class="o">]</span>: I0821 18:54:45.116045  <span class="m">108430</span> fsstore.go:59<span class="o">]</span> kubelet config controller: initializing config checkpoints directory <span class="s2">&#34;/var/lib/kubelet/dynamic-config/store&#34;</span>
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><h2 id="dynamic-configuration-setup" class="relative group">Dynamic Configuration Setup <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#dynamic-configuration-setup" aria-label="Anchor">#</a></span></h2>
 <p>Dynamic Kubelet Configuration uses ConfigMap objects.
 Therefore, a ConfigMap object for Kubelet configurations and related authorized access permission is required.</p>
 <h3 id="creating-a-configmap" class="relative group">Creating a ConfigMap <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#creating-a-configmap" aria-label="Anchor">#</a></span></h3>
 <p>Dynamic Kubelet onfiguration cannot be used with the existing configurations given by flags and <code>--config</code> file.
 In other words, even if a configuration is set by the flags or <code>--config</code> file, this configurations are not enabled and only Dynamic configurations are applied.
-<strong>For this reason, <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> recommends to start from the current configuration.</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ kubectl proxy --port<span class="o">=</span><span class="m">8001</span> <span class="p">&amp;</span>
-$ <span class="nv">NODE_NAME</span><span class="o">=</span><span class="s2">&#34;the-name-of-the-node-you-are-reconfiguring&#34;</span><span class="p">;</span> curl -sSL <span class="s2">&#34;http://localhost:8001/api/v1/nodes/</span><span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span><span class="s2">/proxy/configz&#34;</span> <span class="p">|</span> jq <span class="s1">&#39;.kubeletconfig|.kind=&#34;KubeletConfiguration&#34;|.apiVersion=&#34;kubelet.config.k8s.io/v1beta1&#34;&#39;</span> &gt; kubelet_configz_<span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
-$ kubectl <span class="o">(</span>-n kube-system<span class="o">)</span> create configmap node-config --from-file<span class="o">=</span><span class="nv">kubelet</span><span class="o">=</span>kubelet_configz_<span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
-</code></pre></div><blockquote>
+<strong>For this reason, <sup id="fnref1:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> recommends to start from the current configuration.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ kubectl proxy --port<span class="o">=</span><span class="m">8001</span> <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">$ <span class="nv">NODE_NAME</span><span class="o">=</span><span class="s2">&#34;the-name-of-the-node-you-are-reconfiguring&#34;</span><span class="p">;</span> curl -sSL <span class="s2">&#34;http://localhost:8001/api/v1/nodes/</span><span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span><span class="s2">/proxy/configz&#34;</span> <span class="p">|</span> jq <span class="s1">&#39;.kubeletconfig|.kind=&#34;KubeletConfiguration&#34;|.apiVersion=&#34;kubelet.config.k8s.io/v1beta1&#34;&#39;</span> &gt; kubelet_configz_<span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">$ kubectl <span class="o">(</span>-n kube-system<span class="o">)</span> create configmap node-config --from-file<span class="o">=</span><span class="nv">kubelet</span><span class="o">=</span>kubelet_configz_<span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+</span></span></code></pre></div><blockquote>
 <p>It only works at control plane nodes, and currently I could not figure out which permission is required for this operation.</p>
 <p>I found that the configmap does not need to be the namespace <code>kube-system</code>. Also works if it is stored in the default namespace.</p>
 </blockquote>
@@ -488,117 +487,116 @@ $ kubectl <span class="o">(</span>-n kube-system<span class="o">)</span> create 
 </code></pre><p>Now you can edit the ConfigMap object with <code>edit</code> subcommand:</p>
 <pre tabindex="0"><code>$ kubectl edit configmaps node-config (-n NAMESPACE)
 </code></pre><p>The format of the ConfigMap object looks like this:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
-</span><span class="w"></span><span class="nt">metadta</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;not important&gt;</span><span class="w">
-</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
-</span><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="l">|    </span><span class="w"> </span><span class="c"># &lt;- Do not omit &#39;|&#39;.</span><span class="w">
-</span><span class="w">        </span>{<span class="w">
-</span><span class="w">            </span><span class="nt">&#34;kind&#34;: </span><span class="s2">&#34;KubeletConfiguration&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="nt">&#34;apiVersion&#34;: </span><span class="s2">&#34;kubelet.config.k8s.io/v1beta1&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="l">&lt;other Kubelet configurations in JSON format&gt;</span><span class="w">
-</span><span class="w">        </span>}<span class="w">
-</span></code></pre></div><p>The ConfigMap object itself follows YAML format, but its content in <code>data.kubelet</code> foolows JSON format. Do not be confused.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadta</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;not important&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="l">|    </span><span class="w"> </span><span class="c"># &lt;- Do not omit &#39;|&#39;.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;kind&#34;: </span><span class="s2">&#34;KubeletConfiguration&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;apiVersion&#34;: </span><span class="s2">&#34;kubelet.config.k8s.io/v1beta1&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="l">&lt;other Kubelet configurations in JSON format&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>}<span class="w">
+</span></span></span></code></pre></div><p>The ConfigMap object itself follows YAML format, but its content in <code>data.kubelet</code> foolows JSON format. Do not be confused.
 Available Kubelet configuration key/value can be investigated in [<a href="https://github.com/kubernetes/kubelet/blob/master/config/v1beta1/types.go#L75"   target="_blank">here</a>]</p>
 <p>In my case, I want to try to restrict allocatable resources via dynamic Kubernetes configuration. I added several Kubelet flags in the ConfigMap object:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">&lt;omitted&gt;</span><span class="w">
-</span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span><span class="sd">        {
-</span><span class="sd">            &#34;kind&#34;: &#34;KubeletConfiguration&#34;,
-</span><span class="sd">            &#34;apiVersion&#34;: &#34;kubelet.config.k8s.io/v1beta1&#34;,
-</span><span class="sd">            &lt;other default configurations are omitted&gt;,
-</span><span class="sd">            &#34;systemReserved&#34;: {
-</span><span class="sd">                &#34;cpu&#34;: &#34;2&#34;,
-</span><span class="sd">                &#34;memory&#34;: &#34;2Gi&#34;
-</span><span class="sd">            },
-</span><span class="sd">            &#34;kubeReserved&#34;: {
-</span><span class="sd">                &#34;cpu&#34;: &#34;1&#34;,
-</span><span class="sd">                &#34;memory&#34;: &#34;1Gi&#34;
-</span><span class="sd">            },
-</span><span class="sd">            &#34;systemReservedCgroup&#34;: &#34;/system.slice&#34;,  &lt;-- not necessary
-</span><span class="sd">            &#34;kubeReservedCgroup&#34;: &#34;/kubepods.slice&#34;,  &lt;-- not necessary
-</span><span class="sd">            &#34;cgroupPerQOS&#34;: true,
-</span><span class="sd">            &#34;enforceNodeAllocatable&#34;: [&#34;pods&#34;],
-</span><span class="sd">        }</span><span class="w">        
-</span></code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">&lt;omitted&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubelet</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">        {
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;kind&#34;: &#34;KubeletConfiguration&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;apiVersion&#34;: &#34;kubelet.config.k8s.io/v1beta1&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &lt;other default configurations are omitted&gt;,
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;systemReserved&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="sd">                &#34;cpu&#34;: &#34;2&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="sd">                &#34;memory&#34;: &#34;2Gi&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sd">            },
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;kubeReserved&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="sd">                &#34;cpu&#34;: &#34;1&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="sd">                &#34;memory&#34;: &#34;1Gi&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sd">            },
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;systemReservedCgroup&#34;: &#34;/system.slice&#34;,  &lt;-- not necessary
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;kubeReservedCgroup&#34;: &#34;/kubepods.slice&#34;,  &lt;-- not necessary
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;cgroupPerQOS&#34;: true,
+</span></span></span><span class="line"><span class="cl"><span class="sd">            &#34;enforceNodeAllocatable&#34;: [&#34;pods&#34;],
+</span></span></span><span class="line"><span class="cl"><span class="sd">        }</span><span class="w">        
+</span></span></span></code></pre></div><blockquote>
 <p>Note that <code>systemReservedCgroup</code> and <code>kubeReservedCgroup</code> are not necessary, since I do not put <code>&quot;system-reserved&quot;</code> and <code>&quot;kube-reserved&quot;</code> in <code>enforceNodeAllocatable</code>.</p>
 <p>Note that <code>cgroupPerQOS</code> should be true for resource restriction on Kubernetes Pods, and <code>enforceNodeAllocatable</code> must not contain neither <code>system-reserved</code> nore <code>kube-reserved</code> string elements, otherwise you will see the following wierd error in the Kubelet log.
 I am not sure whether it is a bug.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">Aug <span class="m">26</span> 16:55:47 localhost.worker kubelet<span class="o">[</span>388430<span class="o">]</span>: F0826 16:55:47.291827  <span class="m">388430</span> kubelet.go:1384<span class="o">]</span> Failed to start ContainerManager Failed to enforce System Reserved Cgroup Limits on <span class="s2">&#34;/system.slice&#34;</span>: <span class="o">[</span><span class="s2">&#34;system&#34;</span><span class="o">]</span> cgroup does not exist      
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">Aug <span class="m">26</span> 16:55:47 localhost.worker kubelet<span class="o">[</span>388430<span class="o">]</span>: F0826 16:55:47.291827  <span class="m">388430</span> kubelet.go:1384<span class="o">]</span> Failed to start ContainerManager Failed to enforce System Reserved Cgroup Limits on <span class="s2">&#34;/system.slice&#34;</span>: <span class="o">[</span><span class="s2">&#34;system&#34;</span><span class="o">]</span> cgroup does not exist      
+</span></span></code></pre></div></blockquote>
 <p>You can see Kubelet method that creates <code>/kubepods.slice</code> cgroup in <a href="https://github.com/kubernetes/kubernetes/blob/v1.18.8/pkg/kubelet/cm/node_container_manager_linux.go#L64"   target="_blank">[here]</a>, or as follows.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// enforceNodeAllocatableCgroups enforce Node Allocatable Cgroup settings.
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">cm</span> <span class="o">*</span><span class="nx">containerManagerImpl</span><span class="p">)</span> <span class="nf">enforceNodeAllocatableCgroups</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-    <span class="nx">nc</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">NodeConfig</span><span class="p">.</span><span class="nx">NodeAllocatableConfig</span>
-
-    <span class="c1">// We need to update limits on node allocatable cgroup no matter what because
-</span><span class="c1"></span>    <span class="c1">// default cpu shares on cgroups are low and can cause cpu starvation.
-</span><span class="c1"></span>    <span class="nx">nodeAllocatable</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">internalCapacity</span>
-    <span class="c1">// Use Node Allocatable limits instead of capacity if the user requested enforcing node allocatable.
-</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">CgroupsPerQOS</span> <span class="o">&amp;&amp;</span> <span class="nx">nc</span><span class="p">.</span><span class="nx">EnforceNodeAllocatable</span><span class="p">.</span><span class="nf">Has</span><span class="p">(</span><span class="nx">kubetypes</span><span class="p">.</span><span class="nx">NodeAllocatableEnforcementKey</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">nodeAllocatable</span> <span class="p">=</span> <span class="nx">cm</span><span class="p">.</span><span class="nf">getNodeAllocatableInternalAbsolute</span><span class="p">()</span>
-    <span class="p">}</span>
-
-    <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Attempting to enforce Node Allocatable with config: %+v&#34;</span><span class="p">,</span> <span class="nx">nc</span><span class="p">)</span>
-
-    <span class="nx">cgroupConfig</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">CgroupConfig</span><span class="p">{</span>
-        <span class="nx">Name</span><span class="p">:</span>               <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span>
-        <span class="nx">ResourceParameters</span><span class="p">:</span> <span class="nf">getCgroupConfig</span><span class="p">(</span><span class="nx">nodeAllocatable</span><span class="p">),</span>
-    <span class="p">}</span>
-
-    <span class="c1">// Using ObjectReference for events as the node maybe not cached; refer to #42701 for detail.
-</span><span class="c1"></span>    <span class="nx">nodeRef</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">v1</span><span class="p">.</span><span class="nx">ObjectReference</span><span class="p">{</span>
-        <span class="nx">Kind</span><span class="p">:</span>      <span class="s">&#34;Node&#34;</span><span class="p">,</span>
-        <span class="nx">Name</span><span class="p">:</span>      <span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
-        <span class="nx">UID</span><span class="p">:</span>       <span class="nx">types</span><span class="p">.</span><span class="nf">UID</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">),</span>
-        <span class="nx">Namespace</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="c1">// If Node Allocatable is enforced on a node that has not been drained or is updated on an existing node to a lower value,
-</span><span class="c1"></span>    <span class="c1">// existing memory usage across pods might be higher than current Node Allocatable Memory Limits.
-</span><span class="c1"></span>    <span class="c1">// Pod Evictions are expected to bring down memory usage to below Node Allocatable limits.
-</span><span class="c1"></span>    <span class="c1">// Until evictions happen retry cgroup updates.
-</span><span class="c1"></span>    <span class="c1">// Update limits on non root cgroup-root to be safe since the default limits for CPU can be too low.
-</span><span class="c1"></span>    <span class="c1">// Check if cgroupRoot is set to a non-empty value (empty would be the root container)
-</span><span class="c1"></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
-        <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-            <span class="k">for</span> <span class="p">{</span>
-                <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupManager</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="nx">cgroupConfig</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-                    <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">SuccessfulNodeAllocatableEnforcement</span><span class="p">,</span> <span class="s">&#34;Updated Node Allocatable limit across pods&#34;</span><span class="p">)</span>
-                    <span class="k">return</span>
-                <span class="p">}</span>
-                <span class="nx">message</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;Failed to update Node Allocatable Limits %q: %v&#34;</span><span class="p">,</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-                <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">FailedNodeAllocatableEnforcement</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span>
-                <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}()</span>
-    <span class="p">}</span>
-
-    <span class="o">...</span>
-<span class="p">}</span>
-</code></pre></div><p>If <code>cm.cgroupManager.Update(cgroupConfig)</code> returns <code>nil</code>, the following event is logged in the target node:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// enforceNodeAllocatableCgroups enforce Node Allocatable Cgroup settings.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">cm</span> <span class="o">*</span><span class="nx">containerManagerImpl</span><span class="p">)</span> <span class="nf">enforceNodeAllocatableCgroups</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">nc</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">NodeConfig</span><span class="p">.</span><span class="nx">NodeAllocatableConfig</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// We need to update limits on node allocatable cgroup no matter what because
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// default cpu shares on cgroups are low and can cause cpu starvation.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">nodeAllocatable</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">internalCapacity</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Use Node Allocatable limits instead of capacity if the user requested enforcing node allocatable.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">CgroupsPerQOS</span> <span class="o">&amp;&amp;</span> <span class="nx">nc</span><span class="p">.</span><span class="nx">EnforceNodeAllocatable</span><span class="p">.</span><span class="nf">Has</span><span class="p">(</span><span class="nx">kubetypes</span><span class="p">.</span><span class="nx">NodeAllocatableEnforcementKey</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">nodeAllocatable</span> <span class="p">=</span> <span class="nx">cm</span><span class="p">.</span><span class="nf">getNodeAllocatableInternalAbsolute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Attempting to enforce Node Allocatable with config: %+v&#34;</span><span class="p">,</span> <span class="nx">nc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">cgroupConfig</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">CgroupConfig</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Name</span><span class="p">:</span>               <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ResourceParameters</span><span class="p">:</span> <span class="nf">getCgroupConfig</span><span class="p">(</span><span class="nx">nodeAllocatable</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Using ObjectReference for events as the node maybe not cached; refer to #42701 for detail.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">nodeRef</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">v1</span><span class="p">.</span><span class="nx">ObjectReference</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Kind</span><span class="p">:</span>      <span class="s">&#34;Node&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Name</span><span class="p">:</span>      <span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">UID</span><span class="p">:</span>       <span class="nx">types</span><span class="p">.</span><span class="nf">UID</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">nodeInfo</span><span class="p">.</span><span class="nx">Name</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Namespace</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// If Node Allocatable is enforced on a node that has not been drained or is updated on an existing node to a lower value,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// existing memory usage across pods might be higher than current Node Allocatable Memory Limits.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Pod Evictions are expected to bring down memory usage to below Node Allocatable limits.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Until evictions happen retry cgroup updates.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Update limits on non root cgroup-root to be safe since the default limits for CPU can be too low.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Check if cgroupRoot is set to a non-empty value (empty would be the root container)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupManager</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="nx">cgroupConfig</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">SuccessfulNodeAllocatableEnforcement</span><span class="p">,</span> <span class="s">&#34;Updated Node Allocatable limit across pods&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">message</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;Failed to update Node Allocatable Limits %q: %v&#34;</span><span class="p">,</span> <span class="nx">cm</span><span class="p">.</span><span class="nx">cgroupRoot</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">cm</span><span class="p">.</span><span class="nx">recorder</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">nodeRef</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="nx">events</span><span class="p">.</span><span class="nx">FailedNodeAllocatableEnforcement</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>If <code>cm.cgroupManager.Update(cgroupConfig)</code> returns <code>nil</code>, the following event is logged in the target node:</p>
 <pre tabindex="0"><code>$ kubectl describe nodes k8s-worker16
 ...
   Normal   KubeletConfigChanged              33m   kubelet, k8s-worker16  Kubelet restarting to use /api/v1/namespaces/default/configmaps/node-config, UID: a8b4da9d-0b6e-478d-9e35-4a3696f5778c, ResourceVersion: 1464790, KubeletConfigKey: kubelet
   Normal   Starting                          32m   kubelet, k8s-worker16  Starting kubelet.
   Normal   NodeAllocatableEnforced           32m   kubelet, k8s-worker16  Updated Node Allocatable limit across pods
-
 </code></pre><h3 id="specifying-node-to-use-the-configmap" class="relative group">Specifying Node to use the ConfigMap <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#specifying-node-to-use-the-configmap" aria-label="Anchor">#</a></span></h3>
 <p>One more thing to do is to add <code>spec</code> to Kubernetes Node object to indicate which ConfigMap object should be used for dynamic Kubelet configuration for which node.</p>
 <p>Oen an editor with the following command to specify it:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ kubectl edit node <span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
-</code></pre></div><p>You have nothing in <code>spec</code> section if it is the first time to edit it.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ kubectl edit node <span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+</span></span></code></pre></div><p>You have nothing in <code>spec</code> section if it is the first time to edit it.
 Add <code>configSource</code> element as follows (note that it is YAML format):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">configSource</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
-</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
-</span><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span></code></pre></div><p>each of which key means:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">configSource</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span></code></pre></div><p>each of which key means:</p>
 <ul>
 <li><code>kubeletConfigKey</code>: the key in <code>data</code> dictionary in the ConfigMap object. In our case, we specified it as <code>kubelet</code> (<code>kubelet: | { ... }</code>).</li>
 <li><code>name</code>: name of the ConfigMap object.</li>
@@ -610,83 +608,82 @@ Add <code>configSource</code> element as follows (note that it is YAML format):<
 <ul>
 <li>First, check whether the spec is successfully applied:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">managedFields</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">fieldsType</span><span class="p">:</span><span class="w"> </span><span class="l">FieldsV1</span><span class="w">
-</span><span class="w">    </span><span class="nt">fieldsV1</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">f:spec</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="nt">f:configSource</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="l">...</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">configSource</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
-</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
-</span><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">managedFields</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">fieldsType</span><span class="p">:</span><span class="w"> </span><span class="l">FieldsV1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">fieldsV1</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">f:spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">f:configSource</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="l">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">configSource</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span></code></pre></div><ul>
 <li>Second, the Kubelet updates its <strong>status</strong> whether the configuration is successfully applied or not:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">status</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">allocatable</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">capacity</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">conditions</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
-</span><span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w">              </span><span class="l">&lt;-- must exist</span><span class="w">
-</span><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
-</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
-</span><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
-</span><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
-</span><span class="w">        </span><span class="nt">assigned</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
-</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
-</span><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
-</span><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
-</span><span class="w">        </span><span class="nt">lastKnownGood</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
-</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
-</span><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
-</span><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
-</span></code></pre></div><p>You must check that <code>status.conditions.active</code> fields exist, <strong>and</strong> there is no error field in <code>status.conditions.assigned</code>. If an error occured when applying the specified configuration, the Kubelet restarts with <code>status.conditions.lastKnownGood</code> config hence <code>status.conditions.active.configMap.resourceVersion</code> may different from that in <code>status.conditions.assigned</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">status</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">allocatable</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">capacity</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">conditions</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;omitted&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w">              </span><span class="l">&lt;-- must exist</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">assigned</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">lastKnownGood</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">kubeletConfigKey</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">node-config </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1024519&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">a8b4da9d-0b6e-478d-9e35-4a3696f5778c</span><span class="w">
+</span></span></span></code></pre></div><p>You must check that <code>status.conditions.active</code> fields exist, <strong>and</strong> there is no error field in <code>status.conditions.assigned</code>. If an error occured when applying the specified configuration, the Kubelet restarts with <code>status.conditions.lastKnownGood</code> config hence <code>status.conditions.active.configMap.resourceVersion</code> may different from that in <code>status.conditions.assigned</code>.</p>
 <p>If an error occured, a systemd journal log indicates what would be an error:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">## This error is logged when you missed data.kubelet.kind.</span>
-Aug <span class="m">24</span> 13:16:04 localhost.worker kubelet<span class="o">[</span>278409<span class="o">]</span>: E0824 13:16:04.368361  <span class="m">278409</span> controller.go:151<span class="o">]</span> kubelet config controller: failed to load config, see Kubelet log <span class="k">for</span> details, error: failed to decode: Object <span class="s1">&#39;Kind&#39;</span> is missing in <span class="err">&#39;</span><span class="o">{</span>
-</code></pre></div><p>Also, my configuration contains resource restriction; it is applied as intended:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">$ kubectl get nodes ${NODE_NAME} -o yaml</span><span class="w">
-</span><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">allocatable</span><span class="p">:</span><span class="w">    
-</span><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">ephemeral-storage</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;66100978374&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">hugepages-1Gi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">4775280Ki</span><span class="w">
-</span><span class="w">        </span><span class="nt">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
-</span><span class="w">    </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;4&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">ephemeral-storage</span><span class="p">:</span><span class="w"> </span><span class="l">71724152Ki</span><span class="w">
-</span><span class="w">        </span><span class="nt">hugepages-1Gi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">8023408Ki</span><span class="w">
-</span><span class="w">        </span><span class="nt">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
-</span></code></pre></div><p>In my configuration, I restricted CPU and memory resource, so be sure to check whether it actually is applied to Linux cgroup:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">/sys/fs/cgroup/memory/kubepods.slice $ cat memory.limit_in_bytes
-<span class="m">4994744320</span> // Similar to allocatable memory 4775280Ki
-
-</code></pre></div><h2 id="authentication-and-authorization" class="relative group">Authentication and Authorization <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#authentication-and-authorization" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">## This error is logged when you missed data.kubelet.kind.</span>
+</span></span><span class="line"><span class="cl">Aug <span class="m">24</span> 13:16:04 localhost.worker kubelet<span class="o">[</span>278409<span class="o">]</span>: E0824 13:16:04.368361  <span class="m">278409</span> controller.go:151<span class="o">]</span> kubelet config controller: failed to load config, see Kubelet log <span class="k">for</span> details, error: failed to decode: Object <span class="s1">&#39;Kind&#39;</span> is missing in <span class="err">&#39;</span><span class="o">{</span>
+</span></span></code></pre></div><p>Also, my configuration contains resource restriction; it is applied as intended:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">$ kubectl get nodes ${NODE_NAME} -o yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">allocatable</span><span class="p">:</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ephemeral-storage</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;66100978374&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">hugepages-1Gi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">4775280Ki</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;4&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ephemeral-storage</span><span class="p">:</span><span class="w"> </span><span class="l">71724152Ki</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">hugepages-1Gi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">hugepages-2Mi</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">8023408Ki</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">pods</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;110&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>In my configuration, I restricted CPU and memory resource, so be sure to check whether it actually is applied to Linux cgroup:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">/sys/fs/cgroup/memory/kubepods.slice $ cat memory.limit_in_bytes
+</span></span><span class="line"><span class="cl"><span class="m">4994744320</span> // Similar to allocatable memory 4775280Ki
+</span></span></code></pre></div><h2 id="authentication-and-authorization" class="relative group">Authentication and Authorization <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#authentication-and-authorization" aria-label="Anchor">#</a></span></h2>
 <p>During the setup, the Kubelet queries a ConfigMap object from the apiserver, which requires authentication.
-According to <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, the node authorizer now <em>automatically</em> configures an RBAC rules so that there is nothing to do.</p>
+According to <sup id="fnref2:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, the node authorizer now <em>automatically</em> configures an RBAC rules so that there is nothing to do.</p>
 <blockquote>
 <p>Previously, you were required to manually create RBAC rules to allow Nodes to access their assigned ConfigMaps. The Node Authorizer now automatically configures these rules.</p>
 </blockquote>
 <p>Node authorizor means that default authorization mode contains <code>Node</code> ^[node-auth]:
 SystemReservedEnforcementKey</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">ps -ef <span class="p">|</span> grep kube-apiserver
-root       <span class="m">91113</span>   <span class="m">91100</span>  <span class="m">2</span> Aug19 ?        02:29:37 kube-apiserver ... --authorization-mode<span class="o">=</span>Node,RBAC
-</code></pre></div><p>so that any users in the <code>system:nodes</code> group (username <code>system:node:&lt;nodeName&gt;</code>) are allowed to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">ps -ef <span class="p">|</span> grep kube-apiserver
+</span></span><span class="line"><span class="cl">root       <span class="m">91113</span>   <span class="m">91100</span>  <span class="m">2</span> Aug19 ?        02:29:37 kube-apiserver ... --authorization-mode<span class="o">=</span>Node,RBAC
+</span></span></code></pre></div><p>so that any users in the <code>system:nodes</code> group (username <code>system:node:&lt;nodeName&gt;</code>) are allowed to:</p>
 <ol>
 <li>read services, endpoints, nodes, pods, secrets, configmaps, and persistent volumes (bound to the Kubelet&rsquo;s node)</li>
 <li>write nodes (+status), pods (+status), and events.</li>
@@ -695,17 +692,17 @@ root       <span class="m">91113</span>   <span class="m">91100</span>  <span cl
 <blockquote>
 <p>Note that getting an object and listing objects are different. <code>kubectl get configmaps node-config</code> should be allowed, while <code>kubectl get configmaps</code> (get all configmaps, which means listing configmaps) are still denied.</p>
 </blockquote>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p><a href="https://kubernetes.io/docs/tasks/administer-cluster/reconfigure-kubelet/"   target="_blank">Kubernetes: Reconfigure a Node&rsquo;s Kubelet in a Live Cluster</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p><a href="https://kubernetes.io/docs/tasks/administer-cluster/reconfigure-kubelet/"   target="_blank">Kubernetes: Reconfigure a Node&rsquo;s Kubelet in a Live Cluster</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref2:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://kubernetes.cn/docs/reference/command-line-tools-reference/feature-gates/"   target="_blank">Kubernetes: Feature Gates</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

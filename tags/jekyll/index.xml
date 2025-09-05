@@ -24,11 +24,11 @@ As I do not want to use several editors, I kept looking for a way to manage my b
       
       <guid>/2017-04-01/using-jekyll-with-atom-editor/</guid>
       <description>{: .center-image}
-   {: width=&amp;ldquo;860px&amp;rdquo;, height=&amp;ldquo;390px&amp;rdquo;,}
+{: width=&amp;ldquo;860px&amp;rdquo;, height=&amp;ldquo;390px&amp;rdquo;,}
 Atom is a modern, approachable text editor.
 Until the last year, I had used Sublime Text for a text editor. However, after I saw some post examining Atom, I switched to it.
 It is as modern as Sublime Text, and plugins are much much more powerful, I think.
-I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll package on Atom.</description>
+I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll package on Atom. Here are some default shortcuts that I want to remember.</description>
     </item>
     
     <item>
@@ -40,7 +40,7 @@ I am using Markdown (Especially, Markdown Preview), Latex, Git, and Jekyll packa
       <description>After unexpectedly erasing all data in my previous blog, I did not make another blog for a long time.
 Now I restarted a blog, now with Jekyll and Github Pages.
 Comparing Wordpress, it has following advantages:
- The format of posts, Markdown, is easy to edit in anywhere. I need to accustom markup languages, e.g., LaTex or Markdown. Use Git system. chance to be more familiar with Git? Not as many plugins as in Wordpress, but all the necessary are provided and fast!</description>
+The format of posts, Markdown, is easy to edit in anywhere. I need to accustom markup languages, e.g., LaTex or Markdown. Use Git system. chance to be more familiar with Git? Not as many plugins as in Wordpress, but all the necessary are provided and fast!</description>
     </item>
     
   </channel>

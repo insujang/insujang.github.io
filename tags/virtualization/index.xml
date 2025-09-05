@@ -15,7 +15,7 @@
       <guid>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</guid>
       <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
 VM execution is done through qemu-system-x86_64, without using libvirt.
- Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
+Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67) # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
     </item>
     
     <item>
@@ -25,7 +25,7 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
       
       <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
       <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.
-Virtio Review &amp;amp; Vhost Introduction #  virtio-net example diagram. [Source]   VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
+Virtio Review &amp;amp; Vhost Introduction # virtio-net example diagram. [Source] VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
     </item>
     
     <item>

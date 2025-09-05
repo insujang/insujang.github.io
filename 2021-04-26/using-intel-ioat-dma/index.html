@@ -46,7 +46,7 @@ Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemente
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemente
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemente
 <meta property="og:url" content="/2021-04-26/using-intel-ioat-dma/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-04-26T09:02:00+09:00" />
 <meta property="article:modified_time" content="2021-04-26T09:02:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Using Intel IOAT DMA"/>
@@ -448,7 +447,7 @@ There is also a manual from Xilinx <sup id="fnref:3"><a href="#fn:3" class="foot
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210426/dma-software-high-level.jpg" alt="image" />
-        <figcaption>Linux DMA software high level diagram. <a href="https://forums.xilinx.com/xlnx/attachments/xlnx/ELINUX/44060/1/Linux%20DMA%20from%20User%20Space-public.pdf">[Source]</a></figcaption>
+        <figcaption>Linux DMA software high level diagram. <a href="https://forums.xilinx.com/xlnx/attachments/xlnx/ELINUX/44060/1/Linux%20DMA%20from%20User%20Space-public.pdf"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -456,208 +455,208 @@ There is also a manual from Xilinx <sup id="fnref:3"><a href="#fn:3" class="foot
 
 <p>Here, we need to implement <strong>DMA proxy device driver</strong> to provide DMA service to userspace processes, or <strong>DMA engine client device driver</strong>.
 A guide for DMA engine client is in <a href="https://www.kernel.org/doc/html/latest/driver-api/dmaengine/client.html"   target="_blank">[here]</a> and <a href="https://www.kernel.org/doc/html/latest/crypto/async-tx-api.html"   target="_blank">[here (async TX)]</a>.</p>
-1. Allocating a DMA slave channel <h4 id="1-allocating-a-dma-slave-channel-sourcehttpsgithubcomtorvaldslinuxblobv56driversdmadmaenginecl722" class="relative group"><a href="https://github.com/torvalds/linux/blob/v5.6/drivers/dma/dmaengine.c#L722"   target="_blank">[source]</a> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-allocating-a-dma-slave-channel-sourcehttpsgithubcomtorvaldslinuxblobv56driversdmadmaenginecl722" aria-label="Anchor">#</a></span></h4>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// @dev:  pointer to client device structure
-</span><span class="c1">// @name: slave channel name
-</span><span class="c1"></span><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="nf">dma_request_chan</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
-<span class="k">struct</span> <span class="n">dma_Chan</span> <span class="o">*</span><span class="nf">dma_request_chan_by_mask</span><span class="p">(</span><span class="k">const</span> <span class="n">dma_cap_mask_t</span> <span class="o">*</span><span class="n">mask</span><span class="p">);</span>
-</code></pre></div><blockquote>
+<h4 id="1-allocating-a-dma-slave-channel-sourcehttpsgithubcomtorvaldslinuxblobv56driversdmadmaenginecl722" class="relative group">1. Allocating a DMA slave channel <a href="https://github.com/torvalds/linux/blob/v5.6/drivers/dma/dmaengine.c#L722"   target="_blank">[source]</a> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-allocating-a-dma-slave-channel-sourcehttpsgithubcomtorvaldslinuxblobv56driversdmadmaenginecl722" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// @dev:  pointer to client device structure
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @name: slave channel name
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="nf">dma_request_chan</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_Chan</span> <span class="o">*</span><span class="nf">dma_request_chan_by_mask</span><span class="p">(</span><span class="k">const</span> <span class="kt">dma_cap_mask_t</span> <span class="o">*</span><span class="n">mask</span><span class="p">);</span>
+</span></span></code></pre></div><blockquote>
 <p>While <a href="https://github.com/bperez77/xilinx_axidma/blob/master/driver/axidma_dma.c#L649"   target="_blank">Xilinx AXIDMA code</a> uses <code>dma_request_slave_channel()</code>, it is recommended to use <code>dma_request_chan()</code>: it returns a channel based on <code>dma_slave_map</code> matching table.</p>
 </blockquote>
 <p>Linux DMA subsystem internally manages <code>dma_device_list</code> and automatically find a proper DMA device.
 Personally, I use <code>dma_request_chan_by_mask</code> (have no idea how to use <code>dma_request_chan</code>). The following code gets a <code>struct dma_chan</code> for <code>DMA_MEMCPY</code> functionality.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;linux/dmaengine.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="n">dma_cap_mask_t</span> <span class="n">mask</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-
-<span class="n">dma_cap_zero</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
-<span class="n">dma_cap_set</span><span class="p">(</span><span class="n">DMA_MEMCPY</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
-
-<span class="n">chan</span> <span class="o">=</span> <span class="n">dma_request_chan_by_mask</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">IS_ERR_OR_NULL</span><span class="p">(</span><span class="n">chan</span><span class="p">))</span> <span class="p">{</span> <span class="cm">/* handle error */</span> <span class="p">}</span>
-<span class="p">...</span>
-</code></pre></div><h4 id="2-preparing-dma-transfer" class="relative group">2. Preparing DMA transfer <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-preparing-dma-transfer" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/dmaengine.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">dma_cap_mask_t</span> <span class="n">mask</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">dma_cap_zero</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">dma_cap_set</span><span class="p">(</span><span class="n">DMA_MEMCPY</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">chan</span> <span class="o">=</span> <span class="nf">dma_request_chan_by_mask</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">IS_ERR_OR_NULL</span><span class="p">(</span><span class="n">chan</span><span class="p">))</span> <span class="p">{</span> <span class="cm">/* handle error */</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><h4 id="2-preparing-dma-transfer" class="relative group">2. Preparing DMA transfer <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-preparing-dma-transfer" aria-label="Anchor">#</a></span></h4>
 <p>After creating a channel, we prepare DMA transfer.
 First, map pages/memory regions for DMA to get <code>dma_attr_t</code>, which contains a BUS address:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Used to map kernel virtual address
-</span><span class="c1"></span><span class="n">dma_addr_t</span> <span class="nf">dma_map_single</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span>
-        <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dir</span><span class="p">);</span>
-<span class="c1">// Used to map struct page
-</span><span class="c1"></span><span class="n">dma_addr_t</span> <span class="nf">dma_map_page</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">struct</span> <span class="n">page</span> <span class="o">*</span><span class="n">page</span><span class="p">,</span>
-        <span class="n">size_t</span> <span class="n">offset</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dir</span><span class="p">);</span>
-<span class="c1">// Used to map physical address
-</span><span class="c1"></span><span class="n">dma_addr_t</span> <span class="nf">dma_map_resource</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">phys_addr_t</span> <span class="n">phys_addr</span><span class="p">,</span>
-        <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dir</span><span class="p">);</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// Used to map kernel virtual address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">dma_addr_t</span> <span class="nf">dma_map_single</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dir</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Used to map struct page
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">dma_addr_t</span> <span class="nf">dma_map_page</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">struct</span> <span class="n">page</span> <span class="o">*</span><span class="n">page</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">size_t</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dir</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Used to map physical address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">dma_addr_t</span> <span class="nf">dma_map_resource</span><span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">phys_addr_t</span> <span class="n">phys_addr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dir</span><span class="p">);</span>
+</span></span></code></pre></div><blockquote>
 <p>All examples use <code>kmalloc()</code> to get a memory buffer for DMA. It does not have to be a kernel memory (and the size limit is way low); instead, we can use CMA (Contiguous Memory Allocator) <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> or device physical address (e.g. using Non Volatile Memory and/or <code>devdax</code>).</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">page</span> <span class="o">*</span><span class="n">page</span> <span class="o">=</span> <span class="cm">/* get page */</span><span class="p">;</span>
-<span class="n">size_t</span> <span class="n">src_offset</span> <span class="o">=</span> <span class="mh">0x1000</span><span class="p">;</span>
-<span class="n">size_t</span> <span class="n">dst_offset</span> <span class="o">=</span> <span class="mh">0x100000</span><span class="p">;</span>
-<span class="n">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="mh">0x3000</span><span class="p">;</span>
-<span class="n">dma_addr_t</span> <span class="n">src</span> <span class="o">=</span> <span class="n">dma_map_page</span><span class="p">(</span><span class="n">chan</span><span class="o">-&gt;</span><span class="n">device</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">src_offset</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">DMA_TO_DEVICE</span><span class="p">);</span>
-<span class="n">dma_addr_t</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">dma_map_page</span><span class="p">(</span><span class="n">chan</span><span class="o">-&gt;</span><span class="n">device</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">dst_offset</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">DMA_FROM_DEVICE</span><span class="p">);</span>
-</code></pre></div><p>The first argument <code>(struct device *)</code> refers to a DMA device, and <code>struct dma_chan</code> contains a device pointer (<code>chan-&gt;device-&gt;dev</code>) and you shoud always use it for the first argument.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">page</span> <span class="o">*</span><span class="n">page</span> <span class="o">=</span> <span class="cm">/* get page */</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">size_t</span> <span class="n">src_offset</span> <span class="o">=</span> <span class="mh">0x1000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">size_t</span> <span class="n">dst_offset</span> <span class="o">=</span> <span class="mh">0x100000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="mh">0x3000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">dma_addr_t</span> <span class="n">src</span> <span class="o">=</span> <span class="nf">dma_map_page</span><span class="p">(</span><span class="n">chan</span><span class="o">-&gt;</span><span class="n">device</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">src_offset</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">DMA_TO_DEVICE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">dma_addr_t</span> <span class="n">dst</span> <span class="o">=</span> <span class="nf">dma_map_page</span><span class="p">(</span><span class="n">chan</span><span class="o">-&gt;</span><span class="n">device</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">dst_offset</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">DMA_FROM_DEVICE</span><span class="p">);</span>
+</span></span></code></pre></div><p>The first argument <code>(struct device *)</code> refers to a DMA device, and <code>struct dma_chan</code> contains a device pointer (<code>chan-&gt;device-&gt;dev</code>) and you shoud always use it for the first argument.
 <strong>A character device that is generated by this proxy device driver should not be used.</strong></p>
 <p>The last argument is a DMA direction; you can use <code>DMA_BIDIRECTIONAL</code>.
 Although it is not clear, but what I understand is that <code>DMA_TO_DEVICE</code> means the data at the target address will be <em>read by the DMA device</em>, and <code>DMA_FROM_DEVICE</code> means the data at the target address will be <em>written by the DMA device</em>.</p>
 <p>After mapping the buffer, we now get a descriptor for transaction.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_slave_sg</span><span class="p">(</span>
-            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">sgl</span><span class="p">,</span>
-            <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">sg_len</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">direction</span><span class="p">,</span>
-            <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">);</span>
-
-<span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_dma_cyclic</span><span class="p">(</span>
-            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="n">dma_addr_t</span> <span class="n">buf_addr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">buf_len</span><span class="p">,</span>
-            <span class="n">size_t</span> <span class="n">period_len</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">direction</span><span class="p">);</span>
-
-<span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_interleaved_dma</span><span class="p">(</span>
-            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="k">struct</span> <span class="n">dma_interleaved_template</span> <span class="o">*</span><span class="n">xt</span><span class="p">,</span>
-            <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">);</span>
-
-<span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_dma_memcpy</span><span class="p">(</span>
-            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="n">dma_addr_t</span> <span class="n">dest</span><span class="p">,</span> <span class="n">dma_addr_t</span> <span class="n">src</span><span class="p">,</span>
-            <span class="n">size_t</span> <span class="n">len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">);</span>
-<span class="p">...</span>
-</code></pre></div><p>There are several interface to getting a descriptor, but as of now I am not sure what is different. For now I use <code>DMA_MEMCPY</code>, I use <code>dmaengine_prep_dma_memcpy()</code> function.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="n">chan_desc</span><span class="p">;</span>
-<span class="k">enum</span> <span class="n">dma_ctrl_flags</span> <span class="n">flags</span> <span class="o">=</span> <span class="n">DMA_CTRL_ACK</span> <span class="o">|</span> <span class="n">DMA_PREP_INTERRUPT</span><span class="p">;</span>
-<span class="n">chan_desc</span> <span class="o">=</span> <span class="n">dmaengine_prep_dma_memcpy</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">flags</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">IS_ERR_OR_NULL</span><span class="p">(</span><span class="n">chan_desc</span><span class="p">))</span> <span class="p">{</span> <span class="cm">/* handle error */</span> <span class="p">}</span>
-</code></pre></div><h4 id="3-configuring-completion-callback" class="relative group">3. Configuring Completion Callback <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-configuring-completion-callback" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_slave_sg</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">sgl</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">sg_len</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">direction</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_dma_cyclic</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="kt">dma_addr_t</span> <span class="n">buf_addr</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">buf_len</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">size_t</span> <span class="n">period_len</span><span class="p">,</span> <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">direction</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_interleaved_dma</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="k">struct</span> <span class="n">dma_interleaved_template</span> <span class="o">*</span><span class="n">xt</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="nf">dmaengine_prep_dma_memcpy</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="kt">dma_addr_t</span> <span class="n">dest</span><span class="p">,</span> <span class="kt">dma_addr_t</span> <span class="n">src</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">size_t</span> <span class="n">len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><p>There are several interface to getting a descriptor, but as of now I am not sure what is different. For now I use <code>DMA_MEMCPY</code>, I use <code>dmaengine_prep_dma_memcpy()</code> function.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dma_async_tx_descriptor</span> <span class="o">*</span><span class="n">chan_desc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">dma_ctrl_flags</span> <span class="n">flags</span> <span class="o">=</span> <span class="n">DMA_CTRL_ACK</span> <span class="o">|</span> <span class="n">DMA_PREP_INTERRUPT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">chan_desc</span> <span class="o">=</span> <span class="nf">dmaengine_prep_dma_memcpy</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">IS_ERR_OR_NULL</span><span class="p">(</span><span class="n">chan_desc</span><span class="p">))</span> <span class="p">{</span> <span class="cm">/* handle error */</span> <span class="p">}</span>
+</span></span></code></pre></div><h4 id="3-configuring-completion-callback" class="relative group">3. Configuring Completion Callback <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-configuring-completion-callback" aria-label="Anchor">#</a></span></h4>
 <p>Before submitting a request, we first should configure completion: when a DMA is completed, a completion callback will be called.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="nf">dma_callback</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">completion</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">complete</span><span class="p">(</span><span class="n">completion</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">struct</span> <span class="n">completion</span> <span class="n">comp</span><span class="p">;</span>
-
-<span class="n">init_completion</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comp</span><span class="p">);</span>
-<span class="n">chan_desc</span><span class="o">-&gt;</span><span class="n">callback</span> <span class="o">=</span> <span class="n">dma_callback</span><span class="p">;</span>
-<span class="n">chan_desc</span><span class="o">-&gt;</span><span class="n">callback_param</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">comp</span><span class="p">;</span>
-</code></pre></div><h4 id="4-submitting-a-request" class="relative group">4. Submitting a Request <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-submitting-a-request" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="nf">dma_callback</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">completion</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">complete</span><span class="p">(</span><span class="n">completion</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">completion</span> <span class="n">comp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">init_completion</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">chan_desc</span><span class="o">-&gt;</span><span class="n">callback</span> <span class="o">=</span> <span class="n">dma_callback</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">chan_desc</span><span class="o">-&gt;</span><span class="n">callback_param</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">comp</span><span class="p">;</span>
+</span></span></code></pre></div><h4 id="4-submitting-a-request" class="relative group">4. Submitting a Request <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-submitting-a-request" aria-label="Anchor">#</a></span></h4>
 <p>Submissison consists of two steps: (1) submit, and (2) issue pending requests.</p>
 <p><code>dmaengine_submit()</code> just pushes a request into the queue, and it will be not handled by the DMA engine until it is issued, which requires the second step with <code>dma_async_issue_pending()</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">dma_cookie_t</span> <span class="n">cookie</span><span class="p">;</span>
-<span class="n">cookie</span> <span class="o">=</span> <span class="n">dmaengine_submit</span><span class="p">(</span><span class="n">chan_desc</span><span class="p">);</span>
-<span class="n">dma_async_issue_pending</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span>
-</code></pre></div><p>where <code>dma_cookie_t</code> is used to check the progress of DMA engine activity via other DMA engine calls, e.g.:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_async_is_tx_complete</span><span class="p">(</span><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span>
-            <span class="n">dma_cookie_t</span> <span class="n">cookie</span><span class="p">,</span> <span class="n">dma_cookie_t</span> <span class="o">*</span><span class="n">last</span><span class="p">,</span> <span class="n">dma_cookie_t</span> <span class="o">*</span><span class="n">used</span><span class="p">);</span>
-<span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_async_is_complete</span><span class="p">(</span><span class="n">dma_cookie_t</span> <span class="n">cookie</span><span class="p">,</span>
-            <span class="n">dma_cookie_t</span> <span class="n">last_complete</span><span class="p">,</span> <span class="n">dma_cookie_t</span> <span class="n">last_used</span><span class="p">);</span>
-<span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_async_wait</span><span class="p">(</span><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="n">dma_cookie_t</span> <span class="n">cookie</span><span class="p">);</span>
-<span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_wait_for_async_tx</span><span class="p">(</span><span class="k">struct</span> <span class="n">dma_tx_descriptor</span> <span class="o">*</span><span class="n">tx</span><span class="p">);</span>
-</code></pre></div><h4 id="5-waiting-for-completion" class="relative group">5. Waiting for Completion <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#5-waiting-for-completion" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">dma_cookie_t</span> <span class="n">cookie</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">cookie</span> <span class="o">=</span> <span class="nf">dmaengine_submit</span><span class="p">(</span><span class="n">chan_desc</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">dma_async_issue_pending</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span>
+</span></span></code></pre></div><p>where <code>dma_cookie_t</code> is used to check the progress of DMA engine activity via other DMA engine calls, e.g.:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_async_is_tx_complete</span><span class="p">(</span><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">dma_cookie_t</span> <span class="n">cookie</span><span class="p">,</span> <span class="kt">dma_cookie_t</span> <span class="o">*</span><span class="n">last</span><span class="p">,</span> <span class="kt">dma_cookie_t</span> <span class="o">*</span><span class="n">used</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_async_is_complete</span><span class="p">(</span><span class="kt">dma_cookie_t</span> <span class="n">cookie</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">dma_cookie_t</span> <span class="n">last_complete</span><span class="p">,</span> <span class="kt">dma_cookie_t</span> <span class="n">last_used</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_async_wait</span><span class="p">(</span><span class="k">struct</span> <span class="n">dma_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span> <span class="kt">dma_cookie_t</span> <span class="n">cookie</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">dma_status</span> <span class="nf">dma_wait_for_async_tx</span><span class="p">(</span><span class="k">struct</span> <span class="n">dma_tx_descriptor</span> <span class="o">*</span><span class="n">tx</span><span class="p">);</span>
+</span></span></code></pre></div><h4 id="5-waiting-for-completion" class="relative group">5. Waiting for Completion <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#5-waiting-for-completion" aria-label="Anchor">#</a></span></h4>
 <p>Honestly, I am not sure what is different between <code>dma_async_is_tx_complete()</code> and <code>dma_async_is_complete()</code>. Need further investigation. I also saw that my reference uses <code>wait_for_completion()</code> instead of <code>dma_async_wait()</code>, and have no idea either what is difference between those two.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">wait_for_completion_timeout</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comp</span><span class="p">,</span> <span class="n">msecs_to_jiffies</span><span class="p">(</span><span class="mi">5000</span><span class="p">));</span>
-<span class="k">enum</span> <span class="n">dma_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">dma_async_is_tx_complete</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span> <span class="n">cookie</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="n">timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARNING</span> <span class="s">&#34;DMA timed out.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">!=</span> <span class="n">DMA_COMPLETE</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&#34;DMA returned completion status of: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
-            <span class="n">status</span> <span class="o">==</span> <span class="n">DMA_ERROR</span> <span class="o">?</span> <span class="s">&#34;error&#34;</span> <span class="o">:</span> <span class="s">&#34;in progress&#34;</span><span class="p">);</span>
-<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&#34;DMA completed!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="cm">/* after that call dma_unmap_page to unmap the mapped pages */</span>
-</code></pre></div><h3 id="using-spdk-spdk-sample-spdk-env-spdk-ioat" class="relative group">Using SPDK <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#using-spdk-spdk-sample-spdk-env-spdk-ioat" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">timeout</span> <span class="o">=</span> <span class="nf">wait_for_completion_timeout</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comp</span><span class="p">,</span> <span class="nf">msecs_to_jiffies</span><span class="p">(</span><span class="mi">5000</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">dma_status</span> <span class="n">status</span> <span class="o">=</span> <span class="nf">dma_async_is_tx_complete</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span> <span class="n">cookie</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printk</span><span class="p">(</span><span class="n">KERN_WARNING</span> <span class="s">&#34;DMA timed out.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">!=</span> <span class="n">DMA_COMPLETE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&#34;DMA returned completion status of: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="n">status</span> <span class="o">==</span> <span class="n">DMA_ERROR</span> <span class="o">?</span> <span class="s">&#34;error&#34;</span> <span class="o">:</span> <span class="s">&#34;in progress&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&#34;DMA completed!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* after that call dma_unmap_page to unmap the mapped pages */</span>
+</span></span></code></pre></div><h3 id="using-spdk-spdk-sample-spdk-env-spdk-ioat" class="relative group">Using SPDK <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#using-spdk-spdk-sample-spdk-env-spdk-ioat" aria-label="Anchor">#</a></span></h3>
 <p><a href="https://spdk.io/"   target="_blank">SPDK (Software Development Performance Kit)</a> supports user-space device management and is usually used for low-latency high-performance NVMe devices, but can be also used for hig performance I/OAT DMA devices by eliminating kernel - user space context switches for DMA operations.</p>
 <h4 id="1-initializing-spdk--allocating-ioat-channel" class="relative group">1. Initializing SPDK &amp; Allocating I/OAT Channel <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-initializing-spdk--allocating-ioat-channel" aria-label="Anchor">#</a></span></h4>
 <p>To use SPDK, first we should initialize the SPDK environment using:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* Initialize the default value of opts. */</span>
-<span class="kt">void</span> <span class="nf">spdk_env_opts_init</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_env_opts</span> <span class="o">*</span><span class="n">opts</span><span class="p">);</span>
-<span class="cm">/* Initialize or reinitialize the environment library.
-</span><span class="cm"> * For initialization, this must be called prior to using any other functions
-</span><span class="cm"> * in this library.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">spdk_env_init</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">spdk_env_opts</span> <span class="o">*</span><span class="n">opts</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">spdk_env_opts</span> <span class="n">opts</span><span class="p">;</span>
-<span class="n">spdk_env_opts_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
-<span class="cm">/* modify opts.* as you want */</span>
-<span class="n">spdk_env_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
-</code></pre></div><p>And then, use <code>spdk_ioat_probe()</code> to probe I/OAT DMA devices. Before calling it, target I/OAT devices should be setup with UIO/VFIO with <code>scripts/setup.sh</code> <a href="https://spdk.io/doc/getting_started.html"   target="_blank">src</a>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ sudo scripts/setup.sh
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* Callback for spdk_ioat_probe() enumeration. */</span>
-<span class="k">typedef</span> <span class="nf">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">spdk_ioat_probe_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_device</span> <span class="o">*</span><span class="n">pci_dev</span><span class="p">);</span>
-<span class="cm">/**
-</span><span class="cm"> * Callback for spdk_ioat_probe() to report a device that has been attached to
-</span><span class="cm"> * the userspace I/OAT driver.
-</span><span class="cm"> */</span>
-<span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">spdk_ioat_attach_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_device</span> <span class="o">*</span><span class="n">pci_dev</span><span class="p">,</span>
-                                    <span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">);</span>
-
-<span class="cm">/** 
-</span><span class="cm"> * Enumerate the I/OAT devices attached to the system and attach the userspace
-</span><span class="cm"> * I/OAT driver to them if desired.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">spdk_ioat_probe</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="n">spdk_ioat_probe_cb</span> <span class="n">probe_cb</span><span class="p">,</span> <span class="n">spdk_ioat_attach_cb</span> <span class="n">attach_cb</span><span class="p">);</span>
-</code></pre></div><p><code>spdk_ioat_probe</code>() probes all I/OAT devices and calls <code>probe_cb()</code> callback function for each probed device, and also tries to attach the device into the userspace process with <code>attach_cb()</code>, if the corresponding <code>probe_cb()</code> returns <code>true</code> for the device.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat_chan</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-
-<span class="k">static</span> <span class="kt">bool</span> <span class="nf">probe_cb</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_deivce</span> <span class="o">*</span><span class="n">pci_device</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ioat_chan</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">attach_cb</span><span class="p">(</span><span class="n">volid</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_device</span> <span class="o">*</span><span class="n">pci_device</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// Check if that device/channel supports copy operations
-</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">spdk_ioat_get_dma_capabilities</span><span class="p">(</span><span class="n">ioat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">SPDK_IOAT_ENGINE_COPY_SUPPORTED</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="n">ioat_chan</span> <span class="o">=</span> <span class="n">ioat</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Attaching to the ioat device!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="n">spdk_ioat_probe</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">probe_cb</span><span class="p">,</span> <span class="n">attach_cb</span><span class="p">))</span> <span class="p">{</span> <span class="cm">/* handle error */</span> <span class="p">}</span>
-</code></pre></div><p><code>probe_cb()</code> returns true if there is no attached <code>spdk_ioat_chan</code> channel. Then <code>spdk_ioat_probe()</code> calls <code>attach_cb()</code> for the device that <code>probe_cb</code> returns true, then <code>attach_cb()</code> checks the memory copy capability and attach it.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* Initialize the default value of opts. */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">spdk_env_opts_init</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_env_opts</span> <span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* Initialize or reinitialize the environment library.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * For initialization, this must be called prior to using any other functions
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * in this library.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">spdk_env_init</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">spdk_env_opts</span> <span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">spdk_env_opts</span> <span class="n">opts</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">spdk_env_opts_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* modify opts.* as you want */</span>
+</span></span><span class="line"><span class="cl"><span class="nf">spdk_env_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+</span></span></code></pre></div><p>And then, use <code>spdk_ioat_probe()</code> to probe I/OAT DMA devices. Before calling it, target I/OAT devices should be setup with UIO/VFIO with <code>scripts/setup.sh</code> <a href="https://spdk.io/doc/getting_started.html"   target="_blank">src</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo scripts/setup.sh
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* Callback for spdk_ioat_probe() enumeration. */</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">spdk_ioat_probe_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_device</span> <span class="o">*</span><span class="n">pci_dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Callback for spdk_ioat_probe() to report a device that has been attached to
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * the userspace I/OAT driver.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">spdk_ioat_attach_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_device</span> <span class="o">*</span><span class="n">pci_dev</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                    <span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/** 
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Enumerate the I/OAT devices attached to the system and attach the userspace
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * I/OAT driver to them if desired.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">spdk_ioat_probe</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="n">spdk_ioat_probe_cb</span> <span class="n">probe_cb</span><span class="p">,</span> <span class="n">spdk_ioat_attach_cb</span> <span class="n">attach_cb</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>spdk_ioat_probe</code>() probes all I/OAT devices and calls <code>probe_cb()</code> callback function for each probed device, and also tries to attach the device into the userspace process with <code>attach_cb()</code>, if the corresponding <code>probe_cb()</code> returns <code>true</code> for the device.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat_chan</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">bool</span> <span class="nf">probe_cb</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_deivce</span> <span class="o">*</span><span class="n">pci_device</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ioat_chan</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">attach_cb</span><span class="p">(</span><span class="n">volid</span> <span class="o">*</span><span class="n">cb_ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_pci_device</span> <span class="o">*</span><span class="n">pci_device</span><span class="p">,</span> <span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Check if that device/channel supports copy operations
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nf">spdk_ioat_get_dma_capabilities</span><span class="p">(</span><span class="n">ioat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">SPDK_IOAT_ENGINE_COPY_SUPPORTED</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ioat_chan</span> <span class="o">=</span> <span class="n">ioat</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Attaching to the ioat device!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">spdk_ioat_probe</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">probe_cb</span><span class="p">,</span> <span class="n">attach_cb</span><span class="p">))</span> <span class="p">{</span> <span class="cm">/* handle error */</span> <span class="p">}</span>
+</span></span></code></pre></div><p><code>probe_cb()</code> returns true if there is no attached <code>spdk_ioat_chan</code> channel. Then <code>spdk_ioat_probe()</code> calls <code>attach_cb()</code> for the device that <code>probe_cb</code> returns true, then <code>attach_cb()</code> checks the memory copy capability and attach it.</p>
 <h4 id="2-dma-transfer-and-configuring-completion-callback" class="relative group">2. DMA Transfer and Configuring Completion Callback <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-dma-transfer-and-configuring-completion-callback" aria-label="Anchor">#</a></span></h4>
 <p>SPDK requires to call <code>spdk_ioat_build_copy()</code> to build a DMA request, and then flush it into the device via <code>spdk_ioat_flush()</code>. You can use <code>spdk_ioat_submit_copy()</code> to do thw two at once for one request.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* Signature for callback function invoked whan a request is completed. */</span>
-<span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">spdk_ioat_req_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-<span class="cm">/** 
-</span><span class="cm"> * Build a DMA engine memory copy request (a descriptor).
-</span><span class="cm"> * The caller must also explicitly call spdk_ioat_flush to submit the
-</span><span class="cm"> * descriptor, possibly after building additional descriptors.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">spdk_ioat_build_copy</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span>
-                         <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">,</span> <span class="n">spdk_ioat_req_cb</span> <span class="n">cb_fn</span><span class="p">,</span>
-                         <span class="kt">void</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">nbytes</span><span class="p">);</span>
-
-<span class="cm">/* Flush previously built descriptors. */</span>
-<span class="kt">void</span> <span class="nf">spdk_ioat_flush</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">);</span>
-
-<span class="cm">/* Build and submit a DMA engine memory copy request. */</span>
-<span class="kt">int</span> <span class="nf">spdk_ioat_submit_copy</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span>
-                          <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">,</span> <span class="n">spdk_ioat_req_cb</span> <span class="n">cb_fn</span><span class="p">,</span>
-                          <span class="kt">void</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">nbytes</span><span class="p">);</span>
-</code></pre></div><p><code>spdk_ioat_build_copy()</code> and <code>spdk_ioat_submit_copy()</code> receives <code>void *cb_arg</code> and <code>spdk_ioat_req_cb cb_fn</code>, the callback function to be called with a given argument pointer. The callback function will be called when a request is completed, and the userspace process can use it to determine when operation is done. Simple implementation can be:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">bool</span> <span class="n">copy_done</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-<span class="k">static</span> <span class="nf">op_done_cb</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-    <span class="o">*</span><span class="p">(</span><span class="kt">bool</span><span class="o">*</span><span class="p">)</span><span class="n">arg</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">spdk_ioat_submit_copy</span><span class="p">(</span><span class="n">ioat_chan</span><span class="p">,</span>
-                      <span class="o">&amp;</span><span class="n">copy_done</span><span class="p">,</span>   <span class="c1">// optional
-</span><span class="c1"></span>                      <span class="n">op_done_cb</span><span class="p">,</span>   <span class="c1">// optional: if given, will be called by ioat_process_channel_events().
-</span><span class="c1"></span>                      <span class="n">dst</span><span class="p">,</span>
-                      <span class="n">src</span><span class="p">,</span>
-                      <span class="n">io_size</span><span class="p">);</span>
-
-<span class="kt">int</span> <span class="n">result</span><span class="p">;</span>
-<span class="k">do</span> <span class="p">{</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">spdk_ioat_process_events</span><span class="p">(</span><span class="n">ioat_chan</span><span class="p">);</span>
-<span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-
-<span class="n">assert</span><span class="p">(</span><span class="n">copy_done</span><span class="p">);</span> <span class="c1">// must be true!
-</span></code></pre></div><p>Note that the target buffer (both <code>src</code> and <code>dst</code>) must be DMAable; you should use <code>spdk_mem_register()</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* Signature for callback function invoked whan a request is completed. */</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">spdk_ioat_req_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/** 
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Build a DMA engine memory copy request (a descriptor).
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * The caller must also explicitly call spdk_ioat_flush to submit the
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * descriptor, possibly after building additional descriptors.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">spdk_ioat_build_copy</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">,</span> <span class="n">spdk_ioat_req_cb</span> <span class="n">cb_fn</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="kt">void</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* Flush previously built descriptors. */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">spdk_ioat_flush</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* Build and submit a DMA engine memory copy request. */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">spdk_ioat_submit_copy</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">,</span> <span class="n">spdk_ioat_req_cb</span> <span class="n">cb_fn</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="kt">void</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>spdk_ioat_build_copy()</code> and <code>spdk_ioat_submit_copy()</code> receives <code>void *cb_arg</code> and <code>spdk_ioat_req_cb cb_fn</code>, the callback function to be called with a given argument pointer. The callback function will be called when a request is completed, and the userspace process can use it to determine when operation is done. Simple implementation can be:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="n">copy_done</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="nf">op_done_cb</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">(</span><span class="kt">bool</span><span class="o">*</span><span class="p">)</span><span class="n">arg</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">spdk_ioat_submit_copy</span><span class="p">(</span><span class="n">ioat_chan</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="o">&amp;</span><span class="n">copy_done</span><span class="p">,</span>   <span class="c1">// optional
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                      <span class="n">op_done_cb</span><span class="p">,</span>   <span class="c1">// optional: if given, will be called by ioat_process_channel_events().
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                      <span class="n">dst</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="n">src</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="n">io_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="nf">spdk_ioat_process_events</span><span class="p">(</span><span class="n">ioat_chan</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">assert</span><span class="p">(</span><span class="n">copy_done</span><span class="p">);</span> <span class="c1">// must be true!
+</span></span></span></code></pre></div><p>Note that the target buffer (both <code>src</code> and <code>dst</code>) must be DMAable; you should use <code>spdk_mem_register()</code>:</p>
 <pre tabindex="0"><code>/**
  * Register the specified memory region for address translation.
  * The memory region must map to pinned huge pages (2MB or greater).
@@ -671,70 +670,70 @@ spdk_mem_register(dev_addr, device_size);
 /* e.g. void *src = dev_addr + 0x1000; */
 </code></pre><p>As the device is handled by a userspace process, not the kernel, the process cannot receive an interrupt but should poll the completion to check whether the submitted operation is completed.
 <code>spdk_ioat_process_events()</code> is the function for this purpose.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
-</span><span class="cm"> * Check for completed requests on an I/OAT channel.
-</span><span class="cm"> * \return number of events handled on success, negative errno on failure.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">spdk_ioat_process_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">);</span>
-</code></pre></div><p><code>spdk_ioat_process_events()</code> immediately returns how many requests are completed. You can use the returned value or <code>copy_done</code> variable in the example above to check whether the operation is completed.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Check for completed requests on an I/OAT channel.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * \return number of events handled on success, negative errno on failure.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">spdk_ioat_process_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">chan</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>spdk_ioat_process_events()</code> immediately returns how many requests are completed. You can use the returned value or <code>copy_done</code> variable in the example above to check whether the operation is completed.</p>
 <p>Note that, <code>op_done_cb()</code> callback will be called by <code>spdk_ioat_process_events()</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">spdk_ioat_process_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">ioat_process_channel_events</span><span class="p">(</span><span class="n">ioat</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">int</span> <span class="nf">ioat_process_channel_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">)</span> <span class="p">{</span>
-    
-    <span class="kt">uint64_t</span> <span class="n">status</span> <span class="o">=</span> <span class="o">*</span><span class="n">ioat</span><span class="o">-&gt;</span><span class="n">comp_update</span><span class="p">;</span>
-    <span class="kt">uint64_t</span> <span class="n">completed_descriptor</span> <span class="o">=</span> <span class="n">status</span> <span class="o">&amp;</span> <span class="n">SPDK_IOAT_CHANSTS_COMPLETED_DESCRIPTOR_MASK</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">completed_descriptor</span> <span class="o">==</span> <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">last_seen</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">do</span> <span class="p">{</span>
-        <span class="kt">uint32_t</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">ioat_get_ring_index</span><span class="p">(</span><span class="n">ioat</span><span class="p">,</span> <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">);</span>
-        <span class="k">struct</span> <span class="n">ioat_descriptor</span> <span class="o">*</span><span class="n">desc</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ioat</span><span class="o">-&gt;</span><span class="n">ring</span><span class="p">[</span><span class="n">tail</span><span class="p">];</span>
-
-        <span class="c1">// Here, the given callback function is called.
-</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="o">-&gt;</span><span class="n">callback_fn</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">desc</span><span class="o">-&gt;</span><span class="n">callback_fn</span><span class="p">(</span><span class="n">desc</span><span class="o">-&gt;</span><span class="n">callback_arg</span><span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="n">hw_desc_phys_addr</span> <span class="o">=</span> <span class="n">desc</span><span class="o">-&gt;</span><span class="n">phys_addr</span><span class="p">;</span> <span class="c1">// This breaks the loop
-</span><span class="c1"></span>        <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">++</span><span class="p">;</span>
-        <span class="n">events_count</span><span class="o">++</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="n">hw_desc_phys_addr</span> <span class="o">!=</span> <span class="n">completed_descriptor</span><span class="p">);</span>
-
-    <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">last_seen</span> <span class="o">=</span> <span class="n">hw_desc_phys_addr</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="n">events_count</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>so that you should call <code>spdk_ioat_process_events()</code> to get notified.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">spdk_ioat_process_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">ioat_process_channel_events</span><span class="p">(</span><span class="n">ioat</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">ioat_process_channel_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">spdk_ioat_chan</span> <span class="o">*</span><span class="n">ioat</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span> <span class="n">status</span> <span class="o">=</span> <span class="o">*</span><span class="n">ioat</span><span class="o">-&gt;</span><span class="n">comp_update</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span> <span class="n">completed_descriptor</span> <span class="o">=</span> <span class="n">status</span> <span class="o">&amp;</span> <span class="n">SPDK_IOAT_CHANSTS_COMPLETED_DESCRIPTOR_MASK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">completed_descriptor</span> <span class="o">==</span> <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">last_seen</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint32_t</span> <span class="n">tail</span> <span class="o">=</span> <span class="nf">ioat_get_ring_index</span><span class="p">(</span><span class="n">ioat</span><span class="p">,</span> <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">ioat_descriptor</span> <span class="o">*</span><span class="n">desc</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ioat</span><span class="o">-&gt;</span><span class="n">ring</span><span class="p">[</span><span class="n">tail</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// Here, the given callback function is called.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="o">-&gt;</span><span class="n">callback_fn</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">desc</span><span class="o">-&gt;</span><span class="nf">callback_fn</span><span class="p">(</span><span class="n">desc</span><span class="o">-&gt;</span><span class="n">callback_arg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">hw_desc_phys_addr</span> <span class="o">=</span> <span class="n">desc</span><span class="o">-&gt;</span><span class="n">phys_addr</span><span class="p">;</span> <span class="c1">// This breaks the loop
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">events_count</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="n">hw_desc_phys_addr</span> <span class="o">!=</span> <span class="n">completed_descriptor</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ioat</span><span class="o">-&gt;</span><span class="n">last_seen</span> <span class="o">=</span> <span class="n">hw_desc_phys_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">events_count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>so that you should call <code>spdk_ioat_process_events()</code> to get notified.</p>
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://www.intel.com/content/www/us/en/wireless-network/accel-technology.html"   target="_blank">Intel I/O Acceleration Technology</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://www.kernel.org/doc/html/latest/driver-api/dmaengine/index.html"   target="_blank">Linux DMAEngine Documentation</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://forums.xilinx.com/xlnx/attachments/xlnx/ELINUX/44060/1/Linux%20DMA%20from%20User%20Space-public.pdf"   target="_blank">Xilinx Linux DMA from User Space</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://www.slideshare.net/kerneltlv/continguous-memory-allocator-in-the-linux-kernel"   target="_blank">SlideShare: Contiguous Memory Allocator in the Linux Kernel</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p><a href="https://programmersought.com/article/21516169763/"   target="_blank">Programmer Sought: SPDK Sample Code Analysis</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:6" role="doc-endnote">
+<li id="fn:6">
 <p><a href="https://github.com/spdk/spdk/blob/v21.01/include/spdk/env.h"   target="_blank">SPDK Github: env.h</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:7" role="doc-endnote">
+<li id="fn:7">
 <p><a href="https://github.com/spdk/spdk/blob/v21.01.1/include/spdk/ioat.h"   target="_blank">SPDK Github: ioat.h</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

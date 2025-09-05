@@ -15,7 +15,7 @@
       <guid>/2022-03-16/using-rdma-cm/</guid>
       <description>Years before, I posted how to use libibverbs for RDMA communication.
 When initializing queue pair connection, we need some destination information:
-bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here  rtr_attr.</description>
+bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here rtr_attr.</description>
     </item>
     
     <item>
@@ -46,7 +46,7 @@ Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemente
       <guid>/2021-03-24/testing-ceph-rbd-performance-with-virtualization/</guid>
       <description>This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
 VM execution is done through qemu-system-x86_64, without using libvirt.
- Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
+Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67) # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &amp;lt;append configuration-specific options&amp;gt; Performance is measured with fio running on the guest VM with the following configuration file:</description>
     </item>
     
     <item>
@@ -56,7 +56,7 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
       
       <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
       <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.
-Virtio Review &amp;amp; Vhost Introduction #  virtio-net example diagram. [Source]   VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
+Virtio Review &amp;amp; Vhost Introduction # virtio-net example diagram. [Source] VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
     </item>
     
     <item>
@@ -87,8 +87,9 @@ Installing Flatpak # In Ubuntu distributions, there is no Flatpak preinstalled, 
       <pubDate>Wed, 15 Jul 2020 12:35:00 +0900</pubDate>
       
       <guid>/2020-07-15/fedora-silverblue/</guid>
-      <description>Fedora Silverblue #    Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
-For this purpose, Fedora Silverblue adopted two technologies:</description>
+      <description>Fedora Silverblue # Fedora Silverblue 1 is an immutable desktop operating system based on Fedora Linux distribution. What immutable does mean is that most directories including rootfs (/) are mounted as read-only, and user applications run in an isolated execution environment. It is a part of Atomic Host project, and share the same underlying system with Fedora CoreOS (FCOS).
+For this purpose, Fedora Silverblue adopted two technologies:
+libostree (OSTree) Flatpak libostree 2 # libostree (previously called OSTree) provides git-like model for managing bootable filesystem trees (binaries), along with for deploying them and managing the bootloader configuration.</description>
     </item>
     
     <item>
@@ -138,7 +139,7 @@ Visual Studio Code # Visual Studio Code, implemented and managed by Microsoft, i
       <pubDate>Thu, 10 Oct 2019 20:35:00 +0900</pubDate>
       
       <guid>/2019-10-10/open-container-initiative-image-spec/</guid>
-      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&#39;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
+      <description>The Open Container Initiative (OCI) standard is an open standard for Linux containers. As born in 2013, Docker has been a de-facto standard of Linux container framework, but the OCI standard was born for a need of open standard, based on the Docker manifest. As the standard is based on Docker manifest, its specifications and structures are very similar to Dockers&amp;rsquo;, enabling providing compatibilities between Docker and OCI-based container frameworks.</description>
     </item>
     
     <item>
@@ -148,7 +149,7 @@ Visual Studio Code # Visual Studio Code, implemented and managed by Microsoft, i
       
       <guid>/2019-02-07/implementing-a-new-custom-netlink-family-protocol/</guid>
       <description>Netlink Protocol # Netlink is a communication protocol between kernel and userspace. Unlike ioctl(), netlink is based on socket, which enables notification from the kernel to userspace. With ioctl(), the kernel can only send a response regarding to a user request. With netlink socket, however, user processes can be blocked via blocking functions such as recv() to receive any messages from the kernel.
-#include &amp;lt;asm/types.h&amp;gt;#include &amp;lt;sys/socket.h&amp;gt;#include &amp;lt;linux/netlink.h&amp;gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on.</description>
+#include &amp;lt;asm/types.h&amp;gt; #include &amp;lt;sys/socket.h&amp;gt; #include &amp;lt;linux/netlink.h&amp;gt; netlink_socket = socket (AF_NETLINK, socket_type, netlink_family); There are some predefined famous netlink protocol family: for instance, NETLINK_ROUTE for routing and link updates, NETLINK_KOBJECT_UEVENT for device events, and so on.</description>
     </item>
     
     <item>
@@ -157,7 +158,7 @@ Visual Studio Code # Visual Studio Code, implemented and managed by Microsoft, i
       <pubDate>Wed, 28 Nov 2018 14:03:15 +0900</pubDate>
       
       <guid>/2018-11-28/udev-function-flow-for-kobject_uevent-kernel-group-message/</guid>
-      <description>Identifying the device #    {: .center-image} [source]
+      <description>Identifying the device # {: .center-image} [source]
 When a USB device is inserted to system, the very first initialization function to be started is drivers/usb/core/usb.c:usb_init(), written in [here]. The USB root hub driver (i.e. hcd) initiates the USB device initialization, the USB core takes the control and initializes an actual device structure struct usb_device.
 linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... struct usb_device *parent; struct usb_bus *bus; struct usb_host_endpoint ep0; struct device dev; .</description>
     </item>
@@ -168,9 +169,9 @@ linux/include/linux/usb.h struct usb_device { int devnum; char devpath[16]; ... 
       <pubDate>Tue, 27 Nov 2018 10:05:14 +0900</pubDate>
       
       <guid>/2018-11-27/udev-device-manager-for-the-linux-kernel-in-userspace/</guid>
-      <description>What is udev? #  udev (userspace /dev) is a device manager for the Linux kernel. As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory. At the same time, udev also handls all user space events raised when hardware devices are added into the system or removed from it, including firmware loading as reuqired by certain devices.
+      <description>What is udev? # udev (userspace /dev) is a device manager for the Linux kernel. As the successor of devfsd and hotplug, udev primaily manages device nodes in the /dev directory. At the same time, udev also handls all user space events raised when hardware devices are added into the system or removed from it, including firmware loading as reuqired by certain devices.
 https://en.wikipedia.org/wiki/Udev
- udev first appeared at Linux kernel version 2.</description>
+udev first appeared at Linux kernel version 2.</description>
     </item>
     
     <item>
@@ -179,9 +180,9 @@ https://en.wikipedia.org/wiki/Udev
       <pubDate>Thu, 22 Nov 2018 13:49:40 +0900</pubDate>
       
       <guid>/2018-11-22/systemd-boot-process/</guid>
-      <description>What is systemd? #  systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
+      <description>What is systemd? # systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
 https://www.freedesktop.org/wiki/Software/systemd
- systemd is now the init process running as PID 1 as indicated above. /sbin/init was the actual init process of Linux (also known as System V init boot system), it is now replaced with /usr/lib/systemd in many Linux distributions.</description>
+systemd is now the init process running as PID 1 as indicated above. /sbin/init was the actual init process of Linux (also known as System V init boot system), it is now replaced with /usr/lib/systemd in many Linux distributions.</description>
     </item>
     
     <item>
@@ -218,7 +219,7 @@ cpu_set_t can be set by defined macros as follows.</description>
       <description>I made two kernel modules, one of which calls a function of the other module, but it kept saying me that WARNING: &amp;quot;&amp;lt;function_name&amp;gt;&amp;quot; undefined!. Even though I exported the function, there actually is another step that I should follow.
 References: http://stackoverflow.com/a/9499893
 What I did before finding the reference was to export the target function.
-/kernel1/functions.h void function1(void); /kernel1/functions.c #include &amp;lt;linux/module.h&amp;gt;void function1(void){}; EXPORT_SYMBOL(function1); However, the other kernel module (say it kernel2) does not know where function1() exists.</description>
+/kernel1/functions.h void function1(void); /kernel1/functions.c #include &amp;lt;linux/module.h&amp;gt; void function1(void){}; EXPORT_SYMBOL(function1); However, the other kernel module (say it kernel2) does not know where function1() exists.</description>
     </item>
     
     <item>
@@ -227,9 +228,9 @@ What I did before finding the reference was to export the target function.
       <pubDate>Thu, 27 Apr 2017 13:14:24 +0900</pubDate>
       
       <guid>/2017-04-27/introduction-to-vfio/</guid>
-      <description>Virtual Function I/O (VFIO) #  Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything!  VFIO Device Filer descriptor #   located in /dev/vfio
-     Each divided into regions
- Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl.</description>
+      <description>Virtual Function I/O (VFIO) # Introduced to replace the old-fashioned KVM PCI device assignment (virtio). Userspace driver interface Use IOMMU (AMD IOMMU, Intel VT-d, etc) Full PCI interrupt, MMIO and I/O port access, PCI configuration space access support Take an abstract view of a device: to support anything! VFIO Device Filer descriptor # located in /dev/vfio
+Each divided into regions
+Each region maps to a device resource (MMIO BAR, IO BAR, PCI configuration space) Region count and information discovered through ioctl.</description>
     </item>
     
     <item>
@@ -238,9 +239,10 @@ What I did before finding the reference was to export the target function.
       <pubDate>Fri, 21 Apr 2017 20:36:41 +0900</pubDate>
       
       <guid>/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/</guid>
-      <description>Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1
-  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
-  Software specifies the leaf function by setting the appropriate value in the register EAX as input.</description>
+      <description>Environment # Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x) 1. ENCLS # SGX Programming Reference, Section 5.2.1
+ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+Software specifies the leaf function by setting the appropriate value in the register EAX as input.
+Example) Instruction = ENCLS, EAX = 0x0: ECREATE Example) Instruction = ENCLS, EAX = 0x1: EADD All leaf functions are defined in SGX programming reference, and linux-sgx-driver (/linux-sgx-driver/isgx_arch.</description>
     </item>
     
   </channel>

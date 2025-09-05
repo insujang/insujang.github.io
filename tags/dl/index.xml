@@ -14,7 +14,7 @@
       
       <guid>/2024-09-20/introducing-context-parallelism/</guid>
       <description>In the previous analysis of sequence parallelism, I covered two papers 1 2. Those are early works about sequence parallelism and didn&amp;rsquo;t get attention as there was low demand for context parallelism. After LLMs are required to have longer context support, new papers that tackle the problems of such early works have been emerged.
-What are the Problems of Early Sequence Parallelism Works? #    Both works follow the traditional attention computation: compute QK^T, apply mask.</description>
+What are the Problems of Early Sequence Parallelism Works? # Both works follow the traditional attention computation: compute QK^T, apply mask.</description>
     </item>
     
     <item>
@@ -37,7 +37,8 @@ class OPTAttention(nn.Module): def forward(...): # hidden states is an input ten
       
       <guid>/2024-01-11/tensor-parallelism-and-sequence-parallelism-detailed-analysis/</guid>
       <description>This post explains how tensor model parallelism and sequence parallelism work especially on attention layer, and how they are different.
-Backgrounds # Attention Layer #    Attention calculation with a single sequence with T number of tokens. d_attn is config.embed_dim // config.num_attention_heads Bold boxes are model parameters, while others are temporarily created tensors. All the other terms are borrowed from HuggingFace Transformers OPT config. Implementation of computing attention:</description>
+Backgrounds # Attention Layer # Attention calculation with a single sequence with T number of tokens. d_attn is config.embed_dim // config.num_attention_heads Bold boxes are model parameters, while others are temporarily created tensors. All the other terms are borrowed from HuggingFace Transformers OPT config. Implementation of computing attention:
+class OPTAttention(nn.Module): def __init__(self, .</description>
     </item>
     
     <item>
@@ -59,8 +60,8 @@ Continuous Batching # Before the introduction of continuous batching, static bat
       <guid>/2024-01-07/llm-inference-autoregressive-generation-and-attention-kv-cache/</guid>
       <description>This post explains the basic of LLM inference, mainly focusing on differences from training LLM.
 Autreogressive Text Generation # Unlike training, where tokens are parallelized and trained, inference generates tokens one by one. Therefore, to create a full sentence, several forward pass should be executed (# tokens times). The following video from HuggingFace illustrates how it works.
-    Autoregressive token generation. Source: HuggingFace
- Before generating the first token, LLM first puts all input tokens to generate context.</description>
+Autoregressive token generation. Source: HuggingFace
+Before generating the first token, LLM first puts all input tokens to generate context.</description>
     </item>
     
     <item>
@@ -70,7 +71,7 @@ Autreogressive Text Generation # Unlike training, where tokens are parallelized 
       
       <guid>/2023-04-22/torch-fx-transformation-and-pipeline-parallelism/</guid>
       <description>Torch fx # torch.fx is a PyTorch module that captures a model and applies transformation for optimization 1. In recent days, the importance of model optimization is getting more important. torch.fx enables transparent transformation without touching to the original model implementation, allowing fine-grained model optimization.
- Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model.   This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance.</description>
+Since PyTorch 2.0, it seems TorchDynamo replaces legacy fx.tracer for tracing the model. This post focuses on existing torch.fx module, and I will post another one regarding TorchDynamo if I have a chance.</description>
     </item>
     
     <item>
@@ -81,7 +82,7 @@ Autreogressive Text Generation # Unlike training, where tokens are parallelized 
       <guid>/2023-04-19/using-huggingface-transformers/</guid>
       <description>HF Transformers # HuggingFace (🤗) Transformers is a library that enables to easily download the state-of-the-art pretrained models. It is also possible to create and train a model from scratch, after modifying the structure of existing models. Although the library starts from transformer based language models, it became a general community hub and includes other models such as convolution based Resnet.
 It can easily be installed via pip 1:
-pip install transformers  Most code is borrowed from HuggingFace transformers example codes.</description>
+pip install transformers Most code is borrowed from HuggingFace transformers example codes.</description>
     </item>
     
     <item>
@@ -102,8 +103,8 @@ Deepak Narayanan et al, Efficient large-scale language model training on GPU clu
       <guid>/2022-07-30/analysis-of-transformer-model/</guid>
       <description>This post analyzes transformer models, specifically memory and computation overhead.
 Many transformer based models just explain themselves as a model with X-B parameters; I wanted to break it down and look into the model structure how they are stored and used in actual computing hardware.
- Many illustrations and analysis are based on the following papers 1.
- Transformer-based Model # Since Google announed attention and transformer models in 2017 2, MLP and image classification models are rapidly adopting transformer layers.</description>
+Many illustrations and analysis are based on the following papers 1.
+Transformer-based Model # Since Google announed attention and transformer models in 2017 2, MLP and image classification models are rapidly adopting transformer layers.</description>
     </item>
     
     <item>

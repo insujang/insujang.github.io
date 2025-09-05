@@ -14,7 +14,7 @@
       
       <guid>/2022-03-12/implementing-basic-rpc-with-c-20/</guid>
       <description>This post explains how a basic RPC framework can be implemented by using modern C++ functionalities. The explanation in this post is heavily inspired from:
- simple-rpc by evenleo buttonrpc-cpp14 by button-chen  C++ Features used # Parameter Pack 1 # Parameter pack is similar to C variadic arguments that are used in printf() family:
+simple-rpc by evenleo buttonrpc-cpp14 by button-chen C++ Features used # Parameter Pack 1 # Parameter pack is similar to C variadic arguments that are used in printf() family:
 int printf(char *format, ...); which is implemented with va_ variadic function API [src]:
 int printf(const char* format, .</description>
     </item>

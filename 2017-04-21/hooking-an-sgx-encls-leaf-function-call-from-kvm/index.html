@@ -20,9 +20,10 @@
   <title>Hooking an SGX ENCLS Leaf Function Call from KVM &middot; Better Tomorrow with Computer Science</title>
     <meta name="title" content="Hooking an SGX ENCLS Leaf Function Call from KVM &middot; Better Tomorrow with Computer Science" />
   
-  <meta name="description" content="Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1
-  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
-  Software specifies the leaf function by setting the appropriate value in the register EAX as input." />
+  <meta name="description" content="Environment # Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x) 1. ENCLS # SGX Programming Reference, Section 5.2.1
+ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+Software specifies the leaf function by setting the appropriate value in the register EAX as input.
+Example) Instruction = ENCLS, EAX = 0x0: ECREATE Example) Instruction = ENCLS, EAX = 0x1: EADD All leaf functions are defined in SGX programming reference, and linux-sgx-driver (/linux-sgx-driver/isgx_arch." />
   
   
   
@@ -47,7 +48,7 @@
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +57,7 @@
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -72,20 +73,21 @@
   
   
   <meta property="og:title" content="Hooking an SGX ENCLS Leaf Function Call from KVM" />
-<meta property="og:description" content="Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1
-  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
-  Software specifies the leaf function by setting the appropriate value in the register EAX as input." />
+<meta property="og:description" content="Environment # Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x) 1. ENCLS # SGX Programming Reference, Section 5.2.1
+ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+Software specifies the leaf function by setting the appropriate value in the register EAX as input.
+Example) Instruction = ENCLS, EAX = 0x0: ECREATE Example) Instruction = ENCLS, EAX = 0x1: EADD All leaf functions are defined in SGX programming reference, and linux-sgx-driver (/linux-sgx-driver/isgx_arch." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2017-04-21/hooking-an-sgx-encls-leaf-function-call-from-kvm/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-04-21T20:36:41+09:00" />
 <meta property="article:modified_time" content="2017-04-21T20:36:41+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
-
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Hooking an SGX ENCLS Leaf Function Call from KVM"/>
-<meta name="twitter:description" content="Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1
-  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
-  Software specifies the leaf function by setting the appropriate value in the register EAX as input."/>
+<meta name="twitter:description" content="Environment # Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x) 1. ENCLS # SGX Programming Reference, Section 5.2.1
+ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.
+Software specifies the leaf function by setting the appropriate value in the register EAX as input.
+Example) Instruction = ENCLS, EAX = 0x0: ECREATE Example) Instruction = ENCLS, EAX = 0x1: EADD All leaf functions are defined in SGX programming reference, and linux-sgx-driver (/linux-sgx-driver/isgx_arch."/>
 
   
   <script type="application/ld+json">
@@ -96,7 +98,7 @@
     "name": "Hooking an SGX ENCLS Leaf Function Call from KVM",
     "headline": "Hooking an SGX ENCLS Leaf Function Call from KVM",
     
-    "abstract": "Environment #  Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x)  1. ENCLS #   SGX Programming Reference, Section 5.2.1\n  ENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.\n  Software specifies the leaf function by setting the appropriate value in the register EAX as input.",
+    "abstract": "Environment # Host: Ubuntu 14.04.5 LTS, Linux kernel 4.6.0, Intel Core-i7 6700 Skylake processor Guest: Ubuntu 14.04.4 LTS, Linux kernel 3.16.5, QEMU-KVM based virtual machine (using Intel VT-x) 1. ENCLS # SGX Programming Reference, Section 5.2.1\nENCLS instruction is used to execute an enclave system function (privileged) of specified leaf number.\nSoftware specifies the leaf function by setting the appropriate value in the register EAX as input.\nExample) Instruction = ENCLS, EAX = 0x0: ECREATE Example) Instruction = ENCLS, EAX = 0x1: EADD All leaf functions are defined in SGX programming reference, and linux-sgx-driver (\/linux-sgx-driver\/isgx_arch.",
     "inLanguage": "en",
     "url" : "\/2017-04-21\/hooking-an-sgx-encls-leaf-function-call-from-kvm\/",
     "author" : {
@@ -550,107 +552,107 @@ The 1-setting is not allowed for any reserved bit.</li>
 <li>It first checks bit position 31 of the primary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS</code>) is 1. This indicates that the secondary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS2</code>) is used.<br>
 It is set by default by KVM, as follows, hence you don&rsquo;t have to modify the following code.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="p">...</span>
-<span class="c1">// CPU_BASED_ACTIVATE_SECONDARY_CONTROLS is defined in
-</span><span class="c1">// /linux/arch/x86/kvm/include/asm/vmx.h:54
-</span><span class="c1">// #define CPU_BASED_ACTIVATE_SECONDARY_CONTROLS 0x80000000
-</span><span class="c1"></span><span class="n">opt</span> <span class="o">=</span> <span class="n">CPU_BASED_TPR_SHADOW</span> <span class="o">|</span>
-      <span class="n">CPU_BASED_USE_MSR_BITMAPS</span> <span class="o">|</span>
-      <span class="n">CPU_BASED_ACTIVATE_SECONDARY_CONTROLS</span><span class="p">;</span>
-<span class="n">adjust_vmx_control</span><span class="p">(</span><span class="n">min</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_exec_control</span><span class="p">);</span>
-<span class="p">...</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">_</span> <span class="n">cpu_based_exec_control</span> <span class="o">&amp;</span> <span class="n">CPU_BASED_ACTIVATE_SECONDARY_CONTROLS</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// CPU_BASED_ACTIVATE_SECONDARY_CONTROLS is defined in
+</span></span></span><span class="line"><span class="cl"><span class="c1">// /linux/arch/x86/kvm/include/asm/vmx.h:54
+</span></span></span><span class="line"><span class="cl"><span class="c1">// #define CPU_BASED_ACTIVATE_SECONDARY_CONTROLS 0x80000000
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">opt</span> <span class="o">=</span> <span class="n">CPU_BASED_TPR_SHADOW</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CPU_BASED_USE_MSR_BITMAPS</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CPU_BASED_ACTIVATE_SECONDARY_CONTROLS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">adjust_vmx_control</span><span class="p">(</span><span class="n">min</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_exec_control</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">_</span> <span class="n">cpu_based_exec_control</span> <span class="o">&amp;</span> <span class="n">CPU_BASED_ACTIVATE_SECONDARY_CONTROLS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
 <li>Bit position 15 of the secondary processor-based VM-execution controls MSR (<code>MSR_IA32_VMX_PROCBASED_CTLS2</code>) is <strong>Enable ENCLS exiting</strong>. For a VMM to hook a specific ENCLS instruction called in a guest machine, this bit must be set. However, it is <strong>not</strong> set by default. Hence, set this bit as follows.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="p">...</span>
-<span class="c1">// Set bit position 15 as 1 of the MSR_IA32_VMX_PROCBASED_CTLS2.
-</span><span class="c1"></span><span class="cp">#define SECONDARY_ENABLE_ENCLS_EXITING (1 &lt;&lt; 15)
-</span><span class="cp"></span><span class="n">opt2</span> <span class="o">=</span> <span class="n">SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESS</span> <span class="o">|</span>
-    <span class="p">...</span>
-    <span class="n">SECONDARY_EXEC_TSC_SCALING</span> <span class="o">|</span>
-    <span class="n">SECONDARY_ENABLE_ENCLS_EXITING</span><span class="p">;</span>
-<span class="n">adjust_vmx_controls</span><span class="p">(</span><span class="n">min2</span><span class="p">,</span> <span class="n">opt2</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS2</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_2nd_exec_control</span><span class="p">);</span>
-<span class="p">...</span>
-</code></pre></div><h3 id="2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" class="relative group">(2) In <code>vmx_vcpu_setup()</code> (<code>/linux/arch/x86/kvm/vmx.c:4939</code>). <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Set bit position 15 as 1 of the MSR_IA32_VMX_PROCBASED_CTLS2.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define SECONDARY_ENABLE_ENCLS_EXITING (1 &lt;&lt; 15)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">opt2</span> <span class="o">=</span> <span class="n">SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESS</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SECONDARY_EXEC_TSC_SCALING</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SECONDARY_ENABLE_ENCLS_EXITING</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">adjust_vmx_controls</span><span class="p">(</span><span class="n">min2</span><span class="p">,</span> <span class="n">opt2</span><span class="p">,</span> <span class="n">MSR_IA32_VMX_PROCBASED_CTLS2</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_</span> <span class="n">cpu_based_2nd_exec_control</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><h3 id="2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" class="relative group">(2) In <code>vmx_vcpu_setup()</code> (<code>/linux/arch/x86/kvm/vmx.c:4939</code>). <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-in-vmx_vcpu_setup-linuxarchx86kvmvmxc4939" aria-label="Anchor">#</a></span></h3>
 <p>Set an ENCLS0-exiting bitmap VMCS control field (encoding <code>0x0000202E</code>). This indicates which ENCLS instruction should be hooked by a VMM. It is <strong>not</strong> set by default. Hence, set the VMCS control field as follows to hook an ENLS instruction call.</p>
 <p>Note that <em><strong><mark>each bit position</mark> of the control field represents the leaf number of ENCLS instruction</strong></em>, i.e. for EEXTEND, which has leaf number 0x06, 6th bit should be set.<br>
 Also note that ENCLS-exiting bitmap control field (<code>0x0000202E</code>) is not defined in Linux kernel by default. You also have to set it first, in <code>/linux/arch/x86/kvm/include/asm/vmx.h</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="k">asm</span><span class="o">/</span><span class="n">vmx</span><span class="p">.</span><span class="n">h</span>
-<span class="k">enum</span> <span class="n">vmcs_field</span> <span class="p">{</span>
-    <span class="n">VIRTUAL_PROCESSOR_ID</span>        <span class="o">=</span> <span class="mh">0x00000000</span><span class="p">,</span>
-    <span class="p">...</span>
-    <span class="n">XSS_EXIT_BITMAP_HIGH</span>        <span class="o">=</span> <span class="mh">0x0000202D</span><span class="p">,</span>
-    <span class="n">ENCLS_EXITING_BITMAP</span>        <span class="o">=</span> <span class="mh">0x0000202E</span><span class="p">,</span>
-    <span class="n">ENCLS_EXITING_BITMAP_HIGH</span>   <span class="o">=</span> <span class="mh">0x0000202F</span><span class="p">,</span>
-    <span class="p">...</span>
-<span class="p">};</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">vmx</span><span class="p">.</span><span class="n">c</span>
-<span class="p">...</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">cpu_has_secondary_exec_ctrls</span><span class="p">())</span> <span class="p">{</span>
-    <span class="n">vmcs_write32</span><span class="p">(</span><span class="n">SECONDARY_VM_EXEC_CONTROL</span><span class="p">,</span> <span class="n">vmx_secondary_exec_control</span><span class="p">(</span><span class="n">vmx</span><span class="p">));</span>
-
-    <span class="c1">// My custom ENCLS instruction has leat number 0x1A, hence set 26th bit as 1.
-</span><span class="c1"></span>    <span class="n">vmcs_write64</span><span class="p">(</span><span class="n">ENCLS_EXITING_BITMAP</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">26</span><span class="p">));</span>
-<span class="p">}</span>
-<span class="p">...</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="k">asm</span><span class="o">/</span><span class="n">vmx</span><span class="p">.</span><span class="n">h</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">vmcs_field</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">VIRTUAL_PROCESSOR_ID</span>        <span class="o">=</span> <span class="mh">0x00000000</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">XSS_EXIT_BITMAP_HIGH</span>        <span class="o">=</span> <span class="mh">0x0000202D</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ENCLS_EXITING_BITMAP</span>        <span class="o">=</span> <span class="mh">0x0000202E</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ENCLS_EXITING_BITMAP_HIGH</span>   <span class="o">=</span> <span class="mh">0x0000202F</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">vmx</span><span class="p">.</span><span class="n">c</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">cpu_has_secondary_exec_ctrls</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">vmcs_write32</span><span class="p">(</span><span class="n">SECONDARY_VM_EXEC_CONTROL</span><span class="p">,</span> <span class="nf">vmx_secondary_exec_control</span><span class="p">(</span><span class="n">vmx</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// My custom ENCLS instruction has leat number 0x1A, hence set 26th bit as 1.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">vmcs_write64</span><span class="p">(</span><span class="n">ENCLS_EXITING_BITMAP</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">26</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><blockquote>
 <p>If you want to hook multiple ENCLS instructions, the value passed should be a or-ed combination of several numbers.</p>
 </blockquote>
 <h3 id="3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314" class="relative group">(3) In <code>vmx_handle_exit()</code> (<code>/linux/arch/x86/kvm/vmx.c:8314</code>). <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-in-vmx_handle_exit-linuxarchx86kvmvmxc8314" aria-label="Anchor">#</a></span></h3>
 <p>Now the KVM will hook an ENCLS instruction that is set to be hooked. However, as the exit reason <code>ENCLS</code> is not included in Linux kernel by default, it prints <code>vmx: unexpected exit reason 0x3C</code> in dmesg.</p>
 <p>Add an ENCLS exit reason in <code>/linux/arch/x86/include/uapi/asm/vmx.h</code>, as follows.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define EXIT_REASON_EXCEPTION_NMI     0
-</span><span class="cp"></span><span class="p">...</span>
-<span class="cp">#define EXIT_REASON_INVPCID           58
-</span><span class="cp">#define EXIT_REASON_ENCLS             60
-</span><span class="cp"></span><span class="p">...</span>
-</code></pre></div><p>To see the entire list of vm exit reasons, refer to <em>Intel 64 and IA-32 Architectures Software Developer&rsquo;s Manual Volume 3, Appendix C</em>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define EXIT_REASON_EXCEPTION_NMI     0
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define EXIT_REASON_INVPCID           58
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define EXIT_REASON_ENCLS             60
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">...</span>
+</span></span></code></pre></div><p>To see the entire list of vm exit reasons, refer to <em>Intel 64 and IA-32 Architectures Software Developer&rsquo;s Manual Volume 3, Appendix C</em>.</p>
 <p>After adding the definition of ENCLS exit reason, implement an exit reason handler in <code>/linux/arch/x86/kvm/vmx.c</code>.<br>
 The list of vmx exit handlers is defined in <code>/linux/arch/x86/kvm/vmx.c:7713</code>. Add a name of handler at the last of the list as follows.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span> <span class="k">const</span> <span class="n">kvm_vmx_exit_handlers</span><span class="p">[])(</span><span class="k">struct</span> <span class="n">kvm_vcpu</span> <span class="o">*</span> <span class="n">vcpu</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">[</span><span class="n">EXIT_REASON_EXCEPTION_NMI</span><span class="p">]</span>         <span class="o">=</span> <span class="n">handle_exception</span><span class="p">,</span>
-    <span class="p">...</span>
-    <span class="p">[</span><span class="n">EXIT_REASON_PCOMMIT</span><span class="p">]</span>               <span class="o">=</span> <span class="n">handle_pcommit</span><span class="p">,</span>
-    <span class="p">[</span><span class="n">EXIT_REASON_ENCLS</span><span class="p">]</span>                 <span class="o">=</span> <span class="n">handle_encls</span><span class="p">,</span>
-<span class="p">};</span>
-</code></pre></div><p>And implement a handler named <code>handle_encls()</code>, as follows.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">handle_encls</span> <span class="p">(</span><span class="k">struct</span> <span class="n">kvm_vcpu</span> <span class="o">*</span><span class="n">vcpu</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">skip_emulated_instruction</span><span class="p">(</span><span class="n">vcpu</span><span class="p">);</span>
-    <span class="n">printk</span><span class="p">(</span><span class="s">&#34;%s: handling encls exit reason from vcpu%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">),</span>
-          <span class="n">__func__</span><span class="p">,</span> <span class="n">vcpu</span><span class="o">-&gt;</span><span class="n">vcpu_id</span><span class="p">);</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>As commented right above the declaration of <code>kvm_vmx_exit_handlers</code>, the exit handlers should return 1 if the exit was handled fully and guest execution may resume.<br>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span> <span class="k">const</span> <span class="n">kvm_vmx_exit_handlers</span><span class="p">[])(</span><span class="k">struct</span> <span class="n">kvm_vcpu</span> <span class="o">*</span> <span class="n">vcpu</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">EXIT_REASON_EXCEPTION_NMI</span><span class="p">]</span>         <span class="o">=</span> <span class="n">handle_exception</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">EXIT_REASON_PCOMMIT</span><span class="p">]</span>               <span class="o">=</span> <span class="n">handle_pcommit</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">EXIT_REASON_ENCLS</span><span class="p">]</span>                 <span class="o">=</span> <span class="n">handle_encls</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>And implement a handler named <code>handle_encls()</code>, as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">handle_encls</span> <span class="p">(</span><span class="k">struct</span> <span class="n">kvm_vcpu</span> <span class="o">*</span><span class="n">vcpu</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">skip_emulated_instruction</span><span class="p">(</span><span class="n">vcpu</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printk</span><span class="p">(</span><span class="s">&#34;%s: handling encls exit reason from vcpu%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="n">__func__</span><span class="p">,</span> <span class="n">vcpu</span><span class="o">-&gt;</span><span class="n">vcpu_id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>As commented right above the declaration of <code>kvm_vmx_exit_handlers</code>, the exit handlers should return 1 if the exit was handled fully and guest execution may resume.<br>
 Also I added <code>skip_emulated_instruction()</code> call because <code>vmx_handle_exit()</code> is called indefinitely without this function call.<br>
 Currently I just added a simple <code>printk()</code>, but you can implement it as you want.</p>
 <p>If a guest virtual machine calls the following <code>__eabc()</code> function,</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define __encls(rax, rbx, rcx, rdx...)  \
-</span><span class="cp">    ({              \
-</span><span class="cp">    int ret;            \
-</span><span class="cp">    asm volatile(&#34;1: .byte 0x0f, 0x01, 0xcf;\n\t&#34;   \
-</span><span class="cp">             &#34; xor %%eax,%%eax;\n&#34;      \
-</span><span class="cp">             &#34;2: \n&#34;                    \
-</span><span class="cp">             &#34;.section .fixup,\&#34;ax\&#34;\n&#34;         \
-</span><span class="cp">             &#34;3: movq $-1,%%rax\n&#34;          \
-</span><span class="cp">             &#34;   jmp 2b\n&#34;              \
-</span><span class="cp">             &#34;.previous\n&#34;              \
-</span><span class="cp">             _ASM_EXTABLE(1b, 3b)           \
-</span><span class="cp">             : &#34;=a&#34;(ret), &#34;=b&#34;(rbx), &#34;=c&#34;(rcx)      \
-</span><span class="cp">             : &#34;a&#34;(rax), &#34;b&#34;(rbx), &#34;c&#34;(rcx), rdx    \
-</span><span class="cp">             : &#34;memory&#34;);               \
-</span><span class="cp">    ret;    \
-</span><span class="cp">    })
-</span><span class="cp"></span>
-<span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">__eabc</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rbx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rcs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="c1">// The value of the RAX register will be 0x1A, the leaf number of a custom ENCLS isntruction EABC.
-</span><span class="c1"></span>    <span class="k">return</span> <span class="n">__encls</span><span class="p">(</span><span class="mh">0x1A</span><span class="p">,</span> <span class="n">rbx</span><span class="p">,</span> <span class="n">rcx</span><span class="p">,</span> <span class="s">&#34;d&#34;</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
-<span class="p">}</span>
-</code></pre></div><p>The result from the VMM dmesg is as follows.<br>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define __encls(rax, rbx, rcx, rdx...)  \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    ({              \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    int ret;            \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    asm volatile(&#34;1: .byte 0x0f, 0x01, 0xcf;\n\t&#34;   \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             &#34; xor %%eax,%%eax;\n&#34;      \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             &#34;2: \n&#34;                    \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             &#34;.section .fixup,\&#34;ax\&#34;\n&#34;         \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             &#34;3: movq $-1,%%rax\n&#34;          \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             &#34;   jmp 2b\n&#34;              \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             &#34;.previous\n&#34;              \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             _ASM_EXTABLE(1b, 3b)           \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             : &#34;=a&#34;(ret), &#34;=b&#34;(rbx), &#34;=c&#34;(rcx)      \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             : &#34;a&#34;(rax), &#34;b&#34;(rbx), &#34;c&#34;(rcx), rdx    \
+</span></span></span><span class="line"><span class="cl"><span class="cp">             : &#34;memory&#34;);               \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    ret;    \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    })
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">__eabc</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rbx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rcs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// The value of the RAX register will be 0x1A, the leaf number of a custom ENCLS isntruction EABC.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nf">__encls</span><span class="p">(</span><span class="mh">0x1A</span><span class="p">,</span> <span class="n">rbx</span><span class="p">,</span> <span class="n">rcx</span><span class="p">,</span> <span class="s">&#34;d&#34;</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The result from the VMM dmesg is as follows.<br>
 
 
 

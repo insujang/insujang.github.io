@@ -26,8 +26,8 @@ Continuous Batching # Before the introduction of continuous batching, static bat
       <guid>/2024-01-07/llm-inference-autoregressive-generation-and-attention-kv-cache/</guid>
       <description>This post explains the basic of LLM inference, mainly focusing on differences from training LLM.
 Autreogressive Text Generation # Unlike training, where tokens are parallelized and trained, inference generates tokens one by one. Therefore, to create a full sentence, several forward pass should be executed (# tokens times). The following video from HuggingFace illustrates how it works.
-    Autoregressive token generation. Source: HuggingFace
- Before generating the first token, LLM first puts all input tokens to generate context.</description>
+Autoregressive token generation. Source: HuggingFace
+Before generating the first token, LLM first puts all input tokens to generate context.</description>
     </item>
     
   </channel>

@@ -47,7 +47,7 @@ Ceph source code is managed by Github 1, and it contains several shell scripts f
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +56,7 @@ Ceph source code is managed by Github 1, and it contains several shell scripts f
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -79,7 +79,6 @@ Ceph source code is managed by Github 1, and it contains several shell scripts f
 <meta property="og:url" content="/2020-11-07/accelerating-ceph-rpm-packaging-using-multithreaded-compression/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-11-07T19:07:00+09:00" />
 <meta property="article:modified_time" content="2020-11-07T19:07:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Accelerating Ceph RPM Packaging: Using Multithreaded Compression"/>
@@ -432,10 +431,10 @@ Before illustrating how these scripts work, we have to figure out how RPM packag
 Many Linux distributions such as Red Hat Enterprise Linux (RHEL), Fedora, CentOS, OpenSUSE are using RPM as their default package management system.</p>
 <p>Red Hat provides a very well written guide document that how we can package RPMs <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
 This post provides very simplified illustration. For more detail, please refer to the document.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ dnf install rpm-build rpmdevtools
-$ rpmdev-setuptree
-$ rpmbuild &lt;options&gt;
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ dnf install rpm-build rpmdevtools
+</span></span><span class="line"><span class="cl">$ rpmdev-setuptree
+</span></span><span class="line"><span class="cl">$ rpmbuild &lt;options&gt;
+</span></span></code></pre></div><ul>
 <li><code>rpmdev-setuptree</code> creates a basic directory structure in your home directory: <code>/home/user/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}</code>.</li>
 <li><code>rpmbuild</code> builds a RPM package based on data in <code>/home/user/rpmbuild</code>. Generated RPM packages are stored in <code>/home/user/RPMS</code>.</li>
 </ul>
@@ -486,29 +485,29 @@ Source0:        %{?_remote_tarball_prefix}ceph-16.0.0-6971-g6352099561.tar.bz2  
 <p>This <code>ceph.spec</code> file is automatically generated from <code>ceph.spec.in</code> by <code>make-dist</code> command.</p>
 <p>You can use <code>./make-dist &lt;version_name&gt;</code> to customize the version.
 By default, it uses <code>git describe --log --match 'v*' | se d's/^v//'</code> for version name.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="nv">version</span><span class="o">=</span><span class="nv">$1</span>
-<span class="o">[</span> -z <span class="s2">&#34;</span><span class="nv">$version</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">version</span><span class="o">=</span><span class="k">$(</span>git describe --long --match <span class="s1">&#39;v*&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/^v//&#39;</span><span class="k">)</span>
-<span class="k">if</span> expr index <span class="nv">$version</span> <span class="s1">&#39;-&#39;</span> &gt; /dev/null<span class="p">;</span> <span class="k">then</span>
-    <span class="nv">rpm_version</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$version</span> <span class="p">|</span> cut -d - -f 1-1<span class="k">)</span>
-    <span class="nv">rpm_release</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$version</span> <span class="p">|</span> cut -d - -f 2- <span class="p">|</span> sed <span class="s1">&#39;s/-/./&#39;</span><span class="k">)</span>
-<span class="k">else</span>
-    <span class="nv">rpm_version</span><span class="o">=</span><span class="nv">$version</span>
-    <span class="nv">rpm_release</span><span class="o">=</span><span class="m">0</span>
-<span class="k">fi</span>
-...
-
-<span class="c1"># populate files with version strings</span>
-<span class="nb">echo</span> <span class="s2">&#34;including src/.git_version, ceph.spec&#34;</span>
-
-<span class="o">(</span>git rev-parse HEAD <span class="p">;</span> <span class="nb">echo</span> <span class="nv">$version</span><span class="o">)</span> 2&gt; /dev/null &gt; src/.git_version
-
-<span class="k">for</span> spec in ceph.spec.in<span class="p">;</span> <span class="k">do</span>
-   cat <span class="nv">$spec</span> <span class="p">|</span>
-       sed <span class="s2">&#34;s/@PROJECT_VERSION@/</span><span class="nv">$rpm_version</span><span class="s2">/g&#34;</span> <span class="p">|</span>
-       sed <span class="s2">&#34;s/@RPM_RELEASE@/</span><span class="nv">$rpm_release</span><span class="s2">/g&#34;</span> <span class="p">|</span>
-       sed <span class="s2">&#34;s/@TARBALL_BASENAME@/ceph-</span><span class="nv">$version</span><span class="s2">/g&#34;</span> &gt; <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$spec</span> <span class="p">|</span> sed <span class="s1">&#39;s/.in$//&#39;</span><span class="sb">`</span>
-<span class="k">done</span>
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">version</span><span class="o">=</span><span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span> -z <span class="s2">&#34;</span><span class="nv">$version</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">version</span><span class="o">=</span><span class="k">$(</span>git describe --long --match <span class="s1">&#39;v*&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/^v//&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> expr index <span class="nv">$version</span> <span class="s1">&#39;-&#39;</span> &gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">rpm_version</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$version</span> <span class="p">|</span> cut -d - -f 1-1<span class="k">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">rpm_release</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$version</span> <span class="p">|</span> cut -d - -f 2- <span class="p">|</span> sed <span class="s1">&#39;s/-/./&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">rpm_version</span><span class="o">=</span><span class="nv">$version</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">rpm_release</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># populate files with version strings</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;including src/.git_version, ceph.spec&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">(</span>git rev-parse HEAD <span class="p">;</span> <span class="nb">echo</span> <span class="nv">$version</span><span class="o">)</span> 2&gt; /dev/null &gt; src/.git_version
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> spec in ceph.spec.in<span class="p">;</span> <span class="k">do</span>
+</span></span><span class="line"><span class="cl">   cat <span class="nv">$spec</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">       sed <span class="s2">&#34;s/@PROJECT_VERSION@/</span><span class="nv">$rpm_version</span><span class="s2">/g&#34;</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">       sed <span class="s2">&#34;s/@RPM_RELEASE@/</span><span class="nv">$rpm_release</span><span class="s2">/g&#34;</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">       sed <span class="s2">&#34;s/@TARBALL_BASENAME@/ceph-</span><span class="nv">$version</span><span class="s2">/g&#34;</span> &gt; <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$spec</span> <span class="p">|</span> sed <span class="s1">&#39;s/.in$//&#39;</span><span class="sb">`</span>
+</span></span><span class="line"><span class="cl"><span class="k">done</span>
+</span></span></code></pre></div></blockquote>
 <p>By default, packaging a Ceph RPM with <code>ceph.spec</code> downloads archived source code from <code>https://download.ceph.com/tarballs/ceph-&lt;version&gt;.tar.bz2</code>, most of which are not provided since 2016 (Recently, they only provides <code>tar.gz</code>, not <code>tar.bz2</code>).
 It also requires customized archived source code to be uploaded to the server, preventing cloned source code to be used for RPM package build.
 Therefore, I will not use <code>ceph.spec</code> for RPM package build.</p>
@@ -517,29 +516,29 @@ Therefore, I will not use <code>ceph.spec</code> for RPM package build.</p>
 <p>Ceph provides a script <code>make-dist</code>, which automatically generates <code>tar.bz2</code> tarball.
 After generating a tarball, we can build a RPM package with it by <code>rpmbuild -tb /path/to/ceph/tarball.tar.bz2</code>.</p>
 <p>However, it returns an error that is not understandable:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">error: Found more than one spec file in ceph-16.0.0-6971-g6352099561.tar.bz2
-</code></pre></div><p>I currently have no idea how to solve it. Instead, I use SRPM.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">error: Found more than one spec file in ceph-16.0.0-6971-g6352099561.tar.bz2
+</span></span></code></pre></div><p>I currently have no idea how to solve it. Instead, I use SRPM.</p>
 <h3 id="using-srpm-source-rpm" class="relative group">Using SRPM (Source RPM). <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#using-srpm-source-rpm" aria-label="Anchor">#</a></span></h3>
 <p>Ceph also provides a script <code>make-srpm.sh</code> to generate a SRPM package.
 It first uses <code>make-dist</code> to build a tarball, and then build a SRPM based on it and <code>ceph.spec</code>.</p>
 <p>When the script is done, the result is as follows:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">/ceph $ ls
-...
-ceph-16.0.0-6971-g6352099561.tar.bz2       <span class="c1"># This is a tarball generated by make-dist.</span>
-ceph-16.0.0-6971.g6352099561.el8.src.rpm   <span class="c1"># This is a SRPM package generated by make-srpm.sh.</span>
-</code></pre></div><p>Simply using <code>rpmbuild</code>, we can build a Ceph RPM package based on the SRPM.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ./make-srpm.sh
-$ rpmbuild --rebuild ceph-16.0.0-6971.g6352099561.el8.src.rpm
-</code></pre></div><p>I will use the SRPM for packaging a Ceph RPM.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">/ceph $ ls
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">ceph-16.0.0-6971-g6352099561.tar.bz2       <span class="c1"># This is a tarball generated by make-dist.</span>
+</span></span><span class="line"><span class="cl">ceph-16.0.0-6971.g6352099561.el8.src.rpm   <span class="c1"># This is a SRPM package generated by make-srpm.sh.</span>
+</span></span></code></pre></div><p>Simply using <code>rpmbuild</code>, we can build a Ceph RPM package based on the SRPM.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./make-srpm.sh
+</span></span><span class="line"><span class="cl">$ rpmbuild --rebuild ceph-16.0.0-6971.g6352099561.el8.src.rpm
+</span></span></code></pre></div><p>I will use the SRPM for packaging a Ceph RPM.</p>
 <blockquote>
 <p>Technically, it is not different from using the SPEC file.
 If you <em><strong>manually</strong></em> copies the tarballs (ceph-16.0.0-6971-g6352099561.tar.bz2) into <code>~/rpmbuild/SOURCES</code>, <code>rpmbuild</code> does not try to download the tarballs from the remote repository.</p>
 <p>Using the SRPM seems to be exactly the same with the following:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">/path/to/ceph $ ./make-dist
-/path/to/ceph $ cp ceph-16.0.0-6971-g6352099561.tar.bz2 ~/rpmbuild/SOURCES
-/path/to/ceph $ cp ceph.spec ~/rpmbuild/SPECS
-/path/to/ceph $ rpmbuild -bb ~/rpmbuild/SPECS/ceph.spec
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">/path/to/ceph $ ./make-dist
+</span></span><span class="line"><span class="cl">/path/to/ceph $ cp ceph-16.0.0-6971-g6352099561.tar.bz2 ~/rpmbuild/SOURCES
+</span></span><span class="line"><span class="cl">/path/to/ceph $ cp ceph.spec ~/rpmbuild/SPECS
+</span></span><span class="line"><span class="cl">/path/to/ceph $ rpmbuild -bb ~/rpmbuild/SPECS/ceph.spec
+</span></span></code></pre></div></blockquote>
 <h2 id="3-accelerating-rpm-package-build" class="relative group">3. Accelerating RPM Package Build <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-accelerating-rpm-package-build" aria-label="Anchor">#</a></span></h2>
 <p><a href="https://rpm-packaging-guide.github.io/#binary-rpms"   target="_blank">The manual</a> explains well what <code>rpmbuild</code> does during <code>rpmbuild --rebuild</code>:</p>
 <ul>
@@ -572,36 +571,36 @@ cat ./CMakeFiles/CMakeOutput.log
 cat ./CMakeFiles/CMakeError.log
 %endif
 
-make &quot;$CEPH_MFLAGS_JOBS&quot;
+make &#34;$CEPH_MFLAGS_JOBS&#34;
 
 %if 0%{with make_check}
 %check
 # run in-tree unittests
 cd build
-ctest &quot;$CEPH_MFLAGS_JOBS&quot;
+ctest &#34;$CEPH_MFLAGS_JOBS&#34;
 %endif
 </code></pre><p>where <code>$CEPH_MFLAGS_JOBS</code> is defined <code>-j$CEPH_SMP_NCPUS</code>, which is carefully set for parallel build, which would not paralyze the entire system:</p>
 <pre tabindex="0"><code># Parallel build settings ...
-CEPH_MFLAGS_JOBS=&quot;%{?_smp_mflags}&quot;
-CEPH_SMP_NCPUS=$(echo &quot;$CEPH_MFLAGS_JOBS&quot; | sed 's/-j//')
+CEPH_MFLAGS_JOBS=&#34;%{?_smp_mflags}&#34;
+CEPH_SMP_NCPUS=$(echo &#34;$CEPH_MFLAGS_JOBS&#34; | sed &#39;s/-j//&#39;)
 %if 0%{?__isa_bits} == 32
 # 32-bit builds can use 3G memory max, which is not enough even for -j2
-CEPH_SMP_NCPUS=&quot;1&quot;
+CEPH_SMP_NCPUS=&#34;1&#34;
 %endif
 # do not eat all memory
-echo &quot;Available memory:&quot;
+echo &#34;Available memory:&#34;
 free -h
-echo &quot;System limits:&quot;
+echo &#34;System limits:&#34;
 ulimit -a
-if test -n &quot;$CEPH_SMP_NCPUS&quot; -a &quot;$CEPH_SMP_NCPUS&quot; -gt 1 ; then
+if test -n &#34;$CEPH_SMP_NCPUS&#34; -a &#34;$CEPH_SMP_NCPUS&#34; -gt 1 ; then
     mem_per_process=2500
-    max_mem=$(LANG=C free -m | sed -n &quot;s|^Mem: *\([0-9]*\).*$|\1|p&quot;)
-    max_jobs=&quot;$(($max_mem / $mem_per_process))&quot;
-    test &quot;$CEPH_SMP_NCPUS&quot; -gt &quot;$max_jobs&quot; &amp;&amp; CEPH_SMP_NCPUS=&quot;$max_jobs&quot; &amp;&amp; echo &quot;Warning: Reducing build parallelism to -j$max_jobs because of memory limits&quot;
-    test &quot;$CEPH_SMP_NCPUS&quot; -le 0 &amp;&amp; CEPH_SMP_NCPUS=&quot;1&quot; &amp;&amp; echo &quot;Warning: Not using parallel build at all because of memory limits&quot;
+    max_mem=$(LANG=C free -m | sed -n &#34;s|^Mem: *\([0-9]*\).*$|\1|p&#34;)
+    max_jobs=&#34;$(($max_mem / $mem_per_process))&#34;
+    test &#34;$CEPH_SMP_NCPUS&#34; -gt &#34;$max_jobs&#34; &amp;&amp; CEPH_SMP_NCPUS=&#34;$max_jobs&#34; &amp;&amp; echo &#34;Warning: Reducing build parallelism to -j$max_jobs because of memory limits&#34;
+    test &#34;$CEPH_SMP_NCPUS&#34; -le 0 &amp;&amp; CEPH_SMP_NCPUS=&#34;1&#34; &amp;&amp; echo &#34;Warning: Not using parallel build at all because of memory limits&#34;
 fi
 export CEPH_SMP_NCPUS
-export CEPH_MFLAGS_JOBS=&quot;-j$CEPH_SMP_NCPUS&quot;
+export CEPH_MFLAGS_JOBS=&#34;-j$CEPH_SMP_NCPUS&#34;
 </code></pre><p>Therefore, building phase is parallelized, and not a problem.</p>
 <p>However, as the final step, <code>rpmbuild</code> builds a package with built binaries and libraries with compression.
 By default, <code>rpmbuild</code> uses <strong>level 2 XZ compression</strong> to build a RPM package, which only uses one core.</p>
@@ -625,21 +624,21 @@ By default, <code>rpmbuild</code> uses <strong>level 2 XZ compression</strong> t
 
 <blockquote>
 <p>You can check which algorithm is currently set for <code>rpmbuild</code> with <code>rpmbuild --showrc</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ rpmbuild --showrc
-...
--13: _binary_payload    w2.xzdio
-...
-</code></pre></div><p>You can refer to <code>/usr/lib/rpm/macros</code> that which options are available and their meaning.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ cat /usr/lib/rpm/macros
-...
-<span class="c1">#       Compression type and level for source/binary package payloads.</span>
-<span class="c1">#               &#34;w9.gzdio&#34;      gzip level 9 (default).</span>
-<span class="c1">#               &#34;w9.bzdio&#34;      bzip2 level 9.</span>
-<span class="c1">#               &#34;w6.xzdio&#34;      xz level 6, xz&#39;s default.</span>
-<span class="c1">#               &#34;w7T16.xzdio&#34;   xz level 7 using 16 thread (xz only)</span>
-<span class="c1">#               &#34;w6.lzdio&#34;      lzma-alone level 6, lzma&#39;s default</span>
-...
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ rpmbuild --showrc
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">-13: _binary_payload    w2.xzdio
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><p>You can refer to <code>/usr/lib/rpm/macros</code> that which options are available and their meaning.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cat /usr/lib/rpm/macros
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl"><span class="c1">#       Compression type and level for source/binary package payloads.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#               &#34;w9.gzdio&#34;      gzip level 9 (default).</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#               &#34;w9.bzdio&#34;      bzip2 level 9.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#               &#34;w6.xzdio&#34;      xz level 6, xz&#39;s default.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#               &#34;w7T16.xzdio&#34;   xz level 7 using 16 thread (xz only)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#               &#34;w6.lzdio&#34;      lzma-alone level 6, lzma&#39;s default</span>
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div></blockquote>
 <p>According to the explanation, <code>w2.xzdio</code> means level 2 XZ compression type.
 There is <a href="https://linuxreviews.org/Comparison_of_Compression_Algorithms"   target="_blank">a well done analysis</a><sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> of compression algorithms. According to the analysis, default xz with single core was <strong>unbearably slow</strong>.</p>
 <blockquote>
@@ -647,9 +646,9 @@ There is <a href="https://linuxreviews.org/Comparison_of_Compression_Algorithms"
 </blockquote>
 <p>Now you can override this <code>rpmbuild</code> variable with <code>--define</code> option.
 I want to change it to use just multithreading. Then compression type must be <code>w2T16.xzdio</code> (xz level 2 using 16 threads. I am using AMD Ryzen 2700X, which has 16 threads total).</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ rpmbuild --define <span class="s2">&#34;_binary_payload w2T16.xzdio&#34;</span> --rebuild ceph-16.0.0-6971.g6352099561.el8.src.rpm
-$ &lt;output omitted&gt;
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ rpmbuild --define <span class="s2">&#34;_binary_payload w2T16.xzdio&#34;</span> --rebuild ceph-16.0.0-6971.g6352099561.el8.src.rpm
+</span></span><span class="line"><span class="cl">$ &lt;output omitted&gt;
+</span></span></code></pre></div>
   
   
   
@@ -679,23 +678,23 @@ It is a huge improvement and I think it can be improved further!</p>
 <p>In August 2020, <a href="https://github.com/rpm-software-management/rpm/pull/1324"   target="_blank">a pull request</a> has been merged to the <code>rpmbuild</code> main branch.
 It enables thread autodetection for automated parallel compression (xz and zstd compression type only).
 I used <code>rpmbuild</code> 4.14.2 so I was not get any benefit from the commits, however, it would be good to try this as well.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://github.com/ceph/ceph"   target="_blank">Ceph</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://en.wikipedia.org/wiki/RPM_Package_Manager"   target="_blank">RPM Package Manager</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://rpm-packaging-guide.github.io"   target="_blank">RPM Packaging Guide</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://linuxreviews.org/Comparison_of_Compression_Algorithms"   target="_blank">Comparison of Compression Algorithms</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

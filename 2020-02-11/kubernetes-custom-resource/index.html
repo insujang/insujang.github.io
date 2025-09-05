@@ -46,7 +46,7 @@ A major confusing point comes from ambiguous distinction between Custom Resource
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ A major confusing point comes from ambiguous distinction between Custom Resource
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ A major confusing point comes from ambiguous distinction between Custom Resource
 <meta property="og:url" content="/2020-02-11/kubernetes-custom-resource/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-02-11T17:23:00+09:00" />
 <meta property="article:modified_time" content="2020-02-11T17:23:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Kubernetes Custom Resource Definition (CRD)"/>
@@ -452,15 +451,15 @@ Even the document explains some differences of two types of implementation, it i
 <blockquote>
 <p>The Operator <strong>simulates human operator behaviors</strong> in three steps: Observe, Analyze, and Act.
 First, it observes the current cluster state by using the Kubernetes API. Second, it finds the differences between the desired state and current state. Last, it fixes the difference through one or both of the cluster management API or the Kubernetes API.</p>
-<p><em>Introducing Operators: Putting Operational Knowledge into Software. <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></em></p>
+<p><em>Introducing Operators: Putting Operational Knowledge into Software. <sup id="fnref1:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></em></p>
 </blockquote>
 <p>Operator pattern defines (1) resources, and (2) controllers. (You can imagine Model and Controller in MVC pattern) controllers, running as a process, run specified functionalties based on resource&rsquo;s current state. For instance, If the desired state of a Pod (a resource) is <em>running</em> state, and the current state if <em>scheduled</em> state. <em>A Kubelet (a controller of Pods)</em>, creates containers, assigns memory and storage, etc, to make the state as desired.</p>
 <h2 id="custom-resource-definitions-crd" class="relative group">Custom Resource Definitions (CRD) <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#custom-resource-definitions-crd" aria-label="Anchor">#</a></span></h2>
 <p>Kubernetes adopted <strong>Custom Resource Definitions (CRD)</strong> as one of its official object types. You can check which CRDs are registered in the cluster:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get crds
-NAME                              CREATE AT
-testresource.insujang.github.io   2020-02-11T07:34:21Z
-</code></pre></div><p>The relationship of CRDs and CRD objects is similar to <em>classes</em> and <em>class instances</em> in object oriented languages. CRD is a template so that users can create a custom resources with predefined structure in CRD.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl get crds
+</span></span><span class="line"><span class="cl">NAME                              CREATE AT
+</span></span><span class="line"><span class="cl">testresource.insujang.github.io   2020-02-11T07:34:21Z
+</span></span></code></pre></div><p>The relationship of CRDs and CRD objects is similar to <em>classes</em> and <em>class instances</em> in object oriented languages. CRD is a template so that users can create a custom resources with predefined structure in CRD.</p>
 <p>To use a custom resource in the Kubernetes cluster, you should do:</p>
 <ol>
 <li>Specify a custom resource definition and register it to the apiserver. (This information will be shown as a result of <code>$ kubectl get crds</code>.)</li>
@@ -472,160 +471,160 @@ testresource.insujang.github.io   2020-02-11T07:34:21Z
 </blockquote>
 <h4 id="specifying-a-custom-resource-definition" class="relative group">Specifying a custom resource definition <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#specifying-a-custom-resource-definition" aria-label="Anchor">#</a></span></h4>
 <p>Kubernetes provides a node agent called <em>kubelet</em> that manages the node. By using kubelet, we can apply a yaml file that specifies a custom resource definition <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ cat test_resource.yaml
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  <span class="c1"># name must be in the form: &lt;spec.plural&gt;.&lt;group&gt;.</span>
-  name: testresources.insujang.github.io
-spec:
-  <span class="c1"># group name to use for REST API: /apis/&lt;spec.group&gt;/&lt;spec.version&gt;</span>
-  <span class="c1"># This example a format of REST API would be: /apis/insujang.github.io/v1beta1</span>
-  <span class="c1"># apiVersion in yaml files to create this CRD type should be same with this value.</span>
-  group: insujang.github.io
-  names:
-    kind: TestResource
-    listKind: TestResourceList
-    <span class="c1"># plural name to be used in the URL: /apis/&lt;spec.group&gt;/&lt;spec.version&gt;/&lt;plural&gt;</span>
-    <span class="c1"># This example a format of the URL would be: /apis/insujang.github.io/v1beta1/testresources</span>
-    plural: testresources
-    <span class="c1"># signalur name to be used as an alias on the CLI and for the display</span>
-    singular: testresource
-  <span class="c1"># either &#34;Namespaced&#34; or &#34;Cluster&#34; (unnamespaced object such as CRD itself).</span>
-  <span class="c1"># You can specify which resources in a namespace by $ kubectl api-resources --namespaced=true</span>
-  <span class="c1"># or not in a namespace by $ kubectl api-resources --namespaced=false.</span>
-  scope: Namespaced
-  subresources:
-    status: <span class="o">{}</span>
-  <span class="c1"># By specifying OpenAPI v3.0 validation schema, we can add some restrictions on CRD objects,</span>
-  <span class="c1"># such like any objects with this CRD type are required to have some properties,</span>
-  <span class="c1"># or its pattern should be match with a regular expression, etc. [^5]</span>
-  <span class="c1"># This CRD requires to have two properties: &#34;command&#34; and &#34;custom_property&#34;.</span>
-  validation:
-    openAPIV3Schema:
-      type: object
-      properties:
-        apiVersion:
-          type: string
-        kind:
-          type: string
-        metadata:
-          type: object
-        spec:
-          properties:
-            command:
-              type: string
-            customProperty:
-              type: string
-              pattern: <span class="s2">&#34;thisshouldmatchwiththisstring&#34;</span>
-          required:
-          - <span class="nb">command</span>
-          - customProperty
-          type: object
-      required:
-      - apiVersion
-      - kind
-      - spec
-  versions:
-  - name: v1beta1
-    <span class="c1"># Each version can be enabled/disabled by served flag.</span>
-    served: <span class="nb">true</span>
-    <span class="c1"># OPne any only one version must be marked as the storage version.</span>
-    storage: <span class="nb">true</span>
-
-$ kubectl create -f test_resource.yaml
-customresourcedefinition.apiextensions.k8s.io/testresources.insujang.github.io created
-
-$ kubectl get crds
-NAME                               CREATED AT
-testresources.insujang.github.io   2020-02-12T00:14:13Z
-</code></pre></div><h4 id="creating-an-object-as-custom-resource-based-on-crd" class="relative group">Creating an object as custom resource based on CRD <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#creating-an-object-as-custom-resource-based-on-crd" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ cat test_resource.yaml
+</span></span><span class="line"><span class="cl">apiVersion: apiextensions.k8s.io/v1beta1
+</span></span><span class="line"><span class="cl">kind: CustomResourceDefinition
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  <span class="c1"># name must be in the form: &lt;spec.plural&gt;.&lt;group&gt;.</span>
+</span></span><span class="line"><span class="cl">  name: testresources.insujang.github.io
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  <span class="c1"># group name to use for REST API: /apis/&lt;spec.group&gt;/&lt;spec.version&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># This example a format of REST API would be: /apis/insujang.github.io/v1beta1</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># apiVersion in yaml files to create this CRD type should be same with this value.</span>
+</span></span><span class="line"><span class="cl">  group: insujang.github.io
+</span></span><span class="line"><span class="cl">  names:
+</span></span><span class="line"><span class="cl">    kind: TestResource
+</span></span><span class="line"><span class="cl">    listKind: TestResourceList
+</span></span><span class="line"><span class="cl">    <span class="c1"># plural name to be used in the URL: /apis/&lt;spec.group&gt;/&lt;spec.version&gt;/&lt;plural&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># This example a format of the URL would be: /apis/insujang.github.io/v1beta1/testresources</span>
+</span></span><span class="line"><span class="cl">    plural: testresources
+</span></span><span class="line"><span class="cl">    <span class="c1"># signalur name to be used as an alias on the CLI and for the display</span>
+</span></span><span class="line"><span class="cl">    singular: testresource
+</span></span><span class="line"><span class="cl">  <span class="c1"># either &#34;Namespaced&#34; or &#34;Cluster&#34; (unnamespaced object such as CRD itself).</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># You can specify which resources in a namespace by $ kubectl api-resources --namespaced=true</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># or not in a namespace by $ kubectl api-resources --namespaced=false.</span>
+</span></span><span class="line"><span class="cl">  scope: Namespaced
+</span></span><span class="line"><span class="cl">  subresources:
+</span></span><span class="line"><span class="cl">    status: <span class="o">{}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># By specifying OpenAPI v3.0 validation schema, we can add some restrictions on CRD objects,</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># such like any objects with this CRD type are required to have some properties,</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># or its pattern should be match with a regular expression, etc. [^5]</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># This CRD requires to have two properties: &#34;command&#34; and &#34;custom_property&#34;.</span>
+</span></span><span class="line"><span class="cl">  validation:
+</span></span><span class="line"><span class="cl">    openAPIV3Schema:
+</span></span><span class="line"><span class="cl">      type: object
+</span></span><span class="line"><span class="cl">      properties:
+</span></span><span class="line"><span class="cl">        apiVersion:
+</span></span><span class="line"><span class="cl">          type: string
+</span></span><span class="line"><span class="cl">        kind:
+</span></span><span class="line"><span class="cl">          type: string
+</span></span><span class="line"><span class="cl">        metadata:
+</span></span><span class="line"><span class="cl">          type: object
+</span></span><span class="line"><span class="cl">        spec:
+</span></span><span class="line"><span class="cl">          properties:
+</span></span><span class="line"><span class="cl">            command:
+</span></span><span class="line"><span class="cl">              type: string
+</span></span><span class="line"><span class="cl">            customProperty:
+</span></span><span class="line"><span class="cl">              type: string
+</span></span><span class="line"><span class="cl">              pattern: <span class="s2">&#34;thisshouldmatchwiththisstring&#34;</span>
+</span></span><span class="line"><span class="cl">          required:
+</span></span><span class="line"><span class="cl">          - <span class="nb">command</span>
+</span></span><span class="line"><span class="cl">          - customProperty
+</span></span><span class="line"><span class="cl">          type: object
+</span></span><span class="line"><span class="cl">      required:
+</span></span><span class="line"><span class="cl">      - apiVersion
+</span></span><span class="line"><span class="cl">      - kind
+</span></span><span class="line"><span class="cl">      - spec
+</span></span><span class="line"><span class="cl">  versions:
+</span></span><span class="line"><span class="cl">  - name: v1beta1
+</span></span><span class="line"><span class="cl">    <span class="c1"># Each version can be enabled/disabled by served flag.</span>
+</span></span><span class="line"><span class="cl">    served: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># OPne any only one version must be marked as the storage version.</span>
+</span></span><span class="line"><span class="cl">    storage: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl create -f test_resource.yaml
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/testresources.insujang.github.io created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get crds
+</span></span><span class="line"><span class="cl">NAME                               CREATED AT
+</span></span><span class="line"><span class="cl">testresources.insujang.github.io   2020-02-12T00:14:13Z
+</span></span></code></pre></div><h4 id="creating-an-object-as-custom-resource-based-on-crd" class="relative group">Creating an object as custom resource based on CRD <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#creating-an-object-as-custom-resource-based-on-crd" aria-label="Anchor">#</a></span></h4>
 <p>With this CRD registered, the apiserver would accept the following yaml for a TestResource object creation:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ cat create_testresource.yaml
-apiVersion: insujang.github.io/v1beta1
-kind: TestResource
-metadata:
-  name: example-resource
-spec:
-  command: <span class="s2">&#34;Hello Kubernetes CRD!&#34;</span>
-  customProperty: <span class="s2">&#34;thisshouldmatchwiththisstring&#34;</span>
-
-$ kubectl apply -f create_testresource.yaml 
-testresource.insujang.github.io/example-resource created
-
-$ kubectl get testresources
-NAME               AGE
-example-resource   16s
-</code></pre></div><p>while the apiserver would not accept the following yaml due to validation failure:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ cat create_testresource2.yaml 
-apiVersion: insujang.github.io/v1beta1
-kind: TestResource
-metadata:
-  name: example-resource2
-spec:
-  command: <span class="s2">&#34;Hello Kubernetes CRD!&#34;</span>
-  customProperty: <span class="s2">&#34;thisisanotherpropertythatshouldnotbeaccepted&#34;</span>
-
-$ kubectl apply -f create_testresource2.yaml 
-The TestResource <span class="s2">&#34;example-resource2&#34;</span> is invalid: spec.customProperty: Invalid value: <span class="s2">&#34;&#34;</span>: spec.customProperty in body should match <span class="s1">&#39;thisshouldmatchwiththisstring&#39;</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ cat create_testresource.yaml
+</span></span><span class="line"><span class="cl">apiVersion: insujang.github.io/v1beta1
+</span></span><span class="line"><span class="cl">kind: TestResource
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: example-resource
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  command: <span class="s2">&#34;Hello Kubernetes CRD!&#34;</span>
+</span></span><span class="line"><span class="cl">  customProperty: <span class="s2">&#34;thisshouldmatchwiththisstring&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl apply -f create_testresource.yaml 
+</span></span><span class="line"><span class="cl">testresource.insujang.github.io/example-resource created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get testresources
+</span></span><span class="line"><span class="cl">NAME               AGE
+</span></span><span class="line"><span class="cl">example-resource   16s
+</span></span></code></pre></div><p>while the apiserver would not accept the following yaml due to validation failure:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ cat create_testresource2.yaml 
+</span></span><span class="line"><span class="cl">apiVersion: insujang.github.io/v1beta1
+</span></span><span class="line"><span class="cl">kind: TestResource
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: example-resource2
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  command: <span class="s2">&#34;Hello Kubernetes CRD!&#34;</span>
+</span></span><span class="line"><span class="cl">  customProperty: <span class="s2">&#34;thisisanotherpropertythatshouldnotbeaccepted&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl apply -f create_testresource2.yaml 
+</span></span><span class="line"><span class="cl">The TestResource <span class="s2">&#34;example-resource2&#34;</span> is invalid: spec.customProperty: Invalid value: <span class="s2">&#34;&#34;</span>: spec.customProperty in body should match <span class="s1">&#39;thisshouldmatchwiththisstring&#39;</span>
+</span></span></code></pre></div><blockquote>
 <p>Note that the URL for an <code>TestResource</code> object creation is <code>/apis/insujang.github.io/v1</code>.
 And it is a namespaced resource, the full URL is <code>/apis/insujang.github.io/v1/namespaces/default/testresources</code> as shown below:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl apply -f create_testresource.yaml --v<span class="o">=</span><span class="m">6</span>
-GET https://127.0.0.1:6443/openapi/v2?timeout<span class="o">=</span>32s <span class="m">200</span> OK in <span class="m">13</span> milliseconds
-GET https://127.0.0.1:6443/apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-resource <span class="m">404</span> Not Found in <span class="m">4</span> milliseconds
-POST https://127.0.0.1:6443/apis/insujang.github.io/v1beta1/namespaces/default/testresources <span class="m">201</span> Created in <span class="m">7</span> milliseconds
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl apply -f create_testresource.yaml --v<span class="o">=</span><span class="m">6</span>
+</span></span><span class="line"><span class="cl">GET https://127.0.0.1:6443/openapi/v2?timeout<span class="o">=</span>32s <span class="m">200</span> OK in <span class="m">13</span> milliseconds
+</span></span><span class="line"><span class="cl">GET https://127.0.0.1:6443/apis/insujang.github.io/v1beta1/namespaces/default/testresources/example-resource <span class="m">404</span> Not Found in <span class="m">4</span> milliseconds
+</span></span><span class="line"><span class="cl">POST https://127.0.0.1:6443/apis/insujang.github.io/v1beta1/namespaces/default/testresources <span class="m">201</span> Created in <span class="m">7</span> milliseconds
+</span></span></code></pre></div></blockquote>
 <p>It is required that you must check the status of the registered CRD before creating any CRD typed objects, since it would not be accepted due to name confliction, etc.
 the <code>apiextensions-apiserver</code> reports the status to the cluster.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl describe crds testresources
-Name:         testresources.insujang.github.io
-Namespace:    
-Labels:       &lt;none&gt;
-Annotations:  &lt;none&gt;
-API Version:  apiextensions.k8s.io/v1
-Kind:         CustomResourceDefinition
-
-&lt;omitted&gt;
-
-Status:
-  Accepted Names:
-    Kind:       TestResource
-    List Kind:  TestResourceList
-    Plural:     testresources
-    Singular:   testresource
-  Conditions:
-    Last Transition Time:  2020-02-12T00:55:29Z
-    Message:               no conflicts found
-    Reason:                NoConflicts
-    Status:                True
-    Type:                  NamesAccepted
-    Last Transition Time:  2020-02-12T00:55:29Z
-    Message:               the initial names have been accepted
-    Reason:                InitialNamesAccepted
-    Status:                True
-    Type:                  Established
-  Stored Versions:
-    v1beta1
-Events:  &lt;none&gt;
-</code></pre></div><p>There was no name conflictions in this example.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl describe crds testresources
+</span></span><span class="line"><span class="cl">Name:         testresources.insujang.github.io
+</span></span><span class="line"><span class="cl">Namespace:    
+</span></span><span class="line"><span class="cl">Labels:       &lt;none&gt;
+</span></span><span class="line"><span class="cl">Annotations:  &lt;none&gt;
+</span></span><span class="line"><span class="cl">API Version:  apiextensions.k8s.io/v1
+</span></span><span class="line"><span class="cl">Kind:         CustomResourceDefinition
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">&lt;omitted&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Status:
+</span></span><span class="line"><span class="cl">  Accepted Names:
+</span></span><span class="line"><span class="cl">    Kind:       TestResource
+</span></span><span class="line"><span class="cl">    List Kind:  TestResourceList
+</span></span><span class="line"><span class="cl">    Plural:     testresources
+</span></span><span class="line"><span class="cl">    Singular:   testresource
+</span></span><span class="line"><span class="cl">  Conditions:
+</span></span><span class="line"><span class="cl">    Last Transition Time:  2020-02-12T00:55:29Z
+</span></span><span class="line"><span class="cl">    Message:               no conflicts found
+</span></span><span class="line"><span class="cl">    Reason:                NoConflicts
+</span></span><span class="line"><span class="cl">    Status:                True
+</span></span><span class="line"><span class="cl">    Type:                  NamesAccepted
+</span></span><span class="line"><span class="cl">    Last Transition Time:  2020-02-12T00:55:29Z
+</span></span><span class="line"><span class="cl">    Message:               the initial names have been accepted
+</span></span><span class="line"><span class="cl">    Reason:                InitialNamesAccepted
+</span></span><span class="line"><span class="cl">    Status:                True
+</span></span><span class="line"><span class="cl">    Type:                  Established
+</span></span><span class="line"><span class="cl">  Stored Versions:
+</span></span><span class="line"><span class="cl">    v1beta1
+</span></span><span class="line"><span class="cl">Events:  &lt;none&gt;
+</span></span></code></pre></div><p>There was no name conflictions in this example.</p>
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://schd.ws/hosted_files/kccnceu18/4b/Sig%20API%20Machinery%20Deep%20Dive.pdf"   target="_blank">SIG API Machinery Deep Dive</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://itnext.io/kubediscovery-aggregated-api-server-to-learn-more-about-kubernetes-custom-resources-18202a1c4aef"   target="_blank">Kubediscovery: Aggregated API Server to learn more about Kubernetes Custom Resources</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p><a href="https://coreos.com/blog/introducing-operators.html"   target="_blank">Introducing Operators: Putting Operational Knowledge into Software</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p><a href="https://coreos.com/blog/introducing-operators.html"   target="_blank">Introducing Operators: Putting Operational Knowledge into Software</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#create-a-customresourcedefinition"   target="_blank">Extending the Kubernetes API with CustomResourceDefinitions: Create a CRD</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

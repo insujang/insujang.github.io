@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Mar 18, 2025}}
+\fancyfoot[R]{\footnotesize{Last updated: Sep 5, 2025}}
 
 
 \urlstyle{same}
@@ -106,7 +106,7 @@
 
 
 \section{Research Interests}
-Systems for ML, Efficient ML, Distributed ML, HW-SW Co-design
+Systems for ML, Efficient ML, Distributed ML, Large-scale ML Systems, Adaptive Resource Scheduling for ML
 
 %-----------EDUCATION-----------------
 \section{Education}
@@ -158,8 +158,8 @@ Systems for ML, Efficient ML, Distributed ML, HW-SW Co-design
 \section{Research Experience}
   \resumeSubHeadingListStart
     \resumeSubheading{Resource Scheduling for Multimodal LLM}{Jan 2024 -- Present}{
-      \href{https://github.com/cornstarch-org/Cornstarch}{\textbf{Cornstarch}}: A distributed multimodal LLM training framework. It focuses on unique characteristics of multimodal LLMs when it is distributed across multiple GPUs.
-      Exploiting the characteristics, Cornstarch introduces novel scheduling insights: for balanced end-to-end execution, you need imbalance in parallelization.
+      \href{https://github.com/cornstarch-org/Cornstarch}{\textbf{Cornstarch}}: A distributed multimodal LLM training framework. 
+      It optimizes imbalance across GPUs in pipeline parallelism and context parallelism by exploiting unique characteristics of multimodal LLMs.
     }{University of Michigan}
     % {\resumeSubHeadingListStart
     % \vspace{-15pt} \item{Cornstarch: efficient resource scheduling for large scale multimodal large language model (MLLM) in training and serving.}\item{Cornserve:}\resumeSubHeadingListEnd}{University of Michigan}
@@ -215,8 +215,12 @@ Systems for ML, Efficient ML, Distributed ML, HW-SW Co-design
 %-----------WORK EXPERIENCE-----------------
 \section{Work Experience}
   \resumeSubHeadingListStart
-  \resumeSubheading{Software Engineering Intern}{May 2025 -- Aug 2025}{Networking Infrastructure Team, Google LLC}{Sunnyvale, CA, USA}
-  
+  \resumeSubheading{Software Engineering Intern}{May 2025 -- Aug 2025}{ML Networking Team, Google LLC}{Sunnyvale, CA, USA}
+  \resumeItemListStart
+    \resumeItem{Straggler detection}{Design and implement a framework that systematically analyzes stragglers in distributed ML training.}
+    \resumeItem{ML in Kubernetes}{Worked on distributed ML training in Google Kubernetes Engine (GKE).}
+  \resumeItemListEnd
+
     \resumeSubheading{Autopilot Software Engineer Intern}{May 2023 -- Aug 2023}{ML Infrastructure Team, Tesla Inc.}{Palo Alto, CA, USA}
     \resumeItemListStart
       \resumeItem{Straggler detection}{Design core algorithm of detecting stragglers in distributed ML training.}
@@ -282,8 +286,8 @@ Systems for ML, Efficient ML, Distributed ML, HW-SW Co-design
   \resumeSubItem{Runyu Lu}{PhD Student @ UM CSE}
   \resumeSubItem{Kevin Xue}{PhD Student @ UM CSE}
   \resumeSubItem{Minkyoung Cho}{PhD Student @ UM CSE}
-    \resumeSubItem{Vatsal Joshi}{MS Student @ UM CSE}
-    \resumeSubItem{Luke Zhu}{MS Student @ UM CSE $\rightarrow$ Tesla}
+  \resumeSubItem{Vatsal Joshi}{MS Student @ UM CSE $\rightarrow$ Meta}
+  \resumeSubItem{Luke Zhu}{MS Student @ UM CSE $\rightarrow$ Tesla}
   \resumeSubHeadingListEnd
 
 
@@ -314,7 +318,7 @@ Systems for ML, Efficient ML, Distributed ML, HW-SW Co-design
 \section{Technical Skills}
  \resumeSubHeadingListStart
   \resumeItem{Languages}{Python, C++, Rust, Triton, English (fluent), Korean (native)}
-  \resumeItem{Tools and Frameworks}{PyTorch, Cornstarch, Megatron-LM, DeepSpeed, ColossalAI, RDMA}
+  \resumeItem{Tools and Frameworks}{PyTorch, Cornstarch, Megatron-LM, DeepSpeed, RDMA, Kubernetes}
  \resumeSubHeadingListEnd
 
 % \section{References}

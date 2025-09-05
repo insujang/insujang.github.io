@@ -25,7 +25,7 @@ Intel SGX provides protections data only if it is in the enclave, part of main m
       
       <guid>/2017-09-06/nvmedirect/</guid>
       <description>NVMeDirect Overview # NVMeDirect is a software framework that is used to directly access to a NVMe SSD from a user space application.
-In the existing system, applications should access to a storage through several software I/O stacks.   {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
+In the existing system, applications should access to a storage through several software I/O stacks. {: .center-image width=&amp;ldquo;800px&amp;rdquo;}
 As the storage media is getting faster, overheads by the software stack takes larger portion of I/O time. Hence, this software I/O stack is being reduced as shown in the above figure.</description>
     </item>
     

@@ -46,7 +46,7 @@ Recent days, many parallelization mechanisms, the way of distributing computatio
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ Recent days, many parallelization mechanisms, the way of distributing computatio
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ Recent days, many parallelization mechanisms, the way of distributing computatio
 <meta property="og:url" content="/2022-06-11/parallelism-in-distributed-deep-learning/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-06-11T19:33:00-04:00" />
 <meta property="article:modified_time" content="2022-06-11T19:33:00-04:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Parallelism in Distributed Deep Learning"/>
@@ -342,7 +341,7 @@ if (!doNotTrack) {
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2022-06-11 19:33:00 -0400 EDT">Jun 11, 2022</time>
+      <time datetime="2022-06-11 19:33:00 -0400 -0400">Jun 11, 2022</time>
     
 
     
@@ -439,7 +438,7 @@ For clear understanding, I use the following terms across the post:</p>
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220611/weight.png" alt="image" />
-        <figcaption>Simple neural network layer example. <a href="https://deepai.org/machine-learning-glossary-and-terms/weight-artificial-neural-network">[Source]</a></figcaption>
+        <figcaption>Simple neural network layer example. <a href="https://deepai.org/machine-learning-glossary-and-terms/weight-artificial-neural-network"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -467,7 +466,7 @@ Data parallelism is based on this observation; by slicing batch by N, each accel
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220611/parameter_server.png" alt="image" />
-        <figcaption>An example of parameter server architecture. A centralized parameter server takes gradients, updates parameters, and distributes them to workers. <a href="https://proceedings.neurips.cc/paper/2012/file/6aca97005c68f1206823815f66102863-Paper.pdf">[Source]</a></figcaption>
+        <figcaption>An example of parameter server architecture. A centralized parameter server takes gradients, updates parameters, and distributes them to workers. <a href="https://proceedings.neurips.cc/paper/2012/file/6aca97005c68f1206823815f66102863-Paper.pdf"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -488,7 +487,7 @@ It is a very famous architecture for data parallelism.</p>
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220611/allreduce.png" alt="image" />
-        <figcaption>All Reduce operation. <a href="https://tech.preferred.jp/en/blog/technologies-behind-distributed-deep-learning-allreduce/">[Source]</a></figcaption>
+        <figcaption>All Reduce operation. <a href="https://tech.preferred.jp/en/blog/technologies-behind-distributed-deep-learning-allreduce/"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -498,7 +497,7 @@ It is a very famous architecture for data parallelism.</p>
 Baidu brung ring-based all-reduce algorithm into distributed machine learning area; such collective communication came from MPI field<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
 The idea is to perform updates without using centralized server, by communicating directly with each other accelerators.</p>
 <blockquote>
-<p>Refer to the reference blog <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> for more detail.</p>
+<p>Refer to the reference blog <sup id="fnref1:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> for more detail.</p>
 </blockquote>
 <p>All-reduce operation can be decomposed and implemented with reduce-scatter and all-gather, other MPI techniques in HPC field <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. <a href="https://developer.nvidia.com/nccl"   target="_blank">NVIDIA Collective Communication Library (NCCL)</a> includes this version of implementation, in a ring-based manner.</p>
 <p>Collective communication algorithms have been analyzed for decades, and this paper is one of those <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> (Section 2.3).
@@ -531,7 +530,7 @@ While pipeline model parallelism distributes layers in a model, tensor paralleli
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220611/tensor_parallel.png" alt="image" />
-        <figcaption>Illustration of tensor model parallel partition from Megatron-LM. <a href="https://developer.nvidia.com/blog/scaling-language-model-training-to-a-trillion-parameters-using-megatron/">[Source]</a></figcaption>
+        <figcaption>Illustration of tensor model parallel partition from Megatron-LM. <a href="https://developer.nvidia.com/blog/scaling-language-model-training-to-a-trillion-parameters-using-megatron/"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -543,7 +542,7 @@ While pipeline model parallelism distributes layers in a model, tensor paralleli
 <li>Unlike data parallelism that all accelerators need to have replicated parameters, parameters are distributed along with input in tensor parallelism.</li>
 <li>Tensor parallelism and data parallelism can be grouped as <em>intra-layer parallelism</em>, since they slice a tensor into multiple chunks, without affecting other layers. Imagine image classification training, whether the input tensor is 4D (width * height * color depth * batch, e.g. for ResNet: 224 * 224 * 3 * 1024 if batch is 1024). Slicing batch dimension is data parallelism (e.g. each of 4 accelerator handles 256 batches), and slicing width or height dimension is tensor parallelism (e.g. each of 4 accelerator handles 112 * 112 * 3 input).</li>
 </ul>
-<h1 id="pipeline-model-parallelism-model-parallelism" class="relative group">Pipeline Model Parallelism <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#pipeline-model-parallelism-model-parallelism" aria-label="Anchor">#</a></span></h1>
+<h1 id="pipeline-model-parallelism-model-parallelism" class="relative group">Pipeline Model Parallelism <sup id="fnref1:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#pipeline-model-parallelism-model-parallelism" aria-label="Anchor">#</a></span></h1>
 <p>Pipeline parallelism has been introduced by Google to reduce underutilization from layer model parallelism.</p>
 
   
@@ -557,7 +556,7 @@ While pipeline model parallelism distributes layers in a model, tensor paralleli
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220611/model_parallel.png" alt="image" />
-        <figcaption>Illustration of pipeline model parallelism from GPipe. <a href="https://ai.googleblog.com/2019/03/introducing-gpipe-open-source-library.html">[Source]</a></figcaption>
+        <figcaption>Illustration of pipeline model parallelism from GPipe. <a href="https://ai.googleblog.com/2019/03/introducing-gpipe-open-source-library.html"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -574,45 +573,45 @@ GPipe mitigates this underutilization issue by adopting pipeline; it divides a b
 </ul>
 <h1 id="hybrid-parallelism" class="relative group">Hybrid Parallelism <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#hybrid-parallelism" aria-label="Anchor">#</a></span></h1>
 <p>Recently, more papers are focusing on <em>combining</em> all of these parallelism, namely hybrid parallelism, to support bigger training model more efficiently.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://www.semanticscholar.org/paper/The-general-inefficiency-of-batch-training-for-Wilson-Martinez/671a4a7caa303f6f87b8ac3941e0175745f9a861?p2df"   target="_blank">The General Inefficiency of Batch Training for Gradient Descent Learning</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://proceedings.neurips.cc/paper/2012/hash/6aca97005c68f1206823815f66102863-Abstract.html"   target="_blank">Large Scale Distributed Deep Networks</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p><a href="https://andrew.gibiansky.com/blog/machine-learning/baidu-allreduce/"   target="_blank">Brining HPC Techniques to Deep Learning</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p><a href="https://andrew.gibiansky.com/blog/machine-learning/baidu-allreduce/"   target="_blank">Brining HPC Techniques to Deep Learning</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://proceedings.mlsys.org/paper/2019/hash/9b8619251a19057cff70779273e95aa6-Abstract.html"   target="_blank">BlueConnect: Decomposing All-Reduce for Deep LEarning on Heterogeneous Network Hierarchy</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/cpe.5574?casa_token=pWlDZdB3u0AAAAAA%3Ao9nXb7LiGuPUA_Wras9tMk7sAtyQJStIb33wctpLe6LLUY1k8BVsJAJl9DtQUBaF7dga1N3IUf9JtvY6"   target="_blank">Efficient MPI-AllReduce for Large-Scale Deep Learning on GPU-Clusters</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:6" role="doc-endnote">
+<li id="fn:6">
 <p><a href="https://huggingface.co/docs/transformers/parallelism#parallelism-overview"   target="_blank">Hugging Face: Model Parallelism</a>
-sch&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+sch&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:7" role="doc-endnote">
+<li id="fn:7">
 <p><a href="https://dl.acm.org/doi/abs/10.1145/3341301.3359646"   target="_blank">PipeDream: Generalized Pipeline Parallelism for DNN Training</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:8" role="doc-endnote">
+<li id="fn:8">
 <p><a href="https://dl.acm.org/doi/abs/10.1145/3437801.3441593"   target="_blank">DAPPLE: A Pipelined Data Parallel Approach for Training Large Models</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:9" role="doc-endnote">
+<li id="fn:9">
 <p><a href="https://dl.acm.org/doi/abs/10.1145/3458817.3476145"   target="_blank">Chimera: Efficiently Training Large-Scale Neural Networks with Bidirectional Pipelines</a>&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:10" role="doc-endnote">
+<li id="fn:10">
 <p><a href="https://arxiv.org/abs/2201.12023"   target="_blank">Alpa: Automating Inter- and Intra-Operator Parallelism for Distributed Deep Learning</a>&#160;<a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:11" role="doc-endnote">
+<li id="fn:11">
 <p><a href="https://arxiv.org/abs/2201.11990"   target="_blank">Using DeepSpeed and Megatron to Train Megatron-Turing NLG 530B, A Large-Scale Generative Language Model</a>&#160;<a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>
@@ -769,7 +768,7 @@ sch&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-07-30 23:48:00 -0400 EDT">Jul 30, 2022</time>
+                    <time datetime="2022-07-30 23:48:00 -0400 -0400">Jul 30, 2022</time>
                   
                 </span>
               </span>

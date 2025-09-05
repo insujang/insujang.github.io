@@ -46,7 +46,7 @@ Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the i
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the i
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ Backgrounds # Channel Adapter (CA) # Channel adapter refers an end node in the i
 <meta property="og:url" content="/2020-02-09/introduction-to-programming-infiniband/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-02-09T19:58:00+09:00" />
 <meta property="article:modified_time" content="2020-02-09T19:58:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Introduction to Programming Infiniband RDMA"/>
@@ -471,7 +470,7 @@ SQ and RQ are always grouped and managed as a queue pair (QP).</p>
  <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
 <p>We can <strong>post a work request (WR) by generating a work queue entry (WRE) into the work queue</strong>,
 e.g. (1) posting a send work request into the SQ to send some data to a remote node, (2) posting a receive work request into the RQ to receive data from a remote node, etc.
-Posted work requests are directly handled by hardware (HCA) <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
+Posted work requests are directly handled by hardware (HCA) <sup id="fnref1:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
 Once a request is completed, the hardware posts a Work Completion (WC) into a completion queue (CQ). Programming Interface provides flexibility that we can specify distinct completion queues to the SQ and the RQ,
 or use one CQ for the entire QP.</p>
 <blockquote>
@@ -479,7 +478,7 @@ or use one CQ for the entire QP.</p>
 <p>Then the HCA transfers your orders to the connected counterpart.</p>
 </blockquote>
 <h2 id="libibverbs-apis" class="relative group">libibverbs APIs <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#libibverbs-apis" aria-label="Anchor">#</a></span></h2>
-<p><code>libibverbs</code> library provides high level userspace APIs to use Infiniband HCAs <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
+<p><code>libibverbs</code> library provides high level userspace APIs to use Infiniband HCAs <sup id="fnref2:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref1:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
 With the APIs, the program runs as the following simplified description:</p>
 <ol>
 <li><strong>Create an Infiniband context</strong> (<code>struct ibv_context* ibv_open_device()</code>)</li>
@@ -493,36 +492,36 @@ With the APIs, the program runs as the following simplified description:</p>
 <li><strong>Perform data communication</strong></li>
 </ol>
 <blockquote>
-<p>In <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, [4], and many example codes, <em>6: memory region registration</em> is illustrated as a part of initialization (somewhere between step 2~6).
+<p>In <sup id="fnref3:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, [4], and many example codes, <em>6: memory region registration</em> is illustrated as a part of initialization (somewhere between step 2~6).
 However, <strong>there is no problem for lazy registration</strong> and memory regions can dynamically be registered and deregistered at any time before posting a work request (after step 6).</p>
 <p>More specifically, <strong>I want to divide the program flow to two groups: step 1~6 as an initialization phase, step 7~9 as a runtime phase.</strong>
 We will discuss more about this in step 7.</p>
 </blockquote>
-<p>Note that <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> listed and grouped related functions well.
+<p>Note that <sup id="fnref2:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> listed and grouped related functions well.
 I only show how the sequence of those function calls should be.</p>
 <h3 id="1-create-an-infiniband-context" class="relative group">1. Create an Infiniband context <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-create-an-infiniband-context" aria-label="Anchor">#</a></span></h3>
 <p>Open the HCA and generate a userspace device context.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="nf">createContext</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">device_name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="cm">/* There is no way to directly open the device with its name; we should get the list of devices first. */</span>
-  <span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">num_devices</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="nc">ibv_device</span><span class="o">**</span> <span class="n">device_list</span> <span class="o">=</span> <span class="n">ibv_get_device_list</span><span class="p">(</span><span class="o">&amp;</span><span class="n">num_devices</span><span class="p">);</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_devices</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
-    <span class="cm">/* match device name. open the device and return it */</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">device_name</span><span class="p">.</span><span class="n">compare</span><span class="p">(</span><span class="n">ibv_get_device_name</span><span class="p">(</span><span class="n">device_list</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">context</span> <span class="o">=</span> <span class="n">ibv_open_device</span><span class="p">(</span><span class="n">device_list</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="cm">/* it is important to free the device list; otherwise memory will be leaked. */</span>
-  <span class="n">ibv_free_device_list</span><span class="p">(</span><span class="n">device_list</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">context</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Unable to find the device &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">device_name</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="n">context</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="2-create-a-protection-domain" class="relative group">2. Create a protection domain <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-create-a-protection-domain" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="nf">createContext</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">device_name</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* There is no way to directly open the device with its name; we should get the list of devices first. */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">num_devices</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_device</span><span class="o">**</span> <span class="n">device_list</span> <span class="o">=</span> <span class="n">ibv_get_device_list</span><span class="p">(</span><span class="o">&amp;</span><span class="n">num_devices</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_devices</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* match device name. open the device and return it */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">device_name</span><span class="p">.</span><span class="n">compare</span><span class="p">(</span><span class="n">ibv_get_device_name</span><span class="p">(</span><span class="n">device_list</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">context</span> <span class="o">=</span> <span class="n">ibv_open_device</span><span class="p">(</span><span class="n">device_list</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* it is important to free the device list; otherwise memory will be leaked. */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ibv_free_device_list</span><span class="p">(</span><span class="n">device_list</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">context</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Unable to find the device &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">device_name</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">context</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="2-create-a-protection-domain" class="relative group">2. Create a protection domain <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-create-a-protection-domain" aria-label="Anchor">#</a></span></h3>
 <p>Literally create a protection domain, protecting resources from arbitrary accesses from the remote.
 Components that can be registered to a protection domain is</p>
 <ul>
@@ -530,10 +529,10 @@ Components that can be registered to a protection domain is</p>
 <li>memory windows (MWs)</li>
 <li>queue pairs (QPs)</li>
 <li>shared receive queues (SRQs)</li>
-<li>address handles (AH) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</li>
+<li>address handles (AH) <sup id="fnref1:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</li>
 </ul>
 <blockquote>
-<p>Note that completion queues (CQs) are not in protection domains <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+<p>Note that completion queues (CQs) are not in protection domains <sup id="fnref3:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
 </blockquote>
 <blockquote>
 <p>e.g. Registering a memory region requires a pointer to a protection domain, indicating that this memory region will be registered to the protection domain.</p>
@@ -541,37 +540,37 @@ Components that can be registered to a protection domain is</p>
 </blockquote>
 <p>As explained, memory regions are not necessarily to be registered right after creating a protection domain.
 As queue pairs are also registered to the protection domain, creating a protection domain is in an early initialization step.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="n">createContext</span><span class="p">(</span><span class="cm">/* device name */</span><span class="p">);</span>
-<span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">protection_domain</span> <span class="o">=</span> <span class="n">ibv_alloc_pd</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
-</code></pre></div><h3 id="3-create-a-completion-queue" class="relative group">3. Create a completion queue <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-create-a-completion-queue" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="n">createContext</span><span class="p">(</span><span class="cm">/* device name */</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">protection_domain</span> <span class="o">=</span> <span class="n">ibv_alloc_pd</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+</span></span></code></pre></div><h3 id="3-create-a-completion-queue" class="relative group">3. Create a completion queue <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-create-a-completion-queue" aria-label="Anchor">#</a></span></h3>
 <p>It is a prerequisite step to create a queue pair, like step 2.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="n">createContext</span><span class="p">(</span><span class="cm">/* device name */</span><span class="p">);</span>
-
-<span class="kt">int</span> <span class="n">cq_size</span> <span class="o">=</span> <span class="mh">0x10</span><span class="p">;</span>
-<span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">completion_queue</span> <span class="o">=</span> <span class="n">ibv_create_cq</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">cq_size</span><span class="p">,</span> <span class="k">nullptr</span><span class="p">,</span> <span class="k">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="n">createContext</span><span class="p">(</span><span class="cm">/* device name */</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">cq_size</span> <span class="o">=</span> <span class="mh">0x10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">completion_queue</span> <span class="o">=</span> <span class="n">ibv_create_cq</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">cq_size</span><span class="p">,</span> <span class="k">nullptr</span><span class="p">,</span> <span class="k">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span></code></pre></div><blockquote>
 <p>Function signature for <code>ibv_create_cq</code> is: <code>struct ibv_cq *ibv_create_cq(struct ibv_context *context, int cqe, void *cq_context, struct ibv_comp_channel *channel, int comp_vector);</code>. <a href="https://linux.die.net/man/3/ibv_create_cq"   target="_blank">[manual page]</a></p>
 <p>All examples that I saw pass <code>nullptr</code> to both <code>cq_context</code> and <code>channel</code> and worked well, so I do not understand what they exactly do.</p>
 </blockquote>
 <h3 id="4-create-a-queue-pair" class="relative group">4. Create a queue pair <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-create-a-queue-pair" aria-label="Anchor">#</a></span></h3>
 <p>Now we are ready to create a queue pair.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="nf">createQueuePair</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">cq</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_qp_init_attr</span> <span class="n">queue_pair_init_attr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">queue_pair_init_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">queue_pair_init_attr</span><span class="p">));</span>
-  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">qp_type</span> <span class="o">=</span> <span class="n">IBV_QPT_RC</span><span class="p">;</span>
-  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">sq_sig_all</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>       <span class="c1">// if not set 0, all work requests submitted to SQ will always generate a Work Completion.
-</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">send_cq</span> <span class="o">=</span> <span class="n">cq</span><span class="p">;</span>         <span class="c1">// completion queue can be shared or you can use distinct completion queues.
-</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">recv_cq</span> <span class="o">=</span> <span class="n">cq</span><span class="p">;</span>         <span class="c1">// completion queue can be shared or you can use distinct completion queues.
-</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_send_wr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// increase if you want to keep more send work requests in the SQ.
-</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_recv_wr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// increase if you want to keep more receive work requests in the RQ.
-</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_send_sge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// increase if you allow send work requests to have multiple scatter gather entry (SGE).
-</span><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_recv_sge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// increase if you allow receive work requests to have multiple scatter gather entry (SGE).
-</span><span class="c1"></span>
-  <span class="k">return</span> <span class="n">ibv_create_qp</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue_pair_init_attr</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="nf">createQueuePair</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">cq</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_qp_init_attr</span> <span class="n">queue_pair_init_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">queue_pair_init_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">queue_pair_init_attr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">qp_type</span> <span class="o">=</span> <span class="n">IBV_QPT_RC</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">sq_sig_all</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>       <span class="c1">// if not set 0, all work requests submitted to SQ will always generate a Work Completion.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">send_cq</span> <span class="o">=</span> <span class="n">cq</span><span class="p">;</span>         <span class="c1">// completion queue can be shared or you can use distinct completion queues.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">recv_cq</span> <span class="o">=</span> <span class="n">cq</span><span class="p">;</span>         <span class="c1">// completion queue can be shared or you can use distinct completion queues.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_send_wr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// increase if you want to keep more send work requests in the SQ.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_recv_wr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// increase if you want to keep more receive work requests in the RQ.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_send_sge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// increase if you allow send work requests to have multiple scatter gather entry (SGE).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">queue_pair_init_attr</span><span class="p">.</span><span class="n">cap</span><span class="p">.</span><span class="n">max_recv_sge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// increase if you allow receive work requests to have multiple scatter gather entry (SGE).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ibv_create_qp</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue_pair_init_attr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><blockquote>
 <p><code>qp_type</code> indiciates the type of this queue pair. There are three types of queue pairs: (1) Reliable Connection (RC), (2) Unreliable Connection (UC), and (3) Unreliable Datagram (UD).
-Refer to <em>Chapter 2.2 Transport Modes</em> in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> for more details.</p>
+Refer to <em>Chapter 2.2 Transport Modes</em> in <sup id="fnref2:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> for more details.</p>
 </blockquote>
 <h3 id="5-exchange-identifier-information-to-establish-connection-and-6-change-the-queue-pair-state" class="relative group">5. Exchange identifier information to establish connection and 6. change the queue pair state <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#5-exchange-identifier-information-to-establish-connection-and-6-change-the-queue-pair-state" aria-label="Anchor">#</a></span></h3>
 <p>Right after created, the queue pair has a state <code>RESET</code>. With this state the queue pair does not work. We have to establish queue pair connection with another queue pair to make it work.
@@ -595,57 +594,57 @@ The queue pair state machine diagram is as follows.</p>
 <p><code>int ibv_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask);</code> <a href="https://linux.die.net/man/3/ibv_modify_qp"   target="_blank">[manual page]</a></p>
 </blockquote>
 <p>Following the state machine diagram, we first should change the state to <code>INIT</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToInit</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">init_attr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">init_attr</span><span class="p">));</span>
-  <span class="n">init_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_INIT</span><span class="p">;</span>
-  <span class="n">init_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">device_port_</span><span class="p">;</span>
-  <span class="n">init_attr</span><span class="p">.</span><span class="n">pkey_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">init_attr</span><span class="p">.</span><span class="n">qp_access_flags</span> <span class="o">=</span> <span class="n">IBV_ACCESS_LOCAL_WRITE</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_READ</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_WRITE</span><span class="p">;</span>
-
-  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_PKEY_INDEX</span> <span class="o">|</span> <span class="n">IBV_QP_PORT</span> <span class="o">|</span> <span class="n">IBV_QP_ACCESS_FLAGS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Then change the state to <code>RTR</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTR</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">destination_qp_number</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">destination_local_id</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rtr_attr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rtr_attr</span><span class="p">));</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTR</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">path_mtu</span> <span class="o">=</span> <span class="n">ibv_mtu</span><span class="o">::</span><span class="n">IBV_MTU_1024</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">rq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">max_dest_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">min_rnr_timer</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">is_global</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">src_path_bits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">ib_port</span><span class="p">;</span>
-  
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">dest_qp_num</span> <span class="o">=</span> <span class="n">destination_qp_number</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">dlid</span> <span class="o">=</span> <span class="n">destination_local_id</span><span class="p">;</span>
-
-  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_AV</span> <span class="o">|</span> <span class="n">IBV_QP_PATH_MTU</span> <span class="o">|</span> <span class="n">IBV_QP_DEST_QPN</span> <span class="o">|</span> <span class="n">IBV_QP_RQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">|</span> <span class="n">IBV_QP_MIN_RNR_TIMER</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Note that several arguments are taken.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToInit</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">init_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">init_attr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">init_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">init_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">device_port_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">init_attr</span><span class="p">.</span><span class="n">pkey_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">init_attr</span><span class="p">.</span><span class="n">qp_access_flags</span> <span class="o">=</span> <span class="n">IBV_ACCESS_LOCAL_WRITE</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_READ</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_WRITE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_PKEY_INDEX</span> <span class="o">|</span> <span class="n">IBV_QP_PORT</span> <span class="o">|</span> <span class="n">IBV_QP_ACCESS_FLAGS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Then change the state to <code>RTR</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTR</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">destination_qp_number</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">destination_local_id</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rtr_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rtr_attr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTR</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">path_mtu</span> <span class="o">=</span> <span class="n">ibv_mtu</span><span class="o">::</span><span class="n">IBV_MTU_1024</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">rq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">max_dest_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">min_rnr_timer</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">is_global</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">src_path_bits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">ib_port</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">dest_qp_num</span> <span class="o">=</span> <span class="n">destination_qp_number</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">dlid</span> <span class="o">=</span> <span class="n">destination_local_id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_AV</span> <span class="o">|</span> <span class="n">IBV_QP_PATH_MTU</span> <span class="o">|</span> <span class="n">IBV_QP_DEST_QPN</span> <span class="o">|</span> <span class="n">IBV_QP_RQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">|</span> <span class="n">IBV_QP_MIN_RNR_TIMER</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Note that several arguments are taken.</p>
 <h4 id="ib_port" class="relative group">ib_port <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#ib_port" aria-label="Anchor">#</a></span></h4>
 <p><code>ib_port</code> is a port number that this queue pair uses in the host. You can easily see how many ports the device supports and their numbers with <code>ibstat</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ ibstat
-CA <span class="s1">&#39;mlx5_0&#39;</span>
-        CA type: MT4115
-        Number of ports: <span class="m">1</span>
-        Firmware version: 12.23.1020
-        Hardware version: <span class="m">0</span>
-        Node GUID: /* omitted */
-        System image GUID: /* omitted */
-        Port 1:
-                State: Active
-                Physical state: LinkUp
-                Rate: <span class="m">56</span>
-                Base lid: <span class="m">13</span>
-                LMC: <span class="m">0</span>
-                SM lid: <span class="m">9</span>
-                Capability mask: /* omitted */
-                Port GUID: /* omitted */
-                Link layer: InfiniBand
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ibstat
+</span></span><span class="line"><span class="cl">CA <span class="s1">&#39;mlx5_0&#39;</span>
+</span></span><span class="line"><span class="cl">        CA type: MT4115
+</span></span><span class="line"><span class="cl">        Number of ports: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">        Firmware version: 12.23.1020
+</span></span><span class="line"><span class="cl">        Hardware version: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">        Node GUID: /* omitted */
+</span></span><span class="line"><span class="cl">        System image GUID: /* omitted */
+</span></span><span class="line"><span class="cl">        Port 1:
+</span></span><span class="line"><span class="cl">                State: Active
+</span></span><span class="line"><span class="cl">                Physical state: LinkUp
+</span></span><span class="line"><span class="cl">                Rate: <span class="m">56</span>
+</span></span><span class="line"><span class="cl">                Base lid: <span class="m">13</span>
+</span></span><span class="line"><span class="cl">                LMC: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">                SM lid: <span class="m">9</span>
+</span></span><span class="line"><span class="cl">                Capability mask: /* omitted */
+</span></span><span class="line"><span class="cl">                Port GUID: /* omitted */
+</span></span><span class="line"><span class="cl">                Link layer: InfiniBand
+</span></span></code></pre></div><blockquote>
 <p>Install <code>infiniband-diags</code> if you want to use <code>ibstat</code> command.</p>
 </blockquote>
 <p>My CA has one port and its number is 1. You can manually pass this information when you launch a program.</p>
@@ -657,48 +656,48 @@ CA <span class="s1">&#39;mlx5_0&#39;</span>
 For communications over the subnet, we can use GID (Global ID), but it will not be covered in this post.
 To find a local id, you can use the following function.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">uint16_t</span> <span class="nf">getLocalId</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">ibv_port_attr</span> <span class="n">port_attr</span><span class="p">;</span>
-  <span class="n">ibv_query_port</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ib_port</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">port_attr</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">port_attr</span><span class="p">.</span><span class="n">lid</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="nf">getLocalId</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_context</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ibv_port_attr</span> <span class="n">port_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ibv_query_port</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ib_port</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">port_attr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">port_attr</span><span class="p">.</span><span class="n">lid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
 <li><code>destination_qp_number</code>: a queue pair is at least <em>created</em>, so the unique identifier for the queue pair is already assigned.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">uint32_t</span> <span class="nf">getQueuePairNumber</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">qp</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="n">qp</span><span class="o">-&gt;</span><span class="n">qp_num</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">uint32_t</span> <span class="nf">getQueuePairNumber</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">qp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">qp</span><span class="o">-&gt;</span><span class="n">qp_num</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><blockquote>
 <p>Note that these return <strong>its local information, not a destination information (information of the opposite node)</strong>. It means these functions must be called in each side and they exchange information to know each other&rsquo;s destination information.</p>
 <p><strong>For this purpose, all examples that I referred use a TCP socket.</strong> Before processing RDMA operations, a server and a client establish a TCP connection and exchange their local ID and QP number.
 This is why step 5 includes <em>exchange</em> identifier information.</p>
 <p>The TCP connection is also used in step 8, to let the counterpart know about its memory regions.</p>
 </blockquote>
 <p>After calling <code>changeQueuePairStateToRTR()</code>, the queue pair is not able to <em>receive data</em> by posting receive work requests. If you want to make it able to send data, the state should be further changed to RTS.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTS</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rts_attr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rts_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rts_attr</span><span class="p">));</span>
-  <span class="n">rts_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTS</span><span class="p">;</span>
-  <span class="n">rts_attr</span><span class="p">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
-  <span class="n">rts_attr</span><span class="p">.</span><span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
-  <span class="n">rts_attr</span><span class="p">.</span><span class="n">rnr_retry</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
-  <span class="n">rts_attr</span><span class="p">.</span><span class="n">sq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rts_attr</span><span class="p">.</span><span class="n">max_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-
-  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_TIMEOUT</span> <span class="o">|</span> <span class="n">IBV_QP_RETRY_CNT</span> <span class="o">|</span> <span class="n">IBV_QP_RNR_RETRY</span> <span class="o">|</span> <span class="n">IBV_QP_SQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_QP_RD_ATOMIC</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>As peer information is already stored at RTR step, changing the state to RTS does not require any further peer information.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTS</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rts_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rts_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rts_attr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rts_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rts_attr</span><span class="p">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rts_attr</span><span class="p">.</span><span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rts_attr</span><span class="p">.</span><span class="n">rnr_retry</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rts_attr</span><span class="p">.</span><span class="n">sq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rts_attr</span><span class="p">.</span><span class="n">max_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">init_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_TIMEOUT</span> <span class="o">|</span> <span class="n">IBV_QP_RETRY_CNT</span> <span class="o">|</span> <span class="n">IBV_QP_RNR_RETRY</span> <span class="o">|</span> <span class="n">IBV_QP_SQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_QP_RD_ATOMIC</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>As peer information is already stored at RTR step, changing the state to RTS does not require any further peer information.</p>
 <h3 id="7-register-a-memory-region" class="relative group">7. Register a memory region <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#7-register-a-memory-region" aria-label="Anchor">#</a></span></h3>
 <p>Until step 6, it is an <strong>initialization phase</strong>. After step 6 the queue pair is <em>able to communicate</em> each other; a posted work request is forwarded to the opposite node, the HCA of which will consume it.
 Of course, this will be rejected due to permission error <em>since there is no memory regions registered</em>; work requests are unable to read or write anything from or to any space of the peer node.</p>
 <p>In other words, it is okay to register memory regions <em>before</em> the peer node posts a work request.</p>
-<p>Before discussing it further, let us dig into types of operations that Infiniband supports (Refer to *Section 2.1 in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>):</p>
+<p>Before discussing it further, let us dig into types of operations that Infiniband supports (Refer to *Section 2.1 in <sup id="fnref3:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>):</p>
 <ul>
 <li>Send/Send with Immediate: [RTS state required] send data to a remote QP&rsquo;s receive queue.</li>
 <li>Receive: [RTR/RTS state required] corresponding operation to a send operation; the host is notified when a data buffer has been received.</li>
 <li>RDMA Read: [RTS state required] read data from the remote memory. The remote side <strong>is not aware of</strong> this operation being done.</li>
 <li>RDMA Write/RDMA Write with Immediate: [RTS state required] write data to the remote memory. The remote side <strong>is not aware of</strong> this operation being done.</li>
-<li>Atomic Fetch and Swap / Atomic Compare and Swap: Refer to *Section 2.1.4 in <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></li>
+<li>Atomic Fetch and Swap / Atomic Compare and Swap: Refer to *Section 2.1.4 in <sup id="fnref4:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></li>
 </ul>
 <p>
 
@@ -743,17 +742,17 @@ Of course, this will be rejected due to permission error <em>since there is no m
 
 </p>
 <ul>
-<li>Those sequence diagrams are refined images illustrated in <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</li>
+<li>Those sequence diagrams are refined images illustrated in <sup id="fnref4:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</li>
 </ul>
 <p>Personally thinking, the main reason memory region registration is mostly in <em>initialization phase</em> is due to RDMA operations.
 Different from receive operation, where the remote side actively post a receive work request so that it is able to decide the moment that a memory region is registered (just before posting a receive work request),
 <strong>RDMA read and RDMA write can be done without any operations in the remote node, requiring the memory region to be registered in advance</strong>.</p>
 <p>Again, in operation, there is no problem <em>initializing</em> a queue pair without registering memory regions. It is <em>a runtime problem</em> that the HCA cannot read or write data from or to the remote node&rsquo;s memory.</p>
 <p>To register a memory region, use <code>ibv_reg_mr()</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*</span> <span class="nf">registerMemoryRegion</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="n">ibv_reg_mr</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">IBV_ACCESS_LOCAL_WRITE</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_READ</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_WRITE</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*</span> <span class="nf">registerMemoryRegion</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_pd</span><span class="o">*</span> <span class="n">pd</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ibv_reg_mr</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">IBV_ACCESS_LOCAL_WRITE</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_READ</span> <span class="o">|</span> <span class="n">IBV_ACCESS_REMOTE_WRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><blockquote>
 <p>Note that we can specify the range of remote access in this memory region. Five flags are provided <a href="https://linux.die.net/man/3/ibv_reg_mr"   target="_blank">[manual page]</a>:</p>
 <ul>
 <li><code>IBV_ACCESS_LOCAL_WRITE</code>: enable local write access</li>
@@ -767,16 +766,16 @@ Different from receive operation, where the remote side actively post a receive 
 <h3 id="8-exchange-memory-region-information-to-handle-operations-and-9-perform-data-communication" class="relative group">8. Exchange memory region information to handle operations and 9. Perform data communication <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#8-exchange-memory-region-information-to-handle-operations-and-9-perform-data-communication" aria-label="Anchor">#</a></span></h3>
 <p>Memory region is a required data for communication, it also has to be sent through a TCP channel.</p>
 <p>Here is <a href="https://github.com/linux-rdma/rdma-core/blob/master/libibverbs/verbs.h"   target="_blank">a data structure</a> of a registered memory region that is returned by calling <code>ibv_reg_mr()</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">ibv_mr</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">ibv_context</span>     <span class="o">*</span><span class="n">context</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">ibv_pd</span>	       <span class="o">*</span><span class="n">pd</span><span class="p">;</span>
-	<span class="kt">void</span>		       <span class="o">*</span><span class="n">addr</span><span class="p">;</span>
-	<span class="n">size_t</span>			<span class="n">length</span><span class="p">;</span>
-	<span class="kt">uint32_t</span>		<span class="n">handle</span><span class="p">;</span>
-	<span class="kt">uint32_t</span>		<span class="n">lkey</span><span class="p">;</span>
-	<span class="kt">uint32_t</span>		<span class="n">rkey</span><span class="p">;</span>
-<span class="p">};</span>
-</code></pre></div><p>What we actually need for data transfer are:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ibv_mr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">ibv_context</span>     <span class="o">*</span><span class="n">context</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">ibv_pd</span>	       <span class="o">*</span><span class="n">pd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span>		       <span class="o">*</span><span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">size_t</span>			<span class="n">length</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">uint32_t</span>		<span class="n">handle</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">uint32_t</span>		<span class="n">lkey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">uint32_t</span>		<span class="n">rkey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>What we actually need for data transfer are:</p>
 <ol>
 <li>address</li>
 <li>length</li>
@@ -787,63 +786,63 @@ Different from receive operation, where the remote side actively post a receive 
 <p>With the memory region information, you can use RDMA between two devices with <code>ibv_post_send()</code> and <code>ibv_post_recv()</code>.</p>
 <h4 id="sendrecv" class="relative group">Send/Recv <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#sendrecv" aria-label="Anchor">#</a></span></h4>
 <p>Send and Recv are a pair of operations; they need each other for proper operation.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">postReceiveRequest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*&gt;&amp;</span> <span class="n">sge</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_recv_wr</span> <span class="n">receive_wr</span><span class="p">,</span> <span class="o">*</span><span class="n">bad_wr</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">receive_wr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">receive_wr</span><span class="p">));</span>
-
-  <span class="c1">// RDMA supports scatter-gather I/O.
-</span><span class="c1"></span>  <span class="c1">// For a RECV operation, it works as scatter; received data will be scattered into several registered MR.
-</span><span class="c1"></span>  <span class="k">struct</span> <span class="nc">ibv_sge</span><span class="o">*</span> <span class="n">receive_sge</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_sge</span><span class="p">),</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">receive_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uintptr_t</span><span class="p">)</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span><span class="p">;</span>
-    <span class="n">receive_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span><span class="p">;</span>
-    <span class="n">receive_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="n">receive_wr</span><span class="p">.</span><span class="n">sg_list</span> <span class="o">=</span> <span class="n">receive_sge</span><span class="p">;</span>
-  <span class="n">receive_wr</span><span class="p">.</span><span class="n">num_sge</span> <span class="o">=</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
-  <span class="c1">// will be used for identification.
-</span><span class="c1"></span>  <span class="c1">// When a request fail, ibv_poll_cq() returns a work completion (struct ibv_wc) with the specified wr_id.
-</span><span class="c1"></span>  <span class="c1">// If the wr_id is 100, we can easily find out that this RECV request failed.
-</span><span class="c1"></span>  <span class="n">receive_wr</span><span class="p">.</span><span class="n">wr_id</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-  <span class="c1">// You can chain several receive requests to reduce software footprint, hnece to improve latency.
-</span><span class="c1"></span>  <span class="n">receive_wr</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
-
-  <span class="c1">// If posting fails, the address of the failed WR among the chained WRs is stored in bad_wr.
-</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ibv_post_recv</span><span class="p">(</span><span class="n">queue_pair_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">receive_wr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bad_wr</span><span class="p">);</span>
-  <span class="n">free</span><span class="p">(</span><span class="n">receive_sge</span><span class="p">);</span>
-
-  <span class="k">return</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">postSendRequest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*&gt;&amp;</span> <span class="n">sge</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_send_wr</span> <span class="n">send_wr</span><span class="p">,</span> <span class="o">*</span><span class="n">bad_wr</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">send_wr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">send_wr</span><span class="p">));</span>
-
-  <span class="k">struct</span> <span class="nc">ibv_sge</span><span class="o">*</span> <span class="n">send_sge</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_sge</span><span class="p">),</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">send_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uintptr_t</span><span class="p">)</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span><span class="p">;</span>
-    <span class="n">send_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span><span class="p">;</span>
-    <span class="n">send_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="n">send_wr</span><span class="p">.</span><span class="n">sg_list</span> <span class="o">=</span> <span class="n">send_sge</span><span class="p">;</span>
-  <span class="n">send_wr</span><span class="p">.</span><span class="n">num_sge</span> <span class="o">=</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
-  <span class="n">send_wr</span><span class="p">.</span><span class="n">wr_id</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
-
-  <span class="c1">// All WRs that are posted into Send Queue (SQ) are posted via ibv_send_wr.
-</span><span class="c1"></span>  <span class="c1">// You should specify the opcode so that which operation you want to do.
-</span><span class="c1"></span>  <span class="n">send_wr</span><span class="p">.</span><span class="n">opcode</span> <span class="o">=</span> <span class="n">IBV_WR_SEND</span><span class="p">;</span>
-  <span class="c1">// With IBV_SEND_SIGNALED flag, the hardware creates a work completion (wc) entry into the completion queue connected to the send queue.
-</span><span class="c1"></span>  <span class="c1">// You can wait with ibv_poll_cq() call until it finishes its operation.
-</span><span class="c1"></span>  <span class="n">send_wr</span><span class="p">.</span><span class="n">send_flags</span> <span class="o">=</span> <span class="n">IBV_SEND_SIGNALED</span><span class="p">;</span>
-  <span class="n">send_wr</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
-
-  <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ibv_post_send</span><span class="p">(</span><span class="n">queue_pair_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">send_wr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bad_wr</span><span class="p">);</span>
-  <span class="n">free</span><span class="p">(</span><span class="n">send_sge</span><span class="p">);</span>
-
-  <span class="k">return</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><h4 id="rdma-read--rdma-write" class="relative group">RDMA READ / RDMA WRITE <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#rdma-read--rdma-write" aria-label="Anchor">#</a></span></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">postReceiveRequest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*&gt;&amp;</span> <span class="n">sge</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_recv_wr</span> <span class="n">receive_wr</span><span class="p">,</span> <span class="o">*</span><span class="n">bad_wr</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">receive_wr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">receive_wr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// RDMA supports scatter-gather I/O.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// For a RECV operation, it works as scatter; received data will be scattered into several registered MR.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">struct</span> <span class="nc">ibv_sge</span><span class="o">*</span> <span class="n">receive_sge</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_sge</span><span class="p">),</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">receive_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uintptr_t</span><span class="p">)</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">receive_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">receive_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">receive_wr</span><span class="p">.</span><span class="n">sg_list</span> <span class="o">=</span> <span class="n">receive_sge</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">receive_wr</span><span class="p">.</span><span class="n">num_sge</span> <span class="o">=</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// will be used for identification.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// When a request fail, ibv_poll_cq() returns a work completion (struct ibv_wc) with the specified wr_id.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// If the wr_id is 100, we can easily find out that this RECV request failed.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">receive_wr</span><span class="p">.</span><span class="n">wr_id</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// You can chain several receive requests to reduce software footprint, hnece to improve latency.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">receive_wr</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// If posting fails, the address of the failed WR among the chained WRs is stored in bad_wr.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ibv_post_recv</span><span class="p">(</span><span class="n">queue_pair_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">receive_wr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bad_wr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">free</span><span class="p">(</span><span class="n">receive_sge</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">postSendRequest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*&gt;&amp;</span> <span class="n">sge</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_send_wr</span> <span class="n">send_wr</span><span class="p">,</span> <span class="o">*</span><span class="n">bad_wr</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">send_wr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">send_wr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_sge</span><span class="o">*</span> <span class="n">send_sge</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_sge</span><span class="p">),</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">send_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">uintptr_t</span><span class="p">)</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">send_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">send_sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span> <span class="o">=</span> <span class="n">sge</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">lkey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">send_wr</span><span class="p">.</span><span class="n">sg_list</span> <span class="o">=</span> <span class="n">send_sge</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">send_wr</span><span class="p">.</span><span class="n">num_sge</span> <span class="o">=</span> <span class="n">sge</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">send_wr</span><span class="p">.</span><span class="n">wr_id</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// All WRs that are posted into Send Queue (SQ) are posted via ibv_send_wr.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// You should specify the opcode so that which operation you want to do.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">send_wr</span><span class="p">.</span><span class="n">opcode</span> <span class="o">=</span> <span class="n">IBV_WR_SEND</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// With IBV_SEND_SIGNALED flag, the hardware creates a work completion (wc) entry into the completion queue connected to the send queue.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// You can wait with ibv_poll_cq() call until it finishes its operation.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">send_wr</span><span class="p">.</span><span class="n">send_flags</span> <span class="o">=</span> <span class="n">IBV_SEND_SIGNALED</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">send_wr</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ibv_post_send</span><span class="p">(</span><span class="n">queue_pair_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">send_wr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bad_wr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">free</span><span class="p">(</span><span class="n">send_sge</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="rdma-read--rdma-write" class="relative group">RDMA READ / RDMA WRITE <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#rdma-read--rdma-write" aria-label="Anchor">#</a></span></h4>
 <p>Likewise, you can send RDMA WRITE or RDMA READ request with <code>postSendRequest()</code>, but with different opcodes:</p>
 <ul>
 <li>RDMA READ: <code>IBV_WR_RDMA_READ</code></li>
@@ -851,15 +850,15 @@ Different from receive operation, where the remote side actively post a receive 
 Refer to the <a href="https://man7.org/linux/man-pages/man3/ibv_post_send.3.html"   target="_blank">[manual]</a> for SEND WR opcode details.</li>
 </ul>
 <p>For RDMA READ/WRITE, you have to specify additional arguments in <code>ibv_send_wr</code>. RDMA READ, for example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">postRDMAReadRequest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*&gt;&amp;</span> <span class="n">sge</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*</span> <span class="n">peer_memory_region</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_send_wr</span> <span class="n">rdma_wr</span><span class="p">,</span> <span class="p">...;</span>
-  <span class="n">rdma_wr</span><span class="p">.</span><span class="n">wr</span><span class="p">.</span><span class="n">rdma</span><span class="p">.</span><span class="n">remote_addr</span> <span class="o">=</span> <span class="n">peer_memory_region</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">;</span>
-  <span class="n">rdma_wr</span><span class="p">.</span><span class="n">wr</span><span class="p">.</span><span class="n">rdma</span><span class="p">.</span><span class="n">rkey</span> <span class="o">=</span> <span class="n">peer_memory_region</span><span class="o">-&gt;</span><span class="n">rkey</span><span class="p">;</span>
-  <span class="n">rdma</span><span class="p">.</span><span class="n">wr</span><span class="p">.</span><span class="n">opcode</span> <span class="o">=</span> <span class="n">IBV_WR_RDMA_READ</span><span class="p">;</span>
-  
-  <span class="c1">// All the others same
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>This function <code>postRDMAReadRequest</code> reads data from peer_memory_region in the remote peer node and scatter it into ibv_mrs in sge.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">postRDMAReadRequest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*&gt;&amp;</span> <span class="n">sge</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">ibv_mr</span><span class="o">*</span> <span class="n">peer_memory_region</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_send_wr</span> <span class="n">rdma_wr</span><span class="p">,</span> <span class="p">...;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rdma_wr</span><span class="p">.</span><span class="n">wr</span><span class="p">.</span><span class="n">rdma</span><span class="p">.</span><span class="n">remote_addr</span> <span class="o">=</span> <span class="n">peer_memory_region</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rdma_wr</span><span class="p">.</span><span class="n">wr</span><span class="p">.</span><span class="n">rdma</span><span class="p">.</span><span class="n">rkey</span> <span class="o">=</span> <span class="n">peer_memory_region</span><span class="o">-&gt;</span><span class="n">rkey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rdma</span><span class="p">.</span><span class="n">wr</span><span class="p">.</span><span class="n">opcode</span> <span class="o">=</span> <span class="n">IBV_WR_RDMA_READ</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="c1">// All the others same
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>This function <code>postRDMAReadRequest</code> reads data from peer_memory_region in the remote peer node and scatter it into ibv_mrs in sge.</p>
 <h4 id="poll-completion" class="relative group">Poll Completion <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#poll-completion" aria-label="Anchor">#</a></span></h4>
 <p>When the device completes operations, it creates corresponding work completion (wc) entries into the connected completion queue (You specify the completion queue when creating a queue pair. Refer <a href="#4-create-a-queue-pair"  >Section 4</a>).</p>
 <p>Basically, we can <strong>poll</strong> the completion queue to check whether works are done.</p>
@@ -868,54 +867,54 @@ Refer to the <a href="https://man7.org/linux/man-pages/man3/ibv_post_send.3.html
 <p>For more detials, refer to <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>. This post will not cover this and only tells about polling.</p>
 </blockquote>
 <p>We use <code>ibv_poll_cq</code> to poll a completion queue. It is a busy poll, so it consumes a CPU core, but provides lower latency.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="nf">pollCompletion</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">cq</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_wc</span> <span class="n">wc</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">result</span><span class="p">;</span>
-
-  <span class="k">do</span> <span class="p">{</span>
-    <span class="c1">// ibv_poll_cq returns the number of WCs that are newly completed,
-</span><span class="c1"></span>    <span class="c1">// If it is 0, it means no new work completion is received.
-</span><span class="c1"></span>    <span class="c1">// Here, the second argument specifies how many WCs the poll should check,
-</span><span class="c1"></span>    <span class="c1">// however, giving more than 1 incurs stack smashing detection with g++8 compilation.
-</span><span class="c1"></span>    <span class="n">result</span> <span class="o">=</span> <span class="n">ibv_poll_cq</span><span class="p">(</span><span class="n">cq</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wc</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">wc</span><span class="p">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ibv_wc_status</span><span class="o">::</span><span class="n">IBV_WC_SUCCESS</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// success
-</span><span class="c1"></span>    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="c1">// You can identify which WR failed with wc.wr_id.
-</span><span class="c1"></span>  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Poll failed with status %s (work request ID: %llu)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ibv_wc_status_str</span><span class="p">(</span><span class="n">wc</span><span class="p">.</span><span class="n">status</span><span class="p">),</span> <span class="n">wc</span><span class="p">.</span><span class="n">wr_id</span><span class="p">);</span>
-  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p><code>ibv_poll_cq</code> returns the number of WCs. As we specify it has to wait at most one WC, the result must be either 0, 1, or negative if error occured.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">pollCompletion</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_cq</span><span class="o">*</span> <span class="n">cq</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_wc</span> <span class="n">wc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ibv_poll_cq returns the number of WCs that are newly completed,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// If it is 0, it means no new work completion is received.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Here, the second argument specifies how many WCs the poll should check,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// however, giving more than 1 incurs stack smashing detection with g++8 compilation.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">result</span> <span class="o">=</span> <span class="n">ibv_poll_cq</span><span class="p">(</span><span class="n">cq</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wc</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">wc</span><span class="p">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ibv_wc_status</span><span class="o">::</span><span class="n">IBV_WC_SUCCESS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// success
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// You can identify which WR failed with wc.wr_id.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Poll failed with status %s (work request ID: %llu)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ibv_wc_status_str</span><span class="p">(</span><span class="n">wc</span><span class="p">.</span><span class="n">status</span><span class="p">),</span> <span class="n">wc</span><span class="p">.</span><span class="n">wr_id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>ibv_poll_cq</code> returns the number of WCs. As we specify it has to wait at most one WC, the result must be either 0, 1, or negative if error occured.</p>
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p><a href="https://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Programming_user_manual.pdf"   target="_blank">RDMA Aware Programming User Manual</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p><a href="https://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Programming_user_manual.pdf"   target="_blank">RDMA Aware Programming User Manual</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref2:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref3:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref4:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://www.mellanox.com/related-docs/products/IB_Adapter_card_brochure.pdf"   target="_blank">Infiniband Adapter Card Brochure</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p><a href="https://blog.zhaw.ch/icclab/infiniband-an-introduction-simple-ib-verbs-program-with-rdma-write/"   target="_blank">InfiniBand: An Introduction + Simple IB verbs program with RDMA Write</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p><a href="https://blog.zhaw.ch/icclab/infiniband-an-introduction-simple-ib-verbs-program-with-rdma-write/"   target="_blank">InfiniBand: An Introduction + Simple IB verbs program with RDMA Write</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref2:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref3:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
-<p><a href="https://www.csm.ornl.gov/workshops/openshmem2013/documents/presentations_and_tutorials/Tutorials/Verbs%20programming%20tutorial-final.pdf"   target="_blank">Verbs Programming Tutorial</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:4">
+<p><a href="https://www.csm.ornl.gov/workshops/openshmem2013/documents/presentations_and_tutorials/Tutorials/Verbs%20programming%20tutorial-final.pdf"   target="_blank">Verbs Programming Tutorial</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref2:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref3:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref4:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p><a href="https://www.rdmamojo.com/2012/05/05/qp-state-machine/"   target="_blank">QP State Machine</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:6" role="doc-endnote">
+<li id="fn:6">
 <p><a href="https://www.openfabrics.org/images/eventpresos/2017presentations/102_Buildingblock_JSonar.pdf"   target="_blank">Building a block storage application on OFED - Challenges</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:7" role="doc-endnote">
+<li id="fn:7">
 <p><a href="https://www.rdmamojo.com/2013/02/22/ibv_req_notify_cq/"   target="_blank">ibv_req_notify_cq()</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

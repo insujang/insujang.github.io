@@ -46,7 +46,7 @@ $ ip addr ... 20: virbr0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ $ ip addr ... 20: virbr0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ $ ip addr ... 20: virbr0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc
 <meta property="og:url" content="/2021-05-03/libvirt-vm-network-accessibility/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-05-03T16:47:00+09:00" />
 <meta property="article:modified_time" content="2021-05-03T16:47:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Libvirt VM Network Accessibility"/>
@@ -424,13 +423,13 @@ if (!doNotTrack) {
       
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>Libvirt provides virtual networking <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> to VMs with a virtual network switch, which is implemented with a bridge by default:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ip addr
-...
-20: virbr0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="m">1500</span> qdisc noqueue state UP group default qlen <span class="m">1000</span>
-    link/ether 52:54:00:e9:7b:57 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
-       valid_lft forever preferred_lft forever
-</code></pre></div><p>libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ip addr
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">20: virbr0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="m">1500</span> qdisc noqueue state UP group default qlen <span class="m">1000</span>
+</span></span><span class="line"><span class="cl">    link/ether 52:54:00:e9:7b:57 brd ff:ff:ff:ff:ff:ff
+</span></span><span class="line"><span class="cl">    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+</span></span><span class="line"><span class="cl">       valid_lft forever preferred_lft forever
+</span></span></code></pre></div><p>libvirt provides several modes for this bridge, two of which will be introduced in this post so that we can directly access to VMs via networking: NAT mode + port forwarding, and routed mode.</p>
 <h2 id="nat-mode" class="relative group">NAT mode <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#nat-mode" aria-label="Anchor">#</a></span></h2>
 
   
@@ -444,7 +443,7 @@ if (!doNotTrack) {
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210503/libvirt-network-nat.png" alt="image" />
-        <figcaption>Libvirt NAT mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking">[Source]</a></figcaption>
+        <figcaption>Libvirt NAT mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -459,56 +458,56 @@ $ virsh net-edit &lt;network-name&gt;
 &lt;network&gt;
   &lt;name&gt;default&lt;/name&gt;
   &lt;uuid&gt;e478ae74-d717-400b-99f3-b3893b779eca&lt;/uuid&gt;
-  &lt;forward mode='nat'/&gt;
-  &lt;bridge name='virbr0' stp='on' delay='0'/&gt;
+  &lt;forward mode=&#39;nat&#39;/&gt;
+  &lt;bridge name=&#39;virbr0&#39; stp=&#39;on&#39; delay=&#39;0&#39;/&gt;
 ...
 </code></pre><p>With <em>port-forwarding</em>, processes running in a virtual machine can be accessed by others.
 First, we need to assign a static IP address, and then bind host-guest ports for forwarding.</p>
 <h3 id="1-assigning-static-ip-address" class="relative group">1. Assigning static IP address <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-assigning-static-ip-address" aria-label="Anchor">#</a></span></h3>
 <p>Instead of modifying network configuration of a guest operating system, we can modify libvirt network configuration to provide static IP address when a one is requested via DHCP <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
 <p>First, you can find out a MAC address assigned to a virtual machine:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># you can list all virtual machines in this node via &#39;virsh list --all&#39;.</span>
-$ virsh dumpxml &lt;vm-name&gt; <span class="p">|</span> grep -i <span class="s1">&#39;&lt;mac&#39;</span>
-      &lt;mac <span class="nv">address</span><span class="o">=</span><span class="s1">&#39;52:54:00:2a:94:f7&#39;</span>/&gt;
-</code></pre></div><p>Then, modify the libvirt network configuration to assign a static IP address to the MAC address:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ virsh net-edit &lt;network-name&gt;
-&lt;network&gt;
-  ...
-  &lt;ip <span class="nv">address</span><span class="o">=</span><span class="s1">&#39;192.168.122.1&#39;</span> <span class="nv">netmask</span><span class="o">=</span><span class="s1">&#39;255.255.255.0&#39;</span>&gt;
-    &lt;dhcp&gt;
-      &lt;range <span class="nv">start</span><span class="o">=</span><span class="s1">&#39;192.168.122.2&#39;</span> <span class="nv">end</span><span class="o">=</span><span class="s1">&#39;192.168.122.254&#39;</span>/&gt;
-      &lt;host <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;52:54:00:2a:94:f7&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;&lt;vm-name&gt;&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;192.168.122.10&#39;</span>/&gt; <span class="c1"># Add this line; &lt;vm-name&gt; will be assigned a static IP 192.168.122.10.</span>
-    &lt;/dhcp&gt;
-  &lt;/ip&gt;
-&lt;/netwrrk&gt;
-</code></pre></div><p>Then, restart DHCP service by:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ virsh net-destroy default
-$ virsh net-start default
-</code></pre></div><p>If <code>&lt;vm-name&gt;</code> VM is already running, restart it. Then it will have a given static IP address.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># you can list all virtual machines in this node via &#39;virsh list --all&#39;.</span>
+</span></span><span class="line"><span class="cl">$ virsh dumpxml &lt;vm-name&gt; <span class="p">|</span> grep -i <span class="s1">&#39;&lt;mac&#39;</span>
+</span></span><span class="line"><span class="cl">      &lt;mac <span class="nv">address</span><span class="o">=</span><span class="s1">&#39;52:54:00:2a:94:f7&#39;</span>/&gt;
+</span></span></code></pre></div><p>Then, modify the libvirt network configuration to assign a static IP address to the MAC address:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ virsh net-edit &lt;network-name&gt;
+</span></span><span class="line"><span class="cl">&lt;network&gt;
+</span></span><span class="line"><span class="cl">  ...
+</span></span><span class="line"><span class="cl">  &lt;ip <span class="nv">address</span><span class="o">=</span><span class="s1">&#39;192.168.122.1&#39;</span> <span class="nv">netmask</span><span class="o">=</span><span class="s1">&#39;255.255.255.0&#39;</span>&gt;
+</span></span><span class="line"><span class="cl">    &lt;dhcp&gt;
+</span></span><span class="line"><span class="cl">      &lt;range <span class="nv">start</span><span class="o">=</span><span class="s1">&#39;192.168.122.2&#39;</span> <span class="nv">end</span><span class="o">=</span><span class="s1">&#39;192.168.122.254&#39;</span>/&gt;
+</span></span><span class="line"><span class="cl">      &lt;host <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;52:54:00:2a:94:f7&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;&lt;vm-name&gt;&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;192.168.122.10&#39;</span>/&gt; <span class="c1"># Add this line; &lt;vm-name&gt; will be assigned a static IP 192.168.122.10.</span>
+</span></span><span class="line"><span class="cl">    &lt;/dhcp&gt;
+</span></span><span class="line"><span class="cl">  &lt;/ip&gt;
+</span></span><span class="line"><span class="cl">&lt;/netwrrk&gt;
+</span></span></code></pre></div><p>Then, restart DHCP service by:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ virsh net-destroy default
+</span></span><span class="line"><span class="cl">$ virsh net-start default
+</span></span></code></pre></div><p>If <code>&lt;vm-name&gt;</code> VM is already running, restart it. Then it will have a given static IP address.</p>
 <h3 id="2-configuring-port-forwarding" class="relative group">2. Configuring port forwarding <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-configuring-port-forwarding" aria-label="Anchor">#</a></span></h3>
 <p>Now a virtual machine has a static IP address; follow <a href="https://wiki.libvirt.org/page/Networking#Forwarding_Incoming_Connections"   target="_blank">this guide</a> to configure port forwarding <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <p>I used <a href="https://github.com/saschpe/libvirt-hook-qemu"   target="_blank">a Python script (Libvirt port-forwarding hook)</a> for port-forwarding.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ git clone https://github.com/saschpe/libvirt-hook-qemu
-$ <span class="nb">cd</span> libvirt-hook-qemu
-$ &lt;edit hooks.json&gt;
-$ sudo make install
-</code></pre></div><p>The command above installs hooks Python script and configuration data (hooks.json) into <code>/etc/libvirt/hooks</code>, which will be executed when we start a new VM.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ git clone https://github.com/saschpe/libvirt-hook-qemu
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> libvirt-hook-qemu
+</span></span><span class="line"><span class="cl">$ &lt;edit hooks.json&gt;
+</span></span><span class="line"><span class="cl">$ sudo make install
+</span></span></code></pre></div><p>The command above installs hooks Python script and configuration data (hooks.json) into <code>/etc/libvirt/hooks</code>, which will be executed when we start a new VM.</p>
 <p>For example, I have a VM named <code>testvm</code>, and I want to bind port 22 in the VM to port 10000 in the host:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ cat hooks.json
-<span class="o">{</span>
-    <span class="s2">&#34;testvm&#34;</span>: <span class="o">{</span>
-        <span class="s2">&#34;interface&#34;</span>: <span class="s2">&#34;virbr0&#34;</span>,
-        <span class="s2">&#34;private_ip&#34;</span>: <span class="s2">&#34;192.168.122.10&#34;</span>,
-        <span class="s2">&#34;port_map&#34;</span>: <span class="o">{</span>
-            <span class="s2">&#34;tcp&#34;</span>: <span class="o">[[</span>10000, 22<span class="o">]]</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-$ sudo make install
-$ sudo systemctl restart libvirtd
-</code></pre></div><p>This command will install hooks and restart <code>libvirtd</code> service to reload the hook. Then when we start the VM <code>testvm</code>, it will forward any incoming network packets in port 10000 on the host to the guest port 22:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cat hooks.json
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;testvm&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;interface&#34;</span>: <span class="s2">&#34;virbr0&#34;</span>,
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;private_ip&#34;</span>: <span class="s2">&#34;192.168.122.10&#34;</span>,
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;port_map&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;tcp&#34;</span>: <span class="o">[[</span>10000, 22<span class="o">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">$ sudo make install
+</span></span><span class="line"><span class="cl">$ sudo systemctl restart libvirtd
+</span></span></code></pre></div><p>This command will install hooks and restart <code>libvirtd</code> service to reload the hook. Then when we start the VM <code>testvm</code>, it will forward any incoming network packets in port 10000 on the host to the guest port 22:</p>
 <pre tabindex="0"><code>$ ssh insujang@&lt;host-ip&gt; -p 10000
-insu@&lt;host-ip&gt;'s password:  # This will open a secure shell connected to the VM, not the host
+insu@&lt;host-ip&gt;&#39;s password:  # This will open a secure shell connected to the VM, not the host
 
 $ iptables -L -t nat
 ...
@@ -530,7 +529,7 @@ MASQUERADE  tcp  --  192.168.122.10       192.168.122.10       tcp dpt:rxapi
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210503/libvirt-network-routed.png" alt="image" />
-        <figcaption>Libvirt routed mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking">[Source]</a></figcaption>
+        <figcaption>Libvirt routed mode VM networking. <a href="https://wiki.libvirt.org/page/VirtualNetworking"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -538,38 +537,38 @@ MASQUERADE  tcp  --  192.168.122.10       192.168.122.10       tcp dpt:rxapi
 
 <p>Routed mode provides so-called flat networking: both host and virtual machines can be in the same network.
 <a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/"   target="_blank">This blog post</a> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> explained how to created a network in routed mode.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ sysctl -w net.ipv4.ip_forward <span class="o">=</span> <span class="m">1</span>
-$ virsh net-define &lt;network.xml&gt;
-$ virsh net-start &lt;network-name&gt;
-</code></pre></div><p>When you create a VM, specify source network to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sysctl -w net.ipv4.ip_forward <span class="o">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">$ virsh net-define &lt;network.xml&gt;
+</span></span><span class="line"><span class="cl">$ virsh net-start &lt;network-name&gt;
+</span></span></code></pre></div><p>When you create a VM, specify source network to:</p>
 <pre tabindex="0"><code>virt-install \
 ...
 --network network=&lt;network-name&gt;
 </code></pre><p>Or edit the existing VM to:</p>
 <pre tabindex="0"><code>$ virsh edit &lt;vm-name&gt;
 ...
-&lt;interface type='network'&gt;
-  &lt;source network='&lt;network-name&gt;' /&gt;  # here, modify the source network
+&lt;interface type=&#39;network&#39;&gt;
+  &lt;source network=&#39;&lt;network-name&gt;&#39; /&gt;  # here, modify the source network
   ...
 &lt;/interface&gt;
 </code></pre><p>Then, the DHCP server will provide a new IP address or you can assign a static IP address in the VM that is in the same subnet with the host IP address.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://wiki.libvirt.org/page/VirtualNetworking"   target="_blank">libvirt: Virtual Networking</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://www.cyberciti.biz/faq/linux-kvm-libvirt-dnsmasq-dhcp-static-ip-address-configuration-for-guest-os/"   target="_blank">KVM Libvirt Assign Static Guest IP Addresses using DHCP on the Virtual Machine</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://wiki.libvirt.org/page/Networking"   target="_blank">libvirt: Networking</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://fabianlee.org/2019/06/05/kvm-creating-a-guest-vm-on-a-network-in-routed-mode/"   target="_blank">KVM Creating a Guest VM on a Network in Routed Mode</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>
@@ -726,7 +725,7 @@ $ virsh net-start &lt;network-name&gt;
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-01-06 20:53:00 -0500 EST">Jan 6, 2022</time>
+                    <time datetime="2022-01-06 20:53:00 -0500 -0500">Jan 6, 2022</time>
                   
                 </span>
               </span>

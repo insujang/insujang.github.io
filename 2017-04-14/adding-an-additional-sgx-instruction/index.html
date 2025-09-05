@@ -47,7 +47,7 @@ extern &#34;C&#34; sgx_status_t sgx_create_abc() { printf(&#34;Hello from %s!\n&
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +56,7 @@ extern &#34;C&#34; sgx_status_t sgx_create_abc() { printf(&#34;Hello from %s!\n&
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -79,7 +79,6 @@ extern &#34;C&#34; sgx_status_t sgx_create_abc() { printf(&#34;Hello from %s!\n&
 <meta property="og:url" content="/2017-04-14/adding-an-additional-sgx-instruction/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-04-14T23:22:59+09:00" />
 <meta property="article:modified_time" content="2017-04-14T23:22:59+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Adding an Additional SGX Instruction"/>
@@ -112,7 +111,7 @@ extern &#34;C&#34; sgx_status_t sgx_create_abc() { printf(&#34;Hello from %s!\n&
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "938"
+    "wordCount": "939"
   }]
   </script>
 
@@ -418,22 +417,22 @@ if (!doNotTrack) {
         <h2 id="implementing-a-sgx-sdk-function-for-the-instruction" class="relative group">Implementing a SGX SDK Function for the Instruction <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#implementing-a-sgx-sdk-function-for-the-instruction" aria-label="Anchor">#</a></span></h2>
 <h3 id="1-function-declaration" class="relative group">1. Function Declaration <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-function-declaration" aria-label="Anchor">#</a></span></h3>
 <p>Declare a Function into <code>/linux-sgx/common/inc/sgx_urts.h</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="p">...</span>
-<span class="n">sgx_status_t</span> <span class="n">SGXAPI</span> <span class="n">sgx_create_abc</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</code></pre></div><h3 id="2-function-definition" class="relative group">2. Function Definition <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-function-definition" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="kt">sgx_status_t</span> <span class="n">SGXAPI</span> <span class="nf">sgx_create_abc</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</span></span></code></pre></div><h3 id="2-function-definition" class="relative group">2. Function Definition <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-function-definition" aria-label="Anchor">#</a></span></h3>
 <p>Define a Function into any file in <code>/linux-sgx/psw/urts/</code>. I defined it in <code>/linux-sgx/psw/urts/linux/urts.cpp</code>, as follows.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="n">sgx_status_t</span> <span class="n">sgx_create_abc</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello from %s!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Also, you should define a function with the same name in <code>/linux-sgx/sdk/simulation/urtssim/urts_deploy.c</code>, but with <code>void</code> return type and no parameters.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">sgx_create_abc</span><span class="p">(){};</span>
-<span class="kt">void</span> <span class="nf">sgx_debug_load_state_add_element</span><span class="p">(){};</span>
-<span class="kt">void</span> <span class="nf">sgx_debug_unload_state_remove_element</span><span class="p">(){};</span>
-<span class="kt">void</span> <span class="nf">sgx_destroy_enclave</span><span class="p">(){};</span>
-<span class="p">...</span>
-</code></pre></div><h3 id="3-add-a-function-in-lds" class="relative group">3. Add a Function in .lds <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-add-a-function-in-lds" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="kt">sgx_status_t</span> <span class="nf">sgx_create_abc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Hello from %s!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Also, you should define a function with the same name in <code>/linux-sgx/sdk/simulation/urtssim/urts_deploy.c</code>, but with <code>void</code> return type and no parameters.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sgx_create_abc</span><span class="p">(){};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sgx_debug_load_state_add_element</span><span class="p">(){};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sgx_debug_unload_state_remove_element</span><span class="p">(){};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sgx_destroy_enclave</span><span class="p">(){};</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><h3 id="3-add-a-function-in-lds" class="relative group">3. Add a Function in .lds <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-add-a-function-in-lds" aria-label="Anchor">#</a></span></h3>
 <p>Add a function name in <code>/linux-sgx/psw/urts/linux/urts.lds</code>.
 Without this step, executing an user application causes the following error:</p>
 <pre tabindex="0"><code>./app: symbol lookup error: ./app: undefined symbol: sgx_create_abc
@@ -445,13 +444,13 @@ Without this step, executing an user application causes the following error:</p>
         ...
 }
 </code></pre><h3 id="4-call-the-function-in-user-application" class="relative group">4. Call the Function in User Application! <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-call-the-function-in-user-application" aria-label="Anchor">#</a></span></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;sgx_urts.h&#34;</span><span class="cp">
-</span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="p">...</span>
-    <span class="n">sgx_create_abc</span><span class="p">();</span>
-    <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;sgx_urts.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">sgx_create_abc</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>
 
 
 
@@ -469,69 +468,69 @@ Without this step, executing an user application causes the following error:</p>
 <h3 id="1-instruction-definition" class="relative group">1. Instruction Definition <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-instruction-definition" aria-label="Anchor">#</a></span></h3>
 <p>Simulated SGX instructions are in <code>/linux-sgx/sdk/simulation/uinst/u_instructions.cpp</code>.</p>
 <p>Add a new instruction <code>_EABC()</code> in here.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">uintptr_t</span> <span class="nf">_EABC</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello from %s!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Also, we should add the function call in either <code>_SE0()</code>, which means this instruction is ENCLS, or <code>_SE3()</code>, which means this instruction is ENCLU.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">uintptr_t</span> <span class="nf">_SE0</span><span class="p">(</span><span class="n">uintptr_t</span> <span class="n">xax</span><span class="p">,</span> <span class="n">uintptr_t</span> <span class="n">xbx</span><span class="p">,</span>
-               <span class="n">uintptr_t</span> <span class="n">xcx</span><span class="p">,</span> <span class="n">uintptr_t</span> <span class="n">xdx</span><span class="p">,</span>
-               <span class="n">uintptr_t</span> <span class="n">xsi</span><span class="p">,</span> <span class="n">uintptr_t</span> <span class="n">xdi</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">UNUSED</span><span class="p">(</span><span class="n">xsi</span><span class="p">),</span> <span class="n">UNUSED</span><span class="p">(</span><span class="n">xdi</span><span class="p">);</span>
-
-    <span class="k">switch</span> <span class="p">(</span><span class="n">xax</span><span class="p">)</span>
-    <span class="p">{</span>
-    <span class="k">case</span> <span class="nl">SE_ECREATE</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_ECREATE</span><span class="p">(</span><span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">page_info_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xbx</span><span class="p">));</span>
-
-    <span class="k">case</span> <span class="nl">SE_EADD</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_EADD</span><span class="p">(</span><span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">page_info_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xbx</span><span class="p">),</span>
-                     <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xcx</span><span class="p">));</span>
-    <span class="p">...</span>
-    <span class="k">case</span> <span class="nl">SE_EABC</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_EABC</span><span class="p">();</span>
-    <span class="p">...</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="2-assign-an-se-instruction-number" class="relative group">2. Assign an SE Instruction Number <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-assign-an-se-instruction-number" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="nf">_EABC</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Hello from %s!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Also, we should add the function call in either <code>_SE0()</code>, which means this instruction is ENCLS, or <code>_SE3()</code>, which means this instruction is ENCLU.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="nf">_SE0</span><span class="p">(</span><span class="kt">uintptr_t</span> <span class="n">xax</span><span class="p">,</span> <span class="kt">uintptr_t</span> <span class="n">xbx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">               <span class="kt">uintptr_t</span> <span class="n">xcx</span><span class="p">,</span> <span class="kt">uintptr_t</span> <span class="n">xdx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">               <span class="kt">uintptr_t</span> <span class="n">xsi</span><span class="p">,</span> <span class="kt">uintptr_t</span> <span class="n">xdi</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">UNUSED</span><span class="p">(</span><span class="n">xsi</span><span class="p">),</span> <span class="nf">UNUSED</span><span class="p">(</span><span class="n">xdi</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="p">(</span><span class="n">xax</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">SE_ECREATE</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">_ECREATE</span><span class="p">(</span><span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">page_info_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xbx</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">SE_EADD</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">_EADD</span><span class="p">(</span><span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">page_info_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xbx</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                     <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">xcx</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">SE_EABC</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">_EABC</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="2-assign-an-se-instruction-number" class="relative group">2. Assign an SE Instruction Number <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-assign-an-se-instruction-number" aria-label="Anchor">#</a></span></h3>
 <p>We uses <code>SE_EABC</code>, which is not defined yet. Add a definition into <code>/linux-sgx/common/inc/internal/inst.h</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-    <span class="n">SE_EREPORT</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>
-    <span class="n">SE_EGETKEY</span><span class="p">,</span>
-    <span class="n">SE_EENTER</span><span class="p">,</span>
-    <span class="n">SE_ERESUME</span><span class="p">,</span>
-    <span class="n">SE_EEXIT</span><span class="p">,</span>
-    <span class="n">SE_LAST_RING3</span><span class="p">,</span>
-
-    <span class="n">SE_ECREATE</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>
-    <span class="n">SE_EADD</span><span class="p">,</span>
-    <span class="n">SE_EINIT</span><span class="p">,</span>
-    <span class="n">SE_EREMOVE</span><span class="p">,</span>
-    <span class="n">SE_EABC</span><span class="p">,</span>
-    <span class="n">SE_EDBGRD</span><span class="p">,</span>
-    <span class="n">SE_EDBGWR</span><span class="p">,</span>
-    <span class="n">SE_EEXTEND</span><span class="p">,</span>
-    <span class="n">SE_LAST_RING0</span>
-<span class="p">}</span> <span class="n">se_opcode_t</span><span class="p">;</span>
-</code></pre></div><s>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EREPORT</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EGETKEY</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EENTER</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_ERESUME</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EEXIT</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_LAST_RING3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">SE_ECREATE</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EADD</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EINIT</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EREMOVE</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EABC</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EDBGRD</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EDBGWR</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_EEXTEND</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SE_LAST_RING0</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="kt">se_opcode_t</span><span class="p">;</span>
+</span></span></code></pre></div><s>
 Note that `SE_EABC` should be the last, to make the other variables' value not changed.
 </s>
 <p><strong>Update</strong>: Note that <code>SE_EABC</code> must directly follow <code>SE_EREMOVE</code>, to make it have the value of 4. <code>SE_EDBGRD, SE_EDBGWR, SE_EEXTEND, SE_LAST_RING0</code> are currently not used.</p>
 <p>Also add a SE instruction in <code>/linux-sgx/common/inc/internal/linux/linux-regs.h</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* SE instructions - needs to be sync-up with inst70.h */</span>
-<span class="cp">#define SE_EREPORT    0
-</span><span class="cp">#define SE_EGETKEY    1
-</span><span class="cp">#define SE_EENTER     2
-</span><span class="cp">#define SE_EEXIT      4
-</span><span class="cp"></span>
-<span class="cp">#define SE_ECREATE    0
-</span><span class="cp">#define SE_EADD       1
-</span><span class="cp">#define SE_EINIT      2
-</span><span class="cp">#define SE_EREMOVE    3
-</span><span class="cp">#define SE_EABC       4
-</span></code></pre></div><p>Make the value same with what you set in <code>se_opcode_t</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* SE instructions - needs to be sync-up with inst70.h */</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define SE_EREPORT    0
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EGETKEY    1
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EENTER     2
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EEXIT      4
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define SE_ECREATE    0
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EADD       1
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EINIT      2
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EREMOVE    3
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SE_EABC       4
+</span></span></span></code></pre></div><p>Make the value same with what you set in <code>se_opcode_t</code>.</p>
 <h2 id="bridging-the-sdk-function-and-the-sgx-instruction" class="relative group">Bridging the SDK Function and the SGX Instruction <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#bridging-the-sdk-function-and-the-sgx-instruction" aria-label="Anchor">#</a></span></h2>
 <p>Detailed explanation is in <a href="/2017-04-14/intel-sgx-sdk-functions-for-enclave-creation/"  >[here]</a>.</p>
 <h3 id="1-add-a-macro-for-assembly-simulation" class="relative group">1. Add a Macro for Assembly Simulation <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-add-a-macro-for-assembly-simulation" aria-label="Anchor">#</a></span></h3>
@@ -561,65 +560,65 @@ DoSW EREMOVE
 DoSW EABC
 </code></pre><h3 id="2-add-a-function-declaration-for-assembly---c-interface" class="relative group">2. Add a Function Declaration for Assembly - C Interface <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-add-a-function-declaration-for-assembly---c-interface" aria-label="Anchor">#</a></span></h3>
 <p>Add a function declaration in <code>/linux-sgx/sdk/simulation/assembly/sgxsim.h</code> to make the function be called in the other code.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="p">...</span>
-<span class="n">uintptr_t</span> <span class="n">DoEREMOVE_SW</span><span class="p">(</span><span class="n">uintptr_t</span> <span class="n">unused_xbx</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">epc_lin_addr</span><span class="p">);</span>
-
-<span class="n">uintptr_t</span> <span class="nf">DoEABC_SW</span><span class="p">();</span>
-</code></pre></div><p>All <code>Do(inst)_SW</code> functions are called in <code>/linux-sgx/sdk/simulation/driver_api/driver_api.cpp</code>. For example, <code>DoECREATE_SW()</code> function is called by the function <code>create_enclave()</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="nf">DoEREMOVE_SW</span><span class="p">(</span><span class="kt">uintptr_t</span> <span class="n">unused_xbx</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="n">epc_lin_addr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="nf">DoEABC_SW</span><span class="p">();</span>
+</span></span></code></pre></div><p>All <code>Do(inst)_SW</code> functions are called in <code>/linux-sgx/sdk/simulation/driver_api/driver_api.cpp</code>. For example, <code>DoECREATE_SW()</code> function is called by the function <code>create_enclave()</code>.</p>
 <p>Implement a new arbitrary function <code>create_abc()</code> in here.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">create_abc</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">DoEABC_SW</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><p>Also don&rsquo;t forget to add a declaration in the corresponding header: <code>/linux-sgx/common/inc/internal/driver_api.h</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
-</span><span class="cm">@enclave_id identify the unique enclave;
-</span><span class="cm">@start_addr is the linear address that driver allocate for app;
-</span><span class="cm">*/</span>
-<span class="kt">int</span> <span class="nf">create_enclave</span><span class="p">(</span><span class="n">secs_t</span> <span class="o">*</span><span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">start_addr</span><span class="p">);</span>
-<span class="p">...</span>
-<span class="kt">int</span> <span class="n">create_abc</span><span class="p">();</span>
-</code></pre></div><h3 id="3-connect-the-sdk-function-and-the-instruction-interface" class="relative group">3. Connect the SDK Function and the Instruction Interface <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-connect-the-sdk-function-and-the-instruction-interface" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">create_abc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="nf">DoEABC_SW</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Also don&rsquo;t forget to add a declaration in the corresponding header: <code>/linux-sgx/common/inc/internal/driver_api.h</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">@enclave_id identify the unique enclave;
+</span></span></span><span class="line"><span class="cl"><span class="cm">@start_addr is the linear address that driver allocate for app;
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">create_enclave</span><span class="p">(</span><span class="kt">secs_t</span> <span class="o">*</span><span class="n">secs</span><span class="p">,</span> <span class="kt">sgx_enclave_id_t</span> <span class="o">*</span><span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">start_addr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">create_abc</span><span class="p">();</span>
+</span></span></code></pre></div><h3 id="3-connect-the-sdk-function-and-the-instruction-interface" class="relative group">3. Connect the SDK Function and the Instruction Interface <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-connect-the-sdk-function-and-the-instruction-interface" aria-label="Anchor">#</a></span></h3>
 <p><code>create_enclave()</code> is called by <code>EnclaveCreatorSim::create_enclave()</code>, defined in <code>/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.cpp</code>.</p>
 <p>First, we add a member function inside the class in <code>/linux-sgx/sdk/simulation/urtssim/enclave_creator_sim.h</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="k">class</span> <span class="nc">EnclaveCreatorSim</span> <span class="o">:</span> <span class="k">public</span> <span class="n">EnclaveCreator</span>
-<span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="kt">int</span> <span class="n">create_enclave</span><span class="p">(</span><span class="n">secs_t</span><span class="o">*</span> <span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span><span class="o">*</span> <span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span><span class="o">**</span> <span class="n">start_addr</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">ae</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="nf">create_abc</span><span class="p">();</span>
-    <span class="p">...</span>
-<span class="p">};</span>
-</code></pre></div><p>And implement a function that calls <code>create_abc()</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="n">EnclaveCreatorSim</span><span class="o">::</span><span class="n">create_abc</span><span class="p">()</span>
-<span class="p">{</span>    
-    <span class="k">return</span> <span class="o">::</span><span class="n">create_abc</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><p>Originally, <code>EnclaveCreatorSim::create_enclave()</code> is called by <code>CLoader</code>. But we will make <code>EnclaveCreatorSim::create_abc()</code> be directly called by the SGX SDK function, as <code>EnclaveCreatorSim::initialize()</code> is called directly by a function in SGX SDK function, <code>sgx_create_enclave()</code>.<br>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">EnclaveCreatorSim</span> <span class="o">:</span> <span class="k">public</span> <span class="n">EnclaveCreator</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">create_enclave</span><span class="p">(</span><span class="n">secs_t</span><span class="o">*</span> <span class="n">secs</span><span class="p">,</span> <span class="n">sgx_enclave_id_t</span><span class="o">*</span> <span class="n">enclave_id</span><span class="p">,</span> <span class="kt">void</span><span class="o">**</span> <span class="n">start_addr</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">ae</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="nf">create_abc</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>And implement a function that calls <code>create_abc()</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">EnclaveCreatorSim</span><span class="o">::</span><span class="n">create_abc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">::</span><span class="n">create_abc</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Originally, <code>EnclaveCreatorSim::create_enclave()</code> is called by <code>CLoader</code>. But we will make <code>EnclaveCreatorSim::create_abc()</code> be directly called by the SGX SDK function, as <code>EnclaveCreatorSim::initialize()</code> is called directly by a function in SGX SDK function, <code>sgx_create_enclave()</code>.<br>
 (<code>sgx_create_enclave()</code> calls <code>_create_enclave()</code>, which is defined in <code>/linux-sgx/psw/urts/urts_com.h</code>, and it calls <code>__create_enclave()</code> defined in the same file, and it calls <code>get_enclave_creator()-&gt;initialize()</code>.)</p>
 <p>We already added the function <code>sgx_create_abc()</code> in <code>/linux-sgx/psw/urts/linux/urts.cpp</code>. Let&rsquo;s modify this function to call <code>EnclaveCreatorSim::create_abc()</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="n">sgx_status_t</span> <span class="n">sgx_create_abc</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">sgx_status_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello from %s!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
-
-    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">sgx_status_t</span><span class="p">)</span> <span class="n">get_enclave_creator</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">create_abc</span><span class="p">();</span>
-
-    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>However, when you compile SGX SDK, the compiler shows the following error.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="kt">sgx_status_t</span> <span class="nf">sgx_create_abc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">sgx_status_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Hello from %s!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">__func__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="kt">sgx_status_t</span><span class="p">)</span> <span class="nf">get_enclave_creator</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">create_abc</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>However, when you compile SGX SDK, the compiler shows the following error.</p>
 <pre tabindex="0"><code>/home/insujang/sgx/workspace/linux-sgx/psw/urts/linux/urts.cpp:79:31: error: ‘class EnclaveCreator’ has no member named ‘create_abc’
   ret = get_enclave_creator()-&gt;create_abc();
 </code></pre><p><code>get_enclave_creator()</code> returns an instance of <code>EnclaveCreator</code> class, not an instance of <code>EnclaveCreatorSim</code>, which is a child class of <code>EnclaveCreator</code>.</p>
 <p>Hence, we should add a function in the parent class. <code>EnclaveCreator</code> class is declared in <code>/linux-sgx/common/inc/internal/enclave_creator.h</code>.<br>
 As we declared a function as <code>int create_abc()</code>, we should make the format same. Also, the function in <code>EnclaveCreator</code> must be a virtual function (not pure) as two other classes also inherit <code>EnclaveCreator</code> class, which do not override this function.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">// this is the interface to both hardware, simulation and signing mode
-</span><span class="c1"></span><span class="k">class</span> <span class="nc">EnclaveCreator</span> <span class="o">:</span> <span class="k">private</span> <span class="n">Uncopyable</span>
-<span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="p">...</span>
-    <span class="k">virtual</span> <span class="kt">int</span> <span class="n">create_abc</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span> <span class="p">};</span>
-<span class="p">};</span>
-</code></pre></div><h2 id="run-it" class="relative group">Run It! <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#run-it" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="c1">// this is the interface to both hardware, simulation and signing mode
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">EnclaveCreator</span> <span class="o">:</span> <span class="k">private</span> <span class="n">Uncopyable</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="k">virtual</span> <span class="kt">int</span> <span class="n">create_abc</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">SGX_SUCCESS</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><h2 id="run-it" class="relative group">Run It! <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#run-it" aria-label="Anchor">#</a></span></h2>
 <p>Now compile SDK, install it, and also compile an user application and run it. Don&rsquo;t forget to compile it with <code>SGX_MODE=SIM</code>, because it uses a simulated instruction.</p>
 <p>The result is as follows.</p>
 <p>

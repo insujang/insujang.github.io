@@ -15,7 +15,7 @@
       <guid>/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
       <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
 The introduction below clearly shows why it is required.
- Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
+Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
     </item>
     
     <item>
@@ -25,7 +25,7 @@ The introduction below clearly shows why it is required.
       
       <guid>/2019-10-31/container-runtime/</guid>
       <description>From Docker to Kubernetes, these days container solutions are emerging.
-   {: .center-image width=&amp;ldquo;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
+{: .center-image width=&amp;ldquo;1000px&amp;rdquo;} Why Docker? source: https://www.docker.com. They clear state that Docker is a Container Runtime.
 In the era of Docker the term &amp;ldquo;Container runtime&amp;rdquo; was quite clear; the software that runs and manages containers. but as the internal architecture is being complicated and various container frameworks are introduced, this definition becomes unclear.
 Here are very clear explanations what is container runtime exactly, written by Ian Lewis:</description>
     </item>

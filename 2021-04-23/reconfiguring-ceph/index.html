@@ -21,8 +21,9 @@
     <meta name="title" content="Reconfiguring Ceph &middot; Better Tomorrow with Computer Science" />
   
   <meta name="description" content="Configuring Ceph # Ceph daemons use /etc/ceph/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?
-1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
- Use injectargs to inject configuration values into the existing values." />
+1. Dynamic Configuration Injection 1 # Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
+Use injectargs to inject configuration values into the existing values.
+$ ceph tell &lt;type." />
   
   
   
@@ -47,7 +48,7 @@
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +57,7 @@
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -73,19 +74,20 @@
   
   <meta property="og:title" content="Reconfiguring Ceph" />
 <meta property="og:description" content="Configuring Ceph # Ceph daemons use /etc/ceph/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?
-1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
- Use injectargs to inject configuration values into the existing values." />
+1. Dynamic Configuration Injection 1 # Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
+Use injectargs to inject configuration values into the existing values.
+$ ceph tell &lt;type." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2021-04-23/reconfiguring-ceph/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-04-23T16:19:00+09:00" />
 <meta property="article:modified_time" content="2021-04-23T16:19:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
-
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Reconfiguring Ceph"/>
 <meta name="twitter:description" content="Configuring Ceph # Ceph daemons use /etc/ceph/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?
-1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
- Use injectargs to inject configuration values into the existing values."/>
+1. Dynamic Configuration Injection 1 # Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.
+Use injectargs to inject configuration values into the existing values.
+$ ceph tell &lt;type."/>
 
   
   <script type="application/ld+json">
@@ -96,7 +98,7 @@
     "name": "Reconfiguring Ceph",
     "headline": "Reconfiguring Ceph",
     
-    "abstract": "Configuring Ceph # Ceph daemons use \/etc\/ceph\/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?\n1. Dynamic Configuration Injection 1 #  Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.\n Use injectargs to inject configuration values into the existing values.",
+    "abstract": "Configuring Ceph # Ceph daemons use \/etc\/ceph\/ceph.conf by default for configuration. However, modern ceph clusters are initialized with cephadm, which deploys deach daemon in individual containers; then, how we can apply configuration changes to Ceph daemons?\n1. Dynamic Configuration Injection 1 # Warning: it is not reliable; make sure that the changed parameter is active. Otherwise, use method 2.\nUse injectargs to inject configuration values into the existing values.\n$ ceph tell \u0026lt;type.",
     "inLanguage": "en",
     "url" : "\/2021-04-23\/reconfiguring-ceph\/",
     "author" : {
@@ -439,86 +441,86 @@ Otherwise, use method 2.</p>
 <p>However, all Ceph daemons deployed with <code>cephadm</code> are running in containers.
 Is there way to change the <code>/etc/ceph/ceph.conf</code> file in the container from the host side?</p>
 <p>The <code>ceph.conf</code> configuration file is <em>bind-mounted</em> to the container, so it can be accessed in the host.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ podman ps
-CONTAINER ID  IMAGE                                 COMMAND               CREATED      STATUS          PORTS   NAMES
-...
-2d80d9f0f02d  docker.io/ceph/ceph:v15               -n osd.0 -f --set...  <span class="m">2</span> weeks ago  Up <span class="m">2</span> weeks ago          ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6-osd.0
-2d710a199390  docker.io/ceph/ceph:v15               -n osd.1 -f --set...  <span class="m">2</span> weeks ago  Up <span class="m">2</span> weeks ago          ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6-osd.1
-
-$ podman inspect ceph-<span class="k">$(</span>ceph fsid<span class="k">)</span>-osd.0
-...
-<span class="o">[</span>
-    <span class="o">{</span>
-        <span class="s2">&#34;Id&#34;</span>: <span class="s2">&#34;2d80d9f0f02dedf32eb21efa5fe159a1eff899b58334d12d316b78f105cbd175&#34;</span>,
-        <span class="s2">&#34;Path&#34;</span>: <span class="s2">&#34;/usr/bin/ceph-osd&#34;</span>,
-        ...
-        <span class="s2">&#34;Mounts&#34;</span>: <span class="o">[</span>
-            ...
-            <span class="o">{</span>
-                <span class="s2">&#34;Type&#34;</span>: <span class="s2">&#34;bind&#34;</span>,
-                <span class="s2">&#34;Source&#34;</span>: <span class="s2">&#34;/var/lib/ceph/31a99598-96aa-11eb-8e83-b06ebf35abc6/osd.0/config&#34;</span>,
-                <span class="s2">&#34;Destination&#34;</span>: <span class="s2">&#34;/etc/ceph/ceph.conf&#34;</span>,
-                <span class="s2">&#34;Driver&#34;</span>: <span class="s2">&#34;&#34;</span>,
-                <span class="s2">&#34;Mode&#34;</span>: <span class="s2">&#34;&#34;</span>,
-                <span class="s2">&#34;Options&#34;</span>: <span class="o">[</span>
-                    <span class="s2">&#34;rbind&#34;</span>
-                <span class="o">]</span>,
-                <span class="s2">&#34;RW&#34;</span>: true,
-                <span class="s2">&#34;Propagation&#34;</span>: <span class="s2">&#34;rprivate&#34;</span>
-            <span class="o">}</span>,
-            ...
-        <span class="o">]</span>
-    <span class="o">}</span>
-<span class="o">]</span>
-</code></pre></div><p>As you can see, <code>/var/lib/ceph/31a99598-96aa-11eb-8e83-b06ebf35abc6/osd.0/config</code> has been mounted to <code>/etc/ceph/ceph.conf</code> in the container for <code>osd.0</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ podman ps
+</span></span><span class="line"><span class="cl">CONTAINER ID  IMAGE                                 COMMAND               CREATED      STATUS          PORTS   NAMES
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">2d80d9f0f02d  docker.io/ceph/ceph:v15               -n osd.0 -f --set...  <span class="m">2</span> weeks ago  Up <span class="m">2</span> weeks ago          ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6-osd.0
+</span></span><span class="line"><span class="cl">2d710a199390  docker.io/ceph/ceph:v15               -n osd.1 -f --set...  <span class="m">2</span> weeks ago  Up <span class="m">2</span> weeks ago          ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6-osd.1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ podman inspect ceph-<span class="k">$(</span>ceph fsid<span class="k">)</span>-osd.0
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl"><span class="o">[</span>
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;Id&#34;</span>: <span class="s2">&#34;2d80d9f0f02dedf32eb21efa5fe159a1eff899b58334d12d316b78f105cbd175&#34;</span>,
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;Path&#34;</span>: <span class="s2">&#34;/usr/bin/ceph-osd&#34;</span>,
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;Mounts&#34;</span>: <span class="o">[</span>
+</span></span><span class="line"><span class="cl">            ...
+</span></span><span class="line"><span class="cl">            <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Type&#34;</span>: <span class="s2">&#34;bind&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Source&#34;</span>: <span class="s2">&#34;/var/lib/ceph/31a99598-96aa-11eb-8e83-b06ebf35abc6/osd.0/config&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Destination&#34;</span>: <span class="s2">&#34;/etc/ceph/ceph.conf&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Driver&#34;</span>: <span class="s2">&#34;&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Mode&#34;</span>: <span class="s2">&#34;&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Options&#34;</span>: <span class="o">[</span>
+</span></span><span class="line"><span class="cl">                    <span class="s2">&#34;rbind&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">]</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;RW&#34;</span>: true,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;Propagation&#34;</span>: <span class="s2">&#34;rprivate&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">            ...
+</span></span><span class="line"><span class="cl">        <span class="o">]</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">]</span>
+</span></span></code></pre></div><p>As you can see, <code>/var/lib/ceph/31a99598-96aa-11eb-8e83-b06ebf35abc6/osd.0/config</code> has been mounted to <code>/etc/ceph/ceph.conf</code> in the container for <code>osd.0</code>.</p>
 <p>All <code>ceph.conf</code> configuration files for each daemons can be accessed via:</p>
 <pre tabindex="0"><code>/var/lib/ceph/&lt;cluster-fsid&gt;/&lt;daemon-name&gt;/config
 </code></pre><p>where <code>&lt;daemon-name&gt;</code> can be found with <code>ceph orch ps</code>.</p>
 <p>After modifying the configuration file, you should restart the daemon to apply the changes:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ systemctl restart ceph-<span class="k">$(</span>ceph fsid<span class="k">)</span>@&lt;daemon-name&gt;
-</code></pre></div><blockquote>
-<p><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> illustrates that you can restart the daemon with <code>systemctl restart ceph-&lt;cluster-fsid&gt;-&lt;daemon-name&gt;</code>, which is false. <code>cephadm</code> uses a template instance (@) to refer a daemon name: <code>ceph-&lt;cluster-fsid&gt;@&lt;daemon-name&gt;</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ systemctl restart ceph-<span class="k">$(</span>ceph fsid<span class="k">)</span>@&lt;daemon-name&gt;
+</span></span></code></pre></div><blockquote>
+<p><sup id="fnref1:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> illustrates that you can restart the daemon with <code>systemctl restart ceph-&lt;cluster-fsid&gt;-&lt;daemon-name&gt;</code>, which is false. <code>cephadm</code> uses a template instance (@) to refer a daemon name: <code>ceph-&lt;cluster-fsid&gt;@&lt;daemon-name&gt;</code>.</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ systemctl status ceph-<span class="k">$(</span>ceph fsid<span class="k">)</span>@osd.0
-● ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service - Ceph osd.0 <span class="k">for</span> 31a99598-96aa-11eb-8e83-b06ebf35abc6
-     Loaded: loaded <span class="o">(</span>/etc/systemd/system/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: disabled<span class="o">)</span>
-     Active: active <span class="o">(</span>running<span class="o">)</span> since Fri 2021-04-23 17:09:32 KST<span class="p">;</span> 11s ago
-    Process: <span class="m">17428</span> <span class="nv">ExecStartPre</span><span class="o">=</span>/bin/rm -f //run/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service-pid //run/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service-cid <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
-    Process: <span class="m">17429</span> <span class="nv">ExecStart</span><span class="o">=</span>/bin/bash /var/lib/ceph/31a99598-96aa-11eb-8e83-b06ebf35abc6/osd.0/unit.run <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
-   Main PID: <span class="m">17790</span> <span class="o">(</span>conmon<span class="o">)</span>
-      Tasks: <span class="m">2</span> <span class="o">(</span>limit: 38107<span class="o">)</span>
-     Memory: 888.0K
-     CGroup: /system.slice/system-ceph<span class="se">\x</span>2d31a99598<span class="se">\x</span>2d96aa<span class="se">\x</span>2d11eb<span class="se">\x</span>2d8e83<span class="se">\x</span>2db06ebf35abc6.slice/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service
-             └─17790 /usr/bin/conmon --api-version <span class="m">1</span> -c e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb -u e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb -r /usr/bin/crun -b&gt;
-
-Apr <span class="m">23</span> 17:09:31 insujang.fedora bash<span class="o">[</span>17525<span class="o">]</span>: --&gt; ceph-volume lvm activate successful <span class="k">for</span> osd ID: <span class="m">0</span>
-Apr <span class="m">23</span> 17:09:31 insujang.fedora podman<span class="o">[</span>17525<span class="o">]</span>: 2021-04-23 17:09:31.175933276 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.730119503 container died 1bb4ff00147ecb939c9bc824e76eb49f46d9f0753461a362f50a8712bf969664 <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ceph&gt;Apr <span class="m">23</span> 17:09:31 insujang.fedora podman<span class="o">[</span>17525<span class="o">]</span>: 2021-04-23 17:09:31.897632645 +0900 KST <span class="nv">m</span><span class="o">=</span>+1.451818766 container remove 1bb4ff00147ecb939c9bc824e76eb49f46d9f0753461a362f50a8712bf969664 <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ce&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora bash<span class="o">[</span>17741<span class="o">]</span>: WARNING: The same type, major and minor should not be used <span class="k">for</span> multiple devices.
-Apr <span class="m">23</span> 17:09:32 insujang.fedora bash<span class="o">[</span>17741<span class="o">]</span>: WARNING: The same type, major and minor should not be used <span class="k">for</span> multiple devices.
-Apr <span class="m">23</span> 17:09:32 insujang.fedora podman<span class="o">[</span>17741<span class="o">]</span>: 2021-04-23 17:09:32.365594057 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.283835309 container create e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ce&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora podman<span class="o">[</span>17741<span class="o">]</span>: 2021-04-23 17:09:32.547644796 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.465885960 container init e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ceph&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora podman<span class="o">[</span>17741<span class="o">]</span>: 2021-04-23 17:09:32.580880134 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.499121329 container start e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/cep&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora bash<span class="o">[</span>17741<span class="o">]</span>: e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb
-Apr <span class="m">23</span> 17:09:32 insujang.fedora systemd<span class="o">[</span>1<span class="o">]</span>: Started Ceph osd.0 <span class="k">for</span> 31a99598-96aa-11eb-8e83-b06ebf35abc6.
-</code></pre></div><p>You can check whether the change has been applied to the daemon by:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ceph config show osd.0
-NAME                  VALUE                                            SOURCE    OVERRIDES  IGNORES
-container_image       docker.io/ceph/ceph:v15                          mon
-daemonize             <span class="nb">false</span>                                            override
-keyring               <span class="nv">$osd_data</span>/keyring                                default
-leveldb_log                                                            default
-log_stderr_prefix     debug                                            default
-log_to_file           <span class="nb">false</span>                                            default
-log_to_stderr         <span class="nb">true</span>                                             default
-mon_host              <span class="o">[</span>omitted<span class="o">]</span>                                        file
-no_config_file        <span class="nb">false</span>                                            override
-osd_max_write_size    <span class="m">50</span>                                               file       &lt;&lt;---
-rbd_default_features  <span class="m">61</span>                                               default
-setgroup              ceph                                             cmdline
-setuser               ceph                                             cmdline
-</code></pre></div><p>&hellip; while the given value has actually not been applied and used:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ceph config get osd.0
-WHO     MASK  LEVEL  OPTION           VALUE                    RO
-global        basic  container_image  docker.io/ceph/ceph:v15  *
-</code></pre></div><h3 id="3-ceph-configuration-priority-and-centralized-configuration-management-central-config-mgr" class="relative group">3. Ceph Configuration Priority and Centralized Configuration Management <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-ceph-configuration-priority-and-centralized-configuration-management-central-config-mgr" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ systemctl status ceph-<span class="k">$(</span>ceph fsid<span class="k">)</span>@osd.0
+</span></span><span class="line"><span class="cl">● ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service - Ceph osd.0 <span class="k">for</span> 31a99598-96aa-11eb-8e83-b06ebf35abc6
+</span></span><span class="line"><span class="cl">     Loaded: loaded <span class="o">(</span>/etc/systemd/system/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: disabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Active: active <span class="o">(</span>running<span class="o">)</span> since Fri 2021-04-23 17:09:32 KST<span class="p">;</span> 11s ago
+</span></span><span class="line"><span class="cl">    Process: <span class="m">17428</span> <span class="nv">ExecStartPre</span><span class="o">=</span>/bin/rm -f //run/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service-pid //run/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service-cid <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    Process: <span class="m">17429</span> <span class="nv">ExecStart</span><span class="o">=</span>/bin/bash /var/lib/ceph/31a99598-96aa-11eb-8e83-b06ebf35abc6/osd.0/unit.run <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Main PID: <span class="m">17790</span> <span class="o">(</span>conmon<span class="o">)</span>
+</span></span><span class="line"><span class="cl">      Tasks: <span class="m">2</span> <span class="o">(</span>limit: 38107<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Memory: 888.0K
+</span></span><span class="line"><span class="cl">     CGroup: /system.slice/system-ceph<span class="se">\x</span>2d31a99598<span class="se">\x</span>2d96aa<span class="se">\x</span>2d11eb<span class="se">\x</span>2d8e83<span class="se">\x</span>2db06ebf35abc6.slice/ceph-31a99598-96aa-11eb-8e83-b06ebf35abc6@osd.0.service
+</span></span><span class="line"><span class="cl">             └─17790 /usr/bin/conmon --api-version <span class="m">1</span> -c e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb -u e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb -r /usr/bin/crun -b&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Apr <span class="m">23</span> 17:09:31 insujang.fedora bash<span class="o">[</span>17525<span class="o">]</span>: --&gt; ceph-volume lvm activate successful <span class="k">for</span> osd ID: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Apr <span class="m">23</span> 17:09:31 insujang.fedora podman<span class="o">[</span>17525<span class="o">]</span>: 2021-04-23 17:09:31.175933276 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.730119503 container died 1bb4ff00147ecb939c9bc824e76eb49f46d9f0753461a362f50a8712bf969664 <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ceph&gt;Apr <span class="m">23</span> 17:09:31 insujang.fedora podman<span class="o">[</span>17525<span class="o">]</span>: 2021-04-23 17:09:31.897632645 +0900 KST <span class="nv">m</span><span class="o">=</span>+1.451818766 container remove 1bb4ff00147ecb939c9bc824e76eb49f46d9f0753461a362f50a8712bf969664 <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ce&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora bash<span class="o">[</span>17741<span class="o">]</span>: WARNING: The same type, major and minor should not be used <span class="k">for</span> multiple devices.
+</span></span><span class="line"><span class="cl">Apr <span class="m">23</span> 17:09:32 insujang.fedora bash<span class="o">[</span>17741<span class="o">]</span>: WARNING: The same type, major and minor should not be used <span class="k">for</span> multiple devices.
+</span></span><span class="line"><span class="cl">Apr <span class="m">23</span> 17:09:32 insujang.fedora podman<span class="o">[</span>17741<span class="o">]</span>: 2021-04-23 17:09:32.365594057 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.283835309 container create e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ce&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora podman<span class="o">[</span>17741<span class="o">]</span>: 2021-04-23 17:09:32.547644796 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.465885960 container init e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/ceph&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora podman<span class="o">[</span>17741<span class="o">]</span>: 2021-04-23 17:09:32.580880134 +0900 KST <span class="nv">m</span><span class="o">=</span>+0.499121329 container start e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb <span class="o">(</span><span class="nv">image</span><span class="o">=</span>docker.io/ceph/cep&gt;Apr <span class="m">23</span> 17:09:32 insujang.fedora bash<span class="o">[</span>17741<span class="o">]</span>: e0fa2f7e05bb32895e31acc758b0ac5dc8dfb103bdc1171d3e50447c012f8dcb
+</span></span><span class="line"><span class="cl">Apr <span class="m">23</span> 17:09:32 insujang.fedora systemd<span class="o">[</span>1<span class="o">]</span>: Started Ceph osd.0 <span class="k">for</span> 31a99598-96aa-11eb-8e83-b06ebf35abc6.
+</span></span></code></pre></div><p>You can check whether the change has been applied to the daemon by:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ceph config show osd.0
+</span></span><span class="line"><span class="cl">NAME                  VALUE                                            SOURCE    OVERRIDES  IGNORES
+</span></span><span class="line"><span class="cl">container_image       docker.io/ceph/ceph:v15                          mon
+</span></span><span class="line"><span class="cl">daemonize             <span class="nb">false</span>                                            override
+</span></span><span class="line"><span class="cl">keyring               <span class="nv">$osd_data</span>/keyring                                default
+</span></span><span class="line"><span class="cl">leveldb_log                                                            default
+</span></span><span class="line"><span class="cl">log_stderr_prefix     debug                                            default
+</span></span><span class="line"><span class="cl">log_to_file           <span class="nb">false</span>                                            default
+</span></span><span class="line"><span class="cl">log_to_stderr         <span class="nb">true</span>                                             default
+</span></span><span class="line"><span class="cl">mon_host              <span class="o">[</span>omitted<span class="o">]</span>                                        file
+</span></span><span class="line"><span class="cl">no_config_file        <span class="nb">false</span>                                            override
+</span></span><span class="line"><span class="cl">osd_max_write_size    <span class="m">50</span>                                               file       &lt;&lt;---
+</span></span><span class="line"><span class="cl">rbd_default_features  <span class="m">61</span>                                               default
+</span></span><span class="line"><span class="cl">setgroup              ceph                                             cmdline
+</span></span><span class="line"><span class="cl">setuser               ceph                                             cmdline
+</span></span></code></pre></div><p>&hellip; while the given value has actually not been applied and used:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ceph config get osd.0
+</span></span><span class="line"><span class="cl">WHO     MASK  LEVEL  OPTION           VALUE                    RO
+</span></span><span class="line"><span class="cl">global        basic  container_image  docker.io/ceph/ceph:v15  *
+</span></span></code></pre></div><h3 id="3-ceph-configuration-priority-and-centralized-configuration-management-central-config-mgr" class="relative group">3. Ceph Configuration Priority and Centralized Configuration Management <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-ceph-configuration-priority-and-centralized-configuration-management-central-config-mgr" aria-label="Anchor">#</a></span></h3>
 <p>Note that Ceph has a priority which value should be applied to the Ceph cluster.
-According to <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, the overall priority order that Ceph uses is:</p>
+According to <sup id="fnref1:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, the overall priority order that Ceph uses is:</p>
 <ol>
 <li>Compiled-in default values</li>
 <li>Cluster configuration database (via <code>ceph config set &lt;daemon&gt; ...</code>)</li>
@@ -526,41 +528,41 @@ According to <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-no
 <li>Runtime override (via <code>ceph tell &lt;daemon&gt; injectargs ...</code>)</li>
 </ol>
 <p>It seems that <code>osd_max_write_size</code> has a default value 90, which makes our value be ignored. To force it, we can use <code>ceph config --force</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ceph config <span class="nb">set</span> osd.0 osd_max_write_size <span class="m">40</span> --force
-$ ceph config get osd.0
-WHO     MASK  LEVEL     OPTION              VALUE                    RO
-global        basic     container_image     docker.io/ceph/ceph:v15  *
-osd.0         advanced  osd_max_write_size  <span class="m">40</span>                             &lt;&lt;----
-
-$ ceph config show osd.0
-NAME                  VALUE                                            SOURCE    OVERRIDES  IGNORES
-container_image       docker.io/ceph/ceph:v15                          mon
-daemonize             <span class="nb">false</span>                                            override
-keyring               <span class="nv">$osd_data</span>/keyring                                default
-leveldb_log                                                            default
-log_stderr_prefix     debug                                            default
-log_to_file           <span class="nb">false</span>                                            default
-log_to_stderr         <span class="nb">true</span>                                             default
-mon_host              <span class="o">[</span>v2:192.168.7.24:3300/0,v1:192.168.7.24:6789/0<span class="o">]</span>  file
-no_config_file        <span class="nb">false</span>                                            override
-osd_max_write_size    <span class="m">50</span>                                               file      mon<span class="o">[</span>40<span class="o">]</span>
-rbd_default_features  <span class="m">61</span>                                               default
-setgroup              ceph                                             cmdline
-setuser               ceph                                             cmdline
-</code></pre></div><section class="footnotes" role="doc-endnotes">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ceph config <span class="nb">set</span> osd.0 osd_max_write_size <span class="m">40</span> --force
+</span></span><span class="line"><span class="cl">$ ceph config get osd.0
+</span></span><span class="line"><span class="cl">WHO     MASK  LEVEL     OPTION              VALUE                    RO
+</span></span><span class="line"><span class="cl">global        basic     container_image     docker.io/ceph/ceph:v15  *
+</span></span><span class="line"><span class="cl">osd.0         advanced  osd_max_write_size  <span class="m">40</span>                             &lt;&lt;----
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ ceph config show osd.0
+</span></span><span class="line"><span class="cl">NAME                  VALUE                                            SOURCE    OVERRIDES  IGNORES
+</span></span><span class="line"><span class="cl">container_image       docker.io/ceph/ceph:v15                          mon
+</span></span><span class="line"><span class="cl">daemonize             <span class="nb">false</span>                                            override
+</span></span><span class="line"><span class="cl">keyring               <span class="nv">$osd_data</span>/keyring                                default
+</span></span><span class="line"><span class="cl">leveldb_log                                                            default
+</span></span><span class="line"><span class="cl">log_stderr_prefix     debug                                            default
+</span></span><span class="line"><span class="cl">log_to_file           <span class="nb">false</span>                                            default
+</span></span><span class="line"><span class="cl">log_to_stderr         <span class="nb">true</span>                                             default
+</span></span><span class="line"><span class="cl">mon_host              <span class="o">[</span>v2:192.168.7.24:3300/0,v1:192.168.7.24:6789/0<span class="o">]</span>  file
+</span></span><span class="line"><span class="cl">no_config_file        <span class="nb">false</span>                                            override
+</span></span><span class="line"><span class="cl">osd_max_write_size    <span class="m">50</span>                                               file      mon<span class="o">[</span>40<span class="o">]</span>
+</span></span><span class="line"><span class="cl">rbd_default_features  <span class="m">61</span>                                               default
+</span></span><span class="line"><span class="cl">setgroup              ceph                                             cmdline
+</span></span><span class="line"><span class="cl">setuser               ceph                                             cmdline
+</span></span></code></pre></div><div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://documentation.suse.com/ses/6/html/ses-all/cha-ceph-configuration.html"   target="_blank">Ceph Cluster Runtime Configuration</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p><a href="https://documentation.suse.com/ses/7/html/ses-all/cha-ceph-configuration.html"   target="_blank">Configuring the ceph.conf File</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p><a href="https://documentation.suse.com/ses/7/html/ses-all/cha-ceph-configuration.html"   target="_blank">Configuring the ceph.conf File</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p><a href="https://ceph.io/community/new-mimic-centralized-configuration-management/"   target="_blank">New in Mimic: Centralized Configuration Management</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p><a href="https://ceph.io/community/new-mimic-centralized-configuration-management/"   target="_blank">New in Mimic: Centralized Configuration Management</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

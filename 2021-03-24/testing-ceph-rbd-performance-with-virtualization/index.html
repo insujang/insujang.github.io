@@ -22,7 +22,7 @@
   
   <meta name="description" content="This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
 VM execution is done through qemu-system-x86_64, without using libvirt.
- Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &lt;append configuration-specific options&gt; Performance is measured with fio running on the guest VM with the following configuration file:" />
+Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67) # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &lt;append configuration-specific options&gt; Performance is measured with fio running on the guest VM with the following configuration file:" />
   
   
   
@@ -47,7 +47,7 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +56,7 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -74,18 +74,17 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
   <meta property="og:title" content="Testing Ceph RBD Performance with Virtualization" />
 <meta property="og:description" content="This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
 VM execution is done through qemu-system-x86_64, without using libvirt.
- Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &lt;append configuration-specific options&gt; Performance is measured with fio running on the guest VM with the following configuration file:" />
+Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67) # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &lt;append configuration-specific options&gt; Performance is measured with fio running on the guest VM with the following configuration file:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2021-03-24/testing-ceph-rbd-performance-with-virtualization/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-03-24T11:20:00+09:00" />
 <meta property="article:modified_time" content="2021-03-24T11:20:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
-
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Testing Ceph RBD Performance with Virtualization"/>
 <meta name="twitter:description" content="This post explains how I measured Ceph RBD performance with block/network virtualization technology (virtio and vhost), and the result.
 VM execution is done through qemu-system-x86_64, without using libvirt.
- Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &lt;append configuration-specific options&gt; Performance is measured with fio running on the guest VM with the following configuration file:"/>
+Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67) # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \ -m 2048 -smp 2 -cpu host \ -vnc :0 \ -hda disk.qcow2 \ &lt;append configuration-specific options&gt; Performance is measured with fio running on the guest VM with the following configuration file:"/>
 
   
   <script type="application/ld+json">
@@ -96,7 +95,7 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
     "name": "Testing Ceph RBD Performance with Virtualization",
     "headline": "Testing Ceph RBD Performance with Virtualization",
     
-    "abstract": "This post explains how I measured Ceph RBD performance with block\/network virtualization technology (virtio and vhost), and the result.\nVM execution is done through qemu-system-x86_64, without using libvirt.\n Host: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67)  # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \\ -m 2048 -smp 2 -cpu host \\ -vnc :0 \\ -hda disk.qcow2 \\ \u0026lt;append configuration-specific options\u0026gt; Performance is measured with fio running on the guest VM with the following configuration file:",
+    "abstract": "This post explains how I measured Ceph RBD performance with block\/network virtualization technology (virtio and vhost), and the result.\nVM execution is done through qemu-system-x86_64, without using libvirt.\nHost: Fedora 33 (Linux kernel 5.10.19) Guest: Ubuntu 20.04 LTS Server (Linux kernel 5.4.0.67) # Qemu general configuration qemu-system-x86_64 --machine q35,accel=kvm, --enable-kvm \\ -m 2048 -smp 2 -cpu host \\ -vnc :0 \\ -hda disk.qcow2 \\ \u0026lt;append configuration-specific options\u0026gt; Performance is measured with fio running on the guest VM with the following configuration file:",
     "inLanguage": "en",
     "url" : "\/2021-03-24\/testing-ceph-rbd-performance-with-virtualization\/",
     "author" : {
@@ -112,7 +111,7 @@ VM execution is done through qemu-system-x86_64, without using libvirt.
     "keywords": ["study","linux","ceph","virtualization"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "1081"
+    "wordCount": "1099"
   }]
   </script>
 
@@ -497,12 +496,12 @@ filename=/dev/rbd0
 </blockquote>
 <h3 id="12-vhost-net" class="relative group">1.2. vhost-net <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#12-vhost-net" aria-label="Anchor">#</a></span></h3>
 <p>To use <code>vhost-net</code>, the host kernel should be built with <code>CONFIG_VHOST_NET</code> enabled.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ lsmod <span class="p">|</span> grep vhost
-vhost_net              <span class="m">32768</span>  <span class="m">1</span>
-tun                    <span class="m">57344</span>  <span class="m">3</span> vhost_net
-tap                    <span class="m">28672</span>  <span class="m">1</span> vhost_net
-vhost                  <span class="m">57344</span>  <span class="m">2</span> vhost_net
-</code></pre></div><p>We at first create a bridge to connect tap device to network. I will use NAT networking to provide network to a guest VM, as described below:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ lsmod <span class="p">|</span> grep vhost
+</span></span><span class="line"><span class="cl">vhost_net              <span class="m">32768</span>  <span class="m">1</span>
+</span></span><span class="line"><span class="cl">tun                    <span class="m">57344</span>  <span class="m">3</span> vhost_net
+</span></span><span class="line"><span class="cl">tap                    <span class="m">28672</span>  <span class="m">1</span> vhost_net
+</span></span><span class="line"><span class="cl">vhost                  <span class="m">57344</span>  <span class="m">2</span> vhost_net
+</span></span></code></pre></div><p>We at first create a bridge to connect tap device to network. I will use NAT networking to provide network to a guest VM, as described below:</p>
 
   
   
@@ -515,30 +514,30 @@ vhost                  <span class="m">57344</span>  <span class="m">2</span> vh
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210318/libvirt-virtual-network-nat.png" alt="image" />
-        <figcaption>Virtual network example. Here libvirt implements a virtual network switch with DHCP feature with dnsmasq. <a href="https://kb.novaordis.com/index.php/KVM_Virtual_Networking_Concepts">[Source]</a></figcaption>
+        <figcaption>Virtual network example. Here libvirt implements a virtual network switch with DHCP feature with dnsmasq. <a href="https://kb.novaordis.com/index.php/KVM_Virtual_Networking_Concepts"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
 
 
 <p>It can be created with <code>brctl</code>, however, it has been deprecated and recommended to use <code>ip</code> instead <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ip link add br0 <span class="nb">type</span> bridge
-$ ip addr add 192.168.122.1/24 broadcast 192.168.122.255 dev br0
-$ ip link <span class="nb">set</span> br0 up
-</code></pre></div><p>Then, create a script named <code>qemu-ifup</code> that can be used by QEMU to attach a tap device that will be created to the bridge:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ip link add br0 <span class="nb">type</span> bridge
+</span></span><span class="line"><span class="cl">$ ip addr add 192.168.122.1/24 broadcast 192.168.122.255 dev br0
+</span></span><span class="line"><span class="cl">$ ip link <span class="nb">set</span> br0 up
+</span></span></code></pre></div><p>Then, create a script named <code>qemu-ifup</code> that can be used by QEMU to attach a tap device that will be created to the bridge:</p>
 <pre tabindex="0"><code>#!/bin/sh
 set -x
 
 switch=br0
 
-if [ -n &quot;$1&quot; ]; then
+if [ -n &#34;$1&#34; ]; then
     ip tuntap add $1 mode tap
     ip link set $1 up
     sleep 0.5s
     ip link set $1 master $switch
     exit 0
 else
-    echo &quot;Error: no interface specified&quot;
+    echo &#34;Error: no interface specified&#34;
     exit 1
 fi
 </code></pre><p>Then, it is now ready to run a VM:</p>
@@ -546,40 +545,40 @@ fi
 -netdev type=tap,id=net0,vhost=on,script=/path/to/qemu-ifup \
 -device virtio-net-pci,netdev=net0,mac=&lt;mac&gt;
 </code></pre><p>You can check whether vhost-net is used or not <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. On the host terminal, type:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ip -d tuntap
-tap0: tap one_queue vnet_hdr
-        Attached to processes:qemu-system-x86<span class="o">(</span>6919<span class="o">)</span>
-</code></pre></div><p>A VM then cannot access to the network due to lack of DHCP feature. Either use dnsmasq, or manual IP assignment is required.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ip -d tuntap
+</span></span><span class="line"><span class="cl">tap0: tap one_queue vnet_hdr
+</span></span><span class="line"><span class="cl">        Attached to processes:qemu-system-x86<span class="o">(</span>6919<span class="o">)</span>
+</span></span></code></pre></div><p>A VM then cannot access to the network due to lack of DHCP feature. Either use dnsmasq, or manual IP assignment is required.</p>
 <p>Using dnsmasq is well explained in here <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>, and static IP assignment is also explained in here <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.
 I will follow the latter, with an additional works to be done.</p>
 <p>I wanted to make a virtual network with subnet 192.168.122.0/24, so that I added <code>192.168.122.1</code> address to the bridge. Following it, change a guest VM&rsquo;s network configuration. Note that, Ubuntu 20.04 manages its network configuration with <code>netplan</code> utility, so some legacy ways such as using <code>systemd-resolved</code> or <code>/etc/networking</code> no longer work. Instead, modify a configuration file in <code>/etc/netplan/00-installer-config.yaml</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">network</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">ethernets</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">enp0s2</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">dhcp4</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span></code></pre></div><p>to</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">network</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">ethernets</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">enp0s2</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">192.168.122.100</span><span class="l">/24]</span><span class="w">
-</span><span class="w">        </span><span class="nt">gateway4</span><span class="p">:</span><span class="w"> </span><span class="m">192.168.122.1</span><span class="w">
-</span><span class="w">        </span><span class="nt">nameservers</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">8.8.8.8</span><span class="p">]</span><span class="w">
-</span><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w">
-</span></code></pre></div><p>which means, it has a static IP <code>192.168.122.100</code> and use the bridge in the host as its gateway.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">network</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ethernets</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">enp0s2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">dhcp4</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span></code></pre></div><p>to</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">network</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ethernets</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">enp0s2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">192.168.122.100</span><span class="l">/24]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">gateway4</span><span class="p">:</span><span class="w"> </span><span class="m">192.168.122.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">nameservers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">8.8.8.8</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w">
+</span></span></span></code></pre></div><p>which means, it has a static IP <code>192.168.122.100</code> and use the bridge in the host as its gateway.
 After modifying it, apply it with:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ sudo netplan apply
-$ ip addr
-...
-2: enp0s2 : ...
-    link/ether ....
-    inet 192.168.11.1200/24 brd 192.168.122.255 scope global enp0s2
-    ...
-$ ip route
-default via 192.168.122.1 dev enp0s2 proto static
-192.168.122.0/24 dev enp0s2 proto kernel scope link src 192.168.122.100
-</code></pre></div><h2 id="access-through-block-device" class="relative group">Access through block device <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#access-through-block-device" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo netplan apply
+</span></span><span class="line"><span class="cl">$ ip addr
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">2: enp0s2 : ...
+</span></span><span class="line"><span class="cl">    link/ether ....
+</span></span><span class="line"><span class="cl">    inet 192.168.11.1200/24 brd 192.168.122.255 scope global enp0s2
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">$ ip route
+</span></span><span class="line"><span class="cl">default via 192.168.122.1 dev enp0s2 proto static
+</span></span><span class="line"><span class="cl">192.168.122.0/24 dev enp0s2 proto kernel scope link src 192.168.122.100
+</span></span></code></pre></div><h2 id="access-through-block-device" class="relative group">Access through block device <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#access-through-block-device" aria-label="Anchor">#</a></span></h2>
 <p>When QEMU mounts a rbd image via <code>librbd</code> to the VM, then a VM can access a Ceph RBD via the device. <code>virtio-blk</code> and <code>vhost-scsi</code> can be used.</p>
 <p>In this case, <code>fio</code> running on the VM can be tested with <code>krbd</code> only:</p>
 <pre tabindex="0"><code>[krbdtest]
@@ -595,72 +594,72 @@ filename=/dev/rbd0
 </blockquote>
 <h3 id="22-vhost-scsi" class="relative group">2.2. vhost-scsi <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#22-vhost-scsi" aria-label="Anchor">#</a></span></h3>
 <p>To use <code>vhost-scsi</code>, you need <code>vhost-scsi</code> kernel module enabled.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ lsmod <span class="p">|</span> grep vhost
-vhost_scsi             <span class="m">45056</span>  <span class="m">5</span>
-vhost                  <span class="m">57344</span>  <span class="m">1</span> vhost_scsi
-target_core_mod       <span class="m">417792</span>  <span class="m">14</span> target_core_file,target_core_iblock,iscsi_target_mod,vhost_scsi,target_core_pscsi,target_core_user
-</code></pre></div><p>Your QEMU configuration should be like <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ lsmod <span class="p">|</span> grep vhost
+</span></span><span class="line"><span class="cl">vhost_scsi             <span class="m">45056</span>  <span class="m">5</span>
+</span></span><span class="line"><span class="cl">vhost                  <span class="m">57344</span>  <span class="m">1</span> vhost_scsi
+</span></span><span class="line"><span class="cl">target_core_mod       <span class="m">417792</span>  <span class="m">14</span> target_core_file,target_core_iblock,iscsi_target_mod,vhost_scsi,target_core_pscsi,target_core_user
+</span></span></code></pre></div><p>Your QEMU configuration should be like <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>:</p>
 <pre tabindex="0"><code>&lt;qemu general configuration&gt;
 -device vhost-scsi-pci,wwpn=naa.number,event_idx=off
 </code></pre><p><code>vhost</code> moves context switch between host user space and host kernel space, which means a Ceph RBD image must also be mounted to the host kernel via <code>krbd</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ rbd map <span class="nb">test</span> -p rbd
-/dev/rbd0
-</code></pre></div><p>Now create a SCSI LUN (Logical Unit Number):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ sudo targetcli
-targetcli shell version 2.1.53
-Copyright 2011-2013 by Datera, Inc and others.
-For <span class="nb">help</span> on commands, <span class="nb">type</span> <span class="s1">&#39;help&#39;</span>.
-
-/&gt; backstores/block create <span class="nv">name</span><span class="o">=</span>rbd0 <span class="nv">dev</span><span class="o">=</span>/dev/rbd0
-Created block storage object rbd0 using /dev/rbd0.
-/&gt; /vhost create
-Created target naa.5001405b3bafbfbd.
-Created TPG 1.
-/&gt; /vhost/naa.5001405b3bafbfbd/tpg1/luns create /backstores/block/rbd0
-Created LUN 0.
-/&gt; ls
-o- / ......................................................................................................... <span class="o">[</span>...<span class="o">]</span>
-  o- backstores .............................................................................................. <span class="o">[</span>...<span class="o">]</span>
-  <span class="p">|</span> o- block .................................................................................. <span class="o">[</span>Storage Objects: 1<span class="o">]</span>
-  <span class="p">|</span> <span class="p">|</span> o- rbd0 ........................................................... <span class="o">[</span>/dev/rbd0 <span class="o">(</span>20.0GiB<span class="o">)</span> write-thru activated<span class="o">]</span>
-  <span class="p">|</span> <span class="p">|</span>   o- alua ................................................................................... <span class="o">[</span>ALUA Groups: 1<span class="o">]</span>
-  <span class="p">|</span> <span class="p">|</span>     o- default_tg_pt_gp ....................................................... <span class="o">[</span>ALUA state: Active/optimized<span class="o">]</span>
-  <span class="p">|</span> o- fileio ................................................................................. <span class="o">[</span>Storage Objects: 0<span class="o">]</span>
-  <span class="p">|</span> o- pscsi .................................................................................. <span class="o">[</span>Storage Objects: 0<span class="o">]</span>
-  <span class="p">|</span> o- ramdisk ................................................................................ <span class="o">[</span>Storage Objects: 0<span class="o">]</span>
-  o- iscsi ............................................................................................ <span class="o">[</span>Targets: 0<span class="o">]</span>
-  o- loopback ......................................................................................... <span class="o">[</span>Targets: 0<span class="o">]</span>
-  o- vhost ............................................................................................ <span class="o">[</span>Targets: 1<span class="o">]</span>
-    o- naa.5001405b3bafbfbd .............................................................................. <span class="o">[</span>TPGs: 1<span class="o">]</span>
-      o- tpg1 .................................................................. <span class="o">[</span>naa.5001405f58d02fbc, no-gen-acls<span class="o">]</span>
-        o- acls .......................................................................................... <span class="o">[</span>ACLs: 0<span class="o">]</span>
-        o- luns .......................................................................................... <span class="o">[</span>LUNs: 1<span class="o">]</span>
-          o- lun0 ...................................................... <span class="o">[</span>block/rbd0 <span class="o">(</span>/dev/rbd0<span class="o">)</span> <span class="o">(</span>default_tg_pt_gp<span class="o">)]</span>
-</code></pre></div><p>In this case, <code>naa.5001405b3bafbfbd</code> is a wwn. Put it in the QEMU configuration value for the key <code>wwpn</code> (BTW, what these acronyms stand for? I don&rsquo;t know).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ rbd map <span class="nb">test</span> -p rbd
+</span></span><span class="line"><span class="cl">/dev/rbd0
+</span></span></code></pre></div><p>Now create a SCSI LUN (Logical Unit Number):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo targetcli
+</span></span><span class="line"><span class="cl">targetcli shell version 2.1.53
+</span></span><span class="line"><span class="cl">Copyright 2011-2013 by Datera, Inc and others.
+</span></span><span class="line"><span class="cl">For <span class="nb">help</span> on commands, <span class="nb">type</span> <span class="s1">&#39;help&#39;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/&gt; backstores/block create <span class="nv">name</span><span class="o">=</span>rbd0 <span class="nv">dev</span><span class="o">=</span>/dev/rbd0
+</span></span><span class="line"><span class="cl">Created block storage object rbd0 using /dev/rbd0.
+</span></span><span class="line"><span class="cl">/&gt; /vhost create
+</span></span><span class="line"><span class="cl">Created target naa.5001405b3bafbfbd.
+</span></span><span class="line"><span class="cl">Created TPG 1.
+</span></span><span class="line"><span class="cl">/&gt; /vhost/naa.5001405b3bafbfbd/tpg1/luns create /backstores/block/rbd0
+</span></span><span class="line"><span class="cl">Created LUN 0.
+</span></span><span class="line"><span class="cl">/&gt; ls
+</span></span><span class="line"><span class="cl">o- / ......................................................................................................... <span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  o- backstores .............................................................................................. <span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> o- block .................................................................................. <span class="o">[</span>Storage Objects: 1<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> <span class="p">|</span> o- rbd0 ........................................................... <span class="o">[</span>/dev/rbd0 <span class="o">(</span>20.0GiB<span class="o">)</span> write-thru activated<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> <span class="p">|</span>   o- alua ................................................................................... <span class="o">[</span>ALUA Groups: 1<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> <span class="p">|</span>     o- default_tg_pt_gp ....................................................... <span class="o">[</span>ALUA state: Active/optimized<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> o- fileio ................................................................................. <span class="o">[</span>Storage Objects: 0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> o- pscsi .................................................................................. <span class="o">[</span>Storage Objects: 0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">|</span> o- ramdisk ................................................................................ <span class="o">[</span>Storage Objects: 0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  o- iscsi ............................................................................................ <span class="o">[</span>Targets: 0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  o- loopback ......................................................................................... <span class="o">[</span>Targets: 0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  o- vhost ............................................................................................ <span class="o">[</span>Targets: 1<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    o- naa.5001405b3bafbfbd .............................................................................. <span class="o">[</span>TPGs: 1<span class="o">]</span>
+</span></span><span class="line"><span class="cl">      o- tpg1 .................................................................. <span class="o">[</span>naa.5001405f58d02fbc, no-gen-acls<span class="o">]</span>
+</span></span><span class="line"><span class="cl">        o- acls .......................................................................................... <span class="o">[</span>ACLs: 0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">        o- luns .......................................................................................... <span class="o">[</span>LUNs: 1<span class="o">]</span>
+</span></span><span class="line"><span class="cl">          o- lun0 ...................................................... <span class="o">[</span>block/rbd0 <span class="o">(</span>/dev/rbd0<span class="o">)</span> <span class="o">(</span>default_tg_pt_gp<span class="o">)]</span>
+</span></span></code></pre></div><p>In this case, <code>naa.5001405b3bafbfbd</code> is a wwn. Put it in the QEMU configuration value for the key <code>wwpn</code> (BTW, what these acronyms stand for? I don&rsquo;t know).</p>
 <p>When you use scsi for your VM, the disk is shown as <code>/dev/sda</code>, not <code>/dev/rbd0</code>.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="http://www.linux-kvm.org/page/Networking#private_virtual_bridge"   target="_blank">KVM Configuring Guest Networking</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://www.redhat.com/en/blog/hands-vhost-net-do-or-do-not-there-no-try"   target="_blank">Red Hat blob: Hands on vhost-net: Do. Or do not. There is no try</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://www.tecmint.com/setup-a-dns-dhcp-server-using-dnsmasq-on-centos-rhel/"   target="_blank">How to Setup a DNS/DHCP Server Using dnsmasq on CentOS/RHEL 8/7</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/"   target="_blank">How to Assign Static IP Address on Ubuntu 20.04 LTS</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p><a href="http://people.redhat.com/bcodding/pnfs/nfs/scsi/2016/07/13/pnfs_scsi_testing_vhost_setup_for_VMs/"   target="_blank">pNFS SCSI Testing: Vhost Setup for KVM</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:6" role="doc-endnote">
+<li id="fn:6">
 <p><a href="https://wiki.libvirt.org/page/Vhost-scsi_target"   target="_blank">libvirt Vhost-scsi Target</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

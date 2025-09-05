@@ -21,8 +21,9 @@
     <meta name="title" content="Enabling AtomicOps in VFIO PCI Passthrough &middot; Better Tomorrow with Computer Science" />
   
   <meta name="description" content="I tried to use AMD&rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.
-HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode.   {: .center-image}
-Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly." />
+HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode. {: .center-image}
+Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.
+AMD ROC sample code illustrates how a user application creates the packet:" />
   
   
   
@@ -47,7 +48,7 @@ Instead of traditional driver centrl models, in HSA, user applications are respo
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +57,7 @@ Instead of traditional driver centrl models, in HSA, user applications are respo
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -73,19 +74,20 @@ Instead of traditional driver centrl models, in HSA, user applications are respo
   
   <meta property="og:title" content="Enabling AtomicOps in VFIO PCI Passthrough" />
 <meta property="og:description" content="I tried to use AMD&rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.
-HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode.   {: .center-image}
-Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly." />
+HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode. {: .center-image}
+Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.
+AMD ROC sample code illustrates how a user application creates the packet:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2017-08-16/enabling-atomicops-in-vfio-pci-passthrough/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-08-16T16:48:47+09:00" />
 <meta property="article:modified_time" content="2017-08-16T16:48:47+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
-
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Enabling AtomicOps in VFIO PCI Passthrough"/>
 <meta name="twitter:description" content="I tried to use AMD&rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.
-HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode.   {: .center-image}
-Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly."/>
+HSA is unique properties, different from OpenCL or CUDA: user mode queuing mode. {: .center-image}
+Instead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.
+AMD ROC sample code illustrates how a user application creates the packet:"/>
 
   
   <script type="application/ld+json">
@@ -96,7 +98,7 @@ Instead of traditional driver centrl models, in HSA, user applications are respo
     "name": "Enabling AtomicOps in VFIO PCI Passthrough",
     "headline": "Enabling AtomicOps in VFIO PCI Passthrough",
     
-    "abstract": "I tried to use AMD\u0026rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.\nHSA is unique properties, different from OpenCL or CUDA: user mode queuing mode.   {: .center-image}\nInstead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.",
+    "abstract": "I tried to use AMD\u0026rsquo;s GPU for research, with the software stack called AMD ROCm. AMD ROCm is a AMG discrete GPU compatible Heterogeneous System Architecure (HSA) framework.\nHSA is unique properties, different from OpenCL or CUDA: user mode queuing mode. {: .center-image}\nInstead of traditional driver centrl models, in HSA, user applications are responsible to create a request packet to the command queue heading to the GPU directly.\nAMD ROC sample code illustrates how a user application creates the packet:",
     "inLanguage": "en",
     "url" : "\/2017-08-16\/enabling-atomicops-in-vfio-pci-passthrough\/",
     "author" : {

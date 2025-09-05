@@ -47,7 +47,7 @@ modprobe overlay modprobe br_netfilter cat &gt; /etc/sysctl." />
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +56,7 @@ modprobe overlay modprobe br_netfilter cat &gt; /etc/sysctl." />
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -79,7 +79,6 @@ modprobe overlay modprobe br_netfilter cat &gt; /etc/sysctl." />
 <meta property="og:url" content="/2019-11-21/installing-kubernetes-and-crio-in-debian/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-11-21T18:32:00+09:00" />
 <meta property="article:modified_time" content="2019-11-21T18:32:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Installing Kubernetes and cri-o in Debian"/>
@@ -426,161 +425,161 @@ if (!doNotTrack) {
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>This post summarizes how to install cri-o container runtime and initialize a Kubernetes master node in Debian machine.
 Tested with Debian 10 running on a VirtualBox VM.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">root@kubernetesdebian:/etc# cat os-release 
-<span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">&#34;Debian GNU/Linux 10 (buster)&#34;</span>
-<span class="nv">NAME</span><span class="o">=</span><span class="s2">&#34;Debian GNU/Linux&#34;</span>
-<span class="nv">VERSION_ID</span><span class="o">=</span><span class="s2">&#34;10&#34;</span>
-<span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;10 (buster)&#34;</span>
-<span class="nv">VERSION_CODENAME</span><span class="o">=</span>buster
-<span class="nv">ID</span><span class="o">=</span>debian
-<span class="nv">HOME_URL</span><span class="o">=</span><span class="s2">&#34;https://www.debian.org/&#34;</span>
-<span class="nv">SUPPORT_URL</span><span class="o">=</span><span class="s2">&#34;https://www.debian.org/support&#34;</span>
-<span class="nv">BUG_REPORT_URL</span><span class="o">=</span><span class="s2">&#34;https://bugs.debian.org/&#34;</span>
-</code></pre></div><h2 id="installing-cri-o" class="relative group">Installing cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#installing-cri-o" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@kubernetesdebian:/etc# cat os-release 
+</span></span><span class="line"><span class="cl"><span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">&#34;Debian GNU/Linux 10 (buster)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NAME</span><span class="o">=</span><span class="s2">&#34;Debian GNU/Linux&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION_ID</span><span class="o">=</span><span class="s2">&#34;10&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;10 (buster)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION_CODENAME</span><span class="o">=</span>buster
+</span></span><span class="line"><span class="cl"><span class="nv">ID</span><span class="o">=</span>debian
+</span></span><span class="line"><span class="cl"><span class="nv">HOME_URL</span><span class="o">=</span><span class="s2">&#34;https://www.debian.org/&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SUPPORT_URL</span><span class="o">=</span><span class="s2">&#34;https://www.debian.org/support&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">BUG_REPORT_URL</span><span class="o">=</span><span class="s2">&#34;https://bugs.debian.org/&#34;</span>
+</span></span></code></pre></div><h2 id="installing-cri-o" class="relative group">Installing cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#installing-cri-o" aria-label="Anchor">#</a></span></h2>
 <h3 id="0-prerequiste-for-using-cri-o-with-kubernetes" class="relative group">0. Prerequiste for using cri-o with Kubernetes <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#0-prerequiste-for-using-cri-o-with-kubernetes" aria-label="Anchor">#</a></span></h3>
 <p>Kubernetes requires the following configurations be set before using cri-o container runtime <a href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cri-o"   target="_blank">[link]</a>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">modprobe overlay
-modprobe br_netfilter
-
-cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span class="s">&lt;&lt;EOF
-</span><span class="s">net.bridge.bridge-nf-call-iptables  = 1
-</span><span class="s">net.ipv4.ip_forward                 = 1
-</span><span class="s">net.bridge.bridge-nf-call-ip6tables = 1
-</span><span class="s">EOF</span>
-
-sysctl --system
-</code></pre></div><h3 id="1-adding-ppa" class="relative group">1. Adding PPA <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-adding-ppa" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">modprobe overlay
+</span></span><span class="line"><span class="cl">modprobe br_netfilter
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-iptables  = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.ipv4.ip_forward                 = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysctl --system
+</span></span></code></pre></div><h3 id="1-adding-ppa" class="relative group">1. Adding PPA <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-adding-ppa" aria-label="Anchor">#</a></span></h3>
 <p>There are not cri-o related packages in default apt repository; we should add Project Atomic Personal Package Archives (PPA) <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.
 But you will show errors when using <code>add-apt-repository ppa:projectatomic/ppa</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ add-apt-repository ppa:projectatomic/ppa -y <span class="o">&amp;&amp;</span> apt update
-gpg: keybox <span class="s1">&#39;/tmp/tmp51iyzqdm/pubring.gpg&#39;</span> created
-gpg: /tmp/tmp51iyzqdm/trustdb.gpg: trustdb created
-gpg: key 8BECF1637AD8C79D: public key <span class="s2">&#34;Launchpad PPA for Project Atomic&#34;</span> imported
-gpg: Total number processed: <span class="m">1</span>
-gpg:               imported: <span class="m">1</span>
-gpg: no valid OpenPGP data found.
-Hit:2 http://deb.debian.org/debian buster InRelease
-Hit:3 http://security.debian.org/debian-security buster/updates InRelease
-Hit:4 http://deb.debian.org/debian buster-updates InRelease
-Hit:1 https://packages.cloud.google.com/apt kubernetes-xenial InRelease
-Ign:5 http://ppa.launchpad.net/projectatomic/ppa/ubuntu focal InRelease
-Err:6 http://ppa.launchpad.net/projectatomic/ppa/ubuntu focal Release
-  <span class="m">404</span>  Not Found <span class="o">[</span>IP: 91.189.95.83 80<span class="o">]</span>
-Reading package lists... Done
-E: The repository <span class="s1">&#39;http://ppa.launchpad.net/projectatomic/ppa/ubuntu focal Release&#39;</span> does not have a Release file.
-N: Updating from such a repository can<span class="err">&#39;</span>t be <span class="k">done</span> securely, and is therefore disabled by default.
-N: See apt-secure<span class="o">(</span>8<span class="o">)</span> manpage <span class="k">for</span> repository creation and user configuration details.
-</code></pre></div><p>Instead, you should manually add a public key, and add apt repositories in <code>/etc/apt/sources.list</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ add-apt-repository ppa:projectatomic/ppa -y <span class="o">&amp;&amp;</span> apt update
+</span></span><span class="line"><span class="cl">gpg: keybox <span class="s1">&#39;/tmp/tmp51iyzqdm/pubring.gpg&#39;</span> created
+</span></span><span class="line"><span class="cl">gpg: /tmp/tmp51iyzqdm/trustdb.gpg: trustdb created
+</span></span><span class="line"><span class="cl">gpg: key 8BECF1637AD8C79D: public key <span class="s2">&#34;Launchpad PPA for Project Atomic&#34;</span> imported
+</span></span><span class="line"><span class="cl">gpg: Total number processed: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">gpg:               imported: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">gpg: no valid OpenPGP data found.
+</span></span><span class="line"><span class="cl">Hit:2 http://deb.debian.org/debian buster InRelease
+</span></span><span class="line"><span class="cl">Hit:3 http://security.debian.org/debian-security buster/updates InRelease
+</span></span><span class="line"><span class="cl">Hit:4 http://deb.debian.org/debian buster-updates InRelease
+</span></span><span class="line"><span class="cl">Hit:1 https://packages.cloud.google.com/apt kubernetes-xenial InRelease
+</span></span><span class="line"><span class="cl">Ign:5 http://ppa.launchpad.net/projectatomic/ppa/ubuntu focal InRelease
+</span></span><span class="line"><span class="cl">Err:6 http://ppa.launchpad.net/projectatomic/ppa/ubuntu focal Release
+</span></span><span class="line"><span class="cl">  <span class="m">404</span>  Not Found <span class="o">[</span>IP: 91.189.95.83 80<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Reading package lists... Done
+</span></span><span class="line"><span class="cl">E: The repository <span class="s1">&#39;http://ppa.launchpad.net/projectatomic/ppa/ubuntu focal Release&#39;</span> does not have a Release file.
+</span></span><span class="line"><span class="cl">N: Updating from such a repository can<span class="err">&#39;</span>t be <span class="k">done</span> securely, and is therefore disabled by default.
+</span></span><span class="line"><span class="cl">N: See apt-secure<span class="o">(</span>8<span class="o">)</span> manpage <span class="k">for</span> repository creation and user configuration details.
+</span></span></code></pre></div><p>Instead, you should manually add a public key, and add apt repositories in <code>/etc/apt/sources.list</code>.</p>
 <p>Create a source new file <code>/etc/apt/sources.list.d/projectatomics.list</code> as</p>
 <pre tabindex="0"><code>deb http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic main
 deb-src http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic main
 </code></pre><p><em>You can use any other Ubuntu distributions that ProjectAtomic supports. Currently, it supports Xenial (16.04), Bionic (18.04), Disco (19.04), and Eoan (19.10).</em></p>
 <p>You can see the following error when you type <code>apt update</code> after writing the source file:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">...
-Get:4 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease <span class="o">[</span>21.3 kB<span class="o">]</span>
-Err:4 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease
-  The following signatures couldn<span class="s1">&#39;t be verified because the public key is not available: NO_PUBKEY 8BECF1637AD8C79D
-</span><span class="s1">Reading package lists... Done
-</span><span class="s1">W: GPG error: http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease: The following signatures couldn&#39;</span>t be verified because the public key is not available: NO_PUBKEY 8BECF1637AD8C79D
-E: The repository <span class="s1">&#39;http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease&#39;</span> is not signed.
-N: Updating from such a repository can<span class="err">&#39;</span>t be <span class="k">done</span> securely, and is therefore disabled by default.
-N: See apt-secure<span class="o">(</span>8<span class="o">)</span> manpage <span class="k">for</span> repository creation and user configuration details.
-</code></pre></div><p>You can solve this problem by adding the public key as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
-Executing: /tmp/apt-key-gpghome.3pmgjRnYte/gpg.1.sh --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
-gpg: key 8BECF1637AD8C79D: public key <span class="s2">&#34;Launchpad PPA for Project Atomic&#34;</span> imported
-gpg: Total number processed: <span class="m">1</span>
-gpg:               imported: <span class="m">1</span>
-$ apt update
-Hit:1 http://security.debian.org/debian-security buster/updates InRelease
-Hit:2 http://deb.debian.org/debian buster InRelease         
-Hit:4 http://deb.debian.org/debian buster-updates InRelease
-Get:5 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease <span class="o">[</span>21.3 kB<span class="o">]</span>
-Get:6 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic/main Sources <span class="o">[</span>3,916 B<span class="o">]</span>
-Get:7 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic/main amd64 Packages <span class="o">[</span>2,936 B<span class="o">]</span>
-Get:8 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic/main Translation-en <span class="o">[</span>1,496 B<span class="o">]</span>
-Fetched 29.6 kB in 3s <span class="o">(</span>9,200 B/s<span class="o">)</span>           
-Reading package lists... Done
-Building dependency tree       
-Reading state information... Done
-All packages are up to date.
-</code></pre></div><h3 id="2-installing-cri-o" class="relative group">2. Installing cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-installing-cri-o" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">Get:4 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease <span class="o">[</span>21.3 kB<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Err:4 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease
+</span></span><span class="line"><span class="cl">  The following signatures couldn<span class="s1">&#39;t be verified because the public key is not available: NO_PUBKEY 8BECF1637AD8C79D
+</span></span></span><span class="line"><span class="cl"><span class="s1">Reading package lists... Done
+</span></span></span><span class="line"><span class="cl"><span class="s1">W: GPG error: http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease: The following signatures couldn&#39;</span>t be verified because the public key is not available: NO_PUBKEY 8BECF1637AD8C79D
+</span></span><span class="line"><span class="cl">E: The repository <span class="s1">&#39;http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease&#39;</span> is not signed.
+</span></span><span class="line"><span class="cl">N: Updating from such a repository can<span class="err">&#39;</span>t be <span class="k">done</span> securely, and is therefore disabled by default.
+</span></span><span class="line"><span class="cl">N: See apt-secure<span class="o">(</span>8<span class="o">)</span> manpage <span class="k">for</span> repository creation and user configuration details.
+</span></span></code></pre></div><p>You can solve this problem by adding the public key as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
+</span></span><span class="line"><span class="cl">Executing: /tmp/apt-key-gpghome.3pmgjRnYte/gpg.1.sh --keyserver keyserver.ubuntu.com --recv-keys 8BECF1637AD8C79D
+</span></span><span class="line"><span class="cl">gpg: key 8BECF1637AD8C79D: public key <span class="s2">&#34;Launchpad PPA for Project Atomic&#34;</span> imported
+</span></span><span class="line"><span class="cl">gpg: Total number processed: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">gpg:               imported: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">$ apt update
+</span></span><span class="line"><span class="cl">Hit:1 http://security.debian.org/debian-security buster/updates InRelease
+</span></span><span class="line"><span class="cl">Hit:2 http://deb.debian.org/debian buster InRelease         
+</span></span><span class="line"><span class="cl">Hit:4 http://deb.debian.org/debian buster-updates InRelease
+</span></span><span class="line"><span class="cl">Get:5 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic InRelease <span class="o">[</span>21.3 kB<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Get:6 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic/main Sources <span class="o">[</span>3,916 B<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Get:7 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic/main amd64 Packages <span class="o">[</span>2,936 B<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Get:8 http://ppa.launchpad.net/projectatomic/ppa/ubuntu bionic/main Translation-en <span class="o">[</span>1,496 B<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Fetched 29.6 kB in 3s <span class="o">(</span>9,200 B/s<span class="o">)</span>           
+</span></span><span class="line"><span class="cl">Reading package lists... Done
+</span></span><span class="line"><span class="cl">Building dependency tree       
+</span></span><span class="line"><span class="cl">Reading state information... Done
+</span></span><span class="line"><span class="cl">All packages are up to date.
+</span></span></code></pre></div><h3 id="2-installing-cri-o" class="relative group">2. Installing cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-installing-cri-o" aria-label="Anchor">#</a></span></h3>
 <p>Now you can install cri-o with apt. Currently the latest version of in apt repository is cri-o is 1.15.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ apt install cri-o-1.15 -y
-...
-</code></pre></div><h3 id="3-configuring-cri-o" class="relative group">3. Configuring cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-configuring-cri-o" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ apt install cri-o-1.15 -y
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><h3 id="3-configuring-cri-o" class="relative group">3. Configuring cri-o <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-configuring-cri-o" aria-label="Anchor">#</a></span></h3>
 <p>By default, cri-o finds conmon in <code>/usr/libexec/crio</code>, which does not exist. Hence, when you start cri-o, it says it could not find conmon.
 Change the configuration file of cri-o <code>/etc/crio/crio.conf</code>:</p>
 <pre tabindex="0"><code># Path to the conmon binary, used for monitoring the OCI runtime.
-# originally it was &quot;/usr/libexec/crio/conmon&quot;. Following path comes from $which conmon, which may be different from other environments.
-conmon = &quot;/usr/bin/conmon&quot;
+# originally it was &#34;/usr/libexec/crio/conmon&#34;. Following path comes from $which conmon, which may be different from other environments.
+conmon = &#34;/usr/bin/conmon&#34;
 </code></pre><p>Also, you have to add repositores to pull images. This configuration can be either <code>/etc/crio/crio.conf</code> or <code>/etc/containers/registries.conf</code> like:</p>
 <pre tabindex="0"><code>...
 [registries.search]
-registries = ['docker.io', 'registry.fedoraproject.org', 'registry.access.redhat.com']
+registries = [&#39;docker.io&#39;, &#39;registry.fedoraproject.org&#39;, &#39;registry.access.redhat.com&#39;]
 ...
 </code></pre><p>Or easily pull the content from Project Atomic by <code>curl https://raw.githubusercontent.com/projectatomic/registries/master/registries.fedora -o /etc/containers/registries.conf</code>.</p>
 <p>You can now start cri-o by <code>systemctl start crio</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ systemctl status crio
-● crio.service - Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>
-   Loaded: loaded <span class="o">(</span>/lib/systemd/system/crio.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
-   Active: active <span class="o">(</span>running<span class="o">)</span> since Thu 2019-11-21 18:30:16 KST<span class="p">;</span> 32min ago
-     Docs: https://github.com/cri-o/cri-o
- Main PID: <span class="m">12181</span> <span class="o">(</span>crio<span class="o">)</span>
-    Tasks: <span class="m">13</span>
-   Memory: 23.2M
-   CGroup: /system.slice/crio.service
-           └─12181 /usr/bin/crio
-
-Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Starting Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>...
-Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Started Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>.
-</code></pre></div><h3 id="4-confiuring-container-networking-interface-cni-2" class="relative group">4. Confiuring Container Networking Interface (CNI) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-confiuring-container-networking-interface-cni-2" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ systemctl status crio
+</span></span><span class="line"><span class="cl">● crio.service - Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/lib/systemd/system/crio.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Active: active <span class="o">(</span>running<span class="o">)</span> since Thu 2019-11-21 18:30:16 KST<span class="p">;</span> 32min ago
+</span></span><span class="line"><span class="cl">     Docs: https://github.com/cri-o/cri-o
+</span></span><span class="line"><span class="cl"> Main PID: <span class="m">12181</span> <span class="o">(</span>crio<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    Tasks: <span class="m">13</span>
+</span></span><span class="line"><span class="cl">   Memory: 23.2M
+</span></span><span class="line"><span class="cl">   CGroup: /system.slice/crio.service
+</span></span><span class="line"><span class="cl">           └─12181 /usr/bin/crio
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Starting Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>...
+</span></span><span class="line"><span class="cl">Nov <span class="m">21</span> 18:30:16 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Started Container Runtime Interface <span class="k">for</span> OCI <span class="o">(</span>CRI-O<span class="o">)</span>.
+</span></span></code></pre></div><h3 id="4-confiuring-container-networking-interface-cni-2" class="relative group">4. Confiuring Container Networking Interface (CNI) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#4-confiuring-container-networking-interface-cni-2" aria-label="Anchor">#</a></span></h3>
 <p>crio suggests to install <code>containernetworking-plugins</code> package together, however, it will be deleted by apt when you install Kubernetes (specifically, <code>kubernetes-cni</code> package).
 <code>containernetworking-plugins</code> package copies some files for CNI networking in <code>/etc/cni/net.d</code>, which is necessary for container networking.</p>
 <p>You can easily install it before installing Kubernetes, however, you can also make network configruations manually in <code>/etc/cni/net.d</code>.</p>
 <p><code>/etc/cni/net.d/100-crio-bridge.conf</code></p>
 <pre tabindex="0"><code>{ 
-    &quot;cniVersion&quot;: &quot;0.3.0&quot;, 
-    &quot;name&quot;: &quot;crio-bridge&quot;, 
-    &quot;type&quot;: &quot;bridge&quot;, 
-    &quot;bridge&quot;: &quot;cni0&quot;, 
-    &quot;isGateway&quot;: true, 
-    &quot;ipMasq&quot;: true, 
-    &quot;ipam&quot;: { 
-        &quot;type&quot;: &quot;host-local&quot;, 
-        &quot;subnet&quot;: &quot;10.88.0.0/16&quot;, 
-        &quot;routes&quot;: [ 
-            { &quot;dst&quot;: &quot;0.0.0.0/0&quot; } 
+    &#34;cniVersion&#34;: &#34;0.3.0&#34;, 
+    &#34;name&#34;: &#34;crio-bridge&#34;, 
+    &#34;type&#34;: &#34;bridge&#34;, 
+    &#34;bridge&#34;: &#34;cni0&#34;, 
+    &#34;isGateway&#34;: true, 
+    &#34;ipMasq&#34;: true, 
+    &#34;ipam&#34;: { 
+        &#34;type&#34;: &#34;host-local&#34;, 
+        &#34;subnet&#34;: &#34;10.88.0.0/16&#34;, 
+        &#34;routes&#34;: [ 
+            { &#34;dst&#34;: &#34;0.0.0.0/0&#34; } 
         ] 
     } 
 }
 </code></pre><p><code>/etc/cni/net.d/200-loopback.conf</code></p>
 <pre tabindex="0"><code>{ 
-    &quot;cniVersion&quot;: &quot;0.3.0&quot;, 
-    &quot;type&quot;: &quot;loopback&quot; 
+    &#34;cniVersion&#34;: &#34;0.3.0&#34;, 
+    &#34;type&#34;: &#34;loopback&#34; 
 }
 </code></pre><p>Don&rsquo;t know details yet. Have to dig more.</p>
 <h2 id="installing-kubernetes" class="relative group">Installing Kubernetes <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#installing-kubernetes" aria-label="Anchor">#</a></span></h2>
 <p>Installing Kubernetes in Debian is quite explained well<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <h3 id="1-add-ppa-and-installing-packages" class="relative group">1. Add PPA and installing packages <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#1-add-ppa-and-installing-packages" aria-label="Anchor">#</a></span></h3>
 <p>At first add a public key for Kubernetes.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ apt install curl -y <span class="o">&amp;&amp;</span> curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg <span class="p">|</span> sudo apt-key add -
-...
-</code></pre></div><p>Then add a apt repository by creating a file <code>/etc/apt/sources.list.d/kubernetes.list</code> as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ apt install curl -y <span class="o">&amp;&amp;</span> curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg <span class="p">|</span> sudo apt-key add -
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><p>Then add a apt repository by creating a file <code>/etc/apt/sources.list.d/kubernetes.list</code> as:</p>
 <pre tabindex="0"><code>deb https://apt.kubernetes.io/ kubernetes-xenial main
 </code></pre><p>And then install packages.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ apt update <span class="o">&amp;&amp;</span> apt install kubelet kubeadm kubectl -y
-...
-</code></pre></div><h3 id="2-configuring-kubelet" class="relative group">2. Configuring kubelet <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-configuring-kubelet" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ apt update <span class="o">&amp;&amp;</span> apt install kubelet kubeadm kubectl -y
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><h3 id="2-configuring-kubelet" class="relative group">2. Configuring kubelet <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#2-configuring-kubelet" aria-label="Anchor">#</a></span></h3>
 <p>Kubelet automatically starts, however, it repeatedly fails due to lack of configurations.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ systemctl status kubelet
-...
-Nov <span class="m">21</span> 18:06:02 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Started kubelet: The Kubernetes Node Agent.
-Nov <span class="m">21</span> 18:06:03 kubernetesdebian kubelet<span class="o">[</span>9249<span class="o">]</span>: F1121 18:06:03.006915    <span class="m">9249</span> server.go:196<span class="o">]</span> failed to Kubelet config file /var/lib/kubelet/config.yaml, error failed to <span class="nb">read</span> kubelet config file <span class="s2">&#34;/var/lib/kubelet/config.yaml&#34;</span>, error: open /var/lib/kubelet/config.yaml: no such file or directory
-Nov <span class="m">21</span> 18:06:03 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Main process exited, <span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>255/EXCEPTION
-Nov <span class="m">21</span> 18:06:03 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Failed with result <span class="s1">&#39;exit-code&#39;</span>.
-</code></pre></div><p>First, add arguments to connect kubelet and cri-o by creating a file <code>/etc/default/kubelet</code>:</p>
-<pre tabindex="0"><code>KUBELET_EXTRA_ARGS=--cgroup-driver=systemd --container-runtime=remote --container-runtime-endpoint=&quot;unix:///var/run/crio/crio.sock&quot;
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ systemctl status kubelet
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">Nov <span class="m">21</span> 18:06:02 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: Started kubelet: The Kubernetes Node Agent.
+</span></span><span class="line"><span class="cl">Nov <span class="m">21</span> 18:06:03 kubernetesdebian kubelet<span class="o">[</span>9249<span class="o">]</span>: F1121 18:06:03.006915    <span class="m">9249</span> server.go:196<span class="o">]</span> failed to Kubelet config file /var/lib/kubelet/config.yaml, error failed to <span class="nb">read</span> kubelet config file <span class="s2">&#34;/var/lib/kubelet/config.yaml&#34;</span>, error: open /var/lib/kubelet/config.yaml: no such file or directory
+</span></span><span class="line"><span class="cl">Nov <span class="m">21</span> 18:06:03 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Main process exited, <span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>255/EXCEPTION
+</span></span><span class="line"><span class="cl">Nov <span class="m">21</span> 18:06:03 kubernetesdebian systemd<span class="o">[</span>1<span class="o">]</span>: kubelet.service: Failed with result <span class="s1">&#39;exit-code&#39;</span>.
+</span></span></code></pre></div><p>First, add arguments to connect kubelet and cri-o by creating a file <code>/etc/default/kubelet</code>:</p>
+<pre tabindex="0"><code>KUBELET_EXTRA_ARGS=--cgroup-driver=systemd --container-runtime=remote --container-runtime-endpoint=&#34;unix:///var/run/crio/crio.sock&#34;
 </code></pre><p>Then type <code>systemctl daemon-reload</code> to apply the changed configurations.</p>
 <blockquote>
 <p>Note that, using &ndash;cgroup-driver is deprecated. We have to pass the information with &ndash;config argument. Here, we just use it for simplicity.</p>
@@ -591,94 +590,94 @@ Nov <span class="m">21</span> 18:06:03 kubernetesdebian systemd<span class="o">[
 <p>Note that crio is running, so kubeadm detects crio as its container runtime.
 If not, kubeadm says some errors like <code>docker is not found</code>.</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubeadm init
-...
-<span class="o">[</span>bootstrap-token<span class="o">]</span> configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order <span class="k">for</span> nodes to get long term certificate credentials
-<span class="o">[</span>bootstrap-token<span class="o">]</span> configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
-<span class="o">[</span>bootstrap-token<span class="o">]</span> configured RBAC rules to allow certificate rotation <span class="k">for</span> all node client certificates in the cluster
-<span class="o">[</span>bootstrap-token<span class="o">]</span> Creating the <span class="s2">&#34;cluster-info&#34;</span> ConfigMap in the <span class="s2">&#34;kube-public&#34;</span> namespace
-<span class="o">[</span>addons<span class="o">]</span> Applied essential addon: CoreDNS
-<span class="o">[</span>addons<span class="o">]</span> Applied essential addon: kube-proxy
-
-Your Kubernetes control-plane has initialized successfully!
-
-To start using your cluster, you need to run the following as a regular user:
-
-  mkdir -p <span class="nv">$HOME</span>/.kube
-  sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
-  sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
-
-
-You should now deploy a pod network to the cluster.
-Run <span class="s2">&#34;kubectl apply -f [podnetwork].yaml&#34;</span> with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-You can now join any number of machines by running the following on each node as root:
-
-  kubeadm join &lt;control-plane-host&gt;:&lt;control-plane-port&gt; --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;
-</code></pre></div><p>Then, make kubectl work for you. For non-root user:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ mkdir -p <span class="nv">$HOME</span>/.kube
-$ sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
-$ sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
-</code></pre></div><p>or root user:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nb">export</span> <span class="nv">KUBECONFIG</span><span class="o">=</span>/etc/kubernetes/admin.conf
-</code></pre></div><p>You now have a working Kubernetes control-plane node in Debian.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl describe nodes
-Name:               kubernetesdebian
-Roles:              master
-Labels:             beta.kubernetes.io/arch<span class="o">=</span>amd64
-                    beta.kubernetes.io/os<span class="o">=</span>linux
-                    kubernetes.io/arch<span class="o">=</span>amd64
-                    kubernetes.io/hostname<span class="o">=</span>kubernetesdebian
-                    kubernetes.io/os<span class="o">=</span>linux
-                    node-role.kubernetes.io/master<span class="o">=</span>
-Annotations:        kubeadm.alpha.kubernetes.io/cri-socket: /var/run/crio/crio.sock
-                    node.alpha.kubernetes.io/ttl: <span class="m">0</span>
-                    volumes.kubernetes.io/controller-managed-attach-detach: <span class="nb">true</span>
-CreationTimestamp:  Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:14:01 +0900
-Taints:             node-role.kubernetes.io/master:NoSchedule
-                    node.kubernetes.io/disk-pressure:NoSchedule
-Unschedulable:      <span class="nb">false</span>
-Conditions:
-  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
-  ----             ------  -----------------                 ------------------                ------                       -------
-  MemoryPressure   False   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletHasSufficientMemory   kubelet has sufficient memory available
-  DiskPressure     False   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletHasNoDiskPressure     kubelet has no disk pressure
-  PIDPressure      False   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletHasSufficientPID      kubelet has sufficient PID available
-  Ready            True    Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletReady                 kubelet is posting ready status. AppArmor enabled
-Addresses:
-  InternalIP:  10.0.2.15
-  Hostname:    kubernetesdebian
-Capacity:
- cpu:                <span class="m">2</span>
- ephemeral-storage:  59599788Ki
- hugepages-2Mi:      <span class="m">0</span>
- memory:             2043052Ki
- pods:               <span class="m">110</span>
-Allocatable:
- cpu:                <span class="m">2</span>
- ephemeral-storage:  <span class="m">54927164530</span>
- hugepages-2Mi:      <span class="m">0</span>
- memory:             1940652Ki
- pods:               <span class="m">110</span>
-System Info:
- Machine ID:                 3734a41935384d118cfc280d87d803c1
- System UUID:                c9945cb0-9f07-42cb-a91d-927b6b2ff039
- Boot ID:                    1b69c8ce-2296-41b6-8964-17c11ca1224c
- Kernel Version:             4.19.0-6-amd64
- OS Image:                   Debian GNU/Linux <span class="m">10</span> <span class="o">(</span>buster<span class="o">)</span>
- Operating System:           linux
- Architecture:               amd64
- Container Runtime Version:  cri-o://1.15.3-dev
- Kubelet Version:            v1.16.3
- Kube-Proxy Version:         v1.16.3
-...
-</code></pre></div><h2 id="some-test-with-a-single-node-cluster" class="relative group">Some test with a single node cluster <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#some-test-with-a-single-node-cluster" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubeadm init
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl"><span class="o">[</span>bootstrap-token<span class="o">]</span> configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order <span class="k">for</span> nodes to get long term certificate credentials
+</span></span><span class="line"><span class="cl"><span class="o">[</span>bootstrap-token<span class="o">]</span> configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+</span></span><span class="line"><span class="cl"><span class="o">[</span>bootstrap-token<span class="o">]</span> configured RBAC rules to allow certificate rotation <span class="k">for</span> all node client certificates in the cluster
+</span></span><span class="line"><span class="cl"><span class="o">[</span>bootstrap-token<span class="o">]</span> Creating the <span class="s2">&#34;cluster-info&#34;</span> ConfigMap in the <span class="s2">&#34;kube-public&#34;</span> namespace
+</span></span><span class="line"><span class="cl"><span class="o">[</span>addons<span class="o">]</span> Applied essential addon: CoreDNS
+</span></span><span class="line"><span class="cl"><span class="o">[</span>addons<span class="o">]</span> Applied essential addon: kube-proxy
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your Kubernetes control-plane has initialized successfully!
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">To start using your cluster, you need to run the following as a regular user:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  mkdir -p <span class="nv">$HOME</span>/.kube
+</span></span><span class="line"><span class="cl">  sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
+</span></span><span class="line"><span class="cl">  sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You should now deploy a pod network to the cluster.
+</span></span><span class="line"><span class="cl">Run <span class="s2">&#34;kubectl apply -f [podnetwork].yaml&#34;</span> with one of the options listed at:
+</span></span><span class="line"><span class="cl">  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You can now join any number of machines by running the following on each node as root:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  kubeadm join &lt;control-plane-host&gt;:&lt;control-plane-port&gt; --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;
+</span></span></code></pre></div><p>Then, make kubectl work for you. For non-root user:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ mkdir -p <span class="nv">$HOME</span>/.kube
+</span></span><span class="line"><span class="cl">$ sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
+</span></span><span class="line"><span class="cl">$ sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
+</span></span></code></pre></div><p>or root user:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ <span class="nb">export</span> <span class="nv">KUBECONFIG</span><span class="o">=</span>/etc/kubernetes/admin.conf
+</span></span></code></pre></div><p>You now have a working Kubernetes control-plane node in Debian.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl describe nodes
+</span></span><span class="line"><span class="cl">Name:               kubernetesdebian
+</span></span><span class="line"><span class="cl">Roles:              master
+</span></span><span class="line"><span class="cl">Labels:             beta.kubernetes.io/arch<span class="o">=</span>amd64
+</span></span><span class="line"><span class="cl">                    beta.kubernetes.io/os<span class="o">=</span>linux
+</span></span><span class="line"><span class="cl">                    kubernetes.io/arch<span class="o">=</span>amd64
+</span></span><span class="line"><span class="cl">                    kubernetes.io/hostname<span class="o">=</span>kubernetesdebian
+</span></span><span class="line"><span class="cl">                    kubernetes.io/os<span class="o">=</span>linux
+</span></span><span class="line"><span class="cl">                    node-role.kubernetes.io/master<span class="o">=</span>
+</span></span><span class="line"><span class="cl">Annotations:        kubeadm.alpha.kubernetes.io/cri-socket: /var/run/crio/crio.sock
+</span></span><span class="line"><span class="cl">                    node.alpha.kubernetes.io/ttl: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">                    volumes.kubernetes.io/controller-managed-attach-detach: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">CreationTimestamp:  Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:14:01 +0900
+</span></span><span class="line"><span class="cl">Taints:             node-role.kubernetes.io/master:NoSchedule
+</span></span><span class="line"><span class="cl">                    node.kubernetes.io/disk-pressure:NoSchedule
+</span></span><span class="line"><span class="cl">Unschedulable:      <span class="nb">false</span>
+</span></span><span class="line"><span class="cl">Conditions:
+</span></span><span class="line"><span class="cl">  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+</span></span><span class="line"><span class="cl">  ----             ------  -----------------                 ------------------                ------                       -------
+</span></span><span class="line"><span class="cl">  MemoryPressure   False   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletHasSufficientMemory   kubelet has sufficient memory available
+</span></span><span class="line"><span class="cl">  DiskPressure     False   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletHasNoDiskPressure     kubelet has no disk pressure
+</span></span><span class="line"><span class="cl">  PIDPressure      False   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletHasSufficientPID      kubelet has sufficient PID available
+</span></span><span class="line"><span class="cl">  Ready            True    Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:22:02 +0900   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 18:13:59 +0900   KubeletReady                 kubelet is posting ready status. AppArmor enabled
+</span></span><span class="line"><span class="cl">Addresses:
+</span></span><span class="line"><span class="cl">  InternalIP:  10.0.2.15
+</span></span><span class="line"><span class="cl">  Hostname:    kubernetesdebian
+</span></span><span class="line"><span class="cl">Capacity:
+</span></span><span class="line"><span class="cl"> cpu:                <span class="m">2</span>
+</span></span><span class="line"><span class="cl"> ephemeral-storage:  59599788Ki
+</span></span><span class="line"><span class="cl"> hugepages-2Mi:      <span class="m">0</span>
+</span></span><span class="line"><span class="cl"> memory:             2043052Ki
+</span></span><span class="line"><span class="cl"> pods:               <span class="m">110</span>
+</span></span><span class="line"><span class="cl">Allocatable:
+</span></span><span class="line"><span class="cl"> cpu:                <span class="m">2</span>
+</span></span><span class="line"><span class="cl"> ephemeral-storage:  <span class="m">54927164530</span>
+</span></span><span class="line"><span class="cl"> hugepages-2Mi:      <span class="m">0</span>
+</span></span><span class="line"><span class="cl"> memory:             1940652Ki
+</span></span><span class="line"><span class="cl"> pods:               <span class="m">110</span>
+</span></span><span class="line"><span class="cl">System Info:
+</span></span><span class="line"><span class="cl"> Machine ID:                 3734a41935384d118cfc280d87d803c1
+</span></span><span class="line"><span class="cl"> System UUID:                c9945cb0-9f07-42cb-a91d-927b6b2ff039
+</span></span><span class="line"><span class="cl"> Boot ID:                    1b69c8ce-2296-41b6-8964-17c11ca1224c
+</span></span><span class="line"><span class="cl"> Kernel Version:             4.19.0-6-amd64
+</span></span><span class="line"><span class="cl"> OS Image:                   Debian GNU/Linux <span class="m">10</span> <span class="o">(</span>buster<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> Operating System:           linux
+</span></span><span class="line"><span class="cl"> Architecture:               amd64
+</span></span><span class="line"><span class="cl"> Container Runtime Version:  cri-o://1.15.3-dev
+</span></span><span class="line"><span class="cl"> Kubelet Version:            v1.16.3
+</span></span><span class="line"><span class="cl"> Kube-Proxy Version:         v1.16.3
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><h2 id="some-test-with-a-single-node-cluster" class="relative group">Some test with a single node cluster <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#some-test-with-a-single-node-cluster" aria-label="Anchor">#</a></span></h2>
 <p>By default, any control-plane nodes pods are not schedulable; therefore, when you try to schedule a pod, it should be in pending status.
 Following command will make Kubernetes be able to schedule pods in control-plane nodes as well<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl taint nodes &lt;node_name&gt; node-role.kubernetes.io/master-
-node/&lt;node_name&gt; untainted
-</code></pre></div><p>Try to deploy a new pod <code>test_pod.yaml</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl taint nodes &lt;node_name&gt; node-role.kubernetes.io/master-
+</span></span><span class="line"><span class="cl">node/&lt;node_name&gt; untainted
+</span></span></code></pre></div><p>Try to deploy a new pod <code>test_pod.yaml</code>:</p>
 <pre tabindex="0"><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -689,70 +688,70 @@ spec:
   containers:
   - name: myapp-container
     image: busybox
-    command: ['sh', '-c', 'echo Hello Kubernetes! &amp;&amp; sleep 3600']
-</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl apply -f test_pod.yaml
-pod/myapp-pod created
-$ kubectl describe pods
-Name:         myapp-pod
-Namespace:    default
-Priority:     <span class="m">0</span>
-Node:         kubernetesdebian/10.0.2.15
-Start Time:   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:41:59 +0900
-Labels:       <span class="nv">app</span><span class="o">=</span>myapp
-Annotations:  kubectl.kubernetes.io/last-applied-configuration: ...
-Status:       Running
-IP:           10.88.0.7
-IPs:
-  IP:  10.88.0.7
-Containers:
-  myapp-container:
-    Container ID:  cri-o://5b9038e1687d1a9c8c58ac7879d92c3f42089b93fd947cc7f02dc440a1c510e3
-    Image:         busybox
-    Image ID:      docker.io/library/busybox@sha256:679b1c1058c1f2dc59a3ee70eed986a88811c0205c8ceea57cec5f22d2c3fbb1
-    Port:          &lt;none&gt;
-    Host Port:     &lt;none&gt;
-    Command:
-      sh
-      -c
-      <span class="nb">echo</span> Hello Kubernetes! <span class="o">&amp;&amp;</span> sleep <span class="m">3600</span>
-    State:          Running
-      Started:      Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:42:03 +0900
-    Ready:          True
-    Restart Count:  <span class="m">0</span>
-    Environment:    &lt;none&gt;
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from default-token-vwt85 <span class="o">(</span>ro<span class="o">)</span>
-Conditions:
-  Type              Status
-  Initialized       True
-  Ready             True
-  ContainersReady   True
-  PodScheduled      True
-...
-</code></pre></div><blockquote>
+    command: [&#39;sh&#39;, &#39;-c&#39;, &#39;echo Hello Kubernetes! &amp;&amp; sleep 3600&#39;]
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl apply -f test_pod.yaml
+</span></span><span class="line"><span class="cl">pod/myapp-pod created
+</span></span><span class="line"><span class="cl">$ kubectl describe pods
+</span></span><span class="line"><span class="cl">Name:         myapp-pod
+</span></span><span class="line"><span class="cl">Namespace:    default
+</span></span><span class="line"><span class="cl">Priority:     <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Node:         kubernetesdebian/10.0.2.15
+</span></span><span class="line"><span class="cl">Start Time:   Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:41:59 +0900
+</span></span><span class="line"><span class="cl">Labels:       <span class="nv">app</span><span class="o">=</span>myapp
+</span></span><span class="line"><span class="cl">Annotations:  kubectl.kubernetes.io/last-applied-configuration: ...
+</span></span><span class="line"><span class="cl">Status:       Running
+</span></span><span class="line"><span class="cl">IP:           10.88.0.7
+</span></span><span class="line"><span class="cl">IPs:
+</span></span><span class="line"><span class="cl">  IP:  10.88.0.7
+</span></span><span class="line"><span class="cl">Containers:
+</span></span><span class="line"><span class="cl">  myapp-container:
+</span></span><span class="line"><span class="cl">    Container ID:  cri-o://5b9038e1687d1a9c8c58ac7879d92c3f42089b93fd947cc7f02dc440a1c510e3
+</span></span><span class="line"><span class="cl">    Image:         busybox
+</span></span><span class="line"><span class="cl">    Image ID:      docker.io/library/busybox@sha256:679b1c1058c1f2dc59a3ee70eed986a88811c0205c8ceea57cec5f22d2c3fbb1
+</span></span><span class="line"><span class="cl">    Port:          &lt;none&gt;
+</span></span><span class="line"><span class="cl">    Host Port:     &lt;none&gt;
+</span></span><span class="line"><span class="cl">    Command:
+</span></span><span class="line"><span class="cl">      sh
+</span></span><span class="line"><span class="cl">      -c
+</span></span><span class="line"><span class="cl">      <span class="nb">echo</span> Hello Kubernetes! <span class="o">&amp;&amp;</span> sleep <span class="m">3600</span>
+</span></span><span class="line"><span class="cl">    State:          Running
+</span></span><span class="line"><span class="cl">      Started:      Thu, <span class="m">21</span> Nov <span class="m">2019</span> 19:42:03 +0900
+</span></span><span class="line"><span class="cl">    Ready:          True
+</span></span><span class="line"><span class="cl">    Restart Count:  <span class="m">0</span>
+</span></span><span class="line"><span class="cl">    Environment:    &lt;none&gt;
+</span></span><span class="line"><span class="cl">    Mounts:
+</span></span><span class="line"><span class="cl">      /var/run/secrets/kubernetes.io/serviceaccount from default-token-vwt85 <span class="o">(</span>ro<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Conditions:
+</span></span><span class="line"><span class="cl">  Type              Status
+</span></span><span class="line"><span class="cl">  Initialized       True
+</span></span><span class="line"><span class="cl">  Ready             True
+</span></span><span class="line"><span class="cl">  ContainersReady   True
+</span></span><span class="line"><span class="cl">  PodScheduled      True
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><blockquote>
 <p>This is not recommended by Kubernetes for security reasons. To undo this setting, do:</p>
 <p><code>$ kubectl taint nodes kubernetesdebian node-role.kubernetes.io/master=:NoSchedule</code></p>
 </blockquote>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p>Project Atomic PPA: <a href="https://launchpad.net/~projectatomic/&#43;archive/ubuntu/ppa"   target="_blank">https://launchpad.net/~projectatomic/+archive/ubuntu/ppa</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p>Netwokr plugins: <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/"   target="_blank">https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p>Installing kubeadm: <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/"   target="_blank">https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p>Creating a single control-plane cluster with kubeadm: <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#instructions"   target="_blank">https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p>Control plane node isolation: <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#control-plane-node-isolation"   target="_blank">https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

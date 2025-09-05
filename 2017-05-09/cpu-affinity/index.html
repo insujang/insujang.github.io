@@ -48,7 +48,7 @@ cpu_set_t can be set by defined macros as follows." />
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -57,7 +57,7 @@ cpu_set_t can be set by defined macros as follows." />
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -81,7 +81,6 @@ cpu_set_t can be set by defined macros as follows." />
 <meta property="og:url" content="/2017-05-09/cpu-affinity/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-05-09T21:56:25+09:00" />
 <meta property="article:modified_time" content="2017-05-09T21:56:25+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="CPU Affinity"/>
@@ -413,44 +412,44 @@ if (!doNotTrack) {
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>CPU affinity, also called CPU pinning, enables the binding of a process or a thread to a specific CPU core, or CPU cores.</p>
 <p>The following function is provided as a standard library to set affinity. <a href="https://linux.die.net/man/2/sched_setaffinity"   target="_blank">[reference]</a></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;sched.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">sched_setaffinity</span><span class="p">(</span><span class="n">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">cpusetsize</span><span class="p">,</span> <span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">mask</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">sched_getaffinity</span><span class="p">(</span><span class="n">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">cpusetsize</span><span class="p">,</span> <span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">mask</span><span class="p">);</span>
-</code></pre></div><p>On success, <code>schedu_setaffinity()</code> and <code>sched_getaffinity()</code> return 0. On error, -1 is returned, and <code>errno</code> is set appropriately.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sched.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sched_setaffinity</span><span class="p">(</span><span class="kt">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">cpusetsize</span><span class="p">,</span> <span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sched_getaffinity</span><span class="p">(</span><span class="kt">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">cpusetsize</span><span class="p">,</span> <span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">mask</span><span class="p">);</span>
+</span></span></code></pre></div><p>On success, <code>schedu_setaffinity()</code> and <code>sched_getaffinity()</code> return 0. On error, -1 is returned, and <code>errno</code> is set appropriately.</p>
 <p><code>cpu_set_t</code> can be set by defined macros as follows. <a href="http://man7.org/linux/man-pages/man3/CPU_SET.3.html"   target="_blank">[reference]</a></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">CPU_ZERO</span><span class="p">(</span><span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
-<span class="kt">void</span> <span class="nf">CPU_ZERO_S</span><span class="p">(</span><span class="n">size_t</span> <span class="n">setsize</span><span class="p">,</span> <span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
-<span class="kt">void</span> <span class="nf">CPU_SET</span><span class="p">(</span><span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span> <span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
-<span class="kt">void</span> <span class="nf">CPU_CLR</span><span class="p">(</span><span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span> <span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">CPU_ISSET</span><span class="p">(</span><span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span> <span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
-<span class="p">...</span>
-
-<span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">CPU_ALLOC</span><span class="p">(</span><span class="kt">int</span> <span class="n">num_cpus</span><span class="p">);</span>
-<span class="kt">void</span> <span class="nf">CPU_FREE</span><span class="p">(</span><span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
-<span class="p">...</span>
-</code></pre></div><p>where <code>int cpu</code> is the number of CPU cores. It should be one among 0~num_cpus-1. For example, it can be 0~7 if there are 8 logical processors in a machine.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">CPU_ZERO</span><span class="p">(</span><span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">CPU_ZERO_S</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">setsize</span><span class="p">,</span> <span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">CPU_SET</span><span class="p">(</span><span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span> <span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">CPU_CLR</span><span class="p">(</span><span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span> <span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">CPU_ISSET</span><span class="p">(</span><span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span> <span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">cpu_set_t</span> <span class="o">*</span><span class="nf">CPU_ALLOC</span><span class="p">(</span><span class="kt">int</span> <span class="n">num_cpus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">CPU_FREE</span><span class="p">(</span><span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><p>where <code>int cpu</code> is the number of CPU cores. It should be one among 0~num_cpus-1. For example, it can be 0~7 if there are 8 logical processors in a machine.</p>
 <p>The following code will make this program be run only in CPU number 7.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">cpu_set_t</span> <span class="o">*</span><span class="n">mask</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">num_cpus</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-<span class="n">size_t</span> <span class="n">size</span><span class="p">;</span>
-
-<span class="c1">// Memory allocation
-</span><span class="c1">// null exception handling is omitted.
-</span><span class="c1"></span><span class="n">mask</span> <span class="o">=</span> <span class="n">CPU_ALLOC</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">);</span>
-
-<span class="c1">// Zero initialization
-</span><span class="c1"></span><span class="n">size</span> <span class="o">=</span> <span class="n">CPU_ALLOC_SIZE</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">);</span>
-<span class="n">CPU_ZERO_S</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
-
-<span class="c1">// Add a mask for CPU 7
-</span><span class="c1"></span><span class="n">CPU_SET_S</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
-
-<span class="c1">// Set affinity
-</span><span class="c1"></span><span class="n">sched_setaffinity</span><span class="p">(</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
-
-<span class="n">CPU_FREE</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
-</code></pre></div><h2 id="references" class="relative group">References <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">cpu_set_t</span> <span class="o">*</span><span class="n">mask</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">num_cpus</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">size_t</span> <span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Memory allocation
+</span></span></span><span class="line"><span class="cl"><span class="c1">// null exception handling is omitted.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">mask</span> <span class="o">=</span> <span class="nf">CPU_ALLOC</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Zero initialization
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">size</span> <span class="o">=</span> <span class="nf">CPU_ALLOC_SIZE</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">CPU_ZERO_S</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Add a mask for CPU 7
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">CPU_SET_S</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Set affinity
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">sched_setaffinity</span><span class="p">(</span><span class="nf">getpid</span><span class="p">(),</span> <span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">CPU_FREE</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+</span></span></code></pre></div><h2 id="references" class="relative group">References <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a></span></h2>
 <ul>
 <li>Processor affinity. Wikipedia. [Online]: <a href="https://en.wikipedia.org/wiki/Processor_affinity"   target="_blank">https://en.wikipedia.org/wiki/Processor_affinity</a></li>
 <li>sched_setaffinity. Linux man page. [Online]: <a href="https://linux.die.net/man/2/sched_setaffinity"   target="_blank">https://linux.die.net/man/2/sched_setaffinity</a></li>

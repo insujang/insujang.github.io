@@ -46,7 +46,7 @@
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@
 <meta property="og:url" content="/2022-01-17/open-vswitch-in-nvidia-bluefield-smartnic/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-01-17T14:54:00-05:00" />
 <meta property="article:modified_time" content="2022-01-17T14:54:00-05:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Open vSwitch in NVIDIA BlueField SmartNIC"/>
@@ -342,7 +341,7 @@ if (!doNotTrack) {
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2022-01-17 14:54:00 -0500 EST">Jan 17, 2022</time>
+      <time datetime="2022-01-17 14:54:00 -0500 -0500">Jan 17, 2022</time>
     
 
     
@@ -423,22 +422,22 @@ if (!doNotTrack) {
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>In embedded CPU (ECPF: Embedded CPU Physical Function) mode of NVIDIA BlueField DPU, Open vSwitch (OvS) is used for packet processing.
 Once BlueField Linux is installed, several frameworks are installed together as well, and OvS is one of them.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in SmartNIC Linux</span>
-$ systemctl status openvswitch-switch
-● openvswitch-switch.service - LSB: Open vSwitch switch
-     Loaded: loaded <span class="o">(</span>/etc/init.d/openvswitch-switch<span class="p">;</span> generated<span class="o">)</span>
-     Active: active <span class="o">(</span>running<span class="o">)</span> since Sun 2022-01-16 18:17:46 UTC<span class="p">;</span> <span class="m">1</span> day 2h ago
-       Docs: man:systemd-sysv-generator<span class="o">(</span>8<span class="o">)</span>
-    Process: <span class="m">227259</span> <span class="nv">ExecStart</span><span class="o">=</span>/etc/init.d/openvswitch-switch start <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
-      Tasks: <span class="m">13</span> <span class="o">(</span>limit: 19074<span class="o">)</span>
-     Memory: 111.5M
-     CGroup: /system.slice/openvswitch-switch.service
-             ├─227323 ovsdb-server: monitoring pid <span class="m">227324</span> <span class="o">(</span>healthy<span class="o">)</span>
-             ├─227324 ovsdb-server /etc/openvswitch/conf.db -vconsole:emer -vsyslog:err -vfile:info ...
-             ├─227341 ovs-vswitchd: monitoring pid <span class="m">227342</span> <span class="o">(</span>healthy<span class="o">)</span>
-             └─227342 ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err ...
-...
-</code></pre></div><p>If SmartNIC is running in separated host mode, SmartNIC HW will automatically forward packets to the host and the SmartNIC, while in embedded mode, all packets first are handled by SmartNIC. Open vSwitch is running for this purpose: forwarding packets to the host.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># in SmartNIC Linux</span>
+</span></span><span class="line"><span class="cl">$ systemctl status openvswitch-switch
+</span></span><span class="line"><span class="cl">● openvswitch-switch.service - LSB: Open vSwitch switch
+</span></span><span class="line"><span class="cl">     Loaded: loaded <span class="o">(</span>/etc/init.d/openvswitch-switch<span class="p">;</span> generated<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Active: active <span class="o">(</span>running<span class="o">)</span> since Sun 2022-01-16 18:17:46 UTC<span class="p">;</span> <span class="m">1</span> day 2h ago
+</span></span><span class="line"><span class="cl">       Docs: man:systemd-sysv-generator<span class="o">(</span>8<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    Process: <span class="m">227259</span> <span class="nv">ExecStart</span><span class="o">=</span>/etc/init.d/openvswitch-switch start <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+</span></span><span class="line"><span class="cl">      Tasks: <span class="m">13</span> <span class="o">(</span>limit: 19074<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Memory: 111.5M
+</span></span><span class="line"><span class="cl">     CGroup: /system.slice/openvswitch-switch.service
+</span></span><span class="line"><span class="cl">             ├─227323 ovsdb-server: monitoring pid <span class="m">227324</span> <span class="o">(</span>healthy<span class="o">)</span>
+</span></span><span class="line"><span class="cl">             ├─227324 ovsdb-server /etc/openvswitch/conf.db -vconsole:emer -vsyslog:err -vfile:info ...
+</span></span><span class="line"><span class="cl">             ├─227341 ovs-vswitchd: monitoring pid <span class="m">227342</span> <span class="o">(</span>healthy<span class="o">)</span>
+</span></span><span class="line"><span class="cl">             └─227342 ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err ...
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><p>If SmartNIC is running in separated host mode, SmartNIC HW will automatically forward packets to the host and the SmartNIC, while in embedded mode, all packets first are handled by SmartNIC. Open vSwitch is running for this purpose: forwarding packets to the host.</p>
 
   
   
@@ -451,7 +450,7 @@ $ systemctl status openvswitch-switch
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220106/kernel_representors_model.png" alt="image" />
-        <figcaption>BlueField2 kernel representors model. The red arrow demonstrates a packet flow through the representors, while the green arrow demonstrates the packet flow wheen steering rules are offloaded to the embedded switch (E-switch). <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Source]</a></figcaption>
+        <figcaption>BlueField2 kernel representors model. The red arrow demonstrates a packet flow through the representors, while the green arrow demonstrates the packet flow wheen steering rules are offloaded to the embedded switch (E-switch). <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -481,80 +480,80 @@ $ systemctl status openvswitch-switch
 
 
 <p>With default configuration, ping works:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in BF-host1</span>
-bf-host1 $ ovs-vsctl show
-    Bridge ovsbr1
-        Port pf0hpf             <span class="c1"># connected to host ens5f0</span>
-            Interface pf0hpf
-        Port en3f0pf0sf0        <span class="c1"># this is for SmartNIC ubuntu network</span>
-            Interface en3f0pf0sf0
-        Port ovsbr1             <span class="c1"># Open vSwitch bridge</span>
-            Interface ovsbr1
-                type: internal
-        Port p0                 <span class="c1"># physical port</span>
-            Interface p0
-    ovs_version: <span class="s2">&#34;2.14.1&#34;</span>
-
-bf-host1 $ ovs-ofctl dump-flows ovsbr1
- <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>1.879s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>2, <span class="nv">n_bytes</span><span class="o">=</span>120, <span class="nv">priority</span><span class="o">=</span><span class="m">0</span> <span class="nv">actions</span><span class="o">=</span>NORMAL
-
-<span class="c1"># in host2</span>
-host2 $ ping 10.10.1.1 -c <span class="m">5</span>
-PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.702 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.343 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.359 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.408 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.175 ms
-</code></pre></div><p>But if we delete a default flow configuration, ping does not work:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in BF-host1</span>
-bf-host1 $ over-ofctl del-flows ovsbr1
-bf-host1 $ over-ofctl dump-flows ovsbr1
-<span class="c1"># nothing</span>
-
-<span class="c1"># in host2</span>
-host2 $ ping 10.10.1.1 -c <span class="m">5</span>
-PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
-
---- 10.10.1.1 ping statistics ---
-<span class="m">5</span> packets transmitted, <span class="m">0</span> received, 100% packet loss, <span class="nb">time</span> 4076ms
-</code></pre></div><p>After manually inserting OvS flow rules, it works again:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># in BF-host1</span>
-bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>pf0hpf,actions<span class="o">=</span>output:p0
-bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>10.10.1.1,actions<span class="o">=</span>output:pf0hpf
-bf-host1 $ ovs-ofctl add-flow ovsbr1 arp,actions<span class="o">=</span>FLOOD
-
-<span class="c1"># in host2</span>
-host2 $ ping 10.10.1.1 -c <span class="m">5</span>
-PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.522 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.212 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.166 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.150 ms
-<span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.142 ms
-
-<span class="c1"># in BF-host1</span>
-bf-host1 $ ovs-ofctl dump-flows ovsbr1
- <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>67.595s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>5, <span class="nv">n_bytes</span><span class="o">=</span>490, ip,in_port<span class="o">=</span>p0,nw_dst<span class="o">=</span>10.10.1.1 <span class="nv">actions</span><span class="o">=</span>output:pf0hpf
- <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>65.799s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>5, <span class="nv">n_bytes</span><span class="o">=</span>490, ip,in_port<span class="o">=</span>pf0hpf <span class="nv">actions</span><span class="o">=</span>output:p0
- <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>64.320s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>2, <span class="nv">n_bytes</span><span class="o">=</span>112, arp <span class="nv">actions</span><span class="o">=</span>FLOOD
-</code></pre></div><p>Packets are captured by OvS (<code>n_packets=5</code>) in the flow dump result.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># in BF-host1</span>
+</span></span><span class="line"><span class="cl">bf-host1 $ ovs-vsctl show
+</span></span><span class="line"><span class="cl">    Bridge ovsbr1
+</span></span><span class="line"><span class="cl">        Port pf0hpf             <span class="c1"># connected to host ens5f0</span>
+</span></span><span class="line"><span class="cl">            Interface pf0hpf
+</span></span><span class="line"><span class="cl">        Port en3f0pf0sf0        <span class="c1"># this is for SmartNIC ubuntu network</span>
+</span></span><span class="line"><span class="cl">            Interface en3f0pf0sf0
+</span></span><span class="line"><span class="cl">        Port ovsbr1             <span class="c1"># Open vSwitch bridge</span>
+</span></span><span class="line"><span class="cl">            Interface ovsbr1
+</span></span><span class="line"><span class="cl">                type: internal
+</span></span><span class="line"><span class="cl">        Port p0                 <span class="c1"># physical port</span>
+</span></span><span class="line"><span class="cl">            Interface p0
+</span></span><span class="line"><span class="cl">    ovs_version: <span class="s2">&#34;2.14.1&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bf-host1 $ ovs-ofctl dump-flows ovsbr1
+</span></span><span class="line"><span class="cl"> <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>1.879s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>2, <span class="nv">n_bytes</span><span class="o">=</span>120, <span class="nv">priority</span><span class="o">=</span><span class="m">0</span> <span class="nv">actions</span><span class="o">=</span>NORMAL
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># in host2</span>
+</span></span><span class="line"><span class="cl">host2 $ ping 10.10.1.1 -c <span class="m">5</span>
+</span></span><span class="line"><span class="cl">PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.702 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.343 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.359 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.408 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.175 ms
+</span></span></code></pre></div><p>But if we delete a default flow configuration, ping does not work:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># in BF-host1</span>
+</span></span><span class="line"><span class="cl">bf-host1 $ over-ofctl del-flows ovsbr1
+</span></span><span class="line"><span class="cl">bf-host1 $ over-ofctl dump-flows ovsbr1
+</span></span><span class="line"><span class="cl"><span class="c1"># nothing</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># in host2</span>
+</span></span><span class="line"><span class="cl">host2 $ ping 10.10.1.1 -c <span class="m">5</span>
+</span></span><span class="line"><span class="cl">PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">--- 10.10.1.1 ping statistics ---
+</span></span><span class="line"><span class="cl"><span class="m">5</span> packets transmitted, <span class="m">0</span> received, 100% packet loss, <span class="nb">time</span> 4076ms
+</span></span></code></pre></div><p>After manually inserting OvS flow rules, it works again:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># in BF-host1</span>
+</span></span><span class="line"><span class="cl">bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>pf0hpf,actions<span class="o">=</span>output:p0
+</span></span><span class="line"><span class="cl">bf-host1 $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>10.10.1.1,actions<span class="o">=</span>output:pf0hpf
+</span></span><span class="line"><span class="cl">bf-host1 $ ovs-ofctl add-flow ovsbr1 arp,actions<span class="o">=</span>FLOOD
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># in host2</span>
+</span></span><span class="line"><span class="cl">host2 $ ping 10.10.1.1 -c <span class="m">5</span>
+</span></span><span class="line"><span class="cl">PING 10.10.1.1 <span class="o">(</span>10.10.1.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.522 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.212 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.166 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.150 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 10.10.1.1: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>0.142 ms
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># in BF-host1</span>
+</span></span><span class="line"><span class="cl">bf-host1 $ ovs-ofctl dump-flows ovsbr1
+</span></span><span class="line"><span class="cl"> <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>67.595s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>5, <span class="nv">n_bytes</span><span class="o">=</span>490, ip,in_port<span class="o">=</span>p0,nw_dst<span class="o">=</span>10.10.1.1 <span class="nv">actions</span><span class="o">=</span>output:pf0hpf
+</span></span><span class="line"><span class="cl"> <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>65.799s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>5, <span class="nv">n_bytes</span><span class="o">=</span>490, ip,in_port<span class="o">=</span>pf0hpf <span class="nv">actions</span><span class="o">=</span>output:p0
+</span></span><span class="line"><span class="cl"> <span class="nv">cookie</span><span class="o">=</span>0x0, <span class="nv">duration</span><span class="o">=</span>64.320s, <span class="nv">table</span><span class="o">=</span>0, <span class="nv">n_packets</span><span class="o">=</span>2, <span class="nv">n_bytes</span><span class="o">=</span>112, arp <span class="nv">actions</span><span class="o">=</span>FLOOD
+</span></span></code></pre></div><p>Packets are captured by OvS (<code>n_packets=5</code>) in the flow dump result.</p>
 <h2 id="explaining-ovs-rules" class="relative group">Explaining OvS Rules <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#explaining-ovs-rules" aria-label="Anchor">#</a></span></h2>
 <p>In setting OvS rules I used <code>pf0hpf</code> and <code>p0</code> ports. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html"   target="_blank">NVIDIA DOCK SDK</a> explains how these ports are connected to each other.</p>
 <p>By default, Mellanox OFED installs the following ports:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">bf-host1 $ ovs-vsctl show
-    Bridge ovsbr1
-        Port pf0hpf
-            Interface pf0hpf
-        Port en3f0pf0sf0
-            Interface en3f0pf0sf0
-        Port ovsbr1
-            Interface ovsbr1
-                type: internal
-        Port p0
-            Interface p0
-    ovs_version: <span class="s2">&#34;2.14.1&#34;</span>
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">bf-host1 $ ovs-vsctl show
+</span></span><span class="line"><span class="cl">    Bridge ovsbr1
+</span></span><span class="line"><span class="cl">        Port pf0hpf
+</span></span><span class="line"><span class="cl">            Interface pf0hpf
+</span></span><span class="line"><span class="cl">        Port en3f0pf0sf0
+</span></span><span class="line"><span class="cl">            Interface en3f0pf0sf0
+</span></span><span class="line"><span class="cl">        Port ovsbr1
+</span></span><span class="line"><span class="cl">            Interface ovsbr1
+</span></span><span class="line"><span class="cl">                type: internal
+</span></span><span class="line"><span class="cl">        Port p0
+</span></span><span class="line"><span class="cl">            Interface p0
+</span></span><span class="line"><span class="cl">    ovs_version: <span class="s2">&#34;2.14.1&#34;</span>
+</span></span></code></pre></div>
   
   
   
@@ -566,16 +565,16 @@ bf-host1 $ ovs-ofctl dump-flows ovsbr1
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220117/representors.jpg" alt="image" />
-        <figcaption>NVIDIA BlueField2 default representor model. It is slightly different from what is described in DOCA SDK manual. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html">[Manual ref]</a></figcaption>
+        <figcaption>NVIDIA BlueField2 default representor model. It is slightly different from what is described in DOCA SDK manual. <a href="https://docs.nvidia.com/doca/sdk/vswitch-and-representors-model/index.html"   target="_blank">[Manual ref]</a></figcaption>
       </figure>
     
   
 
 
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">add-flow ovsbr1 ip,in_port<span class="o">=</span>pf0hpf,actions<span class="o">=</span>output:p0
-</code></pre></div><p>This rule indicates the red line in the figure. When a packet comes from the port <code>pf0hpf</code> (<code>hpf</code> stands for host physical function), which is connected to the host interface (meaning outbound packet from the host), OvS should forward it to the physical port so that it can reach out to the destination (<code>actions=output:p0</code>). <code>p0</code> is an actual physical port in DPU, connected to the network outside.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>10.10.1.1,actions<span class="o">=</span>output:pf0hpf
-</code></pre></div><p>This rule indicates the blue line in the figure, representing handling incoming packets. Note that an SF <code>en3f0pf0sf0</code> can also have an IP and can be used by applications in ARM CPU, not all packets should be forward to the host. In this example, the host has <code>10.10.1.1</code> IP, so only packets with destination IP <code>10.10.1.1</code> (<code>ip_dst=10.10.1.1</code>) should be forwarded to <code>pf0hpf</code> port, which is connected to the host.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">add-flow ovsbr1 ip,in_port<span class="o">=</span>pf0hpf,actions<span class="o">=</span>output:p0
+</span></span></code></pre></div><p>This rule indicates the red line in the figure. When a packet comes from the port <code>pf0hpf</code> (<code>hpf</code> stands for host physical function), which is connected to the host interface (meaning outbound packet from the host), OvS should forward it to the physical port so that it can reach out to the destination (<code>actions=output:p0</code>). <code>p0</code> is an actual physical port in DPU, connected to the network outside.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>10.10.1.1,actions<span class="o">=</span>output:pf0hpf
+</span></span></code></pre></div><p>This rule indicates the blue line in the figure, representing handling incoming packets. Note that an SF <code>en3f0pf0sf0</code> can also have an IP and can be used by applications in ARM CPU, not all packets should be forward to the host. In this example, the host has <code>10.10.1.1</code> IP, so only packets with destination IP <code>10.10.1.1</code> (<code>ip_dst=10.10.1.1</code>) should be forwarded to <code>pf0hpf</code> port, which is connected to the host.</p>
 <h1 id="bluefield-ovs-data-plane-hw-offloading" class="relative group">BlueField OvS Data Plane HW Offloading <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#bluefield-ovs-data-plane-hw-offloading" aria-label="Anchor">#</a></span></h1>
 <p>OvS datapath can be offloaded to the hardware for acceleration in NVIDIA BlueField2 DPU. It seems to have two hardware accelerators: <code>tc-flower</code> and <code>ASAP2</code>.</p>
 <h2 id="kernel-ovs-ovs-tc-and-tc-flower-ovs-tc" class="relative group">Kernel-OVS, OVS-TC, and tc-flower <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#kernel-ovs-ovs-tc-and-tc-flower-ovs-tc" aria-label="Anchor">#</a></span></h2>
@@ -596,7 +595,7 @@ This TC datapath can be offloaded into SmartNIC, which provides a huge performan
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/220117/ovs-tc-offload.png" alt="image" />
-        <figcaption>Blue boxes in Kernel area are offloaded into the yellow Agilio CX SmartNIC hardware. <a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf">[Source]</a></figcaption>
+        <figcaption>Blue boxes in Kernel area are offloaded into the yellow Agilio CX SmartNIC hardware. <a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -604,57 +603,57 @@ This TC datapath can be offloaded into SmartNIC, which provides a huge performan
 
 <p>It seems NVIDIA BlueField2 also provides TC offload hardware acceleration. I followed <a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf"   target="_blank">the tutorial</a> to test SmartNIC offloading.</p>
 <p>To check whether HW offloading is enabled, use the following command in the BF2:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ovs-vsctl get Open_vSwitch . other_config:hw-offload
-<span class="s2">&#34;true&#34;</span>
-</code></pre></div><p>To change configuration, set value and restart OvS switch daemon:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ovs-vsctl <span class="nb">set</span> Open_vSwitch . other_config:hw-offload<span class="o">=</span><span class="nb">true</span>
-$ systemctl restart openvswitch-switch
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ovs-vsctl get Open_vSwitch . other_config:hw-offload
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;true&#34;</span>
+</span></span></code></pre></div><p>To change configuration, set value and restart OvS switch daemon:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ovs-vsctl <span class="nb">set</span> Open_vSwitch . other_config:hw-offload<span class="o">=</span><span class="nb">true</span>
+</span></span><span class="line"><span class="cl">$ systemctl restart openvswitch-switch
+</span></span></code></pre></div><blockquote>
 <p>Note that when restart switch daemon, existing rules are removed. Reset the rules.</p>
 </blockquote>
 <p>To check whether HW offloading is actually used, use <code>ovs-appctl</code> tool while hosts are communicating:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ ovs-appctl dpctl/dump-flows -m <span class="p">|</span> grep pf0hpf
-ufid:e81cbd1d-0120-4ef7-af70-f7a8cdf9ffc2, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
-mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:0
-0:00:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.
-0/0.0.0.0,dst<span class="o">=</span>0.0.0.0/0.0.0.0,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:174, bytes:17052, used:0.520s,
-offloaded:yes, dp:tc, actions:p0
-
-ufid:09bfe098-3319-4fcf-a2eb-be80636ed34e, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
-mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>p0<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00
-:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.
-0.0.0,dst<span class="o">=</span>10.10.1.1,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:175, bytes:17812, used:0.520s, offloaded:
-yes, dp:tc, actions:pf0hpf
-
-ufid:29e9b8b3-97a5-425e-a602-25f5765bf855, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
-mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:0
-0:00:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0806<span class="o">)</span>,arp<span class="o">(</span><span class="nv">sip</span><span class="o">=</span>0.0.0.0
-/0.0.0.0,tip<span class="o">=</span>0.0.0.0/0.0.0.0,op<span class="o">=</span>0/0,sha<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00,tha<span class="o">=</span>00:00:00:00:00:00/00:00:0
-0:00:00:00<span class="o">)</span>, packets:1, bytes:38, used:5.820s, dp:tc, actions:p0,ovsbr1,en3f0pf0sf0
-</code></pre></div><p>Three flows, each of which corresponds to each OvS rule, have been captured by <code>dump-flows</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ovs-appctl dpctl/dump-flows -m <span class="p">|</span> grep pf0hpf
+</span></span><span class="line"><span class="cl">ufid:e81cbd1d-0120-4ef7-af70-f7a8cdf9ffc2, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
+</span></span><span class="line"><span class="cl">mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:0
+</span></span><span class="line"><span class="cl">0:00:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.
+</span></span><span class="line"><span class="cl">0/0.0.0.0,dst<span class="o">=</span>0.0.0.0/0.0.0.0,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:174, bytes:17052, used:0.520s,
+</span></span><span class="line"><span class="cl">offloaded:yes, dp:tc, actions:p0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ufid:09bfe098-3319-4fcf-a2eb-be80636ed34e, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
+</span></span><span class="line"><span class="cl">mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>p0<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00
+</span></span><span class="line"><span class="cl">:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.
+</span></span><span class="line"><span class="cl">0.0.0,dst<span class="o">=</span>10.10.1.1,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:175, bytes:17812, used:0.520s, offloaded:
+</span></span><span class="line"><span class="cl">yes, dp:tc, actions:pf0hpf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ufid:29e9b8b3-97a5-425e-a602-25f5765bf855, skb_priority<span class="o">(</span>0/0<span class="o">)</span>,skb_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_
+</span></span><span class="line"><span class="cl">mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,packet_type<span class="o">(</span><span class="nv">ns</span><span class="o">=</span>0/0,id<span class="o">=</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:0
+</span></span><span class="line"><span class="cl">0:00:00:00:00/00:00:00:00:00:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0806<span class="o">)</span>,arp<span class="o">(</span><span class="nv">sip</span><span class="o">=</span>0.0.0.0
+</span></span><span class="line"><span class="cl">/0.0.0.0,tip<span class="o">=</span>0.0.0.0/0.0.0.0,op<span class="o">=</span>0/0,sha<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00,tha<span class="o">=</span>00:00:00:00:00:00/00:00:0
+</span></span><span class="line"><span class="cl">0:00:00:00<span class="o">)</span>, packets:1, bytes:38, used:5.820s, dp:tc, actions:p0,ovsbr1,en3f0pf0sf0
+</span></span></code></pre></div><p>Three flows, each of which corresponds to each OvS rule, have been captured by <code>dump-flows</code>.</p>
 <p>First flow represents outbound packets (<code>in_port(pf0hpf)</code>, <code>actions:p0</code>), second inbound packets (<code>in_port(p0)</code>, <code>actions:pf0hpf</code>), and third is arp (<code>eth_type: 0x0806</code>, flooded to all connected ports: p0,ovsbr1,en3f0pf0sf0).
 Note that, you can see <code>offloaded:yes, dp:tc</code> in the first and second flow, which means BlueField embedded switch (Eswitch) partially processed traffic control (TC).</p>
 <blockquote>
 <p>Refer to <a href="https://www.openvswitch.org/support/ovscon2019/day2/0951-hw_offload_ovs_con_19-Oz-Mellanox.pdf"   target="_blank">the presentation</a> from Mellanox <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> to see what &ldquo;partially process&rdquo; means, and how Eswitch handles offloading.</p>
 </blockquote>
 <p>If you set hw-offload off, you can see the following flows, which don&rsquo;t have <code>offloaded</code> field:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">ufid:240da61d-5cea-4161-9f60-783915bb1a1c, recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,skb_priority<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,sk
-b_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00:00:00:00/00:00:00:00:0
-0:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.0.0.0,dst<span class="o">=</span>0.0.0.0/0.0.0
-.0,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:18, bytes:1764, used:0.208s, dp:ovs, actions:p0
-
-ufid:a5ff341c-7180-4be2-af6e-2792c4275e70, recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,skb_priority<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>p0<span class="o">)</span>,skb_ma
-rk<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00
-,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.0.0.0,dst<span class="o">=</span>10.10.1.1,proto<span class="o">=</span><span class="m">0</span>
-/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:18, bytes:1764, used:0.208s, dp:ovs, actions:pf0hpf
-</code></pre></div><h3 id="offload-performance-measurement" class="relative group">Offload Performance Measurement <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#offload-performance-measurement" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">ufid:240da61d-5cea-4161-9f60-783915bb1a1c, recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,skb_priority<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>pf0hpf<span class="o">)</span>,sk
+</span></span><span class="line"><span class="cl">b_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00:00:00:00/00:00:00:00:0
+</span></span><span class="line"><span class="cl">0:00,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.0.0.0,dst<span class="o">=</span>0.0.0.0/0.0.0
+</span></span><span class="line"><span class="cl">.0,proto<span class="o">=</span>0/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:18, bytes:1764, used:0.208s, dp:ovs, actions:p0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ufid:a5ff341c-7180-4be2-af6e-2792c4275e70, recirc_id<span class="o">(</span>0<span class="o">)</span>,dp_hash<span class="o">(</span>0/0<span class="o">)</span>,skb_priority<span class="o">(</span>0/0<span class="o">)</span>,in_port<span class="o">(</span>p0<span class="o">)</span>,skb_ma
+</span></span><span class="line"><span class="cl">rk<span class="o">(</span>0/0<span class="o">)</span>,ct_state<span class="o">(</span>0/0<span class="o">)</span>,ct_zone<span class="o">(</span>0/0<span class="o">)</span>,ct_mark<span class="o">(</span>0/0<span class="o">)</span>,ct_label<span class="o">(</span>0/0<span class="o">)</span>,eth<span class="o">(</span><span class="nv">src</span><span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00
+</span></span><span class="line"><span class="cl">,dst<span class="o">=</span>00:00:00:00:00:00/00:00:00:00:00:00<span class="o">)</span>,eth_type<span class="o">(</span>0x0800<span class="o">)</span>,ipv4<span class="o">(</span><span class="nv">src</span><span class="o">=</span>0.0.0.0/0.0.0.0,dst<span class="o">=</span>10.10.1.1,proto<span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">/0,tos<span class="o">=</span>0/0,ttl<span class="o">=</span>0/0,frag<span class="o">=</span>no<span class="o">)</span>, packets:18, bytes:1764, used:0.208s, dp:ovs, actions:pf0hpf
+</span></span></code></pre></div><h3 id="offload-performance-measurement" class="relative group">Offload Performance Measurement <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#offload-performance-measurement" aria-label="Anchor">#</a></span></h3>
 <p>I tried to measure network performance by running simple data echo programs (16B~16MiB). This could quite be inaccurate, better to use iperf, etc. But I wanted to know difference in latency between host-to-host communication and the host-to-SmartNIC communication. Below figure is a configuration.</p>
 <blockquote>
 <p>Note that the following rules should be added to forward packets to a process running in SmartNIC:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># should be the port that is connected to ovs-system, not the one with IP assigned.</span>
-$ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>&lt;smartnic_ip&gt;,actions<span class="o">=</span>output:en3f0pf0sf0
-$ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>en3f0pf0sf0,actions<span class="o">=</span>output:p0
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># should be the port that is connected to ovs-system, not the one with IP assigned.</span>
+</span></span><span class="line"><span class="cl">$ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>p0,ip_dst<span class="o">=</span>&lt;smartnic_ip&gt;,actions<span class="o">=</span>output:en3f0pf0sf0
+</span></span><span class="line"><span class="cl">$ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>en3f0pf0sf0,actions<span class="o">=</span>output:p0
+</span></span></code></pre></div></blockquote>
 
   
   
@@ -703,20 +702,20 @@ $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>en3f0pf0sf0,action
 </ol>
 <h2 id="ovs-dpdk-and-asap2" class="relative group">OVS-DPDK and ASAP2 <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#ovs-dpdk-and-asap2" aria-label="Anchor">#</a></span></h2>
 <p>TBD</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://medium.com/codex/nvidia-mellanox-bluefield-2-smartnic-hands-on-tutorial-rig-for-dive-part-vii-1417e2e625bf"   target="_blank">NVIDIA Mellanox Bluefield-2 SmartNIC Hands-On Tutorial Part VII/A: To Offload or Not To Offload?</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://www.netronome.com/media/documents/WP_OVS-TC_.pdf"   target="_blank">White Paper: Virtual Switch Acceleration with OVS-TC</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://www.openvswitch.org/support/ovscon2019/day2/0951-hw_offload_ovs_con_19-Oz-Mellanox.pdf"   target="_blank">Hardware Offload: Past, Present, and Future</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>
@@ -856,7 +855,7 @@ $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>en3f0pf0sf0,action
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-01-06 20:53:00 -0500 EST">Jan 6, 2022</time>
+                    <time datetime="2022-01-06 20:53:00 -0500 -0500">Jan 6, 2022</time>
                   
                 </span>
               </span>
@@ -873,7 +872,7 @@ $ ovs-ofctl add-flow ovsbr1 ip,in_port<span class="o">=</span>en3f0pf0sf0,action
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-03-12 10:40:00 -0500 EST">Mar 12, 2022</time>
+                    <time datetime="2022-03-12 10:40:00 -0500 -0500">Mar 12, 2022</time>
                   
                 </span>
               </span>

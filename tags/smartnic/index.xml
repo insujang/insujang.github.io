@@ -25,7 +25,7 @@
       <guid>/2022-01-06/configuring-nvidia-bluefield2-smartnic/</guid>
       <description>SmartNIC is a new emerging hardware where a NIC with general-purpose CPU cores. NVIDIA BlueField2 equips 8 ARM Cortex A-72 cores, which can be used to process offloaded functions. This functions are not limited to packet processing, but can also be more complicated applications, e.g., file system, etc.
 This post talks about how to configure NVIDIA BlueField2 SmartNIC, on CloudLab r7525 machines.
-Regarding CloudLab, please refer to [this paper](https://www.usenix.org/conference/atc19/presentation/duplyakin).   Regarding NVIDIA BlueField2 SmartNIC/DPU, please refer to [NVIDIA DPU introduction page](https://www.</description>
+Initial Setup # First, install Mellanox OFED device drivers from here.</description>
     </item>
     
   </channel>

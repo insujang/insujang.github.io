@@ -21,8 +21,8 @@
     <meta name="title" content="Deploying a Ceph Development Environment Cluster &middot; Better Tomorrow with Computer Science" />
   
   <meta name="description" content="This post explains how we can deploy a Ceph development cluster from Ceph source code.
- I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
- 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
+1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
 Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph." />
   
   
@@ -48,7 +48,7 @@ Ceph dev docker is a kind of wrapper that automates all required steps for deloy
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -57,7 +57,7 @@ Ceph dev docker is a kind of wrapper that automates all required steps for deloy
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -74,20 +74,19 @@ Ceph dev docker is a kind of wrapper that automates all required steps for deloy
   
   <meta property="og:title" content="Deploying a Ceph Development Environment Cluster" />
 <meta property="og:description" content="This post explains how we can deploy a Ceph development cluster from Ceph source code.
- I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
- 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
+1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
 Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2020-11-03/deploying-a-ceph-development-environment-cluster/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-11-03T13:09:00+09:00" />
 <meta property="article:modified_time" content="2020-11-03T13:09:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
-
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Deploying a Ceph Development Environment Cluster"/>
 <meta name="twitter:description" content="This post explains how we can deploy a Ceph development cluster from Ceph source code.
- I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
- 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
+I tested it in Windows 10 &#43; Docker for Windows with WSL2 engine &#43; WSL2 Ubuntu 20.04.
+1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.
 Ceph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph."/>
 
   
@@ -99,7 +98,7 @@ Ceph dev docker is a kind of wrapper that automates all required steps for deloy
     "name": "Deploying a Ceph Development Environment Cluster",
     "headline": "Deploying a Ceph Development Environment Cluster",
     
-    "abstract": "This post explains how we can deploy a Ceph development cluster from Ceph source code.\n I tested it in Windows 10 \u002b Docker for Windows with WSL2 engine \u002b WSL2 Ubuntu 20.04.\n 1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.\nCeph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.",
+    "abstract": "This post explains how we can deploy a Ceph development cluster from Ceph source code.\nI tested it in Windows 10 \u002b Docker for Windows with WSL2 engine \u002b WSL2 Ubuntu 20.04.\n1. Prerequisites # Two Github repositores are necessary: Ceph 1 and Ceph-dev-docker 2.\nCeph dev docker is a kind of wrapper that automates all required steps for deloying Ceph development cluster. It users Docker container to deploy the local development of Ceph.",
     "inLanguage": "en",
     "url" : "\/2020-11-03\/deploying-a-ceph-development-environment-cluster\/",
     "author" : {
@@ -426,10 +425,10 @@ It users Docker container to deploy the local development of Ceph. Therefore, Do
 <p>Ceph repository is bound into a container and compiled inside the container.
 It requires substantial amount of time to be fully built. However, after finishing the first build, Ceph stores a compiler cache (<a href="https://ccache.dev/"   target="_blank">ccache</a>) and uses them for further incremental build, which significantly reduce build time.
 For this, make an empty directory anywhere with any name.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">$ git clone https://github.com/ceph/ceph
-$ git clone https://github.com/ricardoasmarques/ceph-dev-docker
-$ mkdir ceph-ccache
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ git clone https://github.com/ceph/ceph
+</span></span><span class="line"><span class="cl">$ git clone https://github.com/ricardoasmarques/ceph-dev-docker
+</span></span><span class="line"><span class="cl">$ mkdir ceph-ccache
+</span></span></code></pre></div>
   
   
   
@@ -451,8 +450,8 @@ $ mkdir ceph-ccache
 <p><code>ceph-dev-docker</code> provides a script <code>setup.sh</code> to get a container.
 All required packages will be installed in this container, Ceph will be compiled here, and run in here as well.</p>
 <p>As indicated in <code>README.md</code> in the repository, it takes several variables. If your environment (the location or the name of directories) are different from mine, read it carefully for proper container initialization.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">~/ceph-dev-docker $ <span class="nv">NAME</span><span class="o">=</span>ceph-dev <span class="nv">CCACHE</span><span class="o">=</span>/root/ceph-ccache <span class="nv">CEPH</span><span class="o">=</span>/root/ceph ./setup.sh
-</code></pre></div><p>The shell script builds a Docker container image with <code>docker build</code>, and run it.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">~/ceph-dev-docker $ <span class="nv">NAME</span><span class="o">=</span>ceph-dev <span class="nv">CCACHE</span><span class="o">=</span>/root/ceph-ccache <span class="nv">CEPH</span><span class="o">=</span>/root/ceph ./setup.sh
+</span></span></code></pre></div><p>The shell script builds a Docker container image with <code>docker build</code>, and run it.</p>
 <p>Once completed, you are in ther container with <code>zsh</code>. Check whether <code>/ceph</code> is properly mounted.
 There are several pre-implemented scripts in <code>/shared/bin</code> in the container for Ceph deployment.</p>
 
@@ -475,8 +474,8 @@ There are several pre-implemented scripts in <code>/shared/bin</code> in the con
 
 <h2 id="3-building-and-running-ceph" class="relative group">3. Building and Running Ceph <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#3-building-and-running-ceph" aria-label="Anchor">#</a></span></h2>
 <p>Although Ceph provides <a href="https://docs.ceph.com/en/latest/install/build-ceph/"   target="_blank">[a manual]</a> to build Ceph, <code>ceph-dev-docker</code> provides a more convenient way for this.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">/ceph $ setup-ceph.sh
-</code></pre></div><p>This script installs all the required packages, and build Ceph from source.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">/ceph $ setup-ceph.sh
+</span></span></code></pre></div><p>This script installs all the required packages, and build Ceph from source.
 I prefer this way since I do not have to install packages in the host machine that are not used by others.</p>
 <blockquote>
 <p>It must be run in <code>/ceph</code> directory. The container is implemented assuming that Ceph root directory is <code>/ceph</code>.</p>
@@ -534,22 +533,22 @@ Refer to <a href="https://github.com/docker/for-win/issues/6736"   target="_blan
 I personally use <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools"   target="_blank">Microsoft CMake Tool</a>.</p>
 <p>Even <code>ceph-dev-docker</code> uses a script to build Ceph, it is simple to understand.
 <code>setup-ceph.sh</code> looks like:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="nv">ARGS</span><span class="o">=</span><span class="s2">&#34;-DENABLE_GIT_VERSION=OFF -DWITH_TESTS=ON -DWITH_CCACHE=ON </span><span class="nv">$ARGS</span><span class="s2">&#34;</span>
-<span class="nv">ARGS</span><span class="o">=</span><span class="s2">&#34;-DWITH_PYTHON3=3 -DWITH_RADOSGW_AMQP_ENDPOINT=OFF -DWITH_RADOSGW_KAFKA_ENDPOINT=OFF </span><span class="nv">$ARGS</span><span class="s2">&#34;</span>
-
-...
-
-<span class="k">if</span> <span class="o">[</span> -d <span class="s2">&#34;build&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    git submodule update --init --recursive
-    <span class="nb">cd</span> build
-    cmake <span class="nv">$ARGS</span> ..
-<span class="k">else</span>
-    ./do_cmake.sh <span class="nv">$ARGS</span>
-    <span class="nb">cd</span> build
-<span class="k">fi</span>
-
-ccache make -j
-</code></pre></div><p>where configuration arguments are given to CMake.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">ARGS</span><span class="o">=</span><span class="s2">&#34;-DENABLE_GIT_VERSION=OFF -DWITH_TESTS=ON -DWITH_CCACHE=ON </span><span class="nv">$ARGS</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">ARGS</span><span class="o">=</span><span class="s2">&#34;-DWITH_PYTHON3=3 -DWITH_RADOSGW_AMQP_ENDPOINT=OFF -DWITH_RADOSGW_KAFKA_ENDPOINT=OFF </span><span class="nv">$ARGS</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> -d <span class="s2">&#34;build&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    git submodule update --init --recursive
+</span></span><span class="line"><span class="cl">    <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl">    cmake <span class="nv">$ARGS</span> ..
+</span></span><span class="line"><span class="cl"><span class="k">else</span>
+</span></span><span class="line"><span class="cl">    ./do_cmake.sh <span class="nv">$ARGS</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ccache make -j
+</span></span></code></pre></div><p>where configuration arguments are given to CMake.
 Similarly, we can put the arguments into VSCode Cmake tool configuration:</p>
 
   
@@ -590,20 +589,20 @@ Refer to <a href="https://cristianadam.eu/20200113/speeding-up-c-plus-plus-githu
 
 
 <p>Now I can directly build Ceph in VSCode!</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://github.com/ceph/ceph"   target="_blank">Ceph</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://github.com/ricardoasmarques/ceph-dev-docker"   target="_blank">ceph-dev-docker</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://docs.ceph.com/en/latest/dev/dev_cluster_deployement/"   target="_blank">Ceph: Deploying a Development Cluster</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

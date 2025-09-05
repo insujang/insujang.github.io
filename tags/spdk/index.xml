@@ -26,7 +26,7 @@ Using Linux DMA Engine # I/OAT (specifically QuickData Technology) is implemente
       <description>This post explains how we can use a Ceph RBD as a QEMU storage. We can attach a Ceph RBD to a QEMU VM through either virtio-blk or vhost-user-blk QEMU device (vhost requires SPDK).
 Assume that a Ceph cluster is ready following the manual.
 Setting a Ceph client Configuration 1 # For a node to access a Ceph cluster, it requires some configuration:
- Config file setup User authentication setup  This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</description>
+Config file setup User authentication setup This step requires an access permission to a host; a host refers to a node that is already configured as a client or running a cluster daemon.</description>
     </item>
     
   </channel>

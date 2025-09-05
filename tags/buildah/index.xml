@@ -15,7 +15,7 @@
       <guid>/2020-11-09/building-container-image-inside-container-using-buildah/</guid>
       <description>This post explains how we build a container image inside a container, isolating all dependent packages into the container.
 The introduction below clearly shows why it is required.
- Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
+Lots of people would like to build OCI/container images within a system like Kubernetes. Imagine you have a CI/CD system that is constantly building container images, a tool like Red Hat OpenShift/Kubernetes would be useful for distributing the load of builds. Until recently, most people were leaking the Docker socket into the container and then allowing the containers to do docker build.</description>
     </item>
     
   </channel>

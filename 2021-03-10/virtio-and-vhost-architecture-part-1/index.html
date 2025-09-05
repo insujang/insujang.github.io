@@ -46,7 +46,7 @@ Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization tec
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -55,7 +55,7 @@ Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization tec
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -77,7 +77,6 @@ Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization tec
 <meta property="og:url" content="/2021-03-10/virtio-and-vhost-architecture-part-1/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-03-10T17:01:00+09:00" />
 <meta property="article:modified_time" content="2021-03-10T17:01:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Virtio and Vhost Architecture - Part 1"/>
@@ -109,7 +108,7 @@ Virtio (Virtual I/O) # Virtio is one of I/O (block, NIC, etc) virtualization tec
     "keywords": ["study","linux","virtualization","kvm"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "2477"
+    "wordCount": "2364"
   }]
   </script>
 
@@ -444,26 +443,26 @@ Compared to full-virtualized devices which uses trap for actual I/O operations, 
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210310/fullvirt-vs-paravirt.png" alt="image" />
-        <figcaption>Full virtualized device (left) vs para-virtualized device (right) flow. Para-drivers use hypercall (vmcall) to directly communicate with hypervisor without trap mechanism. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></figcaption>
+        <figcaption>Full virtualized device (left) vs para-virtualized device (right) flow. Para-drivers use hypercall (vmcall) to directly communicate with hypervisor without trap mechanism. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
 
 
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Kernels device communication with VMware (emulated, full-virtualization):
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">nic_write_buffer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(;</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">size</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">nic_poll_ready</span><span class="p">();</span>               <span class="c1">// many traps
-</span><span class="c1"></span>    <span class="n">outb</span><span class="p">(</span><span class="n">NIC_TX_BUF</span><span class="p">,</span> <span class="o">*</span><span class="n">buf</span><span class="o">++</span><span class="p">);</span>       <span class="c1">// many traps
-</span><span class="c1"></span>  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1">// Kernels device communication with hypervisor (hypercall, para-virtualization):
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">nic_write_buffer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">vmm_write</span><span class="p">(</span><span class="n">NIC_TX_BUF</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span> <span class="c1">// one trap
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf"   target="_blank">[Source]</a></p>
-<h2 id="architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis" class="relative group">Architecture <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// Kernels device communication with VMware (emulated, full-virtualization):
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">nic_write_buffer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(;</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">size</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">nic_poll_ready</span><span class="p">();</span>               <span class="c1">// many traps
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">outb</span><span class="p">(</span><span class="n">NIC_TX_BUF</span><span class="p">,</span> <span class="o">*</span><span class="n">buf</span><span class="o">++</span><span class="p">);</span>       <span class="c1">// many traps
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Kernels device communication with hypervisor (hypercall, para-virtualization):
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">nic_write_buffer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">vmm_write</span><span class="p">(</span><span class="n">NIC_TX_BUF</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span> <span class="c1">// one trap
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf"   target="_blank">[Source]</a></p>
+<h2 id="architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis" class="relative group">Architecture <sup id="fnref1:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#architecture-virtio-ibm-virtio-frontend-analysis-virtio-code-analysis" aria-label="Anchor">#</a></span></h2>
 <p>virtio can be divided into several parts: front-end drivers (para-drives in the figure) and back-end drivers (interfaces in the figure).</p>
 <ul>
 <li><strong>Front-end virtio drivers</strong>: implemented in the guest operating system as a device driver.</li>
@@ -482,7 +481,7 @@ Compared to full-virtualized devices which uses trap for actual I/O operations, 
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210310/virtio-architecture.gif" alt="image" />
-        <figcaption>virtio framework architecture diagram. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/">[Source]</a></figcaption>
+        <figcaption>virtio framework architecture diagram. <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -491,259 +490,259 @@ Compared to full-virtualized devices which uses trap for actual I/O operations, 
 <h3 id="front-end-virtio" class="relative group">Front-end virtio <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#front-end-virtio" aria-label="Anchor">#</a></span></h3>
 <p>Orange blocks in the above figure are in front-end virtio.</p>
 <p>At the top of the architecture is five types of <code>virtio_driver</code>, which represents the front-end driver in the guest operating system.
-Devices are encapsulated by the <code>virtio_device</code>, which refers to <code>virtqueue</code> objects that will be used for communication with virtio back-end drivers <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+Devices are encapsulated by the <code>virtio_device</code>, which refers to <code>virtqueue</code> objects that will be used for communication with virtio back-end drivers <sup id="fnref2:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
 <p>Those three data structures are defined in <a href="%28https://github.com/torvalds/linux/blob/master/include/linux/virtio.h%29"  ><code>linux/include/linux/virtio.h</code></a>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/include/linux/virtio.h
-</span><span class="c1"></span><span class="cm">/* virtqueue - a queue to register buffers for sending or receiving. */</span>
-<span class="k">struct</span> <span class="n">virtqueue</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">list_head</span> <span class="n">list</span><span class="p">;</span>
-	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">;</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num_free</span><span class="p">;</span>
-	<span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cm">/* virtio_device - representation of a device using virtio */</span>
-<span class="k">struct</span> <span class="n">virtio_device</span> <span class="p">{</span>
-	<span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
-	<span class="kt">bool</span> <span class="n">failed</span><span class="p">;</span>
-	<span class="kt">bool</span> <span class="n">config_enabled</span><span class="p">;</span>
-	<span class="kt">bool</span> <span class="n">config_change_pending</span><span class="p">;</span>
-	<span class="n">spinlock_t</span> <span class="n">config_lock</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">device</span> <span class="n">dev</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">virtio_device_id</span> <span class="n">id</span><span class="p">;</span>
-	<span class="k">const</span> <span class="k">struct</span> <span class="n">virtio_config_ops</span> <span class="o">*</span><span class="n">config</span><span class="p">;</span>
-	<span class="k">const</span> <span class="k">struct</span> <span class="n">vringh_config_ops</span> <span class="o">*</span><span class="n">vringh_config</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">list_head</span> <span class="n">vqs</span><span class="p">;</span>
-	<span class="n">u64</span> <span class="n">features</span><span class="p">;</span>
-	<span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cm">/* virtio_driver - operations for a virtio I/O driver */</span>
-<span class="k">struct</span> <span class="n">virtio_driver</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">device_driver</span> <span class="n">driver</span><span class="p">;</span>
-	<span class="k">const</span> <span class="k">struct</span> <span class="n">virtio_device_id</span> <span class="o">*</span><span class="n">id_table</span><span class="p">;</span>
-	<span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">feature_table</span><span class="p">;</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">feature_table_size</span><span class="p">;</span>
-	<span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">feature_table_legacy</span><span class="p">;</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">feature_table_size_legacy</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">validate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">probe</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">scan</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">remove</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">config_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-<span class="cp">#ifdef CONFIG_PM
-</span><span class="cp"></span>	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">freeze</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
-<span class="cp">#endif
-</span><span class="cp"></span><span class="p">};</span>
-</code></pre></div><p>While <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">IBM article</a> describes relationships between those data structures, it has been deprecated since Linux 2.6.35 and there is no longer <code>virtqueue_ops</code> data structure.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// linux/include/linux/virtio.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cm">/* virtqueue - a queue to register buffers for sending or receiving. */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">virtqueue</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">list_head</span> <span class="n">list</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num_free</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* virtio_device - representation of a device using virtio */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">virtio_device</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">bool</span> <span class="n">failed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">bool</span> <span class="n">config_enabled</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">bool</span> <span class="n">config_change_pending</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">spinlock_t</span> <span class="n">config_lock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">device</span> <span class="n">dev</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">virtio_device_id</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="k">struct</span> <span class="n">virtio_config_ops</span> <span class="o">*</span><span class="n">config</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="k">struct</span> <span class="n">vringh_config_ops</span> <span class="o">*</span><span class="n">vringh_config</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">list_head</span> <span class="n">vqs</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">u64</span> <span class="n">features</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* virtio_driver - operations for a virtio I/O driver */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">virtio_driver</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">device_driver</span> <span class="n">driver</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="k">struct</span> <span class="n">virtio_device_id</span> <span class="o">*</span><span class="n">id_table</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">feature_table</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">feature_table_size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">feature_table_legacy</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">feature_table_size_legacy</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">validate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">probe</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">scan</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">remove</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">config_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifdef CONFIG_PM
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">freeze</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">};</span>
+</span></span></code></pre></div><p>While <a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">IBM article</a> describes relationships between those data structures, it has been deprecated since Linux 2.6.35 and there is no longer <code>virtqueue_ops</code> data structure.</p>
 <p>Before Linux 2.6.35, it had been used like:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* DEPRECATED AND NO LONGER EXISTS IN MODERN LINUX. FOR REFERENCE ONLY */</span>
-<span class="c1">// linux/include/linux/virtio.h
-</span><span class="c1"></span><span class="cm">/**
-</span><span class="cm"> * @add_buf: expose buffer to other end
-</span><span class="cm"> * @kick: update after add_buf
-</span><span class="cm"> * @get_buf: get the next used buffer
-</span><span class="cm"> * @disable_cb: disable callbacks
-</span><span class="cm"> * @enable_cb: restart callbacks after disable_cb
-</span><span class="cm"> */</span>
-<span class="k">struct</span> <span class="n">virtqueue_ops</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">add_buf</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span>
-                 <span class="k">struct</span> <span class="n">scatterlist</span> <span class="n">sg</span><span class="p">[],</span>
-                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">out_num</span><span class="p">,</span>
-                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">in_num</span><span class="p">,</span>
-                 <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">kick</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
-  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_buf</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">len</span><span class="p">);</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">disable_cb</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">enable_cb</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="c1">// linux/drivers/virtio/virtio_ring.c
-</span><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">virtqueue_ops</span> <span class="n">vring_vq_ops</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="p">.</span><span class="n">add_buf</span> <span class="o">=</span> <span class="n">vring_add_buf</span><span class="p">,</span>                   <span class="c1">// &lt;--
-</span><span class="c1"></span>  <span class="p">.</span><span class="n">get_buf</span> <span class="o">=</span> <span class="n">vring_get_buf</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">kick</span> <span class="o">=</span> <span class="n">vring_kick</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">disable_cb</span> <span class="o">=</span> <span class="n">vring_disable_cb</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">enable_cb</span> <span class="o">=</span> <span class="n">vring_enable_cb</span><span class="p">,</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">vring_new_virtqueue</span><span class="p">(...)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">vring_virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">;</span>
-  <span class="n">vq</span> <span class="o">=</span> <span class="n">kmalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">num</span><span class="p">,</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
-  <span class="p">...</span>
-  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">.</span><span class="n">vq_ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">vring_vq_ops</span><span class="p">;</span>
-  <span class="p">...</span>
-  <span class="k">return</span> <span class="o">&amp;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// linux/drivers/block/virtio_blk.c
-</span><span class="c1"></span><span class="k">static</span> <span class="kt">bool</span> <span class="nf">do_req</span><span class="p">(</span><span class="k">struct</span> <span class="n">request_queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span>
-                   <span class="k">struct</span> <span class="n">virtio_blk</span> <span class="o">*</span><span class="n">vblk</span><span class="p">,</span>
-                   <span class="k">struct</span> <span class="n">request</span> <span class="o">*</span><span class="n">req</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq_ops</span><span class="o">-&gt;</span><span class="n">add_buf</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">,</span> <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">sg</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">in</span><span class="p">,</span> <span class="n">vbr</span><span class="p">);</span>
-  <span class="p">...</span>
-
-  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">do_virtblk_request</span><span class="p">(</span><span class="k">struct</span> <span class="n">request_queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">do_req</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">vblk</span><span class="p">,</span> <span class="n">req</span><span class="p">);</span>
-  <span class="p">...</span>
-  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq_ops</span><span class="o">-&gt;</span><span class="n">kick</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">int</span> <span class="n">__devinit</span> <span class="nf">virtblk_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="c1">// omitted definition of blk_init_queue (in linux/block/blk-core.c).
-</span><span class="c1"></span>  <span class="c1">// Call the function pointer given as the first function argument for each queue entry.
-</span><span class="c1"></span>  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">dist</span><span class="o">-&gt;</span><span class="n">queue</span> <span class="o">=</span> <span class="n">blk_init_queue</span><span class="p">(</span><span class="n">do_virtblk_request</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-
-<span class="n">statis</span> <span class="k">struct</span> <span class="n">virtio_driver</span> <span class="n">__refdata</span> <span class="n">virtio_blk</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="p">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">virtblk_probe</span><span class="p">,</span>
-<span class="p">};</span>
-</code></pre></div><p>Now without <code>virtqueue_ops</code>, a virtio block device uses virtqueue as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/drivers/virtio/virtio_ring.c
-</span><span class="c1"></span><span class="cm">/* virtqueue_add_sgs - expose buffers to other end (equivalent to virtqueue_ops::add_buf) */</span>
-<span class="kt">int</span> <span class="nf">virtqueue_add_sgs</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">,</span>
-                      <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">sgs</span><span class="p">[],</span>
-                      <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">out_sgs</span><span class="p">,</span>
-                      <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">in_sgs</span><span class="p">,</span>
-                      <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
-                      <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-
-<span class="c1">// linux/drivers/block/virtio_blk.c
-</span><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtblk_add_req</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span>
-                           <span class="k">struct</span> <span class="n">virtblk_req</span> <span class="o">*</span><span class="n">vbr</span><span class="p">,</span>
-                           <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">data_sg</span><span class="p">,</span>
-                           <span class="kt">bool</span> <span class="n">have_data</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="k">return</span> <span class="n">virtqueue_add_sgs</span><span class="p">(</span><span class="n">vq</span><span class="p">,</span> <span class="n">sgs</span><span class="p">,</span> <span class="n">num_out</span><span class="p">,</span> <span class="n">num_in</span><span class="p">,</span> <span class="n">vgr</span><span class="p">,</span> <span class="n">GFP_ATOMIC</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="n">blk_status_t</span> <span class="nf">virtio_queue_rq</span><span class="p">(</span><span class="k">struct</span> <span class="n">blk_mq_hw_ctx</span> <span class="o">*</span><span class="n">hctx</span><span class="p">,</span>
-                                    <span class="k">const</span> <span class="k">struct</span> <span class="n">blk_mq_queue_data</span> <span class="o">*</span><span class="n">bd</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">request</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="n">bd</span><span class="o">-&gt;</span><span class="n">rq</span><span class="p">;</span>
-  <span class="p">...</span>
-
-  <span class="n">virtblk_add_req</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vgs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">,</span> <span class="n">vbr</span><span class="p">,</span> <span class="n">vbr</span><span class="o">-&gt;</span><span class="n">sg</span><span class="p">,</span> <span class="n">num</span><span class="p">);</span>
-  <span class="p">...</span>
-  <span class="n">virtqueue_kick_prepare</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vgs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">);</span>
-  <span class="n">virtqueue_notify</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vqs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">BLK_STS_OK</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">blk_mq_ops</span> <span class="n">virtio_mq_ops</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="p">.</span><span class="n">queue_rq</span>         <span class="o">=</span> <span class="n">virtio_queue_rq</span><span class="p">,</span>          <span class="c1">// &lt;--
-</span><span class="c1"></span>  <span class="p">.</span><span class="n">commit_rqs</span>       <span class="o">=</span> <span class="n">virtio_commit_rqs</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">complete</span>         <span class="o">=</span> <span class="n">virtblk_request_done</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">init_request</span>     <span class="o">=</span> <span class="n">virtblk_init_request</span><span class="p">,</span>
-<span class="cp">#ifdef CONFIG_VIRTIO_BLK_SCSI
-</span><span class="cp"></span>  <span class="p">.</span><span class="n">initialize_rq_fn</span> <span class="o">=</span> <span class="n">virtblk_initialize_rq</span><span class="p">,</span>
-<span class="cp">#endif
-</span><span class="cp"></span>  <span class="p">.</span><span class="n">map_queues</span>       <span class="o">=</span> <span class="n">virtblk_map_queues</span><span class="p">,</span>
-<span class="p">};</span>
-
-<span class="k">static</span> <span class="kt">int</span> <span class="nf">virtblk_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">tag_set</span><span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">virtio_mq_ops</span><span class="p">;</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="k">struct</span> <span class="n">virtio_driver</span> <span class="n">virtio_blk</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="p">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">virtblk_probe</span><span class="p">,</span>
-  <span class="p">...</span>
-<span class="p">};</span>
-</code></pre></div><h3 id="io-request-processing-flow-front-end-virtio-frontend-analysis" class="relative group">I/O Request Processing Flow (front-end) <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#io-request-processing-flow-front-end-virtio-frontend-analysis" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* DEPRECATED AND NO LONGER EXISTS IN MODERN LINUX. FOR REFERENCE ONLY */</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// linux/include/linux/virtio.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @add_buf: expose buffer to other end
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @kick: update after add_buf
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @get_buf: get the next used buffer
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @disable_cb: disable callbacks
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @enable_cb: restart callbacks after disable_cb
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">virtqueue_ops</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">add_buf</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                 <span class="k">struct</span> <span class="n">scatterlist</span> <span class="n">sg</span><span class="p">[],</span>
+</span></span><span class="line"><span class="cl">                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">out_num</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">in_num</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                 <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">kick</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_buf</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">disable_cb</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">enable_cb</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">virtqueue_ops</span> <span class="n">vring_vq_ops</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">add_buf</span> <span class="o">=</span> <span class="n">vring_add_buf</span><span class="p">,</span>                   <span class="c1">// &lt;--
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">.</span><span class="n">get_buf</span> <span class="o">=</span> <span class="n">vring_get_buf</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">kick</span> <span class="o">=</span> <span class="n">vring_kick</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">disable_cb</span> <span class="o">=</span> <span class="n">vring_disable_cb</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">enable_cb</span> <span class="o">=</span> <span class="n">vring_enable_cb</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">vring_new_virtqueue</span><span class="p">(...)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">vring_virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vq</span> <span class="o">=</span> <span class="nf">kmalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">num</span><span class="p">,</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">.</span><span class="n">vq_ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">vring_vq_ops</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="o">&amp;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// linux/drivers/block/virtio_blk.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="kt">bool</span> <span class="nf">do_req</span><span class="p">(</span><span class="k">struct</span> <span class="n">request_queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                   <span class="k">struct</span> <span class="n">virtio_blk</span> <span class="o">*</span><span class="n">vblk</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                   <span class="k">struct</span> <span class="n">request</span> <span class="o">*</span><span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq_ops</span><span class="o">-&gt;</span><span class="nf">add_buf</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">,</span> <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">sg</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">in</span><span class="p">,</span> <span class="n">vbr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">do_virtblk_request</span><span class="p">(</span><span class="k">struct</span> <span class="n">request_queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">do_req</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">vblk</span><span class="p">,</span> <span class="n">req</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vq_ops</span><span class="o">-&gt;</span><span class="nf">kick</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="n">__devinit</span> <span class="nf">virtblk_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// omitted definition of blk_init_queue (in linux/block/blk-core.c).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// Call the function pointer given as the first function argument for each queue entry.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">dist</span><span class="o">-&gt;</span><span class="n">queue</span> <span class="o">=</span> <span class="nf">blk_init_queue</span><span class="p">(</span><span class="n">do_virtblk_request</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">statis</span> <span class="k">struct</span> <span class="n">virtio_driver</span> <span class="n">__refdata</span> <span class="n">virtio_blk</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">virtblk_probe</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>Now without <code>virtqueue_ops</code>, a virtio block device uses virtqueue as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cm">/* virtqueue_add_sgs - expose buffers to other end (equivalent to virtqueue_ops::add_buf) */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">virtqueue_add_sgs</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">sgs</span><span class="p">[],</span>
+</span></span><span class="line"><span class="cl">                      <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">out_sgs</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">in_sgs</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="kt">gfp_t</span> <span class="n">gfp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// linux/drivers/block/virtio_blk.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtblk_add_req</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                           <span class="k">struct</span> <span class="n">virtblk_req</span> <span class="o">*</span><span class="n">vbr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                           <span class="k">struct</span> <span class="n">scatterlist</span> <span class="o">*</span><span class="n">data_sg</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                           <span class="kt">bool</span> <span class="n">have_data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nf">virtqueue_add_sgs</span><span class="p">(</span><span class="n">vq</span><span class="p">,</span> <span class="n">sgs</span><span class="p">,</span> <span class="n">num_out</span><span class="p">,</span> <span class="n">num_in</span><span class="p">,</span> <span class="n">vgr</span><span class="p">,</span> <span class="n">GFP_ATOMIC</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">blk_status_t</span> <span class="nf">virtio_queue_rq</span><span class="p">(</span><span class="k">struct</span> <span class="n">blk_mq_hw_ctx</span> <span class="o">*</span><span class="n">hctx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                    <span class="k">const</span> <span class="k">struct</span> <span class="n">blk_mq_queue_data</span> <span class="o">*</span><span class="n">bd</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">request</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="n">bd</span><span class="o">-&gt;</span><span class="n">rq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">virtblk_add_req</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vgs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">,</span> <span class="n">vbr</span><span class="p">,</span> <span class="n">vbr</span><span class="o">-&gt;</span><span class="n">sg</span><span class="p">,</span> <span class="n">num</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">virtqueue_kick_prepare</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vgs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="n">vblk</span><span class="o">-&gt;</span><span class="n">vqs</span><span class="p">[</span><span class="n">qid</span><span class="p">].</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">BLK_STS_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">blk_mq_ops</span> <span class="n">virtio_mq_ops</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">queue_rq</span>         <span class="o">=</span> <span class="n">virtio_queue_rq</span><span class="p">,</span>          <span class="c1">// &lt;--
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">.</span><span class="n">commit_rqs</span>       <span class="o">=</span> <span class="n">virtio_commit_rqs</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">complete</span>         <span class="o">=</span> <span class="n">virtblk_request_done</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">init_request</span>     <span class="o">=</span> <span class="n">virtblk_init_request</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifdef CONFIG_VIRTIO_BLK_SCSI
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>  <span class="p">.</span><span class="n">initialize_rq_fn</span> <span class="o">=</span> <span class="n">virtblk_initialize_rq</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>  <span class="p">.</span><span class="n">map_queues</span>       <span class="o">=</span> <span class="n">virtblk_map_queues</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtblk_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vblk</span><span class="o">-&gt;</span><span class="n">tag_set</span><span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">virtio_mq_ops</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="k">struct</span> <span class="n">virtio_driver</span> <span class="n">virtio_blk</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="n">probe</span> <span class="o">=</span> <span class="n">virtblk_probe</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><h3 id="io-request-processing-flow-front-end-virtio-frontend-analysis" class="relative group">I/O Request Processing Flow (front-end) <sup id="fnref1:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#io-request-processing-flow-front-end-virtio-frontend-analysis" aria-label="Anchor">#</a></span></h3>
 <p>I/O data flow is well illustrated in 11~15 pages of <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>, while it is also obsolete and should be refined. To be summarized:</p>
 <ol>
 <li><code>virtio_driver</code> in the guest operating system calls <code>virtblk_add_req()</code>, which calls <code>virtqueue_add_sgs()</code> (was <code>virtqueue_ops::add_buf()</code>).</li>
 <li><code>virtio_driver</code> in the guest operating system calls <code>virtqueue_kick_prepare()</code> and <code>virtqueue_notify()</code> in <code>virtio_queue_rq</code> functions (was <code>virtqueue_ops::kick()</code>). Note that two functions should be called for a kick.</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/drivers/virtio/virtio_ring.c
-</span><span class="c1"></span><span class="cm">/**
-</span><span class="cm"> * Instead of virtqueue_kick(), you can do:
-</span><span class="cm"> *    if (virtqueue_kick_prepare(vq))
-</span><span class="cm"> *      virtqueue_notify(vq);
-</span><span class="cm"> */</span>
-
-<span class="c1">// virtqueue_kick_prepare - first half of split virtqueue_kick call.
-</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_kick_prepare</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">);</span>
-
-<span class="c1">// virtqueue_notify - second half of split virtqueue_kick call.
-</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">);</span>
-</code></pre></div><ol start="3">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Instead of virtqueue_kick(), you can do:
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *    if (virtqueue_kick_prepare(vq))
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *      virtqueue_notify(vq);
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// virtqueue_kick_prepare - first half of split virtqueue_kick call.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_kick_prepare</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// virtqueue_notify - second half of split virtqueue_kick call.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">);</span>
+</span></span></code></pre></div><ol start="3">
 <li>Then the back-end device driver will pop the request, handle it, and push result into <code>out</code> buffer (will be explained later, as it is not a part of front-end).</li>
 <li>When context returns to the guest operating system, <code>virtblk_done</code> of <code>virtio_driver</code> is called, which calls <code>virtqueue_get_buf()</code> (was <code>virtqueue_ops::get_buf()</code>).</li>
 </ol>
 <h3 id="kick-internal" class="relative group">Kick Internal <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#kick-internal" aria-label="Anchor">#</a></span></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// linux/drivers/virtio/virtio_ring.c
-</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">vring_virtqueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">to_vvq</span><span class="p">(</span><span class="n">_vq</span><span class="p">);</span>
-
-  <span class="cm">/* Prod other side to tell it about changes. */</span>
-  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">(</span><span class="n">_vq</span><span class="p">);</span>  <span class="c1">// omitted exception handling code
-</span><span class="c1"></span>  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>where <code>vq-&gt;notify()</code> is defined as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// called by vring_new_virtqueue() and vring_create_virtqueue_split().
-</span><span class="c1"></span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">__vring_new_virtqueue</span><span class="p">(...,</span>
-                                        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">notify</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
-                                        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">))</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">notify</span> <span class="o">=</span> <span class="n">notify</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vring_create_virtqueue</span>
-        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span>
-        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span>
-        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">vring_align</span><span class="p">,</span>
-        <span class="k">struct</span> <span class="n">virtio_Device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">,</span>
-        <span class="kt">bool</span> <span class="n">weak_barriers</span><span class="p">,</span>
-        <span class="kt">bool</span> <span class="n">may_reduce_num</span><span class="p">,</span>
-        <span class="kt">bool</span> <span class="n">context</span><span class="p">,</span>
-        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">notify</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
-        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
-        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="k">return</span> <span class="n">vring_create_virtqueue_split</span><span class="p">(...);</span>
-<span class="p">}</span>
-
-<span class="c1">// linux/drivers/virtio/virtio_pci_modern.c
-</span><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">setup_vq</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_pci_device</span> <span class="o">*</span><span class="n">vp_dev</span><span class="p">,</span>
-                                  <span class="k">struct</span> <span class="n">virtio_pci_vq_info</span> <span class="o">*</span><span class="n">info</span><span class="p">,</span>
-                                  <span class="kt">unsigned</span> <span class="n">index</span><span class="p">,</span>
-                                  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">),</span>
-                                  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span>
-                                  <span class="kt">bool</span> <span class="n">ctx</span><span class="p">,</span>
-                                  <span class="n">u16</span> <span class="n">msix_vec</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">vring_create_virtqueue</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
-        <span class="n">SMP_CACHE_BYTES</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vp_dev</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span>
-        <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span>
-        <span class="n">vp_notify</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// linux/drivers/virtio/virtio_pci_common.c
-</span><span class="c1"></span><span class="cm">/* the notify function used when creating a virt queue */</span>
-<span class="kt">bool</span> <span class="n">vp_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
-  <span class="cm">/* we write the queue&#39;s selector into the notification register to
-</span><span class="cm">   * the signal the other end */</span>
-  <span class="n">iowrite16</span><span class="p">(</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="n">__iomem</span> <span class="o">*</span><span class="p">)</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">priv</span><span class="p">);</span>
-  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><!--
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// linux/drivers/virtio/virtio_ring.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="nf">virtqueue_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">_vq</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">vring_virtqueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="nf">to_vvq</span><span class="p">(</span><span class="n">_vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Prod other side to tell it about changes. */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vq</span><span class="o">-&gt;</span><span class="nf">notify</span><span class="p">(</span><span class="n">_vq</span><span class="p">);</span>  <span class="c1">// omitted exception handling code
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>where <code>vq-&gt;notify()</code> is defined as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// called by vring_new_virtqueue() and vring_create_virtqueue_split().
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">__vring_new_virtqueue</span><span class="p">(...,</span>
+</span></span><span class="line"><span class="cl">                                        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">notify</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                                        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vq</span><span class="o">-&gt;</span><span class="n">notify</span> <span class="o">=</span> <span class="n">notify</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vring_create_virtqueue</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">vring_align</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">virtio_Device</span> <span class="o">*</span><span class="n">vdev</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="n">weak_barriers</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="n">may_reduce_num</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="n">context</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">notify</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nf">vring_create_virtqueue_split</span><span class="p">(...);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// linux/drivers/virtio/virtio_pci_modern.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="nf">setup_vq</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtio_pci_device</span> <span class="o">*</span><span class="n">vp_dev</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="k">struct</span> <span class="n">virtio_pci_vq_info</span> <span class="o">*</span><span class="n">info</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">unsigned</span> <span class="n">index</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                                  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">bool</span> <span class="n">ctx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">u16</span> <span class="n">msix_vec</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="nf">vring_create_virtqueue</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">SMP_CACHE_BYTES</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vp_dev</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">vp_notify</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// linux/drivers/virtio/virtio_pci_common.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cm">/* the notify function used when creating a virt queue */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">vp_notify</span><span class="p">(</span><span class="k">struct</span> <span class="n">virtqueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* we write the queue&#39;s selector into the notification register to
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * the signal the other end */</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">iowrite16</span><span class="p">(</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="n">__iomem</span> <span class="o">*</span><span class="p">)</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">priv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><!--
 >
 > - The flags field supports two flags: KVM_MEM_LOG_DIRTY_PAGES and KVM_MEM_READONLY. ... The latter can be set, if KVM_CAP_READONLY_MEM capability allows it, to make a new slot read-only. In this case, writes to this memory will be posed to userspace as KVM_EXIT_MMIO exits. [[Source]](https://www.kernel.org/doc/Documentation/virtual/kvm/api.txt)
 
@@ -793,36 +792,36 @@ Devices are encapsulated by the <code>virtio_device</code>, which refers to <cod
 <li><strong>driver area</strong>: data supplied by <strong>front-end</strong> driver to the back-end device. Also called avail virtqueue. Implemented as <code>vring_avail</code> data structure.</li>
 <li><strong>device area</strong>: data supplied by <strong>back-end</strong> device. Also called used virtqueue. Implemented as <code>vring_used</code> data structure.</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">linux</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">uapi</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">virtio_ring</span><span class="p">.</span><span class="n">h</span>
-
-<span class="cm">/* Virtio ring descriptors: 16 bytes. These can chain together via &#34;next&#34;. */</span>
-<span class="k">struct</span> <span class="n">vring_desc</span> <span class="p">{</span>
-  <span class="n">__virtio64</span> <span class="n">addr</span><span class="p">;</span>  <span class="cm">/* Address (guest-physical). */</span>
-  <span class="n">__virtio32</span> <span class="n">len</span><span class="p">;</span>   <span class="cm">/* Length. */</span>
-  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span> <span class="cm">/* The flags as indicated above. */</span>
-  <span class="n">__virtio16</span> <span class="n">next</span><span class="p">;</span>  <span class="cm">/* We chain unused descriptors via this, too */</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">vring_avail</span> <span class="p">{</span>
-  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span>
-  <span class="n">__virtio16</span> <span class="n">idx</span><span class="p">;</span>
-  <span class="n">__virtio16</span> <span class="n">ring</span><span class="p">[];</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">vring_used_elem</span> <span class="p">{</span>
-  <span class="n">__virtio32</span> <span class="n">id</span><span class="p">;</span>  <span class="cm">/* Index of start of used descriptor chain. */</span>
-  <span class="n">__virtio32</span> <span class="n">len</span><span class="p">;</span> <span class="cm">/* Total length of the descriptor chain which was used (written to) */</span>
-<span class="p">};</span>
-
-<span class="k">typedef</span> <span class="k">struct</span> <span class="n">vring_used_elem</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">aligned</span><span class="p">(</span><span class="n">VRING_USED_ALIGN_SIZE</span><span class="p">)))</span>
-      <span class="n">vring_used_elem_t</span><span class="p">;</span>
-
-<span class="k">struct</span> <span class="n">vring_used</span> <span class="p">{</span>
-  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span>
-  <span class="n">__virtio16</span> <span class="n">idx</span><span class="p">;</span>
-  <span class="n">vring_used_elem_t</span> <span class="n">ring</span><span class="p">[];</span>
-<span class="p">}</span>
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">linux</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">uapi</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">virtio_ring</span><span class="p">.</span><span class="n">h</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* Virtio ring descriptors: 16 bytes. These can chain together via &#34;next&#34;. */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">vring_desc</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio64</span> <span class="n">addr</span><span class="p">;</span>  <span class="cm">/* Address (guest-physical). */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio32</span> <span class="n">len</span><span class="p">;</span>   <span class="cm">/* Length. */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span> <span class="cm">/* The flags as indicated above. */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">next</span><span class="p">;</span>  <span class="cm">/* We chain unused descriptors via this, too */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">vring_avail</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">idx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">ring</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">vring_used_elem</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio32</span> <span class="n">id</span><span class="p">;</span>  <span class="cm">/* Index of start of used descriptor chain. */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio32</span> <span class="n">len</span><span class="p">;</span> <span class="cm">/* Total length of the descriptor chain which was used (written to) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">vring_used_elem</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="nf">aligned</span><span class="p">(</span><span class="n">VRING_USED_ALIGN_SIZE</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">vring_used_elem_t</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">vring_used</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__virtio16</span> <span class="n">idx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">vring_used_elem_t</span> <span class="n">ring</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
   
   
   
@@ -834,7 +833,7 @@ Devices are encapsulated by the <code>virtio_device</code>, which refers to <cod
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210310/virtio-descriptor-table.png" alt="image" />
-        <figcaption>virtqueue internal data example. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels">[Source]</a></figcaption>
+        <figcaption>virtqueue internal data example. <a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -847,125 +846,125 @@ Devices are encapsulated by the <code>virtio_device</code>, which refers to <cod
 <h3 id="back-end-virtio" class="relative group">Back-end virtio <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#back-end-virtio" aria-label="Anchor">#</a></span></h3>
 <p>According to <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>, when a client (the guest) writes data to the address, it will trigger a VM-exit with reason <code>EPT_MICONFIGURATION</code> page fault abnormality, forwarding the execution context from the guest operating system to KVM VM-exit handler.
 If the KVM finds that this address falls within the registered ioeventfd address range, it will notify QEMU by writing the associated eventfd.</p>
-<p><code>vp_notify()</code> is called by virtio front-end device driver in the guest operating system, an interrupt occurs and the execution context has been forwarded from the guest operating system to QEMU userspace process via <strong>ioeventfd</strong> <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.
+<p><code>vp_notify()</code> is called by virtio front-end device driver in the guest operating system, an interrupt occurs and the execution context has been forwarded from the guest operating system to QEMU userspace process via <strong>ioeventfd</strong> <sup id="fnref1:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.
 QEMU uses <code>kvm_set_ioeventfd_mmio()</code> and <code>kvm_set_ioeventfd_pio()</code> functions to register ioeventfds to KVM with specific address, then later KVM will forward the execution context when the guest writes this address space.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp"># qemu/hw/accel/kvm-all.c
-</span><span class="cp"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">kvm_set_ioeventfd_mmio</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">hwaddr</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">,</span>
-                                  <span class="kt">bool</span> <span class="n">assign</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">datamatch</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">kvm_ioeventfd</span> <span class="n">iofd</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">datamatch</span> <span class="o">=</span> <span class="n">datamatch</span> <span class="o">?</span> <span class="n">adjust_ioeventfd_endianness</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">.</span><span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">,</span>
-  <span class="p">};</span>
-
-  <span class="n">kvm_vm_ioctl</span><span class="p">(</span><span class="n">kvm_state</span><span class="p">,</span> <span class="n">KVM_IOEVENTFD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iofd</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">kvm_mem_ioeventfd_add</span><span class="p">(</span><span class="n">MemoryListener</span> <span class="o">*</span><span class="n">listener</span><span class="p">,</span>
-                                  <span class="n">MemoryRegionSection</span> <span class="o">*</span><span class="n">section</span><span class="p">,</span>
-                                  <span class="kt">bool</span> <span class="n">match_data</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">data</span><span class="p">,</span>
-                                  <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">event_notifier_get_fd</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
-  <span class="n">kvm_set_ioeventfd_mmio</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">section</span><span class="o">-&gt;</span><span class="n">offset_within_address_space</span><span class="p">,</span>
-                         <span class="n">data</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">int128_get64</span><span class="p">(</span><span class="n">section</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">),</span> <span class="n">match_data</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">int</span> <span class="nf">kvm_init</span><span class="p">(</span><span class="n">MachineState</span> <span class="o">*</span><span class="n">ms</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">kvm_eventfds_allowed</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">s</span><span class="o">-&gt;</span><span class="n">memory_listener</span><span class="p">.</span><span class="n">listener</span><span class="p">.</span><span class="n">eventfd_add</span> <span class="o">=</span> <span class="n">kvm_mem_ioeventfd_add</span><span class="p">;</span>
-    <span class="n">s</span><span class="o">-&gt;</span><span class="n">memory_listener</span><span class="p">.</span><span class="n">listener</span><span class="p">.</span><span class="n">eventfd_del</span> <span class="o">=</span> <span class="n">kvm_mem_ioeventfd_del</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">memory_listener_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kvm_io_listener</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_space_io</span><span class="p">);</span>
-  <span class="n">memory_listener_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kvm_coalesced_pio_listener</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_space_io</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><p>where I guess ioeventfd comes from virtio area:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// qemu/hw/virtio/virtio-bus.c
-</span><span class="c1"></span>
-<span class="cm">/*
-</span><span class="cm"> * This function switches ioeventfd on/off in the device.
-</span><span class="cm"> * The caller must set or clear the handlers for the EventNotifier.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">virtio_bus_set_host_notifier</span><span class="p">(</span><span class="n">VirtioBusState</span> <span class="o">*</span><span class="n">bus</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">assign</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">VirtioBusClass</span> <span class="o">*</span><span class="n">k</span> <span class="o">=</span> <span class="n">VIRTIO_BUS_GET_CLASS</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
-  <span class="n">DeviceState</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">DEVICE</span><span class="p">(</span><span class="n">BUS</span><span class="p">(</span><span class="n">bus</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">);</span>
-
-  <span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span> <span class="o">=</span> <span class="n">virtio_bus_get_device</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
-  <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">virtio_get_queue</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
-  <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">notifier</span> <span class="o">=</span> <span class="n">virtio_queue_get_host_notifier</span><span class="p">(</span><span class="n">vq</span><span class="p">);</span>
-
-  <span class="n">r</span> <span class="o">=</span> <span class="n">event_notifier_init</span><span class="p">(</span><span class="n">notifier</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">k</span><span class="o">-&gt;</span><span class="n">ioeventfd_assign</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">notifier</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-  <span class="n">virtio_queue_set_host_notifier_enabled</span><span class="p">(</span><span class="n">vq</span><span class="p">,</span> <span class="n">assign</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-
-<span class="c1">// qemu/hw/virtio/virtio-pci.c
-</span><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtio_pci_ioeventfd_assign</span><span class="p">(</span><span class="n">DeviceState</span> <span class="o">*</span><span class="n">d</span><span class="p">,</span> <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">notifier</span><span class="p">,</span>
-                                       <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">assign</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">VirtIOPCIProxy</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">to_virtio_pci_proxy</span><span class="p">(</span><span class="n">d</span><span class="p">);</span>
-  <span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span> <span class="o">=</span> <span class="n">virtio_bus_get_device</span><span class="p">(</span><span class="o">&amp;</span><span class="n">proxy</span><span class="o">-&gt;</span><span class="n">bus</span><span class="p">);</span>
-  <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="n">virtio_get_queue</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
-
-  <span class="n">MemoryRegion</span> <span class="o">*</span><span class="n">modern_mr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">proxy</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">.</span><span class="n">mr</span><span class="p">;</span>
-  <span class="n">hwaddr</span> <span class="n">modern_addr</span> <span class="o">=</span> <span class="n">virtio_pci_queue_mem_multi</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span> <span class="o">*</span>
-                       <span class="n">virtio_get_queue_index</span><span class="p">(</span><span class="n">vq</span><span class="p">);</span>
-  <span class="n">memory_region_add_eventfd</span><span class="p">(</span><span class="n">modern_mr</span><span class="p">,</span> <span class="n">modern_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="nb">false</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">notifier</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-
-<span class="c1">// qemu/softmmu/memory.c
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">memory_region_add_eventfd</span><span class="p">(</span><span class="n">MemoryRegion</span> <span class="o">*</span><span class="n">mr</span><span class="p">,</span>
-                               <span class="n">hwaddr</span> <span class="n">addr</span><span class="p">,</span>
-                               <span class="kt">unsigned</span> <span class="n">size</span><span class="p">,</span>
-                               <span class="kt">bool</span> <span class="n">match_data</span><span class="p">,</span>
-                               <span class="kt">uint64_t</span> <span class="n">data</span><span class="p">,</span>
-                               <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">MemoryRegionIoeventfd</span> <span class="n">mrfd</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">addr</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">int128_make64</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span>
-    <span class="p">.</span><span class="n">addr</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">int128_make64</span><span class="p">(</span><span class="n">size</span><span class="p">),</span>
-    <span class="p">.</span><span class="n">match_data</span> <span class="o">=</span> <span class="n">match_data</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="p">,</span>
-  <span class="p">};</span>
-
-  <span class="n">memory_region_transaction_begin</span><span class="p">();</span>
-  <span class="n">memory_region_ioeventfd_before</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mrfd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-  <span class="o">++</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">;</span>
-  <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span> <span class="o">=</span> <span class="n">g_realloc</span><span class="p">(</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">)</span> <span class="o">*</span> <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">);</span>
-  <span class="n">memmove</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">));</span>
-  <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mrfd</span><span class="p">;</span>
-  <span class="n">memory_region_transaction_commit</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">memory_region_transaction_commit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">;</span>
-  <span class="p">...</span>
-  <span class="n">QTAILQ_FOREACH</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_spaces</span><span class="p">,</span> <span class="n">address_spaces_link</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">address_space_update_ioeventfd</span><span class="p">(</span><span class="n">as</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">address_space_update_ioeventfds</span><span class="p">(</span><span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">address_space_add_del_ioeventfds</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="n">ioeventfds</span><span class="p">,</span> <span class="n">ioeventfd_nb</span><span class="p">,</span>
-                                   <span class="n">as</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">,</span> <span class="n">as</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">address_space_add_del_ioeventfds</span><span class="p">(</span><span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">,</span>
-                                             <span class="n">MemoryRegionIoeventfd</span> <span class="o">*</span><span class="n">fds_new</span><span class="p">,</span>
-                                             <span class="kt">unsigned</span> <span class="n">fds_new_nb</span><span class="p">,</span>
-                                             <span class="n">MemoryRegionIoeventfd</span> <span class="o">*</span><span class="n">fds_old</span><span class="p">,</span>
-                                             <span class="kt">unsigned</span> <span class="n">fds_old_nb</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">MEMORY_LISTENER_CALL</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="n">eventfd_add</span><span class="p">,</span> <span class="n">Reverse</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">section</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">match_data</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>where <code>MEMORY_LISTENER_CALL</code> seems to call the registered eventfd add memory listener <code>kvm_mem_ioeventfd_add()</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp"># qemu/hw/accel/kvm-all.c
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">kvm_set_ioeventfd_mmio</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">hwaddr</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">bool</span> <span class="n">assign</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">datamatch</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">kvm_ioeventfd</span> <span class="n">iofd</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">datamatch</span> <span class="o">=</span> <span class="n">datamatch</span> <span class="o">?</span> <span class="nf">adjust_ioeventfd_endianness</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">kvm_vm_ioctl</span><span class="p">(</span><span class="n">kvm_state</span><span class="p">,</span> <span class="n">KVM_IOEVENTFD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iofd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">kvm_mem_ioeventfd_add</span><span class="p">(</span><span class="n">MemoryListener</span> <span class="o">*</span><span class="n">listener</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">MemoryRegionSection</span> <span class="o">*</span><span class="n">section</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">bool</span> <span class="n">match_data</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="nf">event_notifier_get_fd</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">kvm_set_ioeventfd_mmio</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">section</span><span class="o">-&gt;</span><span class="n">offset_within_address_space</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="n">data</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nf">int128_get64</span><span class="p">(</span><span class="n">section</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">),</span> <span class="n">match_data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">kvm_init</span><span class="p">(</span><span class="n">MachineState</span> <span class="o">*</span><span class="n">ms</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">kvm_eventfds_allowed</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">-&gt;</span><span class="n">memory_listener</span><span class="p">.</span><span class="n">listener</span><span class="p">.</span><span class="n">eventfd_add</span> <span class="o">=</span> <span class="n">kvm_mem_ioeventfd_add</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">-&gt;</span><span class="n">memory_listener</span><span class="p">.</span><span class="n">listener</span><span class="p">.</span><span class="n">eventfd_del</span> <span class="o">=</span> <span class="n">kvm_mem_ioeventfd_del</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memory_listener_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kvm_io_listener</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_space_io</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memory_listener_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kvm_coalesced_pio_listener</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_space_io</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>where I guess ioeventfd comes from virtio area:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// qemu/hw/virtio/virtio-bus.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * This function switches ioeventfd on/off in the device.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * The caller must set or clear the handlers for the EventNotifier.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">virtio_bus_set_host_notifier</span><span class="p">(</span><span class="n">VirtioBusState</span> <span class="o">*</span><span class="n">bus</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">assign</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VirtioBusClass</span> <span class="o">*</span><span class="n">k</span> <span class="o">=</span> <span class="nf">VIRTIO_BUS_GET_CLASS</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">DeviceState</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="nf">DEVICE</span><span class="p">(</span><span class="nf">BUS</span><span class="p">(</span><span class="n">bus</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span> <span class="o">=</span> <span class="nf">virtio_bus_get_device</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="nf">virtio_get_queue</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">notifier</span> <span class="o">=</span> <span class="nf">virtio_queue_get_host_notifier</span><span class="p">(</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">r</span> <span class="o">=</span> <span class="nf">event_notifier_init</span><span class="p">(</span><span class="n">notifier</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">k</span><span class="o">-&gt;</span><span class="nf">ioeventfd_assign</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">notifier</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">virtio_queue_set_host_notifier_enabled</span><span class="p">(</span><span class="n">vq</span><span class="p">,</span> <span class="n">assign</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// qemu/hw/virtio/virtio-pci.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">virtio_pci_ioeventfd_assign</span><span class="p">(</span><span class="n">DeviceState</span> <span class="o">*</span><span class="n">d</span><span class="p">,</span> <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">notifier</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                       <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">assign</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VirtIOPCIProxy</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="nf">to_virtio_pci_proxy</span><span class="p">(</span><span class="n">d</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span> <span class="o">=</span> <span class="nf">virtio_bus_get_device</span><span class="p">(</span><span class="o">&amp;</span><span class="n">proxy</span><span class="o">-&gt;</span><span class="n">bus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span> <span class="o">=</span> <span class="nf">virtio_get_queue</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">MemoryRegion</span> <span class="o">*</span><span class="n">modern_mr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">proxy</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">.</span><span class="n">mr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">hwaddr</span> <span class="n">modern_addr</span> <span class="o">=</span> <span class="nf">virtio_pci_queue_mem_multi</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span> <span class="o">*</span>
+</span></span><span class="line"><span class="cl">                       <span class="nf">virtio_get_queue_index</span><span class="p">(</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memory_region_add_eventfd</span><span class="p">(</span><span class="n">modern_mr</span><span class="p">,</span> <span class="n">modern_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="nb">false</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">notifier</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// qemu/softmmu/memory.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">memory_region_add_eventfd</span><span class="p">(</span><span class="n">MemoryRegion</span> <span class="o">*</span><span class="n">mr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="n">hwaddr</span> <span class="n">addr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="kt">unsigned</span> <span class="n">size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="kt">bool</span> <span class="n">match_data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="kt">uint64_t</span> <span class="n">data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="n">EventNotifier</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">MemoryRegionIoeventfd</span> <span class="n">mrfd</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">addr</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="nf">int128_make64</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">addr</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="nf">int128_make64</span><span class="p">(</span><span class="n">size</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">match_data</span> <span class="o">=</span> <span class="n">match_data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">memory_region_transaction_begin</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memory_region_ioeventfd_before</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mrfd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">++</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span> <span class="o">=</span> <span class="nf">g_realloc</span><span class="p">(</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">)</span> <span class="o">*</span> <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memmove</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mr</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mrfd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memory_region_transaction_commit</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">memory_region_transaction_commit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">QTAILQ_FOREACH</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">address_spaces</span><span class="p">,</span> <span class="n">address_spaces_link</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">address_space_update_ioeventfd</span><span class="p">(</span><span class="n">as</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">address_space_update_ioeventfds</span><span class="p">(</span><span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">address_space_add_del_ioeventfds</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="n">ioeventfds</span><span class="p">,</span> <span class="n">ioeventfd_nb</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                   <span class="n">as</span><span class="o">-&gt;</span><span class="n">ioeventfds</span><span class="p">,</span> <span class="n">as</span><span class="o">-&gt;</span><span class="n">ioeventfd_nb</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">address_space_add_del_ioeventfds</span><span class="p">(</span><span class="n">AddressSpace</span> <span class="o">*</span><span class="n">as</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="n">MemoryRegionIoeventfd</span> <span class="o">*</span><span class="n">fds_new</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="kt">unsigned</span> <span class="n">fds_new_nb</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="n">MemoryRegionIoeventfd</span> <span class="o">*</span><span class="n">fds_old</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="kt">unsigned</span> <span class="n">fds_old_nb</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">MEMORY_LISTENER_CALL</span><span class="p">(</span><span class="n">as</span><span class="p">,</span> <span class="n">eventfd_add</span><span class="p">,</span> <span class="n">Reverse</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">section</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">match_data</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>where <code>MEMORY_LISTENER_CALL</code> seems to call the registered eventfd add memory listener <code>kvm_mem_ioeventfd_add()</code>.</p>
 <!--
 A virtio front-end device driver running on the guest operating system puts data into the virtqueue and kicks to pass its execution context to host kernel module (KVM) and eventually to QEMU userspace process.
 This is because the guest operating system **allocates its virtqueues in the shared memory** shared with QEMU userspace process.
@@ -983,7 +982,7 @@ Red Hat calls data communication that uses these shared memory regions as **data
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210310/virtio-net-qemu.png" alt="image" />
-        <figcaption>virtio-net example architecture. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net">[Source]</a></figcaption>
+        <figcaption>virtio-net example architecture. <a href="https://www.redhat.com/en/blog/deep-dive-virtio-networking-and-vhost-net"   target="_blank">[Source]</a></figcaption>
       </figure>
     
   
@@ -993,35 +992,35 @@ Red Hat calls data communication that uses these shared memory regions as **data
 With the knowledge of virtqueue internal data structures (descriptor, avail area, and used area), we can now understand how communication actually happens.
 -->
 <p>Once finished reading/writing operations, QEMU <em>injects</em> an IRQ to notify that the operation is complete.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// qemu/hw/virtio.c
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">virtio_notify_irqfd</span><span class="p">(</span><span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span><span class="p">,</span> <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">virtio_set_isr</span><span class="p">(</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span> <span class="mh">0x1</span><span class="p">);</span>
-  <span class="n">event_notifier_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">guest_notifier</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// qemu/hw/block/dataplane/virtio-blk.c
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">virtio_blk_data_plane_notify</span><span class="p">(</span><span class="n">VirtIOBlockDataPlane</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">virtio_notify_irqfd</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span> <span class="n">vq</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// qemu/hw/block/virtio-blk.c
-</span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">virtio_blk_req_complete</span><span class="p">(</span><span class="n">VirtIOBlockReq</span> <span class="o">*</span><span class="n">req</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane_started</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane_disabled</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">virtio_blk_data_plane_notify</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">virtio_notify</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">virtio_blk_rw_complete</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">opaque</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">VirtIOBlockReq</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="n">opaque</span><span class="p">;</span>
-  <span class="p">...</span>
-  <span class="n">virtio_blk_req_complete</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">VIRTIO_BLK_S_OK</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="summary-io-virtualization" class="relative group">Summary <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#summary-io-virtualization" aria-label="Anchor">#</a></span></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// qemu/hw/virtio.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">virtio_notify_irqfd</span><span class="p">(</span><span class="n">VirtIODevice</span> <span class="o">*</span><span class="n">vdev</span><span class="p">,</span> <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">virtio_set_isr</span><span class="p">(</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span> <span class="mh">0x1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">event_notifier_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vq</span><span class="o">-&gt;</span><span class="n">guest_notifier</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// qemu/hw/block/dataplane/virtio-blk.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">virtio_blk_data_plane_notify</span><span class="p">(</span><span class="n">VirtIOBlockDataPlane</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">VirtQueue</span> <span class="o">*</span><span class="n">vq</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">virtio_notify_irqfd</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">vdev</span><span class="p">,</span> <span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// qemu/hw/block/virtio-blk.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">virtio_blk_req_complete</span><span class="p">(</span><span class="n">VirtIOBlockReq</span> <span class="o">*</span><span class="n">req</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane_started</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane_disabled</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">virtio_blk_data_plane_notify</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">dataplane</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">virtio_notify</span><span class="p">(</span><span class="n">vdev</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">vq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">virtio_blk_rw_complete</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">opaque</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VirtIOBlockReq</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="n">opaque</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">virtio_blk_req_complete</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">VIRTIO_BLK_S_OK</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="summary-io-virtualization" class="relative group">Summary <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#summary-io-virtualization" aria-label="Anchor">#</a></span></h2>
 
   
   
@@ -1034,7 +1033,7 @@ With the knowledge of virtqueue internal data structures (descriptor, avail area
     
       <figure>
         <img class="my-0 rounded-md" src="/assets/images/210310/KVM_QEMU_virtIO_Process.png" alt="image" />
-        <figcaption>VirtI/O process diagram overview. <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/">[Source (Korean)]</a></figcaption>
+        <figcaption>VirtI/O process diagram overview. <a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/"   target="_blank">[Source (Korean)]</a></figcaption>
       </figure>
     
   
@@ -1047,35 +1046,35 @@ With the knowledge of virtqueue internal data structures (descriptor, avail area
 <li>When the guest execution is resumed, the request I/O operation is done and virtio device driver gets result data from the virtqueue (7, 8, 5).</li>
 </ul>
 <p>The next part explains overheads of virtio, and introduce vhost that can increase performance of virtio.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://programmersought.com/article/38004209835/"   target="_blank">Virtualization technology implementation - KVM I/O virtualization</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p><a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">IBM Developer: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p><a href="https://developer.ibm.com/technologies/linux/articles/l-virtio/"   target="_blank">IBM Developer: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref2:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p><a href="https://programmersought.com/article/58091005566/"   target="_blank">ProgrammerSought: IO Virtualization - virtio-blk front-end Driver Analysis</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p><a href="https://programmersought.com/article/58091005566/"   target="_blank">ProgrammerSought: IO Virtualization - virtio-blk front-end Driver Analysis</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://programmersought.com/article/11831007453/"   target="_blank">ProgrammerSought: IO Virtualization - virtio Introduction and Code Analysis</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p><a href="https://www.cs.cmu.edu/~412/lectures/Virtio_2015-10-14.pdf"   target="_blank">CMU Lecture Slide: Virtio: An I/O Virtualization Framework for Linux</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:6" role="doc-endnote">
+<li id="fn:6">
 <p><a href="https://www.redhat.com/en/blog/virtqueues-and-virtio-ring-how-data-travels"   target="_blank">Red Hat Blog: Virtqueues and Virtio Ring: How the Data Travles</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:7" role="doc-endnote">
-<p><a href="https://www.programmersought.com/article/83465096784/"   target="_blank">ProgrammerSought: eventfd in QEMU-ioeventfd</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:7">
+<p><a href="https://www.programmersought.com/article/83465096784/"   target="_blank">ProgrammerSought: eventfd in QEMU-ioeventfd</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:8" role="doc-endnote">
+<li id="fn:8">
 <p><a href="https://ssup2.github.io/theory_analysis/IO_Virtualization_Software/"   target="_blank">Ssup2 Blog: I/O Virtualization Software (Korean)</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

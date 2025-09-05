@@ -48,7 +48,7 @@ Importing Packages without Go Modules # Go programmers can import third-party pa
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -57,7 +57,7 @@ Importing Packages without Go Modules # Go programmers can import third-party pa
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -81,7 +81,6 @@ Importing Packages without Go Modules # Go programmers can import third-party pa
 <meta property="og:url" content="/2020-04-04/go-modules/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-04-04T19:27:00+09:00" />
 <meta property="article:modified_time" content="2020-04-04T19:27:00+09:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
-
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Go Modules: an Alternative to GOPATH for Package Distribution"/>
@@ -429,15 +428,15 @@ if (!doNotTrack) {
 <p>Google introduced Go module as <em>an alternative to GOPATH for versioning and package distribution</em>. At first I did not understand what it means specifically. Here is my explanaion.</p>
 <h2 id="importing-packages-without-go-modules" class="relative group">Importing Packages without Go Modules <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#importing-packages-without-go-modules" aria-label="Anchor">#</a></span></h2>
 <p>Go programmers can import third-party packages (i.e. libraries in C/C++) in their programs. For example, you can use Google&rsquo;s comparison package <code>github.com/google/go-cmp/cmp</code> as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-<span class="kn">import</span> <span class="s">&#34;github.com/google/go-cmp/cmp&#34;</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Diff</span><span class="p">(</span><span class="s">&#34;Hello World&#34;</span><span class="p">,</span> <span class="s">&#34;Hello Go&#34;</span><span class="p">))</span>
-<span class="p">}</span>
-</code></pre></div><p>Without Go module enabled, the module <code>go-cmp</code> should be in <code>GOPATH</code>, so that Go build system knows where the imported packages are <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;github.com/google/go-cmp/cmp&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Diff</span><span class="p">(</span><span class="s">&#34;Hello World&#34;</span><span class="p">,</span> <span class="s">&#34;Hello Go&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Without Go module enabled, the module <code>go-cmp</code> should be in <code>GOPATH</code>, so that Go build system knows where the imported packages are <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
 <p><code>GOPATH</code> has a hierarchical directory structure. It is called <em>Go Workspace</em>.</p>
 <pre tabindex="0"><code>$GOPATH
   bin/                       # Directory where executable binaries are stored
@@ -447,14 +446,14 @@ if (!doNotTrack) {
   pkg/                       # Directory where compiled Go object files are stored
     ...
 </code></pre><p>Here is an example of GOPATH structure:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ docker run -it golang:1.13 /bin/bash
-$ <span class="nv">GO111MODULE</span><span class="o">=</span>off go get github.com/google/go-cmp/cmp
-$ tree -d -L <span class="m">5</span> <span class="nv">$GOPATH</span>   <span class="c1"># assume tree is installed</span>
-/go
-<span class="p">|</span>-- bin
-<span class="p">|</span>-- pkg/linux_amd64/github.com/google/go-cmp
-<span class="sb">`</span>-- src/github.com/google/go-cmp/cmp
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ docker run -it golang:1.13 /bin/bash
+</span></span><span class="line"><span class="cl">$ <span class="nv">GO111MODULE</span><span class="o">=</span>off go get github.com/google/go-cmp/cmp
+</span></span><span class="line"><span class="cl">$ tree -d -L <span class="m">5</span> <span class="nv">$GOPATH</span>   <span class="c1"># assume tree is installed</span>
+</span></span><span class="line"><span class="cl">/go
+</span></span><span class="line"><span class="cl"><span class="p">|</span>-- bin
+</span></span><span class="line"><span class="cl"><span class="p">|</span>-- pkg/linux_amd64/github.com/google/go-cmp
+</span></span><span class="line"><span class="cl"><span class="sb">`</span>-- src/github.com/google/go-cmp/cmp
+</span></span></code></pre></div><blockquote>
 <p><code>GO111MODULE=off</code> indicates Go runtime to use legacy GOPATH mode, not Go module. Hence, <code>go get</code> will download <code>github.com/google/go-cmp/cmp</code> package following the legacy GOPATH mode.
 Note: legacy versions of golang Dockerfile are being deleted from Docker hub. In the future, Go may no longer support GO111MODULE for compatibility in the future.</p>
 </blockquote>
@@ -493,23 +492,23 @@ $ tree -d -L 5 $GOPATH
 <h4 id="working-scenario-go-project-with-one-package-outside-gopath" class="relative group">Working Scenario: Go project with one package, outside <code>$GOPATH</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#working-scenario-go-project-with-one-package-outside-gopath" aria-label="Anchor">#</a></span></h4>
 <p>For example, I am implementing a project named <code>testproject</code>, with one package <code>main</code> with two files <code>main.go</code> and <code>test_func.go</code> as follows:</p>
 <p>main.go:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nf">TestFunc</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div><p>test_func.go:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="s">&#34;k8s.io/klog&#34;</span>
-
-<span class="kd">func</span> <span class="nf">TestFunc</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Hello Go Modules!&#34;</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go get k8s.io/klog
-/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
-I0404 14:58:55.589292    <span class="m">1445</span> test_func.go:6<span class="o">]</span> Hello Go Modules!
-</code></pre></div><p>Surprisingly, it runs, even the project is <strong>outside <code>$GOPATH</code></strong>. Actually, the reason all projects must be in <code>$GOPATH</code> is due to <strong>subpackages</strong>. One <code>main</code> package is not the case, so that it is not confined by this limitation.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">TestFunc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>test_func.go:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;k8s.io/klog&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestFunc</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Hello Go Modules!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go get k8s.io/klog
+</span></span><span class="line"><span class="cl">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
+</span></span><span class="line"><span class="cl">I0404 14:58:55.589292    <span class="m">1445</span> test_func.go:6<span class="o">]</span> Hello Go Modules!
+</span></span></code></pre></div><p>Surprisingly, it runs, even the project is <strong>outside <code>$GOPATH</code></strong>. Actually, the reason all projects must be in <code>$GOPATH</code> is due to <strong>subpackages</strong>. One <code>main</code> package is not the case, so that it is not confined by this limitation.</p>
 <h4 id="problematic-scenario-go-project-with-more-than-one-packages-outside-gopath" class="relative group">Problematic Scenario: Go project with more than one packages, outside <code>$GOPATH</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#problematic-scenario-go-project-with-more-than-one-packages-outside-gopath" aria-label="Anchor">#</a></span></h4>
 <p>Let&rsquo;s modify it to have one subpackage <code>test</code>:</p>
 <pre tabindex="0"><code>$ tree /anywhere/outside/gopath/testproject
@@ -518,22 +517,22 @@ I0404 14:58:55.589292    <span class="m">1445</span> test_func.go:6<span class="
 `-- test
     `-- func.go
 </code></pre><p>main.go:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="s">&#34;XXX&#34;</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">XXX</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div><p>test/func.go:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">test</span>
-
-<span class="kn">import</span> <span class="s">&#34;k8s.io/klog&#34;</span>
-
-<span class="kd">func</span> <span class="nf">TestFunc</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Hello Go Modules!&#34;</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div><p>Without Go module enabled, We cannot specify our <code>test</code> package in <code>main</code> package, so we cannot find out which should be in <code>&quot;XXX&quot;</code> location and cannot build this project. The only way to make it work without Go module was to move the project into <code>$GOPATH</code>, like:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;XXX&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">XXX</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>test/func.go:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">test</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;k8s.io/klog&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestFunc</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">klog</span><span class="p">.</span><span class="nf">Infoln</span><span class="p">(</span><span class="s">&#34;Hello Go Modules!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Without Go module enabled, We cannot specify our <code>test</code> package in <code>main</code> package, so we cannot find out which should be in <code>&quot;XXX&quot;</code> location and cannot build this project. The only way to make it work without Go module was to move the project into <code>$GOPATH</code>, like:</p>
 <pre tabindex="0"><code>$ tree $GOPATH/src/insujang.github.io
 /go/src/insujang.github.io
 `-- testproject
@@ -541,38 +540,38 @@ I0404 14:58:55.589292    <span class="m">1445</span> test_func.go:6<span class="
     `-- test
         `-- func.go
 </code></pre><p>Now we can specify the path of <code>test</code> package: <code>insujang.github.io/testproject/test</code> based on <code>$GOPATH/src</code>. So main.go can be modified to:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="s">&#34;insujang.github.io/testproject/test&#34;</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">test</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div><p>which makes our project be able to run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">$GOPATH</span>/src/insujang.github.io/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
-I0404 15:09:40.239612    <span class="m">2034</span> func.go:6<span class="o">]</span> Hello Go Modules!
-</code></pre></div><h3 id="with-go-modules-go-projects-are-no-longer-confined-to-gopath" class="relative group">With Go modules, Go projects are no longer confined to <code>$GOPATH</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#with-go-modules-go-projects-are-no-longer-confined-to-gopath" aria-label="Anchor">#</a></span></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;insujang.github.io/testproject/test&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">test</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>which makes our project be able to run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">$GOPATH</span>/src/insujang.github.io/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
+</span></span><span class="line"><span class="cl">I0404 15:09:40.239612    <span class="m">2034</span> func.go:6<span class="o">]</span> Hello Go Modules!
+</span></span></code></pre></div><h3 id="with-go-modules-go-projects-are-no-longer-confined-to-gopath" class="relative group">With Go modules, Go projects are no longer confined to <code>$GOPATH</code> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#with-go-modules-go-projects-are-no-longer-confined-to-gopath" aria-label="Anchor">#</a></span></h3>
 <p>The example illustrated above shows how Go restricts the structure and location of Go projects. Go module alleviates this constraints, enabling Go projects be outside <code>$GOPATH</code>.</p>
 <p>Let&rsquo;s go back to the problematic scenario. Instead of moving the directory into <code>$GOPATH</code>, we now use Go module.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">/anywhere/outside/gopath/testproject $ go mod init insujang.github.io/testproject
-/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>on go run .
-I0404 15:18:36.553399    <span class="m">2303</span> func.go:6<span class="o">]</span> Hello Go Modules!
-</code></pre></div><p>main.go</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="s">&#34;insujang.github.io/testproject/test&#34;</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">test</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div><p>We initialize the project as a module named <code>insujang.github.io/testproject</code>. Even the directory is outside <code>$GOPATH</code>, <code>go run</code> command now searches <code>insujang.github.io/testproject/test</code> package in <strong>its subdirectory, not in <code>$GOPATH</code></strong>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">/anywhere/outside/gopath/testproject $ go mod init insujang.github.io/testproject
+</span></span><span class="line"><span class="cl">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>on go run .
+</span></span><span class="line"><span class="cl">I0404 15:18:36.553399    <span class="m">2303</span> func.go:6<span class="o">]</span> Hello Go Modules!
+</span></span></code></pre></div><p>main.go</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;insujang.github.io/testproject/test&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">test</span><span class="p">.</span><span class="nf">TestFunc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>We initialize the project as a module named <code>insujang.github.io/testproject</code>. Even the directory is outside <code>$GOPATH</code>, <code>go run</code> command now searches <code>insujang.github.io/testproject/test</code> package in <strong>its subdirectory, not in <code>$GOPATH</code></strong>.</p>
 <blockquote>
 <p>Note that with no Go module support, it returns an error, same as in the problematic scenario:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
-main.go:3:8: cannot find package <span class="s2">&#34;insujang.github.io/testproject/test&#34;</span> in any of:
-        /usr/local/go/src/insujang.github.io/testproject/test <span class="o">(</span>from <span class="nv">$GOROOT</span><span class="o">)</span>
-        /go/src/insujang.github.io/testproject/test <span class="o">(</span>from <span class="nv">$GOPATH</span><span class="o">)</span>
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">/anywhere/outside/gopath/testproject $ <span class="nv">GO111MODULE</span><span class="o">=</span>off go run .
+</span></span><span class="line"><span class="cl">main.go:3:8: cannot find package <span class="s2">&#34;insujang.github.io/testproject/test&#34;</span> in any of:
+</span></span><span class="line"><span class="cl">        /usr/local/go/src/insujang.github.io/testproject/test <span class="o">(</span>from <span class="nv">$GOROOT</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        /go/src/insujang.github.io/testproject/test <span class="o">(</span>from <span class="nv">$GOPATH</span><span class="o">)</span>
+</span></span></code></pre></div></blockquote>
 <p>Aside from versioning support, this is one of main advantages of using Go module.</p>
 <h2 id="go111module-behaviors" class="relative group">GO111MODULE: Behaviors <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#go111module-behaviors" aria-label="Anchor">#</a></span></h2>
 <p>Until now, I explicitly set <code>GO111MODULE</code> environment variable for every Go operations. Without variable set, the default value of <code>GO111MODULE</code> is <code>auto</code>, which behaves as follows:</p>
@@ -591,20 +590,20 @@ main.go:3:8: cannot find package <span class="s2">&#34;insujang.github.io/testpr
 
  <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
 <p>As Go version increases, it seems Google is <em>incrementally</em> adopting Go module in default circumstance. Since Go 1.13, if the project has <code>go.mod</code> file, Go uses Go module regardless of whether it is in <code>$GOPATH</code> or not. Before that, Go used the legacy GOPATH mode if the project is in <code>$GOPATH</code>.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p>How to Write Go Code (with GOPATH): <a href="https://golang.org/doc/gopath_code.html"   target="_blank">https://golang.org/doc/gopath_code.html</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p>The Principles of Versioning in Go: <a href="https://research.swtch.com/vgo-principles"   target="_blank">https://research.swtch.com/vgo-principles</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p>Go 1.13 Release Note: <a href="https://golang.org/doc/go1.13#modules"   target="_blank">https://golang.org/doc/go1.13#modules</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
       </div>
     </section>

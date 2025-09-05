@@ -14,7 +14,7 @@
       
       <guid>/2021-03-15/virtio-and-vhost-architecture-part-2/</guid>
       <description>This post explains overheads of virtio, and introduce vhost that increases performance of virtio.
-Virtio Review &amp;amp; Vhost Introduction #  virtio-net example diagram. [Source]   VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
+Virtio Review &amp;amp; Vhost Introduction # virtio-net example diagram. [Source] VirtI/O is implemented with virtqueues, shared by the guest and QEMU process. When the guest rings a doorbell after inserting requests into the virtqueue, the context is forwarded to host KVM handler (VM-exit), and again to QEMU process via ioeventfd. QEMU process reads the request from the shared virtqueue, and handles it.</description>
     </item>
     
     <item>

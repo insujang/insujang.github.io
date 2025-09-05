@@ -22,7 +22,7 @@
   
   <meta name="description" content="Years before, I posted how to use libibverbs for RDMA communication.
 When initializing queue pair connection, we need some destination information:
-bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here  rtr_attr." />
+bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here rtr_attr." />
   
   
   
@@ -47,7 +47,7 @@ bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t 
   />
   
   
-  <script type="text/javascript" src="/js/appearance.min.75869c865625ed3d10fe38f2274fa90938094d28b518ee2088f544a29fe6b826626bae550302adcbde61e83ba341bdd928a250d644367723ce01e798033098c5.js" integrity="sha512-dYachlYl7T0Q/jjyJ0&#43;pCTgJTSi1GO4giPVEop/muCZia65VAwKty95h6DujQb3ZKKJQ1kQ2dyPOAeeYAzCYxQ=="></script>
+  <script type="text/javascript" src="/js/appearance.min.1e44157c1e51b46341ce2c94716dd3dd1ef30c28e7d1c9f3b9db80877bfe72bc66b00d8a662f317840016acbed93c5f18c3d9268c8b957021ee74d0b04adf6c5.js" integrity="sha512-HkQVfB5RtGNBziyUcW3T3R7zDCjn0cnzuduAh3v&#43;crxmsA2KZi8xeEABasvtk8XxjD2SaMi5VwIe500LBK32xQ=="></script>
   
   
     
@@ -56,7 +56,7 @@ bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t 
   
   
     
-    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.6441f8726be4ada95c479c17d34ce0c4f9f734611947904121e8c317136b5a33ca848f1a18723cc0e68b65872b89b5da63293ec3deb8650739be41c518e6f292.js" integrity="sha512-ZEH4cmvkralcR5wX00zgxPn3NGEZR5BBIejDFxNrWjPKhI8aGHI8wOaLZYcribXaYyk&#43;w964ZQc5vkHFGObykg==" data-copy="Copy" data-copied="Copied"></script>
+    <script defer type="text/javascript" id="script-bundle" src="/js/main.bundle.min.9947db70e5b36e741e53f8531bd734741b3fc7a688f7b5d749fc5433c48efc252f47bdf44e471570a550fc051b87712799014040e6349b38d64448b94e84e45a.js" integrity="sha512-mUfbcOWzbnQeU/hTG9c0dBs/x6aI97XXSfxUM8SO/CUvR730TkcVcKVQ/AUbh3EnmQFAQOY0mzjWREi5ToTkWg==" data-copy="Copy" data-copied="Copied"></script>
   
   
   
@@ -74,18 +74,17 @@ bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t 
   <meta property="og:title" content="Using RDMA CM" />
 <meta property="og:description" content="Years before, I posted how to use libibverbs for RDMA communication.
 When initializing queue pair connection, we need some destination information:
-bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here  rtr_attr." />
+bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here rtr_attr." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2022-03-16/using-rdma-cm/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-03-16T23:37:00-05:00" />
 <meta property="article:modified_time" content="2022-03-16T23:37:00-05:00" /><meta property="og:site_name" content="Better Tomorrow with Computer Science" />
 
-
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Using RDMA CM"/>
 <meta name="twitter:description" content="Years before, I posted how to use libibverbs for RDMA communication.
 When initializing queue pair connection, we need some destination information:
-bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here  rtr_attr."/>
+bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(&amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; // here rtr_attr."/>
 
   
   <script type="application/ld+json">
@@ -96,7 +95,7 @@ bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t 
     "name": "Using RDMA CM",
     "headline": "Using RDMA CM",
     
-    "abstract": "Years before, I posted how to use libibverbs for RDMA communication.\nWhen initializing queue pair connection, we need some destination information:\nbool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(\u0026amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; \/\/ here  rtr_attr.",
+    "abstract": "Years before, I posted how to use libibverbs for RDMA communication.\nWhen initializing queue pair connection, we need some destination information:\nbool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t destination_qp_number, uint16_t destination_local_id) { struct ibv_qp_attr rtr_attr; memset(\u0026amp;rtr_attr, 0, sizeof(rtr_attr)); rtr_attr.qp_state = ibv_qp_state::IBV_QPS_RTR; rtr_attr.path_mtu = ibv_mtu::IBV_MTU_1024; rtr_attr.rq_psn = 0; rtr_attr.max_dest_rd_atomic = 1; rtr_attr.min_rnr_timer = 0x12; rtr_attr.ah_attr.is_global = 0; rtr_attr.ah_attr.sl = 0; rtr_attr.ah_attr.src_path_bits = 0; rtr_attr.ah_attr.port_num = ib_port; rtr_attr.dest_qp_num = destination_qp_number; \/\/ here rtr_attr.",
     "inLanguage": "en",
     "url" : "\/2022-03-16\/using-rdma-cm\/",
     "author" : {
@@ -112,7 +111,7 @@ bool changeQueuePairStateToRTR(struct ibv_qp* queue_pair, int ib_port, uint32_t 
     "keywords": ["rdma","linux"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "368"
+    "wordCount": "369"
   }]
   </script>
 
@@ -410,35 +409,35 @@ if (!doNotTrack) {
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <p>Years before, I posted <a href="/2020-02-09/introduction-to-programming-infiniband/"  >how to use libibverbs for RDMA communication</a>.</p>
 <p>When initializing queue pair connection, we need some destination information:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTR</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">destination_qp_number</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">destination_local_id</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rtr_attr</span><span class="p">;</span>
-  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rtr_attr</span><span class="p">));</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTR</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">path_mtu</span> <span class="o">=</span> <span class="n">ibv_mtu</span><span class="o">::</span><span class="n">IBV_MTU_1024</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">rq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">max_dest_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">min_rnr_timer</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">is_global</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">src_path_bits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">ib_port</span><span class="p">;</span>
-  
-  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">dest_qp_num</span> <span class="o">=</span> <span class="n">destination_qp_number</span><span class="p">;</span> <span class="c1">// here
-</span><span class="c1"></span>  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">dlid</span> <span class="o">=</span> <span class="n">destination_local_id</span><span class="p">;</span> <span class="c1">// and here
-</span><span class="c1"></span>
-  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_AV</span> <span class="o">|</span> <span class="n">IBV_QP_PATH_MTU</span> <span class="o">|</span> <span class="n">IBV_QP_DEST_QPN</span> <span class="o">|</span> <span class="n">IBV_QP_RQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">|</span> <span class="n">IBV_QP_MIN_RNR_TIMER</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>and I did not specify how to <em>transfer</em> data to the remote side.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">changeQueuePairStateToRTR</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ibv_qp</span><span class="o">*</span> <span class="n">queue_pair</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ib_port</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">destination_qp_number</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">destination_local_id</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">ibv_qp_attr</span> <span class="n">rtr_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rtr_attr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">qp_state</span> <span class="o">=</span> <span class="n">ibv_qp_state</span><span class="o">::</span><span class="n">IBV_QPS_RTR</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">path_mtu</span> <span class="o">=</span> <span class="n">ibv_mtu</span><span class="o">::</span><span class="n">IBV_MTU_1024</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">rq_psn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">max_dest_rd_atomic</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">min_rnr_timer</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">is_global</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">src_path_bits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">port_num</span> <span class="o">=</span> <span class="n">ib_port</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">dest_qp_num</span> <span class="o">=</span> <span class="n">destination_qp_number</span><span class="p">;</span> <span class="c1">// here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">rtr_attr</span><span class="p">.</span><span class="n">ah_attr</span><span class="p">.</span><span class="n">dlid</span> <span class="o">=</span> <span class="n">destination_local_id</span><span class="p">;</span> <span class="c1">// and here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ibv_modify_qp</span><span class="p">(</span><span class="n">queue_pair</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rtr_attr</span><span class="p">,</span> <span class="n">IBV_QP_STATE</span> <span class="o">|</span> <span class="n">IBV_QP_AV</span> <span class="o">|</span> <span class="n">IBV_QP_PATH_MTU</span> <span class="o">|</span> <span class="n">IBV_QP_DEST_QPN</span> <span class="o">|</span> <span class="n">IBV_QP_RQ_PSN</span> <span class="o">|</span> <span class="n">IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">|</span> <span class="n">IBV_QP_MIN_RNR_TIMER</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>and I did not specify how to <em>transfer</em> data to the remote side.
 There are two ways of doing it; one is just implement a TCP/UDP socket and transfer data through this channel, the other is to use rdma-cm.</p>
 <h1 id="rdma-cmhttpslinuxdienetman7rdma_cm" class="relative group"><a href="https://linux.die.net/man/7/rdma_cm"   target="_blank">RDMA-CM</a> <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#rdma-cmhttpslinuxdienetman7rdma_cm" aria-label="Anchor">#</a></span></h1>
 <p>CM stands for <em>Communication Manager</em>, which can be used to control QP and communication management. Its implementation is actually based on TCP/UDP, but their abstraction is useful and we don&rsquo;t have to manually implement QP state transition, illustrated in <a href="/2020-02-09/introduction-to-programming-infiniband/#5-exchange-identifier-information-to-establish-connection-and-6-change-the-queue-pair-state"  >here</a>.
 If you need fine-tuning, you need to implement your own initialization mechanism, but otherwise using librdmacm would be enough.</p>
 <p>Code and implementation is <a href="https://github.com/linux-rdma/rdma-core/tree/master/librdmacm"   target="_blank">here</a>.</p>
 <h2 id="interface" class="relative group">Interface <span class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100"><a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700" style="text-decoration-line: none !important;" href="#interface" aria-label="Anchor">#</a></span></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">librdmacm</span><span class="o">-</span><span class="n">dev</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;rdma/rdma_cma.h&gt;</span><span class="cp">
-</span></code></pre></div><p>RDMACM provides three types of operations: RDMA verbs, client operations, and server operations. RDMA verbs are wrappers of libibverbs, so I won&rsquo;t cover those operations here.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">librdmacm</span><span class="o">-</span><span class="n">dev</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;rdma/rdma_cma.h&gt;</span><span class="cp">
+</span></span></span></code></pre></div><p>RDMACM provides three types of operations: RDMA verbs, client operations, and server operations. RDMA verbs are wrappers of libibverbs, so I won&rsquo;t cover those operations here.</p>
 <p><a href="https://manpages.debian.org/testing/librdmacm-dev/rdma_cm.7.en.html"   target="_blank">The Debian librdmacm document</a> and <a href="https://github.com/animeshtrivedi/rdma-example"   target="_blank">an RDMA example</a> explain how to use librdmacm:</p>
 <ul>
 <li><code>rdma_create_event_channel</code>: create channel to receive events.</li>
@@ -589,7 +588,7 @@ If you need fine-tuning, you need to implement your own initialization mechanism
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-03-12 10:40:00 -0500 EST">Mar 12, 2022</time>
+                    <time datetime="2022-03-12 10:40:00 -0500 -0500">Mar 12, 2022</time>
                   
                 </span>
               </span>
@@ -606,7 +605,7 @@ If you need fine-tuning, you need to implement your own initialization mechanism
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2022-06-11 19:33:00 -0400 EDT">Jun 11, 2022</time>
+                    <time datetime="2022-06-11 19:33:00 -0400 -0400">Jun 11, 2022</time>
                   
                 </span>
               </span>
