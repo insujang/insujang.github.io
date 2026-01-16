@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Sep 5, 2025}}
+\fancyfoot[R]{\footnotesize{Last updated: Dec 5, 2025}}
 
 
 \urlstyle{same}
@@ -106,14 +106,14 @@
 
 
 \section{Research Interests}
-Systems for ML, Efficient ML, Distributed ML, Large-scale ML Systems, Adaptive Resource Scheduling for ML
+Systems for ML, ML Parallelism, Large-scale ML Systems, Adaptive Resource Scheduling
 
 %-----------EDUCATION-----------------
 \section{Education}
   \resumeSubHeadingListStart
   \vspace{-1pt}\item
     \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \href{https://umich.edu}{\textbf{The University of Michigan}} & \small Aug 2021 -- Present \\ 
+      \href{https://umich.edu}{\textbf{The University of Michigan}} & \small Aug 2021 -- May 2026 (Expected) \\ 
       \textit{\small Ph.D. Candidate in Computer Science and Engineering} & \small Ann Arbor, MI, USA \\
       \small Advisor: \href{https://www.mosharaf.com}{Prof. Mosharaf Chowdhury}  \\
   \end{tabularx}\vspace{-5pt}
@@ -134,7 +134,7 @@ Systems for ML, Efficient ML, Distributed ML, Large-scale ML Systems, Adaptive R
 %-----------PUBLICATIONS-----------------
 \section{Publications}
 \begin{enumerate}[leftmargin=*]
-  \item \small \href{https://arxiv.org/abs/2503.11367}{\textbf{Cornstarch: Distributed Multimodal Training Must Be Multimodality-Aware}} \\
+  \item \small \href{https://arxiv.org/abs/2503.11367}{\textbf{Efficient Distributed MLLM Training with Cornstarch}} \\
   \textbf{Insu Jang}, Runyu Lu, Nikhil Bansal, Ang Chen, Mosharaf Chowdhury \\
   arXiv Preprint 2025
   \item \small \href{https://arxiv.org/abs/2502.00241}{\textbf{Mordal: Automated Pretrained Model Selection for Vision Language Models}} \\
@@ -157,18 +157,20 @@ Systems for ML, Efficient ML, Distributed ML, Large-scale ML Systems, Adaptive R
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Resource Scheduling for Multimodal LLM}{Jan 2024 -- Present}{
-      \href{https://github.com/cornstarch-org/Cornstarch}{\textbf{Cornstarch}}: A distributed multimodal LLM training framework. 
-      It optimizes imbalance across GPUs in pipeline parallelism and context parallelism by exploiting unique characteristics of multimodal LLMs.
+    \resumeSubheading{Adaptive Resource Scheduling for Multimodal LLM}{Jan 2024 -- Present}{
+      {\textbf{Cornstarch \href{https://github.com/cornstarch-org/Cornstarch}{[source]}}}: A distributed multimodal LLM training framework. 
+      It optimizes imbalance across GPUs in pipeline parallelism and context parallelism by exploiting unique characteristics of multimodal LLMs.\newline
+      \textbf{MANDu}: While Cornstarch addresses the imbalance within a batch, multimodal LLM training also introduces cross-batch imbalance due to heterogeneous variability of multimodal inputs.
+      MANDu introduces data-driven dynamic model parallelism to balance the workload across GPUs.
     }{University of Michigan}
     % {\resumeSubHeadingListStart
     % \vspace{-15pt} \item{Cornstarch: efficient resource scheduling for large scale multimodal large language model (MLLM) in training and serving.}\item{Cornserve:}\resumeSubHeadingListEnd}{University of Michigan}
 
     \resumeSubheading{Fault Tolerant Distributed ML Training}{Sep 2021 -- Oct 2023}
-    {\href{https://github.com/SymbioticLab/Oobleck}{\textbf{Oobleck}}: An efficient fault tolerance in large scale distributed training. Oobleck introduces a groundbreaking way of fault tolerance ML; it exploits model states redundancy in data parallelism to recover lost states to avoid restart from the checkpoint, and utilizes every available GPUs by deploying heterogeneous pipeline parallel replicas. Oobleck introduces pipeline template for quick reconfiguration.}{University of Michigan}
+    {\textbf{Oobleck \href{https://github.com/SymbioticLab/Oobleck}{[source]}}: An efficient fault tolerance in large scale distributed training. Oobleck introduces a groundbreaking way of fault tolerance ML; it exploits model states redundancy in data parallelism to recover lost states to avoid restart from the checkpoint, and utilizes every available GPUs by deploying heterogeneous pipeline parallel replicas.}{University of Michigan}
     
     \resumeSubheading{Offloading Operations to RDMA NIC}{Jan 2020 -- Jul 2020}
-    {\href{https://github.com/casys-kaist/LineFS}{\textbf{LineFS}}: Reimplemented \href{https://dl.acm.org/doi/abs/10.1145/3230543.3230572}{Hyperloop} to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
+    {{\textbf{LineFS \href{https://github.com/casys-kaist/LineFS}{[source]}}}: Reimplemented \href{https://dl.acm.org/doi/abs/10.1145/3230543.3230572}{Hyperloop} to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
     Studied RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload.}{KAIST}
 
     \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{April 2017 -- Oct 2018}

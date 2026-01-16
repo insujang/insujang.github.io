@@ -105,7 +105,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "341"
+    "wordCount": "411"
   }]
   </script>
 
@@ -363,7 +363,12 @@ if (!doNotTrack) {
   >
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#publications">Publications</a></li>
+    <li><a href="#publications">Publications</a>
+      <ul>
+        <li><a href="#conference">Conference</a></li>
+        <li><a href="#preprints">Preprints</a></li>
+      </ul>
+    </li>
     <li><a href="#experience">Experience</a></li>
   </ul>
 </nav>
@@ -375,6 +380,7 @@ if (!doNotTrack) {
       
       <div class="min-w-0 min-h-0 max-w-prose grow">
         <h1 id="publications" class="relative group">Publications </h1>
+<h2 id="conference" class="relative group">Conference </h2>
 <ol>
 <li><strong>[SOSP &lsquo;24] <a href="https://dl.acm.org/doi/abs/10.1145/3694715.3695970"   target="_blank">Perseus: Reducing Energy Bloat in Large Model Training</a></strong> (43/248 = 17.3%)<br>
 Jae-Won Chung, Yile Gu, <u>Insu Jang</u>, Luoxi Meng, Nikhil Bansal, and Mosharaf Chowdhury<br>
@@ -408,38 +414,33 @@ Jongyul Kim, <u>Insu Jang</u>, Waleed Reda, Jaeseong Im, Marco Canini, Dejan Kos
 <a class="inline-block !rounded-md bg-primary-600 px-4 py-1 text-sm !text-neutral !no-underline hover:!bg-primary-500 dark:bg-primary-800 dark:hover:!bg-primary-700"
     href="/assets/bibtex/asplos19hix.bib"    role="button">Bibtex</a></li>
 </ol>
+<h2 id="preprints" class="relative group">Preprints </h2>
+<ol>
+<li><strong><a href="https://arxiv.org/abs/2503.11367"   target="_blank">Efficient Distributed MLLM Training with Cornstarch</a></strong> <br>
+<u>Insu Jang</u>, Runyu Lu, Nikhil Bansal, Ang Chen, and Mosharaf Chowdhury</li>
+<li><strong><a href="https://arxiv.org/abs/2502.00241"   target="_blank">Mordal: Automated Pretrained Model Selection for Vision Language Models</a></strong> <br>
+Shiqi He, <u>Insu Jang</u>, and Mosharaf Chowdhury</li>
+</ol>
 <h1 id="experience" class="relative group">Experience </h1>
 <ul>
 <li>
+<p><strong>Distributed Large Multimodal Model Training</strong><br>
+Multimodal models are widespreading as its capability of understanding and generating various types of data, not just text
+I analyze unique characteristics of multimodal model training, and optimize distributed training of multimodal models by exploiting the characteristics in Cornstarch.</p>
+</li>
+<li>
 <p><strong>Fault Tolerant Systems for Distributed ML Training</strong><br>
-<span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">PyTorch</span>
- <span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">DeepSpeed</span>
-<br>
 Recent trend of growing model size forces to use distributed training with multiple computing devices.
 As more number of devices are used, higher the probability of failures, yet there was no efficient fault tolerance algorithm for such complicated parallelism.
 I led the Oobleck project that supports fast failure recovery in distributed training with hybrid parallleism.</p>
 </li>
 <li>
 <p><strong>Reimplementing Hyperloop</strong><br>
-<span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">RDMA</span>
- <span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">Infiniband</span>
-<br>
 As a part of LineFS research project, we had to measure Hyperloop performance, however, its implementation was not open sourced.
 I built simulated Hyperloop for comparison. I was not able to fully implement it due to lack of RDMA functionality; later <a href="https://www.usenix.org/conference/nsdi22/presentation/reda"   target="_blank">RedN</a> introduces <code>ENABLE verb</code> that makes full Hyperloop implementation possible.</p>
 </li>
 <li>
 <p><strong>Implementing Heterogeneous Trusted Execution Environment</strong><br>
-<span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">Intel SGX</span>
- <span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">GPU</span>
- <span
-    class="rounded-md border border-primary-400 px-2 py-1 text-sm font-normal text-center text-primary-700 ltr:ml-1 rtl:mr-1 dark:border-primary-600 dark:text-primary-400">PCIe architecture</span>
-<br>
 HIX extends the protection scope of hardware-based trusted execution environment (TEE) to heterogeneous computing devices.
 Based on the insight that Intel SGX protects the data with manuever in address translation (TLB entries are not inserted into the TLB for unauthorized accesses) and modern high performance device access is done through memory-mapped I/O (MMIO), we extended the protection mechanism to MMIO.
 Only trusted process called the GPU enclave can access the GPU, and trusted processes can use the GPu service only through the GPU enclave via encrypted communication.\</p>
@@ -482,7 +483,7 @@ Only trusted process called the GPU enclave can access the GPU, and trusted proc
       
         <p class="text-sm text-neutral-500 dark:text-neutral-400">
             &copy;
-            2025
+            2026
             Insu Jang
         </p>
       
