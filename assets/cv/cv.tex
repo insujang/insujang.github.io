@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Jan 27, 2026}}
+\fancyfoot[R]{\footnotesize{Last updated: Feb 24, 2026}}
 
 
 \urlstyle{same}
@@ -106,7 +106,7 @@
 
 
 \section{Research Interests}
-Systems for ML, Distributed ML, Adaptive Resource Scheduling, ML Performance Optimization
+Systems for ML, Distributed ML, Adaptive Resource Orchestration, ML Performance Optimization
 
 %-----------EDUCATION-----------------
 \section{Education}
@@ -157,25 +157,25 @@ Systems for ML, Distributed ML, Adaptive Resource Scheduling, ML Performance Opt
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Adaptive Resource Scheduling for Multimodal LLM}{Jan 2024 -- Present}{
+    \resumeSubheading{Adaptive Resource Scheduling for Distributed Multimodal LLM}{Jan 2024 -- Present}{
       {\textbf{Cornstarch \href{https://github.com/cornstarch-org/Cornstarch}{[source]}}}: A distributed multimodal LLM training framework. 
-      It optimizes imbalance across GPUs in pipeline parallelism and context parallelism by exploiting unique characteristics of multimodal LLMs.\newline
-      % \textbf{MANDu}: While Cornstarch addresses the imbalance within a batch, multimodal LLM training also introduces cross-batch imbalance due to heterogeneous variability of multimodal inputs.
-      % MANDu introduces data-driven dynamic model parallelism to balance the workload across GPUs.
-    }{University of Michigan}
+      It optimizes imbalance across GPUs in pipeline parallelism and context parallelism by exploiting unique characteristics of multimodal LLMs, such as frozen status and non-causal nature of multimodal attention.\newline
+      \textbf{MANDu}: Multimodal LLM also introduces cross-batch variability because each modality data has its own unique distribution.
+      MANDu introduces data-driven dynamic model parallelism and workload deferral exploiting producer-consumer pattern that breaks traditional scheduling strategy of pipeline parallelism.
+    }{}
     % {\resumeSubHeadingListStart
     % \vspace{-15pt} \item{Cornstarch: efficient resource scheduling for large scale multimodal large language model (MLLM) in training and serving.}\item{Cornserve:}\resumeSubHeadingListEnd}{University of Michigan}
 
     \resumeSubheading{Fault Tolerant Distributed ML Training}{Sep 2021 -- Oct 2023}
-    {\textbf{Oobleck \href{https://github.com/SymbioticLab/Oobleck}{[source]}}: An efficient fault tolerance in large scale distributed training. Oobleck introduces a groundbreaking way of fault tolerance ML; it exploits model states redundancy in data parallelism to recover lost states to avoid restart from the checkpoint, and utilizes every available GPUs by deploying heterogeneous pipeline parallel replicas.}{University of Michigan}
+    {\textbf{Oobleck \href{https://github.com/SymbioticLab/Oobleck}{[source]}}: An efficient fault tolerance in large scale distributed training. Oobleck introduces a groundbreaking way of fault tolerance ML; it exploits model states redundancy in data parallelism to recover lost states to avoid restart from the checkpoint, and utilizes every available GPUs by deploying heterogeneous pipeline parallel replicas.}{}
     
-    \resumeSubheading{Offloading Operations to RDMA NIC}{Jan 2020 -- Jul 2020}
+    \resumeSubheading{Offloading Distributed Transactions to RDMA NIC}{Jan 2020 -- Jul 2020}
     {{\textbf{LineFS \href{https://github.com/casys-kaist/LineFS}{[source]}}}: Reimplemented \href{https://dl.acm.org/doi/abs/10.1145/3230543.3230572}{Hyperloop} to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
-    Studied RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload.}{KAIST}
+    Studied RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload.}{}
 
     \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{April 2017 -- Oct 2018}
     {\textbf{HIX}: Designed a HW-SW co-design architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
-    and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.}{KAIST}
+    and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.}{}
 
     % \resumeSubheading
     %   {Computer Architecture and Systems Lab, KAIST}{Daejeon, Republic of Korea}
@@ -231,11 +231,11 @@ Systems for ML, Distributed ML, Adaptive Resource Scheduling, ML Performance Opt
 
     \resumeSubheading{System Software Engineer \footnotesize{-- Fulfillment of Military Obligations}}{Feb 2018 -- Jun 2021}
     {System Kernel Team, TmaxSoft Inc.}{Seongnam, Republic of Korea}
-    \resumeItemListStart
-      \resumeItem{Network subsystem}{Worked on implementing a network subsystem for TmaxOS.}
-      \resumeItem{Virtualization}{Worked on researching virtualization technologies to improve I/O performance.}
-      \resumeItem{Ceph \& Kubernetes analysis}{Worked on analyzing Ceph distributed storage system to improve cloud storage performance.}
-    \resumeItemListEnd
+    % \resumeItemListStart
+    %   \resumeItem{Network subsystem}{Worked on implementing a network subsystem for TmaxOS.}
+    %   \resumeItem{Virtualization}{Worked on researching virtualization technologies to improve I/O performance.}
+    %   \resumeItem{Ceph \& Kubernetes analysis}{Worked on analyzing Ceph distributed storage system to improve cloud storage performance.}
+    % \resumeItemListEnd
 
     % \resumeSubheading{TmaxSoft Inc.}{Seongnam, Republic of Korea}
     % {}{Feb 2018 -- Jun 2021}
@@ -317,11 +317,11 @@ Systems for ML, Distributed ML, Adaptive Resource Scheduling, ML Performance Opt
 
 %
 %--------PROGRAMMING SKILLS------------
-\section{Technical Skills}
- \resumeSubHeadingListStart
-  \resumeItem{Languages}{Python, C++, Rust, Triton, English (fluent), Korean (native)}
-  \resumeItem{Tools and Frameworks}{PyTorch, Cornstarch, Megatron-LM, DeepSpeed, RDMA, Kubernetes}
- \resumeSubHeadingListEnd
+% \section{Technical Skills}
+%  \resumeSubHeadingListStart
+%   \resumeItem{Languages}{Python, C++, Rust, Triton, English (fluent), Korean (native)}
+%   \resumeItem{Tools and Frameworks}{PyTorch, Cornstarch, Megatron-LM, DeepSpeed, RDMA, Kubernetes}
+%  \resumeSubHeadingListEnd
 
 % \section{References}
 % Available upon request.
