@@ -6,7 +6,25 @@
     <description>Recent content on Better Tomorrow with Computer Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 20 Sep 2024 10:32:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 Jun 2026 08:00:00 -0400</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Insu defended my PhD and will join NVIDIA Research!</title>
+      <link>/news/20260601-defended/</link>
+      <pubDate>Mon, 01 Jun 2026 08:00:00 -0400</pubDate>
+      
+      <guid>/news/20260601-defended/</guid>
+      <description>After incredible 5 years at Michigan, I defended my PhD and graduated. I will be joining NVIDIA to research scalable agentic AI systems.</description>
+    </item>
+    
+    <item>
+      <title>Cornstarch Accepted to ICML&#39;26</title>
+      <link>/news/20260430-cornstarch/</link>
+      <pubDate>Thu, 30 Apr 2026 10:00:00 -0400</pubDate>
+      
+      <guid>/news/20260430-cornstarch/</guid>
+      <description>Cornstarch has been accepted to ICML&#39;26. Cornstarch is a distributed multimodal training framework. Try it out at https://github.com/cornstarch-org/Cornstarch.</description>
+    </item>
+    
     <item>
       <title>Introducing Context Parallelism</title>
       <link>/2024-09-20/introducing-context-parallelism/</link>

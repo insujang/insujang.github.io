@@ -40,7 +40,7 @@
 
 \fancyfoot[L]{\footnotesize{Insu Jang}}
 \fancyfoot[C]{\footnotesize{Page \thepage~of \pageref{LastPage}}}
-\fancyfoot[R]{\footnotesize{Last updated: Feb 24, 2026}}
+\fancyfoot[R]{\footnotesize{Last updated: June 4, 2026}}
 
 
 \urlstyle{same}
@@ -101,7 +101,7 @@
 %----------HEADING-----------------
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
   \textbf{{\LARGE Insu Jang}} & insujang@umich.edu\\
-  4828 BBB, 2260 Hayward Street, Ann Arbor, MI 48109 & \href{https://insujang.github.io}{https://insujang.github.io} \\
+  \textbf{Research Scientist at NVIDIA Research} & \href{https://insujang.github.io}{https://insujang.github.io} \\
 \end{tabular*}
 
 
@@ -113,8 +113,8 @@ Systems for ML, Distributed ML, Adaptive Resource Orchestration, ML Performance 
   \resumeSubHeadingListStart
   \vspace{-1pt}\item
     \begin{tabularx}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \href{https://umich.edu}{\textbf{The University of Michigan}} & \small Aug 2021 -- May 2026 (Expected) \\ 
-      \textit{\small Ph.D. Candidate in Computer Science and Engineering} & \small Ann Arbor, MI, USA \\
+      \href{https://umich.edu}{\textbf{The University of Michigan}} & \small Aug 2021 -- Jun 2026 \\ 
+      \textit{\small Ph.D. in Computer Science and Engineering} & \small Ann Arbor, MI, USA \\
       \small Advisor: \href{https://www.mosharaf.com}{Prof. Mosharaf Chowdhury}  \\
   \end{tabularx}\vspace{-5pt}
     \vspace{-1pt}\item
@@ -134,12 +134,15 @@ Systems for ML, Distributed ML, Adaptive Resource Orchestration, ML Performance 
 %-----------PUBLICATIONS-----------------
 \section{Publications}
 \begin{enumerate}[leftmargin=*]
+  \item \small \href{https://arxiv.org/abs/2605.27918}{\textbf{Addressing Variable Heterogeneity in Distributed Multimodal Training with Entrain}} \\
+  \textbf{Insu Jang}, Mosharaf Chowdhury \\
+  arXiv Preprint 2026
   \item \small \href{https://openreview.net/forum?id=ZQiO12xlJq}{\textbf{Mordal: Automated Pretrained Model Selection for Vision Language Models}} \\
   Shiqi He, \textbf{Insu Jang}, Mosharaf Chowdhury \\
   ICLR 2026
-  \item \small \href{https://arxiv.org/abs/2503.11367}{\textbf{Efficient Distributed MLLM Training with Cornstarch}} \\
+  \item \small \href{https://openreview.net/forum?id=CWisSpoJF9}{\textbf{Efficient Distributed MLLM Training with Cornstarch}} \\
   \textbf{Insu Jang}, Runyu Lu, Nikhil Bansal, Ang Chen, Mosharaf Chowdhury \\
-  arXiv Preprint 2025
+  ICML 2026
   \item \small \href{https://dl.acm.org/doi/abs/10.1145/3694715.3695970}{\textbf{Reducing Energy Bloat in Large Model Training}} \\
   Jae-Won Chung, Yile Gu, \textbf{Insu Jang}, Luoxi Meng, Nikhil Bansal, Mosharaf Chowdhury \\
   ACM SOSP 2024
@@ -154,14 +157,15 @@ Systems for ML, Distributed ML, Adaptive Resource Orchestration, ML Performance 
   ACM ASPLOS 2019
 \end{enumerate}
 
+\newpage
 %-----------RESEARCH EXPERIENCE-----------------
 \section{Research Experience}
   \resumeSubHeadingListStart
-    \resumeSubheading{Adaptive Resource Scheduling for Distributed Multimodal LLM}{Jan 2024 -- Present}{
+    \resumeSubheading{Adaptive Resource Scheduling for Distributed Multimodal LLM}{Jan 2024 -- May 2026}{
       {\textbf{Cornstarch \href{https://github.com/cornstarch-org/Cornstarch}{[source]}}}: A distributed multimodal LLM training framework. 
       It optimizes imbalance across GPUs in pipeline parallelism and context parallelism by exploiting unique characteristics of multimodal LLMs, such as frozen status and non-causal nature of multimodal attention.\newline
-      \textbf{MANDu}: Multimodal LLM also introduces cross-batch variability because each modality data has its own unique distribution.
-      MANDu introduces data-driven dynamic model parallelism and workload deferral exploiting producer-consumer pattern that breaks traditional scheduling strategy of pipeline parallelism.
+      \textbf{Entrain}: Multimodal LLM also introduces cross-batch variability because each modality data has its own unique distribution.
+      Entrain addresses this with a counter intuitive approach: across batches, variability of workload ratio converges to a stable constant, which allows a single static parallel configuration to be optimal. For variability within a batch, Entrain introduces hierarchical microbatch assignment and deferral optimization to stabilize variability across microbatches.
     }{}
     % {\resumeSubHeadingListStart
     % \vspace{-15pt} \item{Cornstarch: efficient resource scheduling for large scale multimodal large language model (MLLM) in training and serving.}\item{Cornserve:}\resumeSubHeadingListEnd}{University of Michigan}
@@ -173,7 +177,7 @@ Systems for ML, Distributed ML, Adaptive Resource Orchestration, ML Performance 
     {{\textbf{LineFS \href{https://github.com/casys-kaist/LineFS}{[source]}}}: Reimplemented \href{https://dl.acm.org/doi/abs/10.1145/3230543.3230572}{Hyperloop} to use it as a baseline of LineFS, which offloads replicated transaction into Infiniband RDMA adaptors.
     Studied RDMA architecture and witnessed the benefits of offloading in reducing host CPU overload.}{}
 
-    \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{April 2017 -- Oct 2018}
+    \resumeSubheading{Architectural Support for Trusted Heterogeneous Execution}{Apr 2017 -- Oct 2018}
     {\textbf{HIX}: Designed a HW-SW co-design architecture for GPU trusted execution environment. To realize it, studied the PCIe interconnect architecture
     and Intel SGX architecture. It focuses on providing protection in the path between the GPU and the CPU to support commodity GPUs for practicality.}{}
 
@@ -217,6 +221,12 @@ Systems for ML, Distributed ML, Adaptive Resource Orchestration, ML Performance 
 %-----------WORK EXPERIENCE-----------------
 \section{Work Experience}
   \resumeSubHeadingListStart
+
+  \resumeSubheading{Research Scientist}{Aug 2026 --}{Architecture Research Group, NVIDIA Research}{Santa Clara, CA, USA}
+  % \resumeItemListStart
+  %   \resumeItem{}
+  % \resumeItemListEnd
+
   \resumeSubheading{Software Engineering Intern}{May 2025 -- Aug 2025}{ML Networking Team, Google LLC}{Sunnyvale, CA, USA}
   \resumeItemListStart
     \resumeItem{Straggler detection}{Design and implement a framework that systematically analyzes stragglers in distributed ML training.}
